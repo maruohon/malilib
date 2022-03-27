@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
@@ -14,7 +14,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget<CFG extends ConfigInfo> ex
 {
     protected final BooleanConfig booleanConfig;
     protected final KeyBind keyBind;
-    protected final ImmutableList<Integer> initialHotkeyValue;
+    protected final IntArrayList initialHotkeyValue = new IntArrayList();
     protected final BooleanConfigButton booleanButton;
     protected final KeyBindConfigButton hotkeyButton;
     protected final KeybindSettingsWidget settingsWidget;
@@ -31,7 +31,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget<CFG extends ConfigInfo> ex
         this.booleanConfig = booleanConfig;
         this.keyBind = keyBind;
         this.initialBooleanValue = booleanConfig.getBooleanValue();
-        this.initialHotkeyValue = this.keyBind.getKeys();
+        this.keyBind.getKeysToList(this.initialHotkeyValue);
 
         this.booleanButton = new BooleanConfigButton(-1, 20, booleanConfig);
         this.booleanButton.setHoverStringProvider("locked", this.booleanConfig::getLockAndOverrideMessages);
@@ -82,7 +82,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget<CFG extends ConfigInfo> ex
     public boolean wasModified()
     {
         return this.booleanConfig.getBooleanValue() != this.initialBooleanValue ||
-               this.keyBind.getKeys().equals(this.initialHotkeyValue) == false;
+               this.keyBind.matches(this.initialHotkeyValue) == false;
     }
 
     @Override

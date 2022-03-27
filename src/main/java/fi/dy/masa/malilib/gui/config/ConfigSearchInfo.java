@@ -82,7 +82,7 @@ public class ConfigSearchInfo<C extends ConfigInfo>
         if (this.hasHotkey)
         {
             KeyBind keyBind = this.keyBindGetter.apply(config);
-            return keyBind != null && keyBind.getKeys().isEmpty() == false;
+            return keyBind != null && keyBind.hasKeys();
         }
 
         return false;
@@ -93,7 +93,7 @@ public class ConfigSearchInfo<C extends ConfigInfo>
         if (this.hasHotkey)
         {
             KeyBind keyBind = this.keyBindGetter.apply(config);
-            return keyBind != null && keyBind.getKeys().isEmpty();
+            return keyBind != null && keyBind.hasKeys() == false;
         }
 
         return false;

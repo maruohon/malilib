@@ -3,11 +3,12 @@ package fi.dy.masa.malilib.input;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import com.google.common.collect.ArrayListMultimap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 public class HotkeyManagerImpl implements HotkeyManager
 {
-    protected final ArrayListMultimap<Integer, KeyBind> hotkeyMap = ArrayListMultimap.create();
+    protected final Int2ObjectOpenHashMap<ArrayList<KeyBind>> hotkeyMap = new Int2ObjectOpenHashMap<>();
     protected final List<HotkeyCategory> keyBindCategories = new ArrayList<>();
     protected final List<HotkeyProvider> keyBindProviders = new ArrayList<>();
 
@@ -54,19 +55,19 @@ public class HotkeyManagerImpl implements HotkeyManager
             }
         }
 
-        for (Integer key : this.hotkeyMap.keySet())
-        {
-            this.hotkeyMap.get(key).sort(Comparator.comparingInt((v) -> v.getSettings().getPriority()));
-        }
+        this.hotkeyMap.values().forEach((list) -> list.sort(Comparator.comparingInt((v) -> v.getSettings().getPriority())));
     }
 
     protected void addKeyBindToMap(KeyBind keybind)
     {
-        List<Integer> keys = keybind.getKeys();
+        IntArrayList keys = new IntArrayList();
+        keybind.getKeysToList(keys);
+        final int size = keys.size();
 
-        for (int key : keys)
+        for (int i = 0; i < size; ++i)
         {
-            this.hotkeyMap.put(key, keybind);
+            int key = keys.getInt(i);
+            this.hotkeyMap.computeIfAbsent(key, (k) -> new ArrayList<>()).add(keybind);
         }
     }
 
@@ -86,7 +87,7 @@ public class HotkeyManagerImpl implements HotkeyManager
         boolean isFirst = true;
         List<KeyBind> keyBinds = this.hotkeyMap.get(eventKey);
 
-        if (keyBinds.isEmpty() == false)
+        if (keyBinds != null && keyBinds.isEmpty() == false)
         {
             // FIXME is there a better way to avoid CMEs when switching config screens?
             keyBinds = new ArrayList<>(keyBinds);

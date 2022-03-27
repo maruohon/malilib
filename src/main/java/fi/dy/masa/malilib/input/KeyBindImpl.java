@@ -2,13 +2,12 @@ package fi.dy.masa.malilib.input;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.settings.KeyBinding;
 import fi.dy.masa.malilib.MaLiLib;
@@ -29,29 +28,29 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class KeyBindImpl implements KeyBind
 {
-    private static final List<Integer> PRESSED_KEYS = new ArrayList<>();
+    private static final IntArrayList PRESSED_KEYS = new IntArrayList();
 
     public static final KeyUpdateResult NO_ACTION = new KeyUpdateResult(false, false);
 
     private static int triggeredCount;
 
     private final KeyBindSettings defaultSettings;
-    private final ImmutableList<Integer> defaultKeyCodes;
-    private ImmutableList<Integer> keyCodes = ImmutableList.of();
-    private ImmutableList<Integer> lastSavedKeyCodes;
-    private KeyBindSettings settings;
+    private final IntArrayList defaultKeyCodes = new IntArrayList(4);
+    private final IntArrayList keyCodes = new IntArrayList(4);
+    private final IntArrayList lastSavedKeyCodes = new IntArrayList(4);
+    @Nullable private HotkeyCallback callback;
     private KeyBindSettings lastSavedSettings;
+    private KeyBindSettings settings;
     private ModInfo modInfo;
     private String nameTranslationKey = "";
     private boolean pressed;
-    private boolean pressedLast;
-    private int heldTime;
-    @Nullable private HotkeyCallback callback;
+    private boolean pressedToggle;
 
     private KeyBindImpl(String defaultStorageString, KeyBindSettings settings)
     {
         this.defaultSettings = settings;
-        this.defaultKeyCodes = Keys.readKeysFromStorageString(defaultStorageString);
+        this.defaultKeyCodes.addAll(Keys.readKeysFromStorageString(defaultStorageString));
+        this.keyCodes.addAll(this.defaultKeyCodes);
         this.settings = settings;
 
         this.cacheSavedValue();
@@ -94,26 +93,132 @@ public class KeyBindImpl implements KeyBind
     }
 
     @Override
-    public boolean isValid()
+    public void clearKeys()
     {
-        return this.keyCodes.isEmpty() == false || this.settings.getAllowEmpty();
+        this.keyCodes.clear();
+        this.pressed = false;
+    }
+
+    @Override
+    public boolean hasKeys()
+    {
+        return this.keyCodes.isEmpty() == false;
+    }
+
+    @Override
+    public void setKeys(IntArrayList newKeys)
+    {
+        this.keyCodes.clear();
+        this.keyCodes.addAll(newKeys);
+    }
+
+    @Override
+    public void getKeysToList(IntArrayList list)
+    {
+        list.addAll(this.keyCodes);
+    }
+
+    @Override
+    public String getKeysDisplayString()
+    {
+        return Keys.writeKeysToString(this.keyCodes, " + ", Keys::charAsCharacter);
+    }
+
+    @Override
+    public String getDefaultKeysDisplayString()
+    {
+        return Keys.writeKeysToString(this.defaultKeyCodes, " + ", Keys::charAsCharacter);
     }
 
     /**
-     * Checks if this keybind is now active but previously was not active,
-     * and then updates the cached state.
-     * @return true if this keybind just became pressed
+     * Returns true if the keybind has been changed from the default value
      */
     @Override
-    public boolean isPressed()
+    public boolean isModified()
     {
-        return this.pressed && this.pressedLast == false && this.heldTime == 0;
+        return this.keyCodes.equals(this.defaultKeyCodes) == false;
+    }
+
+    @Override
+    public boolean isDirty()
+    {
+        return this.lastSavedKeyCodes.equals(this.keyCodes) == false ||
+               this.lastSavedSettings.equals(this.settings) == false;
+    }
+
+    @Override
+    public void cacheSavedValue()
+    {
+        this.lastSavedKeyCodes.clear();
+        this.lastSavedKeyCodes.addAll(this.keyCodes);
+        this.lastSavedSettings = this.settings;
+    }
+
+    @Override
+    public void resetToDefault()
+    {
+        this.keyCodes.clear();
+        this.keyCodes.addAll(this.defaultKeyCodes);
+    }
+
+    @Override
+    public boolean areSettingsModified()
+    {
+        return this.settings.equals(this.defaultSettings) == false;
+    }
+
+    @Override
+    public void resetSettingsToDefaults()
+    {
+        this.settings = this.defaultSettings;
+    }
+
+    @Override
+    public void setValueFromString(String str)
+    {
+        this.clearKeys();
+        this.keyCodes.addAll(Keys.readKeysFromStorageString(str));
+    }
+
+    @Override
+    public boolean containsKey(int keyCode)
+    {
+        return this.keyCodes.contains(keyCode);
+    }
+
+    @Override
+    public boolean matches(int keyCode)
+    {
+        return this.keyCodes.size() == 1 && this.keyCodes.getInt(0) == keyCode;
+    }
+
+    @Override
+    public boolean matches(IntArrayList keys)
+    {
+        return this.keyCodes.equals(keys);
     }
 
     @Override
     public boolean isKeyBindHeld()
     {
-        return this.pressed || (this.settings.getAllowEmpty() && this.keyCodes.isEmpty());
+        boolean active;
+
+        if (this.settings.isToggle())
+        {
+            active = this.pressedToggle;
+        }
+        else
+        {
+            active = this.pressed || (this.settings.getAllowEmpty() && this.keyCodes.isEmpty());
+        }
+
+        return active != this.settings.getInvertHeld();
+    }
+
+    @Override
+    public boolean isPhysicallyHeld()
+    {
+        return this.pressed;
     }
 
     /**
@@ -131,19 +236,21 @@ public class KeyBindImpl implements KeyBind
         }
 
         final boolean allowExtraKeys = this.settings.getAllowExtraKeys();
-        final boolean allowOutOfOrder = this.settings.isOrderSensitive() == false;
         final boolean pressedLast = this.pressed;
         final int sizePressed = PRESSED_KEYS.size();
         final int sizeRequired = this.keyCodes.size();
 
         if (sizePressed >= sizeRequired && (allowExtraKeys || sizePressed == sizeRequired))
         {
-            int keyCodeIndex = 0;
             this.pressed = PRESSED_KEYS.containsAll(this.keyCodes);
+            final int pressedSize = PRESSED_KEYS.size();;
+            int keyCodeIndex = 0;
 
-            for (Integer keyCodeObj : PRESSED_KEYS)
+            for (int i = 0; i < pressedSize; ++i)
             {
-                if (this.keyCodes.get(keyCodeIndex).equals(keyCodeObj))
+                int keyCode = PRESSED_KEYS.getInt(i);
+
+                if (this.keyCodes.getInt(keyCodeIndex) == keyCode)
                 {
                     // Fully matched keybind
                     if (++keyCodeIndex >= sizeRequired)
@@ -151,8 +258,8 @@ public class KeyBindImpl implements KeyBind
                         break;
                     }
                 }
-                else if ((allowOutOfOrder == false && (keyCodeIndex > 0 || sizePressed == sizeRequired)) ||
-                         (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
+                else if ((this.settings.isOrderSensitive() && (keyCodeIndex > 0 || sizePressed == sizeRequired)) ||
+                         (this.keyCodes.contains(keyCode) == false && allowExtraKeys == false))
                 {
                     /*
                     System.out.printf("km fail: key: %s, ae: %s, aoo: %s, cont: %s, keys: %s, pressed: %s, triggeredCount: %d\n",
@@ -166,6 +273,11 @@ public class KeyBindImpl implements KeyBind
         else
         {
             this.pressed = false;
+        }
+
+        if (this.pressed && pressedLast == false)
+        {
+            this.pressedToggle = ! this.pressedToggle;
         }
 
         KeyAction activateOn = this.settings.getActivateOn();
@@ -189,20 +301,18 @@ public class KeyBindImpl implements KeyBind
         return NO_ACTION;
     }
 
-    private KeyUpdateResult triggerKeyAction(boolean pressedLast)
+    protected KeyUpdateResult triggerKeyAction(boolean pressedLast)
     {
         KeyAction activateOn = this.settings.getActivateOn();
 
         if (this.pressed == false)
         {
-            this.heldTime = 0;
-
             if (pressedLast && (activateOn == KeyAction.RELEASE || activateOn == KeyAction.BOTH))
             {
                 return this.triggerKeyCallback(KeyAction.RELEASE);
             }
         }
-        else if (pressedLast == false && this.heldTime == 0)
+        else if (pressedLast == false)
         {
             if (this.keyCodes.contains(Keyboard.KEY_F3))
             {
@@ -219,7 +329,7 @@ public class KeyBindImpl implements KeyBind
         return NO_ACTION;
     }
 
-    private KeyUpdateResult triggerKeyCallback(KeyAction action)
+    protected KeyUpdateResult triggerKeyCallback(KeyAction action)
     {
         boolean cancel;
 
@@ -241,7 +351,7 @@ public class KeyBindImpl implements KeyBind
         return new KeyUpdateResult(cancel, true);
     }
 
-    private void addToastMessage(KeyAction action, boolean hasCallback, boolean cancelled)
+    protected void addToastMessage(KeyAction action, boolean hasCallback, boolean cancelled)
     {
         KeybindDisplayMode mode = MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getValue();
         boolean showCallbackOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CALLBACK_ONLY.getBooleanValue();
@@ -279,148 +389,49 @@ public class KeyBindImpl implements KeyBind
     }
 
     @Override
-    public void clearKeys()
-    {
-        this.keyCodes = ImmutableList.of();
-        this.pressed = false;
-        this.heldTime = 0;
-    }
-
-    @Override
-    public void setKeys(List<Integer> newKeys)
-    {
-        this.keyCodes = ImmutableList.copyOf(newKeys);
-    }
-
-    @Override
-    public void tick()
-    {
-        if (this.pressed)
-        {
-            this.heldTime++;
-        }
-
-        this.pressedLast = this.pressed;
-    }
-
-    @Override
-    public ImmutableList<Integer> getKeys()
-    {
-        return this.keyCodes;
-    }
-
-    @Override
-    public ImmutableList<Integer> getDefaultKeys()
-    {
-        return this.defaultKeyCodes;
-    }
-
-    @Override
-    public String getKeysDisplayString()
-    {
-        return Keys.writeKeysToString(this.keyCodes, " + ", Keys::charAsCharacter);
-    }
-
-    /**
-     * Returns true if the keybind has been changed from the default value
-     */
-    @Override
-    public boolean isModified()
-    {
-        return this.keyCodes.equals(this.defaultKeyCodes) == false;
-    }
-
-    @Override
-    public boolean isDirty()
-    {
-        return this.lastSavedKeyCodes.equals(this.keyCodes) == false ||
-               this.lastSavedSettings.equals(this.settings) == false;
-    }
-
-    @Override
-    public void cacheSavedValue()
-    {
-        this.lastSavedKeyCodes = this.keyCodes;
-        this.lastSavedSettings = this.settings;
-    }
-
-    @Override
-    public void resetToDefault()
-    {
-        this.keyCodes = this.defaultKeyCodes;
-    }
-
-    @Override
-    public boolean areSettingsModified()
-    {
-        return this.settings.equals(this.defaultSettings) == false;
-    }
-
-    @Override
-    public void resetSettingsToDefaults()
-    {
-        this.settings = this.defaultSettings;
-    }
-
-    @Override
-    public void setValueFromString(String str)
-    {
-        this.clearKeys();
-        this.keyCodes = Keys.readKeysFromStorageString(str);
-    }
-
-    @Override
-    public boolean matches(int keyCode)
-    {
-        return this.keyCodes.size() == 1 && this.keyCodes.get(0) == keyCode;
-    }
-
-    public static boolean hotkeyMatchesKeyBind(Hotkey hotkey, KeyBinding keybind)
-    {
-        return hotkey.getKeyBind().matches(keybind.getKeyCode());
-    }
-
-    @Override
     public boolean overlaps(KeyBind other)
     {
-        if (other == this || other.getKeys().size() > this.getKeys().size())
+        if (other == this)
         {
             return false;
         }
 
-        if (this.contextOverlaps(other))
+        if (this.contextOverlaps(other) && this.hasKeys() && other.hasKeys())
         {
-            KeyBindSettings settingsOther = other.getSettings();
-            List<Integer> keys1 = this.getKeys();
-            List<Integer> keys2 = other.getKeys();
-            boolean o1 = this.settings.isOrderSensitive();
-            boolean o2 = settingsOther.isOrderSensitive();
-            int l1 = keys1.size();
-            int l2 = keys2.size();
+            IntArrayList thisKeys = this.keyCodes;
+            IntArrayList otherKeys = new IntArrayList();
+            other.getKeysToList(otherKeys);
 
-            if (l1 == 0 || l2 == 0)
+            int thisKeyCount = thisKeys.size();
+            int otherKeyCount = otherKeys.size();
+
+            if (otherKeyCount > thisKeyCount)
             {
                 return false;
             }
 
-            boolean firstMatches = keys1.get(0).equals(keys2.get(0));
+            KeyBindSettings otherSettings = other.getSettings();
+            boolean firstMatches = thisKeys.getInt(0) == otherKeys.getInt(0);
 
             if (firstMatches == false &&
-                ((this.settings.getAllowExtraKeys() == false && l1 < l2) ||
-                 (settingsOther.getAllowExtraKeys() == false && l2 < l1)))
+                ((this.settings.getAllowExtraKeys() == false && thisKeyCount < otherKeyCount) ||
+                 (otherSettings.getAllowExtraKeys() == false && otherKeyCount < thisKeyCount)))
             {
                 return false;
             }
+
+            boolean o1 = this.settings.isOrderSensitive();
+            boolean o2 = otherSettings.isOrderSensitive();
 
             // Both are order sensitive, try to "slide the shorter sequence over the longer sequence" to find a match
             if (o1 && o2)
             {
-                return l1 < l2 ? Collections.indexOfSubList(keys2, keys1) != -1 : Collections.indexOfSubList(keys1, keys2) != -1;
+                return thisKeyCount < otherKeyCount ? Collections.indexOfSubList(otherKeys, thisKeys) != -1 : Collections.indexOfSubList(thisKeys, otherKeys) != -1;
             }
             // At least one of the keybinds is not order sensitive
             else
             {
-                return l1 <= l2 ? keys2.containsAll(keys1) : keys1.containsAll(keys2);
+                return thisKeyCount <= otherKeyCount ? otherKeys.containsAll(thisKeys) : thisKeys.containsAll(otherKeys);
             }
         }
 
@@ -497,11 +508,14 @@ public class KeyBindImpl implements KeyBind
         return obj;
     }
 
+    public static boolean hotkeyMatchesKeyBind(Hotkey hotkey, KeyBinding keybind)
+    {
+        return hotkey.getKeyBind().matches(keybind.getKeyCode());
+    }
+
     public static KeyBindImpl fromStorageString(String storageString, KeyBindSettings settings)
     {
-        KeyBindImpl keyBind = new KeyBindImpl(storageString, settings);
-        keyBind.setValueFromString(storageString);
-        return keyBind;
+        return new KeyBindImpl(storageString, settings);
     }
 
     /**
@@ -509,23 +523,19 @@ public class KeyBindImpl implements KeyBind
      */
     public static void onKeyInputPre(int keyCode, int scanCode, int modifiers, char charIn, boolean keyState)
     {
-        Integer valObj = keyCode;
-
         if (keyState)
         {
-            if (PRESSED_KEYS.contains(valObj) == false)
-            {
-                List<Integer> ignored = MaLiLibConfigs.Hotkeys.IGNORED_KEYS.getKeyBind().getKeys();
+            KeyBind ignoredKeys = MaLiLibConfigs.Hotkeys.IGNORED_KEYS.getKeyBind();
 
-                if (ignored.size() == 0 || ignored.contains(valObj) == false)
-                {
-                    PRESSED_KEYS.add(valObj);
-                }
+            if (PRESSED_KEYS.contains(keyCode) == false &&
+                ignoredKeys.containsKey(keyCode) == false)
+            {
+                PRESSED_KEYS.add(keyCode);
             }
         }
         else
         {
-            PRESSED_KEYS.remove(valObj);
+            PRESSED_KEYS.rem(keyCode);
         }
 
         if (MaLiLibConfigs.Generic.PRESSED_KEYS_TOAST.getBooleanValue())
@@ -556,17 +566,7 @@ public class KeyBindImpl implements KeyBind
      */
     public static void reCheckPressedKeys()
     {
-        Iterator<Integer> iter = PRESSED_KEYS.iterator();
-
-        while (iter.hasNext())
-        {
-            int keyCode = iter.next().intValue();
-
-            if (Keys.isKeyDown(keyCode) == false)
-            {
-                iter.remove();
-            }
-        }
+        PRESSED_KEYS.removeIf((v) -> Keys.isKeyDown(v) == false);
 
         // Clear the triggered count after all keys have been released
         if (PRESSED_KEYS.size() == 0)
@@ -611,10 +611,12 @@ public class KeyBindImpl implements KeyBind
         if (PRESSED_KEYS.isEmpty() == false)
         {
             StringBuilder sb = new StringBuilder(128);
-            int i = 0;
+            final int size = PRESSED_KEYS.size();;
 
-            for (int key : PRESSED_KEYS)
+            for (int i = 0; i < size; ++i)
             {
+                int key = PRESSED_KEYS.getInt(i);
+
                 if (i > 0)
                 {
                     sb.append(" + ");

@@ -142,7 +142,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     public boolean hasFilter()
     {
         return super.hasFilter() || (this.isSearchOpen() &&
-                                     (this.searchKey.getKeys().size() > 0 ||
+                                     (this.searchKey.hasKeys() ||
                                       this.typeFilterDropdown.getSelectedEntry() != TypeFilter.ALL));
     }
 
@@ -152,7 +152,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         {
             @Nullable ConfigSearchInfo<ConfigInfo> info = Registry.CONFIG_WIDGET.getSearchInfo(config);
 
-            if (this.searchKey.getKeys().size() > 0)
+            if (this.searchKey.hasKeys())
             {
                 if (info == null || info.hasHotkey == false)
                 {

@@ -20,8 +20,10 @@ public class KeyBindSettingsConfigs
     protected final BooleanConfig cfgOrderSensitive;
     protected final BooleanConfig cfgExclusive;
     protected final BooleanConfig cfgFirstOnly;
+    protected final BooleanConfig cfgInvertHeld;
     protected final IntegerConfig cfgPriority;
     protected final BooleanConfig cfgShowToast;
+    protected final BooleanConfig cfgToggle;
     protected final ImmutableList<BaseConfigOption<?>> configList;
     protected final EventListener changeListener;
 
@@ -39,8 +41,10 @@ public class KeyBindSettingsConfigs
         this.cfgOrderSensitive = new BooleanConfig("", defaultSettings.isOrderSensitive(),  "malilib.label.keybind_settings.order_sensitive",           "malilib.config.comment.keybind_settings.order_sensitive");
         this.cfgExclusive      = new BooleanConfig("", defaultSettings.isExclusive(),       "malilib.label.keybind_settings.exclusive",                 "malilib.config.comment.keybind_settings.exclusive");
         this.cfgFirstOnly      = new BooleanConfig("", defaultSettings.getFirstOnly(),      "malilib.label.keybind_settings.first_only",                "malilib.config.comment.keybind_settings.first_only");
+        this.cfgInvertHeld     = new BooleanConfig("", defaultSettings.getInvertHeld(),     "malilib.label.keybind_settings.invert_held",               "malilib.config.comment.keybind_settings.invert_held");
         this.cfgPriority       = new IntegerConfig("", defaultSettings.getPriority(), 0, 100, false, "malilib.config.comment.keybind_settings.priority");
         this.cfgShowToast      = new BooleanConfig("", defaultSettings.getShowToast(),      "malilib.label.keybind_settings.show_toast",                "malilib.config.comment.keybind_settings.show_toast");
+        this.cfgToggle         = new BooleanConfig("", defaultSettings.isToggle(),          "malilib.label.keybind_settings.toggle",                    "malilib.config.comment.keybind_settings.toggle");
         this.cfgPriority.setPrettyNameTranslationKey("malilib.label.keybind_settings.priority");
 
         KeyBindSettings settings = keybind.getSettings();
@@ -51,10 +55,12 @@ public class KeyBindSettingsConfigs
         this.cfgContext.setValue(settings.getContext());
         this.cfgExclusive.setValue(settings.isExclusive());
         this.cfgFirstOnly.setValue(settings.getFirstOnly());
-        this.cfgOrderSensitive.setValue(settings.isOrderSensitive());
+        this.cfgInvertHeld.setValue(settings.getInvertHeld());
         this.cfgMessageType.setValue(settings.getMessageType());
+        this.cfgOrderSensitive.setValue(settings.isOrderSensitive());
         this.cfgPriority.setValue(settings.getPriority());
         this.cfgShowToast.setValue(settings.getShowToast());
+        this.cfgToggle.setValue(settings.isToggle());
 
         this.cfgActivateOn.setValueChangeCallback((nv, ov) -> this.onValueChanged());
         this.cfgContext.setValueChangeCallback((nv, ov) -> this.onValueChanged());
@@ -62,21 +68,25 @@ public class KeyBindSettingsConfigs
         ValueChangeCallback<Boolean> cbb = (nv, ov) -> this.onValueChanged();
         this.cfgAllowEmpty.setValueChangeCallback(cbb);
         this.cfgAllowExtra.setValueChangeCallback(cbb);
-        this.cfgOrderSensitive.setValueChangeCallback(cbb);
         this.cfgExclusive.setValueChangeCallback(cbb);
         this.cfgFirstOnly.setValueChangeCallback(cbb);
+        this.cfgInvertHeld.setValueChangeCallback(cbb);
+        this.cfgOrderSensitive.setValueChangeCallback(cbb);
         this.cfgShowToast.setValueChangeCallback(cbb);
+        this.cfgToggle.setValueChangeCallback(cbb);
         this.cfgCancel.setValueChangeCallback((nv, ov) -> this.onValueChanged());
 
         this.configList = ImmutableList.of(this.cfgActivateOn,
                                            this.cfgContext,
                                            this.cfgCancel,
-                                           this.cfgAllowEmpty,
                                            this.cfgAllowExtra,
                                            this.cfgOrderSensitive,
                                            this.cfgExclusive,
                                            this.cfgFirstOnly,
                                            this.cfgPriority,
+                                           this.cfgAllowEmpty,
+                                           this.cfgInvertHeld,
+                                           this.cfgToggle,
                                            this.cfgMessageType,
                                            this.cfgShowToast);
     }
@@ -101,9 +111,11 @@ public class KeyBindSettingsConfigs
                 .cancel(this.cfgCancel.getValue())
                 .exclusive(this.cfgExclusive.getBooleanValue())
                 .firstOnly(this.cfgFirstOnly.getBooleanValue())
+                .invertHeld(this.cfgInvertHeld.getBooleanValue())
                 .priority(this.cfgPriority.getIntegerValue())
                 .allowEmpty(this.cfgAllowEmpty.getBooleanValue())
                 .showToast(this.cfgShowToast.getBooleanValue())
+                .toggle(this.cfgToggle.getBooleanValue())
                 .messageOutput(this.cfgMessageType.getValue())
                 .build();
     }

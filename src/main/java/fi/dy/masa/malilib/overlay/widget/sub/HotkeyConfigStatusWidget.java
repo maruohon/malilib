@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.overlay.widget.sub;
 
-import java.util.List;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -9,8 +9,8 @@ import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
 public class HotkeyConfigStatusWidget extends BaseConfigStatusIndicatorWidget<HotkeyConfig>
 {
-    protected TextStyle style = TextStyle.builder().withColor(0xFFFFA000).build();
-    protected List<Integer> lastValue;
+    protected final TextStyle style = TextStyle.builder().withColor(0xFFFFA000).build();
+    protected final IntArrayList lastValue = new IntArrayList();
 
     public HotkeyConfigStatusWidget(HotkeyConfig config, ConfigOnTab configOnTab)
     {
@@ -25,7 +25,7 @@ public class HotkeyConfigStatusWidget extends BaseConfigStatusIndicatorWidget<Ho
     @Override
     public void updateState(boolean force)
     {
-        if (force || this.lastValue.equals(this.config.getValue().getKeys()) == false)
+        if (force || this.config.getValue().matches(this.lastValue) == false)
         {
             this.updateValue();
         }
@@ -33,7 +33,8 @@ public class HotkeyConfigStatusWidget extends BaseConfigStatusIndicatorWidget<Ho
 
     protected void updateValue()
     {
-        this.lastValue = this.config.getValue().getKeys();
+        this.lastValue.clear();
+        this.config.getValue().getKeysToList(this.lastValue);
         this.valueDisplayText = StyledTextLine.of(this.config.getValue().getKeysDisplayString(), this.style);
         this.valueRenderWidth = this.valueDisplayText.renderWidth;
     }

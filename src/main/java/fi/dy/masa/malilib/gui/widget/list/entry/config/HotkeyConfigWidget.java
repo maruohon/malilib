@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
 {
     protected final HotkeyConfig config;
-    protected final ImmutableList<Integer> initialValue;
+    protected final IntArrayList initialValue = new IntArrayList();
     protected final KeyBindConfigButton keybindButton;
     protected final KeybindSettingsWidget settingsWidget;
 
@@ -21,7 +21,7 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
         super(config, constructData, ctx);
 
         this.config = config;
-        this.initialValue = this.config.getKeyBind().getKeys();
+        this.config.getKeyBind().getKeysToList(this.initialValue);
 
         this.keybindButton = new KeyBindConfigButton(120, 20, this.config.getKeyBind(), ctx.getKeybindEditingScreen());
         this.keybindButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
@@ -65,6 +65,6 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
     @Override
     public boolean wasModified()
     {
-        return this.config.getKeyBind().getKeys().equals(this.initialValue) == false;
+        return this.config.getKeyBind().matches(this.initialValue) == false;
     }
 }

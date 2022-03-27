@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget.button;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
@@ -20,7 +21,7 @@ public class KeyBindConfigButton extends GenericButton
     @Nullable protected final KeybindEditingScreen host;
     @Nullable protected EventListener valueChangeListener;
     protected final KeyBind keyBind;
-    protected final List<Integer> newKeys = new ArrayList<>();
+    protected final IntArrayList newKeys = new IntArrayList();
     protected final List<String> hoverStrings = new ArrayList<>();
     protected int overlapInfoSize;
     protected boolean firstKey;
@@ -154,7 +155,7 @@ public class KeyBindConfigButton extends GenericButton
 
     protected void addKey(int keyCode)
     {
-        if (MaLiLibConfigs.Hotkeys.IGNORED_KEYS.getKeyBind().getKeys().contains(keyCode))
+        if (MaLiLibConfigs.Hotkeys.IGNORED_KEYS.getKeyBind().containsKey(keyCode))
         {
             String str = Keys.getStorageStringForKeyCode(keyCode, Keys::charAsCharacter);
             MessageDispatcher.warning("malilib.message.error.keybind.attempt_to_bind_ignored_key", str);
@@ -184,7 +185,7 @@ public class KeyBindConfigButton extends GenericButton
         this.selected = true;
         this.firstKey = true;
         this.newKeys.clear();
-        this.newKeys.addAll(this.keyBind.getKeys());
+        this.keyBind.getKeysToList(this.newKeys);
         this.setHoverInfoRequiresShift(false);
         this.updateButtonState();
     }
@@ -225,10 +226,21 @@ public class KeyBindConfigButton extends GenericButton
 
     protected String getCurrentDisplayString()
     {
-        List<Integer> keys = this.isSelected() ? this.newKeys : this.keyBind.getKeys();
-        String valueStr = Keys.writeKeysToString(keys, " + ", Keys::charAsCharacter);
+        String valueStr;
+        boolean isEmpty;
 
-        if (keys.size() == 0 || org.apache.commons.lang3.StringUtils.isBlank(valueStr))
+        if (this.isSelected())
+        {
+            valueStr = Keys.writeKeysToString(this.newKeys, " + ", Keys::charAsCharacter);
+            isEmpty = this.newKeys.isEmpty();
+        }
+        else
+        {
+            valueStr = this.keyBind.getKeysDisplayString();
+            isEmpty = this.keyBind.hasKeys() == false;
+        }
+
+        if (isEmpty || org.apache.commons.lang3.StringUtils.isBlank(valueStr))
         {
             valueStr = StringUtils.translate("malilib.button.misc.none.caps");
         }
@@ -304,11 +316,11 @@ public class KeyBindConfigButton extends GenericButton
         this.overlapInfoSize = overlapInfo.size();
 
         boolean modified = this.keyBind.isModified();
-        boolean nonEmpty = this.keyBind.getKeys().isEmpty() == false;
+        boolean nonEmpty = this.keyBind.hasKeys();
 
         //if (modified)
         {
-            String defaultStr = Keys.writeKeysToString(this.keyBind.getDefaultKeys(), " + ", Keys::charAsCharacter);
+            String defaultStr = this.keyBind.getDefaultKeysDisplayString();
 
             if (org.apache.commons.lang3.StringUtils.isBlank(defaultStr))
             {

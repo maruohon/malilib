@@ -1,9 +1,8 @@
 package fi.dy.masa.malilib.overlay.widget.sub;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
@@ -18,7 +17,7 @@ import fi.dy.masa.malilib.util.data.ConfigOnTab;
 public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
 {
     protected final Supplier<KeyBind> keyBindSupplier;
-    protected List<Integer> lastKeys = Collections.emptyList();
+    protected final IntArrayList lastKeys = new IntArrayList();
     @Nullable protected StyledTextLine keysText;
     protected boolean showKeys;
     protected boolean showBoolean = true;
@@ -66,7 +65,8 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
     @Override
     public void openEditScreen()
     {
-        HotkeyedBooleanConfigStatusIndicatorEditScreen screen = new HotkeyedBooleanConfigStatusIndicatorEditScreen(this, GuiUtils.getCurrentScreen());
+        HotkeyedBooleanConfigStatusIndicatorEditScreen screen
+                = new HotkeyedBooleanConfigStatusIndicatorEditScreen(this, GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }
 
@@ -74,7 +74,7 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
     protected boolean isModified()
     {
         return this.lastValue != this.config.getBooleanValue() ||
-               this.keyBindSupplier.get().getKeys().equals(this.lastKeys) == false;
+               this.keyBindSupplier.get().matches(this.lastKeys) == false;
     }
 
     @Override
@@ -82,13 +82,15 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
     {
         super.updateValue();
 
-        this.lastKeys = this.keyBindSupplier.get().getKeys();
+        this.lastKeys.clear();
+        this.keyBindSupplier.get().getKeysToList(this.lastKeys);
         this.keysText = null;
 
         if (this.showKeys)
         {
             String keysString = this.keyBindSupplier.get().getKeysDisplayString();
-            this.keysText = StyledTextLine.translate("malilib.label.config_status_indicator.hotkeys_string", keysString);
+            String key = "malilib.label.config_status_indicator.hotkeys_string";
+            this.keysText = StyledTextLine.translate(key, keysString);
             this.valueRenderWidth += this.keysText.renderWidth + 4;
         }
     }

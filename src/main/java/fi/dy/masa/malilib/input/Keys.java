@@ -1,13 +1,11 @@
 package fi.dy.masa.malilib.input;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -118,9 +116,9 @@ public class Keys
         return keyCode >= 0 && keyCode < Mouse.getButtonCount() && Mouse.isButtonDown(keyCode);
     }
 
-    public static ImmutableList<Integer> readKeysFromStorageString(String str)
+    public static IntArrayList readKeysFromStorageString(String str)
     {
-        ArrayList<Integer> keyCodes = new ArrayList<>();
+        IntArrayList keyCodes = new IntArrayList();
         String[] keys = str.split(",");
 
         for (String keyName : keys)
@@ -138,21 +136,22 @@ public class Keys
             }
         }
 
-        return ImmutableList.copyOf(keyCodes);
+        return keyCodes;
     }
 
-    public static String writeKeysToString(List<Integer> keyCodes, String separator, Function<Integer, String> charEncoder)
+    public static String writeKeysToString(IntArrayList keyCodes, String separator, Function<Integer, String> charEncoder)
     {
         StringBuilder sb = new StringBuilder(32);
+        final int size = keyCodes.size();
 
-        for (int i = 0; i < keyCodes.size(); ++i)
+        for (int i = 0; i < size; ++i)
         {
             if (i > 0)
             {
                 sb.append(separator);
             }
 
-            int keyCode = keyCodes.get(i).intValue();
+            int keyCode = keyCodes.getInt(i);
             String name = getStorageStringForKeyCode(keyCode, charEncoder);
 
             if (name != null)

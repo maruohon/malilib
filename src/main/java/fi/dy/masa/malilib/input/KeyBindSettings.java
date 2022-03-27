@@ -26,35 +26,44 @@ public class KeyBindSettings
     protected final boolean allowExtraKeys;
     protected final boolean exclusive;
     protected final boolean firstOnly;
+    protected final boolean invertHeld;
     protected final boolean orderSensitive;
     protected final boolean showToast;
+    protected final boolean toggle;
     protected final int priority;
 
     public KeyBindSettings(Context context, KeyAction activateOn,
                            boolean allowExtraKeys, boolean orderSensitive,
                            CancelCondition cancel)
     {
-        this(context, activateOn, allowExtraKeys, orderSensitive, cancel,
-             false, false, 50, false, true, MessageOutput.DEFAULT_TOGGLE);
+        this(context, activateOn,
+             allowExtraKeys, orderSensitive,
+             cancel,
+             false, false, 50,
+             false, false, false,
+             true, MessageOutput.DEFAULT_TOGGLE);
     }
 
     protected KeyBindSettings(Context context, KeyAction activateOn,
                               boolean allowExtraKeys, boolean orderSensitive,
                               CancelCondition cancel,
                               boolean exclusive, boolean firstOnly, int priority,
-                              boolean allowEmpty, boolean showToast, MessageOutput messageOutput)
+                              boolean allowEmpty, boolean toggle, boolean invertHeld,
+                              boolean showToast, MessageOutput messageOutput)
     {
-        this.context = context;
         this.activateOn = activateOn;
+        this.context = context;
+        this.cancel = cancel;
+        this.messageOutput = messageOutput;
+        this.allowEmpty = allowEmpty;
         this.allowExtraKeys = allowExtraKeys;
         this.orderSensitive = orderSensitive;
         this.exclusive = exclusive;
-        this.cancel = cancel;
-        this.allowEmpty = allowEmpty;
-        this.priority = priority;
         this.firstOnly = firstOnly;
+        this.invertHeld = invertHeld;
+        this.priority = priority;
         this.showToast = showToast;
-        this.messageOutput = messageOutput;
+        this.toggle = toggle;
     }
 
     public Context getContext()
@@ -97,6 +106,11 @@ public class KeyBindSettings
         return this.firstOnly;
     }
 
+    public boolean getInvertHeld()
+    {
+        return this.invertHeld;
+    }
+
     public int getPriority()
     {
         return this.priority;
@@ -107,6 +121,11 @@ public class KeyBindSettings
         return this.showToast;
     }
 
+    public boolean isToggle()
+    {
+        return this.toggle;
+    }
+
     public MessageOutput getMessageType()
     {
         return this.messageOutput;
@@ -114,9 +133,11 @@ public class KeyBindSettings
 
     public Builder asBuilder()
     {
-        return new Builder(this.context, this.activateOn, this.allowExtraKeys,
-                           this.orderSensitive, this.exclusive, this.cancel,
-                           this.allowEmpty, this.priority, this.firstOnly,
+        return new Builder(this.context, this.activateOn,
+                           this.allowExtraKeys, this.orderSensitive,
+                           this.cancel,
+                           this.exclusive, this.firstOnly, this.priority,
+                           this.allowEmpty, this.toggle, this.invertHeld,
                            this.showToast, this.messageOutput);
     }
 
@@ -131,10 +152,12 @@ public class KeyBindSettings
         obj.addProperty("context", this.context.getName());
         obj.addProperty("exclusive", this.exclusive);
         obj.addProperty("first_only", this.firstOnly);
+        obj.addProperty("invert", this.invertHeld);
+        obj.addProperty("message_output", this.messageOutput.getName());
         obj.addProperty("order_sensitive", this.orderSensitive);
         obj.addProperty("priority", this.priority);
         obj.addProperty("show_toast", this.showToast);
-        obj.addProperty("message_output", this.messageOutput.getName());
+        obj.addProperty("toggle", this.toggle);
 
         return obj;
     }
@@ -185,13 +208,15 @@ public class KeyBindSettings
                 .activateOn(activateOn)
                 .cancel(cancel)
                 .messageOutput(messageOutput)
+                .allowEmpty(JsonUtils.getBoolean(obj, "allow_empty"))
                 .allowExtraKeys(JsonUtils.getBoolean(obj, "allow_extra_keys"))
-                .orderSensitive(JsonUtils.getBooleanOrDefault(obj, "order_sensitive", true))
                 .exclusive(JsonUtils.getBoolean(obj, "exclusive"))
                 .firstOnly(JsonUtils.getBoolean(obj, "first_only"))
+                .invertHeld(JsonUtils.getBoolean(obj, "invert"))
+                .orderSensitive(JsonUtils.getBooleanOrDefault(obj, "order_sensitive", true))
                 .priority(JsonUtils.getIntegerOrDefault(obj, "priority", 50))
-                .allowEmpty(JsonUtils.getBoolean(obj, "allow_empty"))
                 .showToast(JsonUtils.getBooleanOrDefault(obj, "show_toast", true))
+                .toggle(JsonUtils.getBoolean(obj, "toggle"))
                 .build();
     }
 
@@ -209,10 +234,12 @@ public class KeyBindSettings
                this.cancel == other.cancel &&
                this.exclusive == other.exclusive &&
                this.firstOnly == other.firstOnly &&
+               this.invertHeld == other.invertHeld &&
+               this.messageOutput == other.messageOutput &&
+               this.orderSensitive == other.orderSensitive &&
                this.priority == other.priority &&
                this.showToast == other.showToast &&
-               this.messageOutput == other.messageOutput &&
-               this.orderSensitive == other.orderSensitive;
+               this.toggle == other.toggle;
     }
 
     public static class Builder
@@ -225,8 +252,10 @@ public class KeyBindSettings
         protected boolean allowExtraKeys;
         protected boolean exclusive;
         protected boolean firstOnly;
+        protected boolean invertHeld;
         protected boolean orderSensitive = true;
         protected boolean showToast;
+        protected boolean toggle;
         protected int priority = 50;
 
         public Builder()
@@ -234,21 +263,26 @@ public class KeyBindSettings
         }
 
         public Builder(Context context, KeyAction activateOn,
-                       boolean allowExtraKeys, boolean orderSensitive, boolean exclusive,
-                       CancelCondition cancel, boolean allowEmpty,
-                       int priority, boolean firstOnly, boolean showToast, MessageOutput messageOutput)
+                       boolean allowExtraKeys, boolean orderSensitive,
+                       CancelCondition cancel,
+                       boolean exclusive, boolean firstOnly, int priority,
+                       boolean allowEmpty, boolean toggle, boolean invertHeld,
+                       boolean showToast, MessageOutput messageOutput)
         {
             this.context = context;
             this.activateOn = activateOn;
-            this.allowExtraKeys = allowExtraKeys;
-            this.orderSensitive = orderSensitive;
-            this.exclusive = exclusive;
             this.cancel = cancel;
-            this.allowEmpty = allowEmpty;
-            this.priority = priority;
-            this.firstOnly = firstOnly;
-            this.showToast = showToast;
             this.messageOutput = messageOutput;
+
+            this.allowEmpty = allowEmpty;
+            this.allowExtraKeys = allowExtraKeys;
+            this.exclusive = exclusive;
+            this.firstOnly = firstOnly;
+            this.invertHeld = invertHeld;
+            this.orderSensitive = orderSensitive;
+            this.priority = priority;
+            this.showToast = showToast;
+            this.toggle = toggle;
         }
 
         public Builder activateOn(KeyAction activateOn)
@@ -299,9 +333,21 @@ public class KeyBindSettings
             return this;
         }
 
+        public Builder invertHeld(boolean invert)
+        {
+            this.invertHeld = invert;
+            return this;
+        }
+
         public Builder orderSensitive(boolean orderSensitive)
         {
             this.orderSensitive = orderSensitive;
+            return this;
+        }
+
+        public Builder priority(int priority)
+        {
+            this.priority = priority;
             return this;
         }
 
@@ -311,9 +357,9 @@ public class KeyBindSettings
             return this;
         }
 
-        public Builder priority(int priority)
+        public Builder toggle(boolean toggle)
         {
-            this.priority = priority;
+            this.toggle = toggle;
             return this;
         }
 
@@ -365,6 +411,18 @@ public class KeyBindSettings
             return this;
         }
 
+        public Builder invert()
+        {
+            this.invertHeld = true;
+            return this;
+        }
+
+        public Builder toggle()
+        {
+            this.toggle = true;
+            return this;
+        }
+
         public Builder noCancel()
         {
             this.cancel = CancelCondition.NEVER;
@@ -383,7 +441,8 @@ public class KeyBindSettings
             return new KeyBindSettings(this.context, this.activateOn,
                                        this.allowExtraKeys, this.orderSensitive,
                                        this.cancel,
-                                       this.exclusive, this.firstOnly, this.priority, this.allowEmpty,
+                                       this.exclusive, this.firstOnly, this.priority,
+                                       this.allowEmpty, this.toggle, this.invertHeld,
                                        this.showToast, this.messageOutput);
         }
     }
