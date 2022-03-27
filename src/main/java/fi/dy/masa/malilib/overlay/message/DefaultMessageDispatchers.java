@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.overlay.message;
 
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
@@ -77,6 +78,16 @@ public class DefaultMessageDispatchers
             TextComponentString msg = new TextComponentString(text.lines.get(0).displayText);
             GameUtils.getClient().ingameGUI.addChatMessage(ChatType.CHAT, msg);
         }
+    }
+
+    public static void sendStringToDefaultToggleMessageOutput(String translatedMessage, MessageDispatcher messageDispatcher)
+    {
+        MaLiLibConfigs.Generic.DEFAULT_TOGGLE_MESSAGE_OUTPUT.getValue().send(translatedMessage, messageDispatcher);
+    }
+
+    public static void sendTextToDefaultToggleMessageOutput(StyledText text, MessageDispatcher messageDispatcher)
+    {
+        MaLiLibConfigs.Generic.DEFAULT_TOGGLE_MESSAGE_OUTPUT.getValue().send(text, messageDispatcher);
     }
 
     public static void dummyStringMessageDispatcher(String translatedMessage, MessageDispatcher messageDispatcher)

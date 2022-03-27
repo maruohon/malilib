@@ -13,12 +13,13 @@ public class MessageOutput extends BaseOptionListConfigValue
     private static ImmutableList<MessageOutput> VALUES = ImmutableList.of();
     private static final Map<String, MessageOutput> TYPES_BY_NAME = new HashMap<>();
 
-    public static final MessageOutput MESSAGE_OVERLAY = register("message",        DefaultMessageDispatchers::sendOverlayMessageString,       DefaultMessageDispatchers::sendOverlayMessageText);
-    public static final MessageOutput TOAST           = register("toast",          DefaultMessageDispatchers::sendToastMessageString,         DefaultMessageDispatchers::sendToastMessageText);
-    public static final MessageOutput CUSTOM_HOTBAR   = register("custom_hotbar",  DefaultMessageDispatchers::sendCustomHotbarMessageString,  DefaultMessageDispatchers::sendCustomHotbarMessageText);
-    public static final MessageOutput VANILLA_HOTBAR  = register("vanilla_hotbar", DefaultMessageDispatchers::sendVanillaHotbarMessageString, DefaultMessageDispatchers::sendVanillaHotbarMessageText);
-    public static final MessageOutput CHAT            = register("chat",           DefaultMessageDispatchers::sendVanillaChatMessageString,   DefaultMessageDispatchers::sendVanillaChatMessageText);
-    public static final MessageOutput NONE            = register("none",           DefaultMessageDispatchers::dummyStringMessageDispatcher,   DefaultMessageDispatchers::dummyStyledTextMessageDispatcher);
+    public static final MessageOutput MESSAGE_OVERLAY = register("message",        DefaultMessageDispatchers::sendOverlayMessageString,                 DefaultMessageDispatchers::sendOverlayMessageText);
+    public static final MessageOutput CUSTOM_HOTBAR   = register("custom_hotbar",  DefaultMessageDispatchers::sendCustomHotbarMessageString,            DefaultMessageDispatchers::sendCustomHotbarMessageText);
+    public static final MessageOutput VANILLA_HOTBAR  = register("vanilla_hotbar", DefaultMessageDispatchers::sendVanillaHotbarMessageString,           DefaultMessageDispatchers::sendVanillaHotbarMessageText);
+    public static final MessageOutput TOAST           = register("toast",          DefaultMessageDispatchers::sendToastMessageString,                   DefaultMessageDispatchers::sendToastMessageText);
+    public static final MessageOutput CHAT            = register("chat",           DefaultMessageDispatchers::sendVanillaChatMessageString,             DefaultMessageDispatchers::sendVanillaChatMessageText);
+    public static final MessageOutput DEFAULT_TOGGLE  = register("default_toggle", DefaultMessageDispatchers::sendStringToDefaultToggleMessageOutput,   DefaultMessageDispatchers::sendTextToDefaultToggleMessageOutput);
+    public static final MessageOutput NONE            = register("none",           DefaultMessageDispatchers::dummyStringMessageDispatcher,             DefaultMessageDispatchers::dummyStyledTextMessageDispatcher);
 
     protected final BiConsumer<String, MessageDispatcher> stringMessageDispatcher;
     protected final BiConsumer<StyledText, MessageDispatcher> styledTextMessageDispatcher;

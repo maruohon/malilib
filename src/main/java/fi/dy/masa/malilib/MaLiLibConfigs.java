@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib;
 
 import java.util.Collections;
+import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.category.BaseConfigOptionCategory;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
@@ -15,6 +16,7 @@ import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.widget.list.search.ConfigsSearchBarWidget.Scope;
 import fi.dy.masa.malilib.input.CancelCondition;
 import fi.dy.masa.malilib.input.KeyBindSettings;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.util.ListUtils;
 
 public class MaLiLibConfigs
@@ -23,8 +25,9 @@ public class MaLiLibConfigs
 
     public static class Generic
     {
-        public static final OptionListConfig<Scope> CONFIG_SEARCH_DEFAULT_SCOPE         = new OptionListConfig<>("configSearchDefaultScope", Scope.ALL_CATEGORIES, Scope.VALUES);
-        public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE, KeybindDisplayMode.VALUES);
+        public static final OptionListConfig<Scope> CONFIG_SEARCH_DEFAULT_SCOPE             = new OptionListConfig<>("configSearchDefaultScope", Scope.ALL_CATEGORIES, Scope.VALUES);
+        public static final OptionListConfig<MessageOutput> DEFAULT_TOGGLE_MESSAGE_OUTPUT   = new OptionListConfig<>("defaultToggleMessageOutput", MessageOutput.CUSTOM_HOTBAR, getUsableDefaultToggleMessageOutputs());
+        public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY            = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE, KeybindDisplayMode.VALUES);
 
         public static final IntegerConfig ACTION_BAR_MESSAGE_LIMIT              = new IntegerConfig("actionBarMessageLimit", 3, 1, 16);
         public static final BooleanConfig ACTION_PROMPT_FUZZY_SEARCH            = new BooleanConfig("actionPromptFuzzySearch", false);
@@ -63,6 +66,7 @@ public class MaLiLibConfigs
                 CONFIG_SEARCH_DEFAULT_SCOPE,
                 CUSTOM_SCREEN_SCALE,
                 DATA_DUMP_CSV_DELIMITER,
+                DEFAULT_TOGGLE_MESSAGE_OUTPUT,
                 DROP_DOWN_SEARCH_TIP,
                 HIDE_ALL_COORDINATES,
                 HOVER_TEXT_MAX_WIDTH,
@@ -155,4 +159,10 @@ public class MaLiLibConfigs
             BaseConfigOptionCategory.normal("Debug",    Debug.OPTIONS),
             BaseConfigOptionCategory.normal("Internal", Internal.OPTIONS)
     );
+
+    private static ImmutableList<MessageOutput> getUsableDefaultToggleMessageOutputs()
+    {
+        return ImmutableList.copyOf(MessageOutput.getValues().stream()
+                .filter((v) -> v != MessageOutput.DEFAULT_TOGGLE).collect(Collectors.toList()));
+    }
 }

@@ -35,7 +35,7 @@ public class KeyBindSettings
                            CancelCondition cancel)
     {
         this(context, activateOn, allowExtraKeys, orderSensitive, cancel,
-             false, false, 50, false, true, MessageOutput.CUSTOM_HOTBAR);
+             false, false, 50, false, true, MessageOutput.DEFAULT_TOGGLE);
     }
 
     protected KeyBindSettings(Context context, KeyAction activateOn,
@@ -143,7 +143,7 @@ public class KeyBindSettings
     {
         Context context = Context.INGAME;
         KeyAction activateOn = KeyAction.PRESS;
-        MessageOutput messageOutput = MessageOutput.CUSTOM_HOTBAR;
+        MessageOutput messageOutput = MessageOutput.DEFAULT_TOGGLE;
         String contextStr = JsonUtils.getString(obj, "context");
         String activateStr = JsonUtils.getString(obj, "activate_on");
         String messageTypeStr = JsonUtils.getString(obj, "message_output");
@@ -220,7 +220,7 @@ public class KeyBindSettings
         protected Context context = Context.INGAME;
         protected KeyAction activateOn = KeyAction.PRESS;
         protected CancelCondition cancel = CancelCondition.ON_SUCCESS;
-        protected MessageOutput messageOutput = MessageOutput.CUSTOM_HOTBAR;
+        protected MessageOutput messageOutput = MessageOutput.DEFAULT_TOGGLE;
         protected boolean allowEmpty;
         protected boolean allowExtraKeys;
         protected boolean exclusive;
