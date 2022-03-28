@@ -1,9 +1,12 @@
 package fi.dy.masa.malilib.config.group;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.CommonDescription;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public abstract class BaseConfigGroup extends CommonDescription implements ConfigInfo
@@ -56,6 +59,13 @@ public abstract class BaseConfigGroup extends CommonDescription implements Confi
      */
     public ImmutableList<ConfigInfo> getConfigs()
     {
+        if (MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME.getBooleanValue())
+        {
+            ArrayList<ConfigInfo> list = new ArrayList<>(this.configs);
+            ConfigUtils.sortConfigsByDisplayName(list);
+            return ImmutableList.copyOf(list);
+        }
+
         return this.configs;
     }
 

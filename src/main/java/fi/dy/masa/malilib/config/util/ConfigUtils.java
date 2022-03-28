@@ -3,16 +3,19 @@ package fi.dy.masa.malilib.config.util;
 import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
+import fi.dy.masa.malilib.config.group.ExpandableConfigGroup;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.input.ActionResult;
@@ -21,6 +24,7 @@ import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.overlay.OverlayRendererContainer;
 import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -51,7 +55,7 @@ public class ConfigUtils
         return baseConfigDir;
     }
 
-    public static void sortConfigsByDisplayName(ArrayList<ConfigInfo> configs)
+    public static void sortConfigsByDisplayName(List<ConfigInfo> configs)
     {
         configs.sort(Comparator.comparing((c) -> TextFormatting.getTextWithoutFormattingCodes(c.getDisplayName())));
     }
@@ -59,6 +63,33 @@ public class ConfigUtils
     public static List<? extends ConfigInfo> getExtendedList(List<? extends ConfigInfo> baseList)
     {
         return Registry.CONFIG_TAB_EXTENSION.getExtendedList(baseList, MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS.getBooleanValue());
+    }
+
+    public static ExpandableConfigGroup extractOptionsToGroup(ArrayList<ConfigInfo> originalList,
+                                                              ModInfo mod,
+                                                              String groupName,
+                                                              ConfigInfo... toExtract)
+    {
+        List<ConfigInfo> extractedList = Arrays.asList(toExtract);
+
+        originalList.removeAll(extractedList);
+        ConfigUtils.sortConfigsByDisplayName(extractedList);
+
+        return new ExpandableConfigGroup(mod, groupName, extractedList);
+    }
+
+    public static ExpandableConfigGroup extractOptionsToGroup(ArrayList<ConfigInfo> originalList,
+                                                              ModInfo mod,
+                                                              String groupName,
+                                                              Predicate<ConfigInfo> extractTest)
+    {
+        ArrayList<ConfigInfo> extractedList = new ArrayList<>();
+
+        ListUtils.extractEntriesToSecondList(originalList, extractedList, extractTest, true);
+        originalList.removeAll(extractedList);
+        ConfigUtils.sortConfigsByDisplayName(extractedList);
+
+        return new ExpandableConfigGroup(mod, groupName, extractedList);
     }
 
     /**

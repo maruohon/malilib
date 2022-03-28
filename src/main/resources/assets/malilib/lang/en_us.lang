@@ -561,6 +561,9 @@ malilib.message.info.toggled_config_on=Toggled %s §aON§r
 malilib.toast.keybind_display.keys=§eKeys:§r §6%s§r
 malilib.toast.keybind_display.action=§fAction: §b%s => %s
 
+malilib.config_group.comment.appearance=Various configs related to appearance/visuals and some config screen and other "appearance behavior"
+malilib.config_group.name.appearance=Appearance & Behavior
+
 malilib.config.comment.actionpromptfuzzysearch=When enabled, the Action Prompt search uses a more lenient "fuzzy search", where all the characters from the search text must appear in that order in the target string, but there can be an arbitrary number or characters between them
 malilib.config.comment.actionpromptremembersearch=When enabled, the search bar in the Action Prompt screen will remember the search text from the last time it was open
 malilib.config.comment.actionpromptsearchdisplayname=When enabled, the search bar in the Action Prompt screen will also search against the display names of the actions, and not just against the action's "internal name"
@@ -581,12 +584,13 @@ malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds
 malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds that are set to cancel further processing will be displayed on the keybind display toast. This prevents so called "modifier" keys from spamming the display.
 malilib.config.comment.keybinddisplayduration=The duration (in milliseconds) the keybind display toasts are shown for
 malilib.config.comment.messagefadeouttime=The fade-out time for the main message renderer (by default pops up on the center of the screen) messages when they expire. Use 0 for no fading.
-malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of a cycle button for OptionList type configs
+malilib.config.comment.optionlistconfigusedropdown=Use a DropDown widget instead of a cycle button for OptionList type configs
 malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each config tab/category
+malilib.config.comment.rememberfilebrowserscrollpositions=Remember the scroll position within each directory in the file browser widget, for as long as the screen is open (or rather for as long as the same widget exists).
 malilib.config.comment.selectedlistentrycolor=The border color for the currently selected list entries on any list screens
 malilib.config.comment.servermessages=Allows a server-side mod to send messages via the malilib Message/Toast Renderers
 malilib.config.comment.showinternalconfigname=Show the internal config name below the localized display name of configs on the config screens
-malilib.config.comment.sortconfigsbyname=Force sorting all the config options in each config category by the display name.\n\nSome mods may choose to use custom orders to group configs by their type, or otherwise use non-alphabetical order of configs in the category by default. Also localized config names will likely be entirely different from the original English config names as for the proper alphabetical sorting order. This option makes the config category return the list of options sorted alphabetically based on the config display name. (I have no idea how the sort algorithm handles non-latin/non-ascii characters or whatever the correct term is, though.)
+malilib.config.comment.sortconfigsbyname=Force sorting all the config options in each config category by the display name.\n\nSome mods may choose to use custom orders to group configs by their type, or otherwise use non-alphabetical order of configs in the category by default.\n\nAlso localized config names will likely be entirely different from the original English config names as for the proper alphabetical sorting order. This option makes the config category return the list of options sorted alphabetically based on the config display name. (I have no idea how the sort algorithm handles non-latin/non-ascii characters or whatever the correct term is, though.)
 malilib.config.comment.sortextensionmodoptions=Sorts the configs shown on the config screens by the config display name. This happens after any possible extension mod configs have been added to the end of the list of configs in the base mod. Note that this would also cause the base mod's configs to be sorted alphabetically, in case they weren't by default.
 
 malilib.config.comment.debugmessages=Enables some debug messages to the game console
@@ -634,8 +638,9 @@ malilib.config.name.keybinddisplaycallbackonly=KeyBind Display Callback Only
 malilib.config.name.keybinddisplaycancelonly=KeyBind Display Cancel Only
 malilib.config.name.keybinddisplayduration=KeyBind Display Duration
 malilib.config.name.messagefadeouttime=Message Fade-Out Time
-malilib.config.name.optionlistconfigdropdown=Option List Config DropDown
+malilib.config.name.optionlistconfigusedropdown=Option List Config DropDown
 malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scroll Positions
+malilib.config.name.rememberfilebrowserscrollpositions=Remember File Browser Scroll Positions
 malilib.config.name.selectedlistentrycolor=Selected List Entry Color
 malilib.config.name.servermessages=Server Messages (receive)
 malilib.config.name.showinternalconfigname=Show Internal Config Name

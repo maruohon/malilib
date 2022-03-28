@@ -49,7 +49,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
     {
         super.reAddSubWidgets();
 
-        boolean useDropDown = MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.getBooleanValue();
+        boolean useDropDown = MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_USE_DROPDOWN.getBooleanValue();
 
         this.addWidget(useDropDown ? this.dropDownWidget : this.optionListButton);
         this.addWidget(this.resetButton);

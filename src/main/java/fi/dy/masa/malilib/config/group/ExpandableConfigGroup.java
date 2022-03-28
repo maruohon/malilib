@@ -36,7 +36,7 @@ public class ExpandableConfigGroup extends BaseConfigGroup
     {
         if (this.isExpanded)
         {
-            for (ConfigInfo config : this.configs)
+            for (ConfigInfo config : this.getConfigs())
             {
                 list.add((C) new NestedConfig(config, nestingLevel));
                 config.addNestedOptionsToList(list, nestingLevel + 1);

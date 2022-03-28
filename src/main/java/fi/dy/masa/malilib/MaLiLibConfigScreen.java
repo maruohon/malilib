@@ -1,8 +1,11 @@
 package fi.dy.masa.malilib;
 
+import java.util.ArrayList;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.BaseTabbedScreen;
 import fi.dy.masa.malilib.gui.action.ActionListScreen;
@@ -23,7 +26,7 @@ public class MaLiLibConfigScreen
 {
     public static final ModInfo MOD_INFO = MaLiLibReference.MOD_INFO;
 
-    public static final BaseConfigTab GENERIC           = new BaseConfigTab(MOD_INFO, "generic", 120, MaLiLibConfigs.Generic.OPTIONS, MaLiLibConfigScreen::create);
+    public static final BaseConfigTab GENERIC           = new BaseConfigTab(MOD_INFO, "generic", 120, getGenericConfigs(),            MaLiLibConfigScreen::create);
     public static final BaseConfigTab HOTKEYS           = new BaseConfigTab(MOD_INFO, "hotkeys", 160, MaLiLibConfigs.Hotkeys.HOTKEYS, MaLiLibConfigScreen::create);
     public static final BaseConfigTab DEBUG             = new BaseConfigTab(MOD_INFO, "debug",   120, MaLiLibConfigs.Debug.OPTIONS,   MaLiLibConfigScreen::create);
     public static final BaseScreenTab ACTIONS           = new BaseScreenTab(MOD_INFO, "actions",                      (scr) -> scr instanceof ActionListScreen, ActionListScreen::createActionListScreen);
@@ -86,6 +89,27 @@ public class MaLiLibConfigScreen
     public static ImmutableList<ConfigTab> getConfigTabs()
     {
         return CONFIG_TABS;
+    }
+
+    private static ImmutableList<ConfigInfo> getGenericConfigs()
+    {
+        ArrayList<ConfigInfo> list = new ArrayList<>(MaLiLibConfigs.Generic.OPTIONS);
+
+        list.add(ConfigUtils.extractOptionsToGroup(list, MOD_INFO, "appearance",
+                                                   MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND,
+                                                   MaLiLibConfigs.Generic.CUSTOM_HOTBAR_MESSAGE_LIMIT,
+                                                   MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE,
+                                                   MaLiLibConfigs.Generic.HOVERED_LIST_ENTRY_COLOR,
+                                                   MaLiLibConfigs.Generic.HOVER_TEXT_MAX_WIDTH,
+                                                   MaLiLibConfigs.Generic.MESSAGE_FADE_OUT_TIME,
+                                                   MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_USE_DROPDOWN,
+                                                   MaLiLibConfigs.Generic.SELECTED_LIST_ENTRY_COLOR,
+                                                   MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME,
+                                                   MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME,
+                                                   MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS));
+        ConfigUtils.sortConfigsByDisplayName(list);
+
+        return ImmutableList.copyOf(list);
     }
 
     public static class ConfigStatusIndicatorWidgetListScreen extends InfoRendererWidgetListScreen<ConfigStatusIndicatorContainerWidget>
