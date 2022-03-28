@@ -561,7 +561,6 @@ malilib.message.info.toggled_config_on=Toggled %s §aON§r
 malilib.toast.keybind_display.keys=§eKeys:§r §6%s§r
 malilib.toast.keybind_display.action=§fAction: §b%s => %s
 
-malilib.config.comment.actionbarmessagelimit=This is the maximum number of concurrent messages that will be shown in the custom "action bar" message renderer, which normally shows the config toggle messages etc.
 malilib.config.comment.actionpromptfuzzysearch=When enabled, the Action Prompt search uses a more lenient "fuzzy search", where all the characters from the search text must appear in that order in the target string, but there can be an arbitrary number or characters between them
 malilib.config.comment.actionpromptremembersearch=When enabled, the search bar in the Action Prompt screen will remember the search text from the last time it was open
 malilib.config.comment.actionpromptsearchdisplayname=When enabled, the search bar in the Action Prompt screen will also search against the display names of the actions, and not just against the action's "internal name"
@@ -569,6 +568,7 @@ malilib.config.comment.configbackupantiduplicate=If enabled, then the rotated co
 malilib.config.comment.configbackupcount=This is the number of backup copies that should be kept of each of the mod config files, whenever the configs are modified and get saved to the config file again
 malilib.config.comment.configwidgetbackground=Enables a background color for the config option widgets. This is by default a slightly different color for odd and even rows.
 malilib.config.comment.configsearchdefaultscope=This is the default search scope in the config menu search bars
+malilib.config.comment.customhotbarmessagelimit=This is the maximum number of concurrent messages that will be shown in the custom "action bar" message renderer, which normally shows the config toggle messages etc.
 malilib.config.comment.customscreenscale=Custom screen scale value for any screens using the malilib screen classes.\n\nThe recommended scale is usually 2, although it depends on your screen resolution. The screens are designed for and using scale 2 in a 1280x720 window.\n\nUse 0 for the default vanilla GUI scale value.
 malilib.config.comment.datadumpcsvdelimiter=The column delimiter to use for CSV format data dumps
 malilib.config.comment.defaulttogglemessageoutput=The default message output for any boolean config option toggle messages, if the §fAdvanced KeyBind Settings§r of the associated toggle hotkey is set to §eDefault Toggle Output§r.\n\nBasically this allows you to change the toggle message output for §fall boolean toggle hotkeys§r at once, as long as they don't have a specific (= any other) message output type selected.
@@ -582,11 +582,11 @@ malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds t
 malilib.config.comment.keybinddisplayduration=The duration (in milliseconds) the keybind display toasts are shown for
 malilib.config.comment.messagefadeouttime=The fade-out time for the main message renderer (by default pops up on the center of the screen) messages when they expire. Use 0 for no fading.
 malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of a cycle button for OptionList type configs
-malilib.config.comment.pressedkeystoast=Show the currently pressed/held keys as a toast message
 malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each config tab/category
 malilib.config.comment.selectedlistentrycolor=The border color for the currently selected list entries on any list screens
 malilib.config.comment.servermessages=Allows a server-side mod to send messages via the malilib Message/Toast Renderers
 malilib.config.comment.showinternalconfigname=Show the internal config name below the localized display name of configs on the config screens
+malilib.config.comment.sortconfigsbyname=Force sorting all the config options in each config category by the display name.\n\nSome mods may choose to use custom orders to group configs by their type, or otherwise use non-alphabetical order of configs in the category by default. Also localized config names will likely be entirely different from the original English config names as for the proper alphabetical sorting order. This option makes the config category return the list of options sorted alphabetically based on the config display name. (I have no idea how the sort algorithm handles non-latin/non-ascii characters or whatever the correct term is, though.)
 malilib.config.comment.sortextensionmodoptions=Sorts the configs shown on the config screens by the config display name. This happens after any possible extension mod configs have been added to the end of the list of configs in the base mod. Note that this would also cause the base mod's configs to be sorted alphabetically, in case they weren't by default.
 
 malilib.config.comment.debugmessages=Enables some debug messages to the game console
@@ -598,6 +598,7 @@ malilib.config.comment.keybinddebug=When enabled, key presses and held keys are 
 malilib.config.comment.keybinddebugactionbar=If enabled, then the messages from §eKeyBind Debug§r are printed to the action bar
 malilib.config.comment.keybinddebugtoast=If enabled, then the messages from §eKeyBind Debug§r are shown as toast messages
 malilib.config.comment.messagekeytochat=If enabled, then any messages that are sent using a translation/localization key will print that translation key to the game chat. This allows copying the translation key from chat if you want to add a message redirect/override for that message.\n\nMessage Redirects can be configured via the config menu that opens by running the §eopenMessageRedirectsListScreen§r action either via the §3Action Prompt Screen§r (opened via the Hotkeys -> §eOpen Action Prompt Screen§r hotkey) or the §eActions§r config menu.
+malilib.config.comment.pressedkeystoast=Show the currently pressed/held keys as a toast message
 
 malilib.config.comment.keybind_settings.activate_on=Does the keybind activate on press or release of the key combination
 malilib.config.comment.keybind_settings.allow_empty_keybind=Is an empty keybind valid.\n\nIf this is enabled, and the keybind combination is unbound, then the keybind will always be considered to be active.\n\nNote that this is only meaningful for keys that are being checked to be held, i.e. so called "activation keys". Most hotkeys are "edge triggered" and have an associated callback that fires once when the key combination is completed. This will do nothing for such hotkeys.
@@ -613,7 +614,6 @@ malilib.config.comment.keybind_settings.priority=The priority of this keybind in
 malilib.config.comment.keybind_settings.show_toast=Should the toast message be shown for this hotkey.\n\nThis allows turning off the toast message for this hotkey entirely. This is useful for hotkeys that trigger often and would spam the toast renderer, such as the malilib scroll adjustment keys.\n\nThe toast message display in general must be enabled in malilib's configs, at Generic -> §eKeyBind Display§r. This is just a per-hotkey override to disable the message.
 malilib.config.comment.keybind_settings.toggle=Makes this hotkey behave as a toggle, that changes it's state ON/OFF on each trigger event.\n\nNote that this is only meaningful for keys that are being checked to be held, i.e. so called "activation keys". Most hotkeys are "edge triggered" and have an associated callback that fires once when the key combination is completed. This will do nothing for such hotkeys.
 
-malilib.config.name.actionbarmessagelimit=ActionBar Message Limit
 malilib.config.name.actionpromptfuzzysearch=Action Prompt Fuzzy Search
 malilib.config.name.actionpromptremembersearch=Action Prompt Remember Search
 malilib.config.name.actionpromptsearchdisplayname=Action Prompt Search Display Name
@@ -621,6 +621,7 @@ malilib.config.name.configbackupantiduplicate=Config Backup Anti-Duplication
 malilib.config.name.configbackupcount=Config Backup Count
 malilib.config.name.configwidgetbackground=Config Widget Background
 malilib.config.name.configsearchdefaultscope=Config Search Default Scope
+malilib.config.name.customhotbarmessagelimit=Custom Hotbar Message Limit
 malilib.config.name.customscreenscale=Custom Screen Scale
 malilib.config.name.datadumpcsvdelimiter=Data Dump CSV Delimiter
 malilib.config.name.defaulttogglemessageoutput=Default Toggle Message Output
@@ -634,11 +635,11 @@ malilib.config.name.keybinddisplaycancelonly=KeyBind Display Cancel Only
 malilib.config.name.keybinddisplayduration=KeyBind Display Duration
 malilib.config.name.messagefadeouttime=Message Fade-Out Time
 malilib.config.name.optionlistconfigdropdown=Option List Config DropDown
-malilib.config.name.pressedkeystoast=Pressed Keys Toast
 malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scroll Positions
 malilib.config.name.selectedlistentrycolor=Selected List Entry Color
 malilib.config.name.servermessages=Server Messages (receive)
 malilib.config.name.showinternalconfigname=Show Internal Config Name
+malilib.config.name.sortconfigsbyname=Sort Configs By Name
 malilib.config.name.sortextensionmodoptions=Sort Extension Mod Options
 
 malilib.config.name.debugmessages=Debug Messages
@@ -650,6 +651,7 @@ malilib.config.name.keybinddebug=KeyBind Debug
 malilib.config.name.keybinddebugactionbar=KeyBind Debug In Action Bar
 malilib.config.name.keybinddebugtoast=KeyBind Debug Toast
 malilib.config.name.messagekeytochat=Print Message Key To Chat
+malilib.config.name.pressedkeystoast=Pressed Keys Toast
 
 malilib.hotkey.comment.guidebugkey=The key that has to be held to render the GUI debug stuff, when the Debug -> §eGUI Debug§r option is enabled
 malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from the malilib hotkey system. This can be used to blacklist keys that cause issues or often get stuck for some reason.

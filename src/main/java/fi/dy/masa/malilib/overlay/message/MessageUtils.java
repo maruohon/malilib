@@ -61,7 +61,7 @@ public class MessageUtils
             widget.setMessageGap(2);
             widget.setAutomaticWidth(true);
             widget.setName(StringUtils.translate("malilib.label.misc.default_custom_hotbar_message_renderer"));
-            widget.setMaxMessages(MaLiLibConfigs.Generic.ACTION_BAR_MESSAGE_LIMIT.getIntegerValue());
+            widget.setMaxMessages(MaLiLibConfigs.Generic.CUSTOM_HOTBAR_MESSAGE_LIMIT.getIntegerValue());
             Registry.INFO_WIDGET_MANAGER.addWidget(widget);
         }
 

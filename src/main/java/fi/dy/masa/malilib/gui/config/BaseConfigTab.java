@@ -1,9 +1,11 @@
 package fi.dy.masa.malilib.gui.config;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -56,6 +58,13 @@ public class BaseConfigTab extends BaseScreenTab implements ConfigTab
     @Override
     public List<? extends ConfigInfo> getConfigs()
     {
+        if (MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME.getBooleanValue())
+        {
+            ArrayList<ConfigInfo> list = new ArrayList<>(this.configs);
+            ConfigUtils.sortConfigsByDisplayName(list);
+            return list;
+        }
+
         return ConfigUtils.getExtendedList(this.configs);
     }
 }

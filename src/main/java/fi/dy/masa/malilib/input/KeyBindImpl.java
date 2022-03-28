@@ -538,7 +538,7 @@ public class KeyBindImpl implements KeyBind
             PRESSED_KEYS.rem(keyCode);
         }
 
-        if (MaLiLibConfigs.Generic.PRESSED_KEYS_TOAST.getBooleanValue())
+        if (MaLiLibConfigs.Debug.PRESSED_KEYS_TOAST.getBooleanValue())
         {
             String heldKeys;
 
