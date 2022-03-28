@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
-import fi.dy.masa.malilib.input.callback.ToggleBooleanWithMessageKeyCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -67,8 +66,7 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     public void setSpecialToggleMessageFactory(@Nullable Function<BooleanConfig, String> messageFactory)
     {
         this.toggleAction = BooleanToggleAction.of(this, messageFactory, this.keyBind.getSettings()::getMessageType);
-        HotkeyCallback callback = new ToggleBooleanWithMessageKeyCallback(this, messageFactory);
-        this.keyBind.setCallback(callback);
+        this.keyBind.setCallback(HotkeyCallback.of(this.toggleAction));
     }
 
     public void setHotkeyCallback(HotkeyCallback callback)

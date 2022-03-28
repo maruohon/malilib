@@ -32,6 +32,9 @@ public class MaLiLibActions
         register("openPreviousActionWidgetScreen", ActionWidgetScreen::openPreviousActionWidgetScreen);
         register("runCommand", ActionUtils::runVanillaCommand);
         register("switchConfigProfile", ConfigUtils::switchConfigProfile);
+
+        ActionUtils.registerBooleanConfigActions(MaLiLibConfigs.Generic.OPTIONS);
+        ActionUtils.registerBooleanConfigActions(MaLiLibConfigs.Debug.OPTIONS);
     }
 
     private static NamedAction register(String name, EventListener action)

@@ -31,7 +31,12 @@ public class ToggleBooleanWithMessageKeyCallback implements HotkeyCallback
     {
         this.config.toggleBooleanValue();
         MessageOutput messageOutput = key.getSettings().getMessageType();
-        MessageUtils.printBooleanConfigToggleMessage(messageOutput, this.config, this.messageFactory);
+
+        if (messageOutput != MessageOutput.NONE)
+        {
+            MessageUtils.printBooleanConfigToggleMessage(messageOutput, this.config, this.messageFactory);
+        }
+
         return ActionResult.SUCCESS;
     }
 }

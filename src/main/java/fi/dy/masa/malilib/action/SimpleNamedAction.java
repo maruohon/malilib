@@ -36,6 +36,13 @@ public class SimpleNamedAction extends NamedAction
         return new SimpleNamedAction(name, translationKey, mod, action);
     }
 
+    public static SimpleNamedAction of(ModInfo mod, String name, Action action, String commentTranslationKey)
+    {
+        SimpleNamedAction namedAction = of(mod, name, action);
+        namedAction.setCommentTranslationKey(commentTranslationKey);
+        return namedAction;
+    }
+
     public static SimpleNamedAction of(ModInfo mod, String name, EventListener listener)
     {
         String translationKey = ActionUtils.createTranslationKeyFor(mod, name);

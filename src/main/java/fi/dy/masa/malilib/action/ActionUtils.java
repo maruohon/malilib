@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.action;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -9,8 +10,10 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.registry.Registry;
@@ -20,7 +23,6 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ActionUtils
 {
-
     public static ActionResult runVanillaCommand(ActionContext ctx, String arg)
     {
         if (ctx.getPlayer() != null)
@@ -29,6 +31,21 @@ public class ActionUtils
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
+    }
+
+    public static void registerBooleanConfigActions(List<? extends ConfigInfo> list)
+    {
+        for (ConfigInfo cfg : list)
+        {
+            if (cfg instanceof HotkeyedBooleanConfig)
+            {
+                registerHotkeyedBooleanConfigActions(cfg.getModInfo(), (HotkeyedBooleanConfig) cfg);
+            }
+            else if (cfg instanceof BooleanConfig)
+            {
+                registerBooleanConfigActions(cfg.getModInfo(), (BooleanConfig) cfg);
+            }
+        }
     }
 
     public static SimpleNamedAction register(ModInfo modInfo,
@@ -58,34 +75,65 @@ public class ActionUtils
         return namedAction;
     }
 
-    public static SimpleNamedAction registerToggle(ModInfo modInfo,
-                                                   String name,
-                                                   BooleanConfig config)
+    public static void registerBooleanConfigActions(ModInfo modInfo,
+                                                    BooleanConfig config)
     {
-        return registerToggle(modInfo, name, config, null, null);
+        registerBooleanConfigActions(modInfo, config, null, null);
     }
 
-    public static SimpleNamedAction registerToggle(ModInfo modInfo,
-                                                   String name,
-                                                   BooleanConfig config,
-                                                   @Nullable Function<BooleanConfig, String> messageFactory,
-                                                   @Nullable Supplier<MessageOutput> messageTypeSupplier)
+    /**
+     * Registers the boolean config toggle, enable and disable actions, using the
+     * provided keybind's KeybindSettings as the source of the MessageOutput
+     */
+    public static void registerBooleanConfigActions(ModInfo modInfo,
+                                                    BooleanConfig config,
+                                                    KeyBind keyBind)
     {
-        SimpleNamedAction namedAction = SimpleNamedAction.of(modInfo, name,
-                                                             BooleanToggleAction.of(config, messageFactory,
-                                                                                    messageTypeSupplier));
-        namedAction.setCommentTranslationKey(config.getCommentTranslationKey());
-        Registry.ACTION_REGISTRY.registerAction(namedAction);
-        return namedAction;
+        registerBooleanConfigActions(modInfo, config, null, keyBind.getSettings()::getMessageType);
     }
 
-    public static SimpleNamedAction registerToggleKey(ModInfo modInfo,
-                                                      String name,
-                                                      HotkeyedBooleanConfig config)
+    public static void registerBooleanConfigActions(ModInfo modInfo,
+                                                    BooleanConfig config,
+                                                    @Nullable Function<BooleanConfig, String> messageFactory,
+                                                    @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
-        SimpleNamedAction namedAction = SimpleNamedAction.of(modInfo, name, config.getToggleAction());
-        Registry.ACTION_REGISTRY.registerAction(namedAction);
-        return namedAction;
+        BooleanToggleAction toggleAction = BooleanToggleAction.of(config, messageFactory, messageTypeSupplier);
+        registerBooleanConfigActions(modInfo, config, messageFactory, messageTypeSupplier, toggleAction);
+    }
+
+    public static void registerBooleanConfigActions(ModInfo modInfo,
+                                                    BooleanConfig config,
+                                                    @Nullable Function<BooleanConfig, String> messageFactory,
+                                                    @Nullable Supplier<MessageOutput> messageTypeSupplier,
+                                                    Action toggleAction)
+    {
+        String configName = org.apache.commons.lang3.StringUtils.capitalize(config.getName());
+        String commentKey = config.getCommentTranslationKey();
+
+        BooleanEnableAction enableAction = BooleanEnableAction.of(config, messageFactory, messageTypeSupplier);
+        BooleanDisableAction disableAction = BooleanDisableAction.of(config, messageFactory, messageTypeSupplier);
+        SimpleNamedAction namedToggleAction = SimpleNamedAction.of(modInfo, "toggle" + configName, toggleAction, commentKey);
+        SimpleNamedAction namedEnableAction = SimpleNamedAction.of(modInfo, "enable" + configName, enableAction, commentKey);
+        SimpleNamedAction namedDisableAction = SimpleNamedAction.of(modInfo, "disable" + configName, disableAction, commentKey);
+
+        Registry.ACTION_REGISTRY.registerAction(namedToggleAction);
+        Registry.ACTION_REGISTRY.registerAction(namedEnableAction);
+        Registry.ACTION_REGISTRY.registerAction(namedDisableAction);
+    }
+
+    public static void registerHotkeyedBooleanConfigActions(ModInfo modInfo,
+                                                            HotkeyedBooleanConfig config)
+    {
+        registerHotkeyedBooleanConfigActions(modInfo, config, null, null);
+    }
+
+    public static void registerHotkeyedBooleanConfigActions(ModInfo modInfo,
+                                                            HotkeyedBooleanConfig config,
+                                                            @Nullable Function<BooleanConfig, String> messageFactory,
+                                                            @Nullable Supplier<MessageOutput> messageTypeSupplier)
+    {
+        Action toggleAction = config.getToggleAction();
+        registerBooleanConfigActions(modInfo, config, messageFactory, messageTypeSupplier, toggleAction);
     }
 
     /**
