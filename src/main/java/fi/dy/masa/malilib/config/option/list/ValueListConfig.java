@@ -68,25 +68,21 @@ public class ValueListConfig<TYPE> extends BaseGenericConfig<ImmutableList<TYPE>
         }
     }
 
-    public void setValues(List<TYPE> newValues)
+    @Override
+    public boolean setValue(ImmutableList<TYPE> newValue)
     {
-        if (this.value.equals(newValues) == false)
+        List<TYPE> filteredValues;
+
+        if (this.validValues != null && this.validValues.isEmpty() == false)
         {
-            ImmutableList<TYPE> oldValues = this.value;
-            List<TYPE> filteredValues;
-
-            if (this.validValues != null && this.validValues.isEmpty() == false)
-            {
-                filteredValues = newValues.stream().filter(this.validValues::contains).collect(Collectors.toList());
-            }
-            else
-            {
-                filteredValues = newValues;
-            }
-
-            this.value = ImmutableList.copyOf(filteredValues);
-            this.onValueChanged(this.value, oldValues);
+            filteredValues = newValue.stream().filter(this.validValues::contains).collect(Collectors.toList());
         }
+        else
+        {
+            filteredValues = newValue;
+        }
+
+        return super.setValue(ImmutableList.copyOf(filteredValues));
     }
 
     public void copyValuesFrom(ValueListConfig<TYPE> other)
@@ -97,7 +93,7 @@ public class ValueListConfig<TYPE> extends BaseGenericConfig<ImmutableList<TYPE>
         this.commentArgs = other.commentArgs;
         this.modInfo = other.modInfo;
         this.setValidValues(other.validValues);
-        this.setValues(other.getValue());
+        this.setValue(other.getValue());
         this.setValueChangeCallback(other.valueChangeCallback);
         this.setValueLoadCallback(other.valueLoadCallback);
     }

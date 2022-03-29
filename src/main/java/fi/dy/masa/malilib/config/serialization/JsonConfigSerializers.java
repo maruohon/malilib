@@ -251,8 +251,8 @@ public class JsonConfigSerializers
                     ValueListConfig<T> blackList = list.getBlackList().copy();
                     ValueListConfig<T> whiteList = list.getWhiteList().copy();
 
-                    blackList.setValues(ValueListConfig.getStringListAsValues(blackListStr, list.getFromStringConverter()));
-                    whiteList.setValues(ValueListConfig.getStringListAsValues(whiteListStr, list.getFromStringConverter()));
+                    blackList.setValue(ValueListConfig.getStringListAsValues(blackListStr, list.getFromStringConverter()));
+                    whiteList.setValue(ValueListConfig.getStringListAsValues(whiteListStr, list.getFromStringConverter()));
 
                     config.loadValueFromConfig(new BlackWhiteList<>(type, blackList, whiteList, list.getToStringConverter(), list.getFromStringConverter()));
                 }
