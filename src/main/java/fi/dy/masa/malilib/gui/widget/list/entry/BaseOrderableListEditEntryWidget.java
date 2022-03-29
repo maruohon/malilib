@@ -262,7 +262,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         {
             int index = this.getInsertionIndex(this.dataList);
             this.dataList.add(index, entry);
-            this.listWidget.reCreateListEntryWidgets();
+            this.listWidget.refreshEntries();
             this.listWidget.focusWidget(index);
             return  true;
         }
@@ -277,7 +277,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         if (this.originalListIndex >= 0 && this.originalListIndex < size)
         {
             this.dataList.remove(this.originalListIndex);
-            this.listWidget.reCreateListEntryWidgets();
+            this.listWidget.refreshEntries();
             return true;
         }
 
@@ -307,7 +307,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             DATATYPE entry = list.remove(oldIndex);
             list.add(newIndex, entry);
 
-            this.listWidget.reCreateListEntryWidgets();
+            this.listWidget.refreshEntries();
             return true;
         }
 

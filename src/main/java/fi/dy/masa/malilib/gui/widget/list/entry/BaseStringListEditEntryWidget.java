@@ -50,7 +50,6 @@ public abstract class BaseStringListEditEntryWidget<DATATYPE> extends BaseOrdera
             this.resetButton.setEnabled(this.textField.getText().equals(this.toStringConverter.apply(this.defaultValue)) == false);
         });
 
-        this.textField.setUpdateListenerAlways(true);
         this.textField.setListener(this::onTextChanged);
     }
 
