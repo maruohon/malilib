@@ -253,7 +253,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         IntBinaryOperator op = (value, amount) -> {
             if (value == 0) return amount > 0 ? 1 : -1;
             else if (amount > 0) value <<= 1;
-            else value >>>= 1;
+            else value >>= 1;
             return value;
         };
         IntConsumer adjuster = (v) -> intConfig.setIntegerValue(op.applyAsInt(intConfig.getIntegerValue(), v));

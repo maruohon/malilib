@@ -13,8 +13,8 @@ public class KeyBindSettings
     public static final KeyBindSettings INGAME_MODIFIER             = builderInGameModifier().build();
     public static final KeyBindSettings INGAME_MODIFIER_EMPTY       = builderInGameModifier().empty().build();
     public static final KeyBindSettings INGAME_MODIFIER_BOTH        = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, false, false, CancelCondition.NEVER);
-    public static final KeyBindSettings INGAME_RELEASE              = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, CancelCondition.NEVER);
-    public static final KeyBindSettings INGAME_RELEASE_EXCLUSIVE    = builder().release().exclusive().cancel(CancelCondition.NEVER).build();
+    public static final KeyBindSettings INGAME_RELEASE              = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_RELEASE_EXCLUSIVE    = builder().release().exclusive().cancel(CancelCondition.ALWAYS).build();
     public static final KeyBindSettings GUI_DEFAULT                 = new KeyBindSettings(Context.GUI, KeyAction.PRESS, false, true, CancelCondition.ON_SUCCESS);
     public static final KeyBindSettings GUI_MODIFIER                = new KeyBindSettings(Context.GUI, KeyAction.PRESS, false, false, CancelCondition.NEVER);
 
