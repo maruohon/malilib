@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.config.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -18,6 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.multiplayer.ServerData;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.action.ActionContext;
@@ -30,6 +32,7 @@ import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
+import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
@@ -42,40 +45,21 @@ public class ConfigOverrideUtils
 
     public static ActionResult resetConfigOverrides(ActionContext ctx)
     {
-        getAllToggleConfigs().values().forEach(BooleanConfig::disableOverride);
+        getAllToggleConfigs().values().forEach(p -> p.getRight().disableOverride());
         return ActionResult.SUCCESS;
     }
 
     public static void applyConfigOverrides()
     {
-        if (GameUtils.isSinglePlayer())
-        {
-            return;
-        }
-
         try
         {
-            ServerData serverData = GameUtils.getClient().getCurrentServerData();
-
-            if (serverData != null)
+            if (GameUtils.isSinglePlayer())
             {
-                String motd = serverData.serverMOTD;
-                String[] lines = motd.split("\\n");
-
-                for (int index = 3; index < lines.length; ++index)
-                {
-                    String str = lines[index];
-
-                    if (tryApplyOverridesFromString(str))
-                    {
-                        return;
-                    }
-
-                    if (tryApplyOverridesFromURL(str))
-                    {
-                        return;
-                    }
-                }
+                tryApplyOverridesFromLocalConfig();
+            }
+            else
+            {
+                tryApplyOverridesFromServer();
             }
         }
         catch (Exception e)
@@ -120,7 +104,6 @@ public class ConfigOverrideUtils
         {
             // Strip away the ending '§r'
             str = str.substring(0, str.length() - 2);
-            System.out.printf("tryApplyOverridesFromURL(): %s\n", str);
 
             String pageContent = tryFetchPage(str, 2000);
 
@@ -133,9 +116,46 @@ public class ConfigOverrideUtils
         return false;
     }
 
-    protected static ArrayListMultimap<String, BooleanConfig> getAllToggleConfigs()
+    protected static void tryApplyOverridesFromLocalConfig()
     {
-        ArrayListMultimap<String, BooleanConfig> configs = ArrayListMultimap.create();
+        File file = new File(ConfigUtils.getActiveConfigDirectory(), "malilib_config_overrides.json");
+        String str = FileUtils.readFileAsString(file, -1);
+
+        if (str != null)
+        {
+            tryApplyOverridesFromString(str);
+        }
+    }
+
+    protected static void tryApplyOverridesFromServer()
+    {
+        ServerData serverData = GameUtils.getClient().getCurrentServerData();
+
+        if (serverData != null)
+        {
+            String motd = serverData.serverMOTD;
+            String[] lines = motd.split("\\n");
+
+            for (int index = 3; index < lines.length; ++index)
+            {
+                String str = lines[index];
+
+                if (tryApplyOverridesFromString(str))
+                {
+                    return;
+                }
+
+                if (tryApplyOverridesFromURL(str))
+                {
+                    return;
+                }
+            }
+        }
+    }
+
+    protected static ArrayListMultimap<String, Pair<ConfigOptionCategory, BooleanConfig>> getAllToggleConfigs()
+    {
+        ArrayListMultimap<String, Pair<ConfigOptionCategory, BooleanConfig>> configs = ArrayListMultimap.create();
         List<ModConfig> modConfigs = ((ConfigManagerImpl) Registry.CONFIG_MANAGER).getAllModConfigs();
 
         for (ModConfig modConfig : modConfigs)
@@ -152,7 +172,7 @@ public class ConfigOverrideUtils
 
                         if (booleanConfig != null)
                         {
-                            configs.put(booleanConfig.getModInfo().getModId(), booleanConfig);
+                            configs.put(booleanConfig.getModInfo().getModId(), Pair.of(category, booleanConfig));
                         }
                     }
                 }
@@ -170,7 +190,7 @@ public class ConfigOverrideUtils
             return false;
         }
 
-        ArrayListMultimap<String, BooleanConfig> configs = getAllToggleConfigs();
+        ArrayListMultimap<String, Pair<ConfigOptionCategory, BooleanConfig>> categoriesAndConfigs = getAllToggleConfigs();
         JsonArray arrModFeatures = root.get("config_overrides").getAsJsonArray();
         final int size = arrModFeatures.size();
 
@@ -185,10 +205,11 @@ public class ConfigOverrideUtils
 
             JsonObject obj = el.getAsJsonObject();
             Predicate<String> modFilter = getModFilterOrDefault(obj, (name) -> true);
+            Predicate<String> categoryFilter = getCategoryFilterOrDefault(obj, (name) -> true);
             Predicate<String> featureFilter = getFeatureFilterOrDefault(obj, (name) -> true);
             String message = JsonUtils.getStringOrDefault(obj, "message", null);
 
-            applyOverridesFrom(obj, configs, modFilter, featureFilter, message);
+            applyOverridesFrom(obj, categoriesAndConfigs, modFilter, categoryFilter, featureFilter, message);
 
             if (JsonUtils.hasArray(obj, "overrides"))
             {
@@ -208,19 +229,22 @@ public class ConfigOverrideUtils
 
                     JsonObject overrideObj = overrideEl.getAsJsonObject();
                     Predicate<String> overrideModFilter = getModFilterOrDefault(overrideObj, modFilter);
+                    Predicate<String> overrideCategoryFilter = getCategoryFilterOrDefault(overrideObj, categoryFilter);
                     Predicate<String> overrideFeatureFilter = getFeatureFilterOrDefault(overrideObj, featureFilter);
                     String overrideMessage = JsonUtils.getStringOrDefault(overrideObj, "message", message);
 
-                    applyOverridesFrom(overrideObj, configs, overrideModFilter, overrideFeatureFilter, overrideMessage);
+                    applyOverridesFrom(overrideObj, categoriesAndConfigs,
+                                       overrideModFilter, overrideCategoryFilter,
+                                       overrideFeatureFilter, overrideMessage);
                 }
             }
         }
 
         int overrideCount = 0;
 
-        for (BooleanConfig config : configs.values())
+        for (Pair<ConfigOptionCategory, BooleanConfig> categoryAndConfig : categoriesAndConfigs.values())
         {
-            if (config.hasOverride())
+            if (categoryAndConfig.getRight().hasOverride())
             {
                 ++overrideCount;
             }
@@ -229,15 +253,16 @@ public class ConfigOverrideUtils
         if (overrideCount > 0)
         {
             MaLiLib.debugLog("Applied {} feature overrides", overrideCount);
-            MessageDispatcher.warning(8000).translate("malilib.message.info.feature_overrides_applied", overrideCount);
+            MessageDispatcher.warning(8000).translate("malilib.message.info.config_overrides_applied", overrideCount);
         }
 
         return overrideCount > 0;
     }
 
     protected static void applyOverridesFrom(JsonObject obj,
-                                             ArrayListMultimap<String, BooleanConfig> configs,
+                                             ArrayListMultimap<String, Pair<ConfigOptionCategory, BooleanConfig>> categoriesAndConfigs,
                                              Predicate<String> modFilter,
+                                             Predicate<String> categoryFilter,
                                              Predicate<String> configFilter,
                                              @Nullable String message)
     {
@@ -245,16 +270,19 @@ public class ConfigOverrideUtils
         boolean enableOverride = "deny".equalsIgnoreCase(policy);
         boolean overrideValue = JsonUtils.getBooleanOrDefault(obj, "inverse", false);
 
-        for (String modId : configs.keySet())
+        for (String modId : categoriesAndConfigs.keySet())
         {
             if (modFilter.test(modId) == false)
             {
                 continue;
             }
 
-            for (BooleanConfig cfg : configs.get(modId))
+            for (Pair<ConfigOptionCategory, BooleanConfig> cac : categoriesAndConfigs.get(modId))
             {
-                if (configFilter.test(cfg.getName()) == false)
+                BooleanConfig cfg = cac.getRight();
+
+                if (categoryFilter.test(cac.getLeft().getName()) == false ||
+                    configFilter.test(cfg.getName()) == false)
                 {
                     continue;
                 }
@@ -281,6 +309,12 @@ public class ConfigOverrideUtils
     protected static Predicate<String> getModFilterOrDefault(JsonObject obj, Predicate<String> defaultFilter)
     {
         Predicate<String> filter = getStringTest(obj, "mod", "mod name filter");
+        return filter != null ? filter : defaultFilter;
+    }
+
+    protected static Predicate<String> getCategoryFilterOrDefault(JsonObject obj, Predicate<String> defaultFilter)
+    {
+        Predicate<String> filter = getStringTest(obj, "category", "category name filter");
         return filter != null ? filter : defaultFilter;
     }
 
