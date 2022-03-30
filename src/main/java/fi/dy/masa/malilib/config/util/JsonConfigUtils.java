@@ -10,7 +10,8 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.ConfigOption;
-import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry;
+import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry.JsonConfigDeSerializer;
+import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry.JsonConfigSerializer;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -18,7 +19,7 @@ import fi.dy.masa.malilib.util.JsonUtils;
 public class JsonConfigUtils
 {
     public static void loadFromFile(File configFile, List<ConfigOptionCategory> categories,
-                                    BiConsumer<Integer, JsonObject> configVersionUpgrader)
+                                    BiConsumer<Integer, JsonObject> configVersionUpdater)
     {
         JsonElement element = JsonUtils.parseJsonFile(configFile);
 
@@ -26,7 +27,7 @@ public class JsonConfigUtils
         {
             JsonObject root = element.getAsJsonObject();
             int configVersion = JsonUtils.getIntegerOrDefault(root, "config_version", 0);
-            configVersionUpgrader.accept(configVersion, root);
+            configVersionUpdater.accept(configVersion, root);
 
             for (ConfigOptionCategory category : categories)
             {
@@ -35,13 +36,7 @@ public class JsonConfigUtils
         }
         else
         {
-            for (ConfigOptionCategory category : categories)
-            {
-                for (ConfigOption<?> config : category.getConfigOptions())
-                {
-                    config.resetToDefault();
-                }
-            }
+            categories.forEach(ConfigOptionCategory::resetAllOptionsToDefaults);
         }
     }
 
@@ -49,6 +44,15 @@ public class JsonConfigUtils
     {
         String categoryName = category.getName();
         List<? extends ConfigOption<?>> options = category.getConfigOptions();
+
+        readConfigs(root, categoryName, options, true);
+    }
+
+    public static void readConfigs(JsonObject root,
+                                   String categoryName,
+                                   List<? extends ConfigOption<?>> options,
+                                   boolean resetIfNoCategoryData)
+    {
         JsonObject obj = JsonUtils.getNestedObject(root, categoryName, false);
 
         if (obj != null)
@@ -58,7 +62,7 @@ public class JsonConfigUtils
                 tryLoadConfig(obj, config, categoryName);
             }
         }
-        else
+        else if (resetIfNoCategoryData)
         {
             for (ConfigOption<?> config : options)
             {
@@ -69,7 +73,7 @@ public class JsonConfigUtils
 
     public static <T, C extends ConfigOption<T>> void tryLoadConfig(JsonObject obj, C config, String categoryName)
     {
-        JsonConfigSerializerRegistry.JsonConfigDeSerializer<C> deSerializer = Registry.JSON_CONFIG_SERIALIZER.getDeSerializer(config);
+        JsonConfigDeSerializer<C> deSerializer = Registry.JSON_CONFIG_SERIALIZER.getDeSerializer(config);
 
         if (deSerializer != null)
         {
@@ -146,7 +150,7 @@ public class JsonConfigUtils
 
     public static <C extends ConfigInfo> boolean tryWriteConfig(JsonObject obj, C config, String categoryName)
     {
-        JsonConfigSerializerRegistry.JsonConfigSerializer<C> serializer = Registry.JSON_CONFIG_SERIALIZER.getSerializer(config);
+        JsonConfigSerializer<C> serializer = Registry.JSON_CONFIG_SERIALIZER.getSerializer(config);
 
         if (serializer != null)
         {

@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
+import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.overlay.OverlayRendererContainer;
@@ -31,7 +32,7 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 public class ConfigUtils
 {
     /**
-     * @return the currently active config directory. This takes into account a possible active config profile.
+     * @return The currently active config directory. This takes into account a possible active config profile.
      */
     public static File getActiveConfigDirectory()
     {
@@ -39,6 +40,9 @@ public class ConfigUtils
         return getActiveConfigDirectory(profile);
     }
 
+    /**
+     * @return The currently active config directory for the given config profile.
+     */
     public static File getActiveConfigDirectory(String profile)
     {
         File baseConfigDir = FileUtils.getConfigDirectory();
@@ -55,16 +59,29 @@ public class ConfigUtils
         return baseConfigDir;
     }
 
+    /**
+     * Sort the given list of configs by the config's display name,
+     * stripping away any vanilla text formatting codes first
+     */
     public static void sortConfigsByDisplayName(List<ConfigInfo> configs)
     {
         configs.sort(Comparator.comparing((c) -> TextFormatting.getTextWithoutFormattingCodes(c.getDisplayName())));
     }
 
+    /**
+     * @return The full list of config options for the given list of configs from a config tab.
+     * The normal base list gets appended with any possible extra options that an extension mod
+     * wants to show on the same tab with the parent mod's config options.
+     */
     public static List<? extends ConfigInfo> getExtendedList(List<? extends ConfigInfo> baseList)
     {
         return Registry.CONFIG_TAB_EXTENSION.getExtendedList(baseList, MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS.getBooleanValue());
     }
 
+    /**
+     * Removes the given configs from the given list,
+     * and returns them as an expandable config group.
+     */
     public static ExpandableConfigGroup extractOptionsToGroup(ArrayList<ConfigInfo> originalList,
                                                               ModInfo mod,
                                                               String groupName,
@@ -78,6 +95,10 @@ public class ConfigUtils
         return new ExpandableConfigGroup(mod, groupName, extractedList);
     }
 
+    /**
+     * Removes the configs matching the given Predicate from the given list,
+     * and returns them as an expandable config group.
+     */
     public static ExpandableConfigGroup extractOptionsToGroup(ArrayList<ConfigInfo> originalList,
                                                               ModInfo mod,
                                                               String groupName,
@@ -113,6 +134,11 @@ public class ConfigUtils
         }
 
         return map;
+    }
+
+    public static void resetAllKeybindSettingsToDefaults(List<? extends Hotkey> hotkeys)
+    {
+        hotkeys.forEach(h -> h.getKeyBind().resetSettingsToDefaults());
     }
 
     /**

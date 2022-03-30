@@ -156,10 +156,10 @@ public class MaLiLibConfigs
     }
 
     public static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
-            BaseConfigOptionCategory.normal("Generic",  Generic.OPTIONS),
-            BaseConfigOptionCategory.normal("Hotkeys",  Hotkeys.HOTKEYS),
-            BaseConfigOptionCategory.normal("Debug",    Debug.OPTIONS),
-            BaseConfigOptionCategory.normal("Internal", Internal.OPTIONS)
+            BaseConfigOptionCategory.normal(MaLiLibReference.MOD_INFO, "Generic",  Generic.OPTIONS),
+            BaseConfigOptionCategory.normal(MaLiLibReference.MOD_INFO, "Hotkeys",  Hotkeys.HOTKEYS),
+            BaseConfigOptionCategory.normal(MaLiLibReference.MOD_INFO, "Debug",    Debug.OPTIONS),
+            BaseConfigOptionCategory.normal(MaLiLibReference.MOD_INFO, "Internal", Internal.OPTIONS)
     );
 
     private static ImmutableList<MessageOutput> getUsableDefaultToggleMessageOutputs()

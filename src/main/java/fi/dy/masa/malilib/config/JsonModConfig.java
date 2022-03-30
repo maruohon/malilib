@@ -13,19 +13,26 @@ public class JsonModConfig extends BaseModConfig
 {
     @Nullable protected ConfigDataUpdater configDataUpdater;
 
-    public JsonModConfig(ModInfo modInfo, int configVersion, List<ConfigOptionCategory> configOptionCategories)
+    public JsonModConfig(ModInfo modInfo,
+                         int configVersion,
+                         List<ConfigOptionCategory> configOptionCategories)
     {
         this(modInfo, modInfo.getModId() + ".json", configVersion, configOptionCategories);
     }
 
-    public JsonModConfig(ModInfo modInfo, String configFileName, int configVersion,
+    public JsonModConfig(ModInfo modInfo,
+                         String configFileName,
+                         int configVersion,
                          List<ConfigOptionCategory> configOptionCategories)
     {
         super(modInfo, configFileName, configVersion, configOptionCategories);
     }
 
-    public JsonModConfig(ModInfo modInfo, String configFileName, int configVersion,
-                         List<ConfigOptionCategory> configOptionCategories, @Nullable ConfigDataUpdater configDataUpdater)
+    public JsonModConfig(ModInfo modInfo,
+                         String configFileName,
+                         int configVersion,
+                         List<ConfigOptionCategory> configOptionCategories,
+                         @Nullable ConfigDataUpdater configDataUpdater)
     {
         super(modInfo, configFileName, configVersion, configOptionCategories);
 
@@ -44,7 +51,7 @@ public class JsonModConfig extends BaseModConfig
 
         if (this.configDataUpdater != null)
         {
-            this.configDataUpdater.updateConfigData(root, configVersion);
+            this.configDataUpdater.updateConfigDataBeforeLoading(root, configVersion);
         }
     }
 
@@ -52,6 +59,12 @@ public class JsonModConfig extends BaseModConfig
     public void loadFromFile(File configFile)
     {
         JsonConfigUtils.loadFromFile(configFile, this.getConfigOptionCategories(), this::updateConfigDataBeforeLoading);
+
+        if (this.configDataUpdater != null)
+        {
+            this.configDataUpdater.updateConfigsAfterLoading(this.getConfigOptionCategories(),
+                                                             this.savedConfigVersion, this.getConfigVersion());
+        }
     }
 
     @Override
@@ -86,10 +99,30 @@ public class JsonModConfig extends BaseModConfig
     public interface ConfigDataUpdater
     {
         /**
-         * Upgrades or modifies the config data before loading
+         * Updates or modifies the config data before loading
          * @param root the root JsonObject that was read from the config file
-         * @param configDataVersion the config version that was read from file. This will be 0 if the file did not yet use a version number.
+         * @param configDataVersion the config version that was read from file.
+         *                          This will be 0 if the file did not yet use a version number.
          */
-        void updateConfigData(JsonObject root, int configDataVersion);
+        void updateConfigDataBeforeLoading(JsonObject root, int configDataVersion);
+
+        /**
+         * Updates or modifies the configs after they have been read from file.
+         * @param categories the config categories belonging to the mod config this updater is running for
+         * @param readConfigDataVersion the config data version that was read from the config file
+         * @param currentConfigDataVersion the current config data version in the running mod instance
+         */
+        void updateConfigsAfterLoading(List<ConfigOptionCategory> categories,
+                                       int readConfigDataVersion,
+                                       int currentConfigDataVersion);
+    }
+
+    public static ModConfig createJsonModConfig(ModInfo modInfo, int configVersion,
+                                                List<ConfigOptionCategory> configOptionCategories,
+                                                ConfigDataUpdater updater)
+    {
+        JsonModConfig config = new JsonModConfig(modInfo, configVersion, configOptionCategories);
+        config.setConfigDataUpdater(updater);
+        return config;
     }
 }

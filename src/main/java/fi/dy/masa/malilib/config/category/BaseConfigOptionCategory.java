@@ -2,18 +2,30 @@ package fi.dy.masa.malilib.config.category;
 
 import java.util.List;
 import fi.dy.masa.malilib.config.option.ConfigOption;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class BaseConfigOptionCategory implements ConfigOptionCategory
 {
+    protected final ModInfo modInfo;
     protected final String name;
     protected final boolean saveToFile;
     protected final List<? extends ConfigOption<?>> configs;
 
-    public BaseConfigOptionCategory(String name, boolean saveToFile, List<? extends ConfigOption<?>> configs)
+    public BaseConfigOptionCategory(ModInfo modInfo,
+                                    String name,
+                                    boolean saveToFile,
+                                    List<? extends ConfigOption<?>> configs)
     {
+        this.modInfo = modInfo;
         this.name = name;
         this.saveToFile = saveToFile;
         this.configs = configs;
+    }
+
+    @Override
+    public ModInfo getModInfo()
+    {
+        return this.modInfo;
     }
 
     @Override
@@ -38,16 +50,16 @@ public class BaseConfigOptionCategory implements ConfigOptionCategory
      * Creates a normal config category that is shown on the config screen
      * and saved to a config file normally.
      */
-    public static BaseConfigOptionCategory normal(String name, List<? extends ConfigOption<?>> configs)
+    public static BaseConfigOptionCategory normal(ModInfo modInfo, String name, List<? extends ConfigOption<?>> configs)
     {
-        return new BaseConfigOptionCategory(name, true, configs);
+        return new BaseConfigOptionCategory(modInfo, name, true, configs);
     }
 
     /**
      * Creates a config category that is not saved to a file.
      */
-    public static BaseConfigOptionCategory nonSaved(String name, List<? extends ConfigOption<?>> configs)
+    public static BaseConfigOptionCategory nonSaved(ModInfo modInfo, String name, List<? extends ConfigOption<?>> configs)
     {
-        return new BaseConfigOptionCategory(name, false, configs);
+        return new BaseConfigOptionCategory(modInfo, name, false, configs);
     }
 }
