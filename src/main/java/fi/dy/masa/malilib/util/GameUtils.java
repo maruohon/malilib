@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.util.math.RayTraceResult;
 
 public class GameUtils
 {
@@ -22,6 +23,12 @@ public class GameUtils
     public static EntityPlayerSP getClientPlayer()
     {
         return getClient().player;
+    }
+
+    @Nullable
+    public static RayTraceResult getRayTrace()
+    {
+        return getClient().objectMouseOver;
     }
 
     public static boolean isCreativeMode()
