@@ -9,8 +9,9 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.action.ActionContext;
+import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.NamedAction;
-import fi.dy.masa.malilib.action.ParameterizableNamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.IconRegistry;
@@ -28,10 +29,10 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
     protected static final int DEFAULT_HOVER_BORDER_COLOR = 0xFFE0E020;
     protected static final int DEFAULT_BACKGROUND_COLOR = 0x00000000;
 
+    protected final List<NamedAction> actions = new ArrayList<>();
     protected final List<StyledTextLine> widgetHoverText = new ArrayList<>(1);
     protected final List<StyledTextLine> combinedHoverText = new ArrayList<>(1);
     protected final BorderSettings editedBorderSettings = new BorderSettings(0xFFFF8000, 3);
-    @Nullable protected NamedAction action;
     @Nullable protected String hoverText;
     @Nullable protected ActionWidgetContainer container;
     protected String name = "";
@@ -55,7 +56,13 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     public void setAction(@Nullable NamedAction action)
     {
-        this.action = action;
+        // TODO FIXME
+        this.actions.clear();
+
+        if (action != null)
+        {
+            this.actions.add(action);
+        }
     }
 
     public void setContainer(@Nullable ActionWidgetContainer container)
@@ -161,14 +168,23 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
             this.combinedHoverText.addAll(this.widgetHoverText);
         }
 
-        if (this.action != null)
+        if (this.actions.isEmpty() == false)
         {
             if (this.combinedHoverText.isEmpty() == false)
             {
                 this.combinedHoverText.add(StyledTextLine.EMPTY);
             }
 
-            this.combinedHoverText.addAll(this.action.getHoverInfo());
+            for (int i = 0; i < this.actions.size(); ++i)
+            {
+                if (i > 0)
+                {
+                    this.combinedHoverText.add(StyledTextLine.EMPTY);
+                }
+
+                NamedAction action = this.actions.get(i);
+                this.combinedHoverText.addAll(action.getHoverInfo());
+            }
         }
     }
 
@@ -226,7 +242,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
             return false;
         }
-        else if (mouseButton == 0 && this.action != null)
+        else if (mouseButton == 0 && this.actions.isEmpty() == false)
         {
             // Close the current screen first, in case the action opens another screen
             if (this.container != null && this.container.shouldCloseScreenOnExecute())
@@ -234,7 +250,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
                 BaseScreen.openScreen(null);
             }
 
-            this.executeAction();
+            this.executeActions();
         }
 
         return true;
@@ -295,11 +311,13 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     protected abstract Type getType();
 
-    public void executeAction()
+    public void executeActions()
     {
-        if (this.action != null)
+        ActionContext ctx = ActionContext.COMMON;
+
+        for (NamedAction action : this.actions)
         {
-            this.action.execute();
+            action.execute(ctx);
         }
     }
 
@@ -375,20 +393,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         if (this.iconScaleX != 1.0F) { obj.addProperty("icon_scale_x", this.iconScaleX); }
         if (this.iconScaleY != 1.0f) { obj.addProperty("icon_scale_y", this.iconScaleY); }
 
-        if (this.action != null)
-        {
-            //obj.addProperty("action_name", this.action.getRegistryName());
-
-            // TODO?
-            /*
-            JsonObject actionData = this.action.toJson();
-
-            if (actionData != null)
-            {
-                obj.add("action_data", actionData);
-            }
-            */
-        }
+        obj.add("actions", JsonUtils.toArray(this.actions, NamedAction::toJson));
 
         return obj;
     }
@@ -414,15 +419,8 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         JsonUtils.readObjectIfExists(obj, "border_normal", this.getBorderRenderer().getNormalSettings()::fromJson);
         JsonUtils.readObjectIfExists(obj, "border_hover", this.getBorderRenderer().getHoverSettings()::fromJson);
 
-        // FIXME
-        String actionName = JsonUtils.getStringOrDefault(obj, "action_name", "?");
-        NamedAction action = Registry.ACTION_REGISTRY.getAction(actionName);
-
-        if (action instanceof ParameterizableNamedAction && JsonUtils.hasString(obj, "action_data"))
-        {
-            action = ((ParameterizableNamedAction) action).parameterize(actionName, JsonUtils.getString(obj, "action_data"));
-            this.setAction(action);
-        }
+        this.actions.clear();
+        ActionUtils.readActionsFromList(obj, "actions", this.actions::add);
     }
 
     @Nullable

@@ -250,8 +250,13 @@ public class ActionUtils
     public static ImmutableList<NamedAction> readActionsFromList(JsonObject obj, String arrayName)
     {
         ImmutableList.Builder<NamedAction> builder = ImmutableList.builder();
-        JsonUtils.readArrayElementsIfObjects(obj, arrayName, (o) -> loadActionFrom(o, builder::add));
+        readActionsFromList(obj, arrayName, builder::add);
         return builder.build();
+    }
+
+    public static void readActionsFromList(JsonObject obj, String arrayName, Consumer<NamedAction> consumer)
+    {
+        JsonUtils.readArrayElementsIfObjects(obj, arrayName, (o) -> loadActionFrom(o, consumer));
     }
 
     public static void loadActionFrom(JsonObject obj, Consumer<NamedAction> consumer)

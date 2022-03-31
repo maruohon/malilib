@@ -81,8 +81,8 @@ malilib.checkbox.render_layers.hotkey=Hotkey
 
 malilib.hover.button.action_list_screen.create_macro=Create a Macro Action (or a "favorite actions list").\n- Select one or more actions from the list on the left.\n- You can hold Ctrl and/or Shift to select multiple entries.\n- Macros are basically just action lists.\n- Executing a macro runs all the actions on the list, in order.\n- The action lists/macros can also be used in the Action Prompt screen to "pre-filter" the list of shown actions.
 malilib.hover.button.action_list_screen.execute_action=Execute the selected action
-malilib.hover.button.action_widget_screen.export_settings=Export the settings for this screen to the system clipboard.\n§eCtrl + Shift + right click§r to directly copy the settings without opening the text input screen to copy them from manually.
-malilib.hover.button.action_widget_screen.import_settings=Import the settings for this screen from the system clipboard.\n§eCtrl + Shift + right click§r to directly apply the settings from the clipboard without opening the text input screen to copy the settings string manually.\n§c<b>Warning:</b>§6 This will overwrite all the current settings and widgets on this screen!!
+malilib.hover.button.action_widget_screen.export_settings=Export the settings for this screen to the system clipboard.\n\n§eShift + left click§r to directly copy the settings without opening the text input screen to copy them from manually.
+malilib.hover.button.action_widget_screen.import_settings=Import the settings for this screen from the system clipboard.\n\n§eCtrl + Shift + right click§r to directly apply the settings from the clipboard without opening the text input screen to input the settings string manually.\n\n§c<b>Warning:</b>§6 This will overwrite all the current settings and widgets on this screen!!
 malilib.hover.button.config_list.more_entries=... and §b%s§r more
 malilib.hover.button.config_list.total_entries=Total entries: §b%s§r
 malilib.hover.button.config_status_indicator_menu=Config Status Indicator widgets

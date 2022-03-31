@@ -321,7 +321,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
             if (widget != null)
             {
-                widget.executeAction();
+                widget.executeActions();
             }
         }
 
@@ -550,7 +550,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
     protected boolean onExportSettings(int mouseButton)
     {
-        if (mouseButton == 1 && isCtrlDown() && isShiftDown())
+        if (mouseButton == 0 && isShiftDown())
         {
             setClipboardString(this.getSettingsExportString());
             MessageDispatcher.success("malilib.message.info.action_screen_settings_copied_to_clipboard");
