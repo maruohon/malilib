@@ -15,12 +15,14 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig;
 import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig.BooleanAndFile;
+import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.position.Vec2i;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction;
 
 public class JsonConfigSerializers
@@ -215,6 +217,43 @@ public class JsonConfigSerializers
         {
             // Make sure to clear the old value in any case
             config.loadValueFromConfig(ImmutableList.of());
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+        }
+    }
+
+    public static JsonElement saveVec2iConfig(Vec2iConfig config)
+    {
+        JsonObject obj = new JsonObject();
+        Vec2i vec = config.getValue();
+
+        obj.addProperty("x", vec.x);
+        obj.addProperty("y", vec.y);
+
+        return obj;
+    }
+
+    public static void loadVec2iConfig(Vec2iConfig config, JsonElement element, String configName)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+                int x = JsonUtils.getInteger(obj, "x");
+                int y = JsonUtils.getInteger(obj, "y");
+                config.loadValueFromConfig(new Vec2i(x, y));
+            }
+            else
+            {
+                // Make sure to clear the old value in any case
+                config.loadValueFromConfig(Vec2i.ZERO);
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
+            }
+        }
+        catch (Exception e)
+        {
+            // Make sure to clear the old value in any case
+            config.loadValueFromConfig(Vec2i.ZERO);
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
     }

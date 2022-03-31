@@ -8,27 +8,30 @@ import net.minecraft.util.math.Vec3i;
 
 public enum Coordinate
 {
-    X(Vec3i::getX, (v) -> v.x, (n, o) -> new Vec3i(n       , o.getY(), o.getZ()), (n, o) -> new BlockPos(n       , o.getY(), o.getZ()), (n, o) -> new Vec3d(n  , o.y, o.z)),
-    Y(Vec3i::getY, (v) -> v.y, (n, o) -> new Vec3i(o.getX(), n       , o.getZ()), (n, o) -> new BlockPos(o.getX(), n       , o.getZ()), (n, o) -> new Vec3d(o.x, n  , o.z)),
-    Z(Vec3i::getZ, (v) -> v.z, (n, o) -> new Vec3i(o.getX(), o.getY(), n       ), (n, o) -> new BlockPos(o.getX(), o.getY(), n       ), (n, o) -> new Vec3d(o.x, o.y, n  ));
+    X(Vec3i::getX, (v) -> v.x, (n, o) -> new Vec3i(n       , o.getY(), o.getZ()), (n, o) -> new BlockPos(n       , o.getY(), o.getZ()), (n, o) -> new Vec3d(n  , o.y, o.z), (n, o) -> new Vec2i(n, o.y)),
+    Y(Vec3i::getY, (v) -> v.y, (n, o) -> new Vec3i(o.getX(), n       , o.getZ()), (n, o) -> new BlockPos(o.getX(), n       , o.getZ()), (n, o) -> new Vec3d(o.x, n  , o.z), (n, o) -> new Vec2i(o.x, n)),
+    Z(Vec3i::getZ, (v) -> v.z, (n, o) -> new Vec3i(o.getX(), o.getY(), n       ), (n, o) -> new BlockPos(o.getX(), o.getY(), n       ), (n, o) -> new Vec3d(o.x, o.y, n  ), (n, o) -> o);
 
     private final ToIntFunction<Vec3i> toIntFunction;
     private final ToDoubleFunction<Vec3d> toDoubleFunction;
     private final Vec3iModifier vec3iModifier;
     private final Vec3dModifier vec3dModifier;
+    private final Vec2iModifier vec2iModifier;
     private final BlockPosModifier blockPosModifier;
 
     Coordinate(ToIntFunction<Vec3i> toIntFunction,
                ToDoubleFunction<Vec3d> toDoubleFunction,
                Vec3iModifier vec3iModifier,
                BlockPosModifier blockPosModifier,
-               Vec3dModifier vec3dModifier)
+               Vec3dModifier vec3dModifier,
+               Vec2iModifier vec2iModifier)
     {
         this.toIntFunction = toIntFunction;
         this.toDoubleFunction = toDoubleFunction;
         this.vec3iModifier = vec3iModifier;
         this.blockPosModifier = blockPosModifier;
         this.vec3dModifier = vec3dModifier;
+        this.vec2iModifier = vec2iModifier;
     }
 
     public int asInt(Vec3i pos)
@@ -44,6 +47,11 @@ public enum Coordinate
     public Vec3i modifyVec3i(int newValue, Vec3i oldVec)
     {
         return this.vec3iModifier.modify(newValue, oldVec);
+    }
+
+    public Vec2i modifyVec2i(int newValue, Vec2i oldVec)
+    {
+        return this.vec2iModifier.modify(newValue, oldVec);
     }
 
     public Vec3d modifyVec3d(double newValue, Vec3d oldVec)
@@ -97,5 +105,10 @@ public enum Coordinate
     public interface BlockPosModifier
     {
         BlockPos modify(int newValue, Vec3i oldPos);
+    }
+
+    public interface Vec2iModifier
+    {
+        Vec2i modify(int newValue, Vec2i oldVec);
     }
 }

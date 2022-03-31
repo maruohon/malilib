@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
+import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 
@@ -110,6 +111,7 @@ public class JsonConfigSerializerRegistry
         this.registerSerializers(OptionalDirectoryConfig.class, JsonConfigSerializers::saveOptionalDirectoryConfig, JsonConfigSerializers::loadOptionalDirectoryConfig);
         this.registerSerializers(OptionListConfig.class,        JsonConfigSerializers::saveOptionListConfig,        JsonConfigSerializers::loadOptionListConfig);
         this.registerSerializers(ValueListConfig.class,         JsonConfigSerializers::saveValueListConfig,         JsonConfigSerializers::loadValueListConfig);
+        this.registerSerializers(Vec2iConfig.class,             JsonConfigSerializers::saveVec2iConfig,             JsonConfigSerializers::loadVec2iConfig);
     }
 
     public interface JsonConfigSerializer<C extends ConfigInfo>
