@@ -340,7 +340,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
         List<ConfigTab> tabs = Registry.CONFIG_TAB.getAllRegisteredConfigTabs();
         Map<String, ConfigOnTab> configMap = ConfigUtils.getConfigIdToConfigMapFromTabs(tabs);
-        JsonUtils.readArrayElementsIfPresent(obj, "status_widgets", (e) -> this.readAndAddWidget(e, configMap));
+        JsonUtils.readArrayElementsIfExists(obj, "status_widgets", (e) -> this.readAndAddWidget(e, configMap));
 
         this.notifyEnabledWidgetsChanged();
         this.updateSize();

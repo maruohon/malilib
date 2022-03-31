@@ -147,7 +147,7 @@ public abstract class BaseOverlayWidget extends BaseWidget
     {
         this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", true);
 
-        JsonUtils.readArrayIfPresent(obj, "padding", this.padding::fromJson);
-        JsonUtils.readArrayIfPresent(obj, "margin", this.margin::fromJson);
+        JsonUtils.readArrayIfExists(obj, "padding", this.padding::fromJson);
+        JsonUtils.readArrayIfExists(obj, "margin", this.margin::fromJson);
     }
 }

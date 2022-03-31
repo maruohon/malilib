@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
+import java.util.function.LongConsumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,6 +29,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.data.BooleanConsumer;
+import fi.dy.masa.malilib.util.data.FloatConsumer;
 
 public class JsonUtils
 {
@@ -250,6 +255,78 @@ public class JsonUtils
         return defaultValue;
     }
 
+    public static void readBooleanIfExists(JsonObject obj, String name, BooleanConsumer consumer)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                consumer.accept(obj.get(name).getAsBoolean());
+            }
+            catch (Exception ignore) {}
+        }
+    }
+
+    public static void readIntegerIfExists(JsonObject obj, String name, IntConsumer consumer)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                consumer.accept(obj.get(name).getAsInt());
+            }
+            catch (Exception ignore) {}
+        }
+    }
+
+    public static void readLongIfExists(JsonObject obj, String name, LongConsumer consumer)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                consumer.accept(obj.get(name).getAsLong());
+            }
+            catch (Exception ignore) {}
+        }
+    }
+
+    public static void readFloatIfExists(JsonObject obj, String name, FloatConsumer consumer)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                consumer.accept(obj.get(name).getAsFloat());
+            }
+            catch (Exception ignore) {}
+        }
+    }
+
+    public static void readDoubleIfExists(JsonObject obj, String name, DoubleConsumer consumer)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                consumer.accept(obj.get(name).getAsDouble());
+            }
+            catch (Exception ignore) {}
+        }
+    }
+
+    public static void readStringIfExists(JsonObject obj, String name, Consumer<String> consumer)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                consumer.accept(obj.get(name).getAsString());
+            }
+            catch (Exception ignore) {}
+        }
+    }
+
     public static boolean getBoolean(JsonObject obj, String name)
     {
         return getBooleanOrDefault(obj, name, false);
@@ -317,6 +394,16 @@ public class JsonUtils
         return null;
     }
 
+    public static void readBlockPosIfExists(JsonObject obj, String name, Consumer<BlockPos> consumer)
+    {
+        BlockPos pos = blockPosFromJson(obj, name);
+
+        if (pos != null)
+        {
+            consumer.accept(pos);
+        }
+    }
+
     public static boolean hasVec3d(JsonObject obj, String name)
     {
         return vec3dFromJson(obj, name) != null;
@@ -353,6 +440,16 @@ public class JsonUtils
         return null;
     }
 
+    public static void readVec3dIfExists(JsonObject obj, String name, Consumer<Vec3d> consumer)
+    {
+        Vec3d vec = vec3dFromJson(obj, name);
+
+        if (vec != null)
+        {
+            consumer.accept(vec);
+        }
+    }
+
     public static JsonArray stringListAsArray(List<String> list)
     {
         JsonArray arr = new JsonArray();
@@ -378,7 +475,7 @@ public class JsonUtils
         return list;
     }
 
-    public static void readObjectIfPresent(JsonElement el, String arrayName, Consumer<JsonObject> objectConsumer)
+    public static void readObjectIfExists(JsonElement el, String arrayName, Consumer<JsonObject> objectConsumer)
     {
         if (el.isJsonObject() == false)
         {
@@ -394,7 +491,7 @@ public class JsonUtils
         }
     }
 
-    public static void readArrayIfPresent(JsonElement el, String arrayName, Consumer<JsonArray> arrayConsumer)
+    public static void readArrayIfExists(JsonElement el, String arrayName, Consumer<JsonArray> arrayConsumer)
     {
         if (el.isJsonObject() == false)
         {
@@ -410,9 +507,9 @@ public class JsonUtils
         }
     }
 
-    public static void readArrayElementsIfPresent(JsonElement el, String arrayName, Consumer<JsonElement> elementConsumer)
+    public static void readArrayElementsIfExists(JsonElement el, String arrayName, Consumer<JsonElement> elementConsumer)
     {
-        readArrayIfPresent(el, arrayName, (arr) -> readArrayElements(arr, elementConsumer));
+        readArrayIfExists(el, arrayName, (arr) -> readArrayElements(arr, elementConsumer));
     }
 
     public static void readArrayElements(JsonArray arr, Consumer<JsonElement> elementConsumer)
@@ -427,7 +524,7 @@ public class JsonUtils
 
     public static void readArrayElementsIfObjects(JsonElement el, String arrayName, Consumer<JsonObject> elementConsumer)
     {
-        readArrayIfPresent(el, arrayName, (arr) -> readArrayElementsAsObjects(arr, elementConsumer));
+        readArrayIfExists(el, arrayName, (arr) -> readArrayElementsAsObjects(arr, elementConsumer));
     }
 
     public static void readArrayElementsAsObjects(JsonArray arr, Consumer<JsonObject> elementConsumer)

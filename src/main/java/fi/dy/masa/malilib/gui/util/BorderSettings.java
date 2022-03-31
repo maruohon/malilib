@@ -114,6 +114,6 @@ public class BorderSettings
     {
         this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", this.enabled);
         this.borderWidth = JsonUtils.getIntegerOrDefault(obj, "width", this.borderWidth);
-        JsonUtils.readArrayIfPresent(obj, "color", this.borderColor::fromJson);
+        JsonUtils.readArrayIfExists(obj, "color", this.borderColor::fromJson);
     }
 }

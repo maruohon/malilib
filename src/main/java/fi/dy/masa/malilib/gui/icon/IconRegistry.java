@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -73,10 +74,17 @@ public class IconRegistry
         return this.userIconsImmutable;
     }
 
-    public Icon getIconByKey(String key)
+    public Icon getIconByKeyOrEmpty(String key)
     {
         this.updateLists();
         return this.iconMap.getOrDefault(key, DefaultIcons.EMPTY);
+    }
+
+    @Nullable
+    public Icon getIconByKeyOrNull(String key)
+    {
+        this.updateLists();
+        return this.iconMap.get(key);
     }
 
     protected void updateLists()
@@ -132,7 +140,7 @@ public class IconRegistry
         this.dirty = false;
 
         JsonObject obj = el.getAsJsonObject();
-        JsonUtils.readArrayElementsIfPresent(obj, "custom_icons", this::readAndAddIcon);
+        JsonUtils.readArrayElementsIfExists(obj, "custom_icons", this::readAndAddIcon);
     }
 
     protected void readAndAddIcon(JsonElement el)

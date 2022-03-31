@@ -405,31 +405,24 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     protected void fromJson(JsonObject obj)
     {
-        this.setName(JsonUtils.getStringOrDefault(obj, "name", ""));
+        this.setName(JsonUtils.getStringOrDefault(obj, "name", "?"));
 
         if (JsonUtils.hasString(obj, "icon_name"))
         {
-            this.setIcon(Registry.ICON.getIconByKey(JsonUtils.getStringOrDefault(obj, "icon_name", "")));
+            this.setIcon(Registry.ICON.getIconByKeyOrNull(JsonUtils.getStringOrDefault(obj, "icon_name", "")));
         }
 
         this.setActionWidgetHoverText(JsonUtils.getString(obj, "hover_text"));
 
-        JsonUtils.readObjectIfPresent(obj, "text_settings", this.getTextSettings()::fromJson);
-
-        int color = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.getBackgroundRenderer().getNormalSettings().getColor());
-        this.getBackgroundRenderer().getNormalSettings().setColor(color);
-
-        color = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", this.getBackgroundRenderer().getHoverSettings().getColor());
-        this.getBackgroundRenderer().getHoverSettings().setColor(color);
-
-        JsonUtils.readObjectIfPresent(obj, "text_offset", this.textOffset::fromJson);
-        JsonUtils.readObjectIfPresent(obj, "icon_offset", this.iconOffset::fromJson);
-
-        this.iconScaleX = JsonUtils.getFloatOrDefault(obj, "icon_scale_x", this.iconScaleX);
-        this.iconScaleY = JsonUtils.getFloatOrDefault(obj, "icon_scale_y", this.iconScaleY);
-
-        JsonUtils.readArrayIfPresent(obj, "border_color", this.getBorderRenderer().getNormalSettings().getColor()::fromJson);
-        JsonUtils.readArrayIfPresent(obj, "border_color_hover", this.getBorderRenderer().getHoverSettings().getColor()::fromJson);
+        JsonUtils.readObjectIfExists(obj, "text_settings", this.getTextSettings()::fromJson);
+        JsonUtils.readIntegerIfExists(obj, "bg_color", this.getBackgroundRenderer().getNormalSettings()::setColor);
+        JsonUtils.readIntegerIfExists(obj, "bg_color_hover", this.getBackgroundRenderer().getHoverSettings()::setColor);
+        JsonUtils.readObjectIfExists(obj, "text_offset", this.textOffset::fromJson);
+        JsonUtils.readObjectIfExists(obj, "icon_offset", this.iconOffset::fromJson);
+        JsonUtils.readFloatIfExists(obj, "icon_scale_x", (v) -> this.iconScaleX = v);
+        JsonUtils.readFloatIfExists(obj, "icon_scale_y", (v) -> this.iconScaleY = v);
+        JsonUtils.readArrayIfExists(obj, "border_color", this.getBorderRenderer().getNormalSettings().getColor()::fromJson);
+        JsonUtils.readArrayIfExists(obj, "border_color_hover", this.getBorderRenderer().getHoverSettings().getColor()::fromJson);
 
         // FIXME
         String actionName = JsonUtils.getStringOrDefault(obj, "action_name", "?");

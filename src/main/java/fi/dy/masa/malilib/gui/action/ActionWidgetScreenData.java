@@ -51,7 +51,7 @@ public class ActionWidgetScreenData
         boolean closeScreenOnKeyRelease = JsonUtils.getBooleanOrDefault(obj, "close_on_key_release", false);
 
         ImmutableList.Builder<BaseActionExecutionWidget> builder = ImmutableList.builder();
-        JsonUtils.readArrayElementsIfPresent(obj, "widgets", (e) -> ActionWidgetScreenData.readAndAddWidget(e, builder));
+        JsonUtils.readArrayElementsIfExists(obj, "widgets", (e) -> ActionWidgetScreenData.readAndAddWidget(e, builder));
 
         return new ActionWidgetScreenData(builder.build(), closeScreenOnExecute, closeScreenOnKeyRelease);
     }

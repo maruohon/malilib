@@ -421,10 +421,10 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         this.scale = JsonUtils.getDoubleOrDefault(obj, "scale", 1.0);
         this.setSortIndex(JsonUtils.getIntegerOrDefault(obj, "sort_index", 100));
         this.setZ(JsonUtils.getFloatOrDefault(obj, "z", this.getZ()));
-        JsonUtils.readObjectIfPresent(obj, "text_settings", this.getTextSettings()::fromJson);
-        JsonUtils.readObjectIfPresent(obj, "bg", this.backgroundRenderer.getNormalSettings()::fromJson);
-        JsonUtils.readObjectIfPresent(obj, "border", this.borderRenderer.getNormalSettings()::fromJson);
-        JsonUtils.readArrayIfPresent(obj, "markers", this.getMarkerManager()::fromJson);
+        JsonUtils.readObjectIfExists(obj, "text_settings", this.getTextSettings()::fromJson);
+        JsonUtils.readObjectIfExists(obj, "bg", this.backgroundRenderer.getNormalSettings()::fromJson);
+        JsonUtils.readObjectIfExists(obj, "border", this.borderRenderer.getNormalSettings()::fromJson);
+        JsonUtils.readArrayIfExists(obj, "markers", this.getMarkerManager()::fromJson);
 
         if (JsonUtils.hasString(obj, "screen_location"))
         {
