@@ -5,9 +5,11 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class MultiLineTextRenderSettings extends TextRenderSettings
 {
+    protected static final int DEFAULT_ODD_ROW_BG_COLOR = 0x70A0A0A0;
+
     protected boolean oddEvenBackgroundEnabled;
     protected boolean evenWidthBackgroundEnabled;
-    protected int oddRowBackgroundColor = 0x70A0A0A0;
+    protected int oddRowBackgroundColor = DEFAULT_ODD_ROW_BG_COLOR;
 
     public MultiLineTextRenderSettings()
     {
@@ -63,14 +65,46 @@ public class MultiLineTextRenderSettings extends TextRenderSettings
         this.oddRowBackgroundColor = other.oddRowBackgroundColor;
     }
 
+    /**
+     * @return true if any of the values are not at the default values
+     */
+    @Override
+    public boolean isModified()
+    {
+        return super.isModified() ||
+               this.oddEvenBackgroundEnabled ||
+               this.evenWidthBackgroundEnabled ||
+               this.oddRowBackgroundColor != DEFAULT_ODD_ROW_BG_COLOR;
+    }
+
+    public void writeToJsonIfModified(JsonObject obj, String keyName)
+    {
+        if (this.isModified())
+        {
+            obj.add(keyName, this.toJsonModifiedOnly());
+        }
+    }
+
     @Override
     public JsonObject toJson()
     {
         JsonObject obj = super.toJson();
 
         obj.addProperty("bg_odd_even", this.oddEvenBackgroundEnabled);
-        obj.addProperty("bg_even_width", this.oddEvenBackgroundEnabled);
+        obj.addProperty("bg_even_width", this.evenWidthBackgroundEnabled);
         obj.addProperty("bg_color_odd", this.oddRowBackgroundColor);
+
+        return obj;
+    }
+
+    @Override
+    public JsonObject toJsonModifiedOnly()
+    {
+        JsonObject obj = super.toJsonModifiedOnly();
+
+        if (this.oddEvenBackgroundEnabled)   { obj.addProperty("bg_odd_even", this.oddEvenBackgroundEnabled); }
+        if (this.evenWidthBackgroundEnabled) { obj.addProperty("bg_even_width", this.evenWidthBackgroundEnabled); }
+        if (this.oddRowBackgroundColor != DEFAULT_ODD_ROW_BG_COLOR) { obj.addProperty("bg_color_odd", this.oddRowBackgroundColor); }
 
         return obj;
     }

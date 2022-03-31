@@ -5,6 +5,7 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class MarkerManager<T>
@@ -45,6 +46,14 @@ public class MarkerManager<T>
         if (obj != null)
         {
             this.markers.add(obj);
+        }
+    }
+
+    public void writeToJsonIfHasData(JsonObject obj, String keyName)
+    {
+        if (this.markers.isEmpty() == false)
+        {
+            obj.add(keyName, this.toJson());
         }
     }
 

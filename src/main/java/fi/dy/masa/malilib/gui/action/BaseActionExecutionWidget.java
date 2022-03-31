@@ -24,9 +24,13 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseActionExecutionWidget extends ContainerWidget
 {
+    protected static final int DEFAULT_NORMAL_BORDER_COLOR = 0xFFFFFFFF;
+    protected static final int DEFAULT_HOVER_BORDER_COLOR = 0xFFE0E020;
+    protected static final int DEFAULT_BACKGROUND_COLOR = 0x00000000;
+
     protected final List<StyledTextLine> widgetHoverText = new ArrayList<>(1);
     protected final List<StyledTextLine> combinedHoverText = new ArrayList<>(1);
-    protected final BorderSettings editedBorderSettings = new BorderSettings(3, 0xFFFF8000);
+    protected final BorderSettings editedBorderSettings = new BorderSettings(0xFFFF8000, 3);
     @Nullable protected NamedAction action;
     @Nullable protected String hoverText;
     @Nullable protected ActionWidgetContainer container;
@@ -41,11 +45,10 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
     {
         super(40, 20);
 
-        this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFFFFFFFF);
-        this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(2, 0xFFE0E020);
-
-        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0x00000000);
-        this.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, 0x00000000);
+        this.getBorderRenderer().getNormalSettings().setDefaults(true, 1, DEFAULT_NORMAL_BORDER_COLOR);
+        this.getBorderRenderer().getHoverSettings().setDefaults(true, 2, DEFAULT_HOVER_BORDER_COLOR);
+        this.getBackgroundRenderer().getNormalSettings().setDefaultEnabledAndColor(true, DEFAULT_BACKGROUND_COLOR);
+        this.getBackgroundRenderer().getHoverSettings().setDefaultEnabledAndColor(true, DEFAULT_BACKGROUND_COLOR);
 
         this.getHoverInfoFactory().setTextLineProvider("widget_hover_tip", this::getActionWidgetHoverTextLines);
     }
@@ -358,27 +361,19 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         obj.addProperty("type", this.getType().name().toLowerCase(Locale.ROOT));
 
-        if (org.apache.commons.lang3.StringUtils.isBlank(this.name) == false)
-        {
-            obj.addProperty("name", this.name);
-        }
+        if (org.apache.commons.lang3.StringUtils.isBlank(this.name) == false) { obj.addProperty("name", this.name); }
+        if (org.apache.commons.lang3.StringUtils.isBlank(this.hoverText) == false) { obj.addProperty("hover_text", this.hoverText); }
+        if (this.icon != null) { obj.addProperty("icon_name", IconRegistry.getKeyForIcon(this.icon)); }
 
-        Icon icon = this.getIcon();
-
-        if (icon != null)
-        {
-            obj.addProperty("icon_name", IconRegistry.getKeyForIcon(icon));
-        }
-
-        obj.addProperty("bg_color", this.getBackgroundRenderer().getNormalSettings().getColor());
-        obj.addProperty("bg_color_hover", this.getBackgroundRenderer().getHoverSettings().getColor());
-        obj.addProperty("icon_scale_x", this.iconScaleX);
-        obj.addProperty("icon_scale_y", this.iconScaleY);
-        obj.add("border_color", this.getBorderRenderer().getNormalSettings().getColor().toJson());
-        obj.add("border_color_hover", this.getBorderRenderer().getHoverSettings().getColor().toJson());
-        obj.add("icon_offset", this.iconOffset.toJson());
-        obj.add("text_offset", this.textOffset.toJson());
-        obj.add("text_settings", this.getTextSettings().toJson());
+        this.getBorderRenderer().getNormalSettings().writeToJsonIfModified(obj, "border_normal");
+        this.getBorderRenderer().getHoverSettings().writeToJsonIfModified(obj, "border_hover");
+        this.getBackgroundRenderer().getNormalSettings().writeToJsonIfModified(obj, "bg_color");
+        this.getBackgroundRenderer().getHoverSettings().writeToJsonIfModified(obj, "bg_color_hover");
+        this.getTextSettings().writeToJsonIfModified(obj, "text_settings");
+        this.iconOffset.writeToJsonIfModified(obj, "icon_offset");
+        this.textOffset.writeToJsonIfModified(obj, "text_offset");
+        if (this.iconScaleX != 1.0F) { obj.addProperty("icon_scale_x", this.iconScaleX); }
+        if (this.iconScaleY != 1.0f) { obj.addProperty("icon_scale_y", this.iconScaleY); }
 
         if (this.action != null)
         {
@@ -393,11 +388,6 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
                 obj.add("action_data", actionData);
             }
             */
-        }
-
-        if (org.apache.commons.lang3.StringUtils.isBlank(this.hoverText) == false)
-        {
-            obj.addProperty("hover_text", this.hoverText);
         }
 
         return obj;
@@ -421,8 +411,8 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         JsonUtils.readObjectIfExists(obj, "icon_offset", this.iconOffset::fromJson);
         JsonUtils.readFloatIfExists(obj, "icon_scale_x", (v) -> this.iconScaleX = v);
         JsonUtils.readFloatIfExists(obj, "icon_scale_y", (v) -> this.iconScaleY = v);
-        JsonUtils.readArrayIfExists(obj, "border_color", this.getBorderRenderer().getNormalSettings().getColor()::fromJson);
-        JsonUtils.readArrayIfExists(obj, "border_color_hover", this.getBorderRenderer().getHoverSettings().getColor()::fromJson);
+        JsonUtils.readObjectIfExists(obj, "border_normal", this.getBorderRenderer().getNormalSettings()::fromJson);
+        JsonUtils.readObjectIfExists(obj, "border_hover", this.getBorderRenderer().getHoverSettings()::fromJson);
 
         // FIXME
         String actionName = JsonUtils.getStringOrDefault(obj, "action_name", "?");

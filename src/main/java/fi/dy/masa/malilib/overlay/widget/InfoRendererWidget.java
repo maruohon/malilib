@@ -396,16 +396,17 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         JsonObject obj = super.toJson();
 
         obj.addProperty("name", this.getName());
-        obj.addProperty("render_name", this.renderName);
-        obj.addProperty("above_screen", this.getRenderAboveScreen());
         obj.addProperty("screen_location", this.getScreenLocation().getName());
-        obj.addProperty("scale", this.scale);
-        obj.addProperty("sort_index", this.getSortIndex());
-        obj.addProperty("z", this.getZ());
-        obj.add("text_settings", this.getTextSettings().toJson());
-        obj.add("bg", this.backgroundRenderer.getNormalSettings().toJson());
-        obj.add("border", this.borderRenderer.getNormalSettings().toJson());
-        obj.add("markers", this.markerManager.toJson());
+
+        if (this.renderName) { obj.addProperty("render_name", this.renderName); }
+        if (this.getRenderAboveScreen()) { obj.addProperty("above_screen", this.getRenderAboveScreen()); }
+        if (this.getZ() != 0.0F) { obj.addProperty("z", this.getZ()); }
+        if (this.scale != 1.0) { obj.addProperty("scale", this.scale); }
+        if (this.sortIndex != 100) { obj.addProperty("sort_index", this.getSortIndex()); }
+        this.getTextSettings().writeToJsonIfModified(obj, "text_settings");
+        this.backgroundRenderer.getNormalSettings().writeToJsonIfModified(obj, "bg");
+        this.borderRenderer.getNormalSettings().writeToJsonIfModified(obj, "border");
+        this.markerManager.writeToJsonIfHasData(obj, "markers");
 
         return obj;
     }

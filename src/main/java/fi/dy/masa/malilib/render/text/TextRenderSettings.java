@@ -120,44 +120,43 @@ public class TextRenderSettings
         this.textColor = other.textColor;
     }
 
+    public boolean isModified()
+    {
+        return this.backgroundEnabled ||
+               this.useHoverTextColor ||
+               this.textShadowEnabled == false ||
+               this.lineHeight != TextRenderer.INSTANCE.getLineHeight() ||
+               this.backgroundColor != DEFAULT_BG_COLOR ||
+               this.textColor != DEFAULT_TEXT_COLOR ||
+               this.hoveredTextColor != DEFAULT_HOVERED_TEXT_COLOR;
+    }
+
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
 
-        if (this.backgroundEnabled)
-        {
-            obj.addProperty("bg_enabled", this.backgroundEnabled);
-        }
+        obj.addProperty("bg_enabled", this.backgroundEnabled);
+        obj.addProperty("text_shadow", this.textShadowEnabled);
+        obj.addProperty("bg_color", this.backgroundColor);
+        obj.addProperty("text_color", this.textColor);
+        obj.addProperty("hover_text_color", this.hoveredTextColor);
+        obj.addProperty("line_height", this.lineHeight);
+        obj.addProperty("use_hover_text_color", this.useHoverTextColor);
 
-        if (this.textShadowEnabled == false)
-        {
-            obj.addProperty("text_shadow", this.textShadowEnabled);
-        }
+        return obj;
+    }
 
-        if (this.backgroundColor != DEFAULT_BG_COLOR)
-        {
-            obj.addProperty("bg_color", this.backgroundColor);
-        }
+    public JsonObject toJsonModifiedOnly()
+    {
+        JsonObject obj = new JsonObject();
 
-        if (this.textColor != DEFAULT_TEXT_COLOR)
-        {
-            obj.addProperty("text_color", this.textColor);
-        }
-
-        if (this.hoveredTextColor != DEFAULT_HOVERED_TEXT_COLOR)
-        {
-            obj.addProperty("hover_text_color", this.hoveredTextColor);
-        }
-
-        if (this.lineHeight != TextRenderer.INSTANCE.getLineHeight())
-        {
-            obj.addProperty("line_height", this.lineHeight);
-        }
-
-        if (this.useHoverTextColor)
-        {
-            obj.addProperty("use_hover_text_color", this.useHoverTextColor);
-        }
+        if (this.backgroundEnabled) { obj.addProperty("bg_enabled", this.backgroundEnabled); }
+        if (this.textShadowEnabled == false) { obj.addProperty("text_shadow", this.textShadowEnabled); }
+        if (this.backgroundColor != DEFAULT_BG_COLOR) { obj.addProperty("bg_color", this.backgroundColor); }
+        if (this.textColor != DEFAULT_TEXT_COLOR) { obj.addProperty("text_color", this.textColor); }
+        if (this.hoveredTextColor != DEFAULT_HOVERED_TEXT_COLOR) { obj.addProperty("hover_text_color", this.hoveredTextColor); }
+        if (this.lineHeight != TextRenderer.INSTANCE.getLineHeight()) { obj.addProperty("line_height", this.lineHeight); }
+        if (this.useHoverTextColor) { obj.addProperty("use_hover_text_color", this.useHoverTextColor); }
 
         return obj;
     }

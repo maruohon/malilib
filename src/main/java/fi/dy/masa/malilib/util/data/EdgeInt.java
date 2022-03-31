@@ -4,11 +4,16 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class EdgeInt
 {
+    protected int defaultLeft;
+    protected int defaultRight;
+    protected int defaultTop;
+    protected int defaultBottom;
     protected int left;
     protected int right;
     protected int top;
@@ -26,6 +31,10 @@ public class EdgeInt
 
     public EdgeInt(int top, int right, int bottom, int left)
     {
+        this.defaultTop = top;
+        this.defaultRight = right;
+        this.defaultBottom = bottom;
+        this.defaultLeft = left;
         this.top = top;
         this.right = right;
         this.bottom = bottom;
@@ -84,6 +93,34 @@ public class EdgeInt
     public EdgeInt setFrom(EdgeInt other)
     {
         return this.setAll(other.top, other.right, other.bottom, other.left);
+    }
+
+    /**
+     * Sets the default values used for checking if the values have later been modified,
+     * and if the values need to be serialized.
+     * Also sets the "normal" values.
+     */
+    public EdgeInt setAllDefaults(int value)
+    {
+        return this.setDefaults(value, value, value, value);
+    }
+
+    /**
+     * Sets the default values used for checking if the values have later been modified,
+     * and if the values need to be serialized.
+     * Also sets the "normal" values.
+     */
+    public EdgeInt setDefaults(int top, int right, int bottom, int left)
+    {
+        this.defaultTop = top;
+        this.defaultRight = right;
+        this.defaultBottom = bottom;
+        this.defaultLeft = left;
+        this.top = top;
+        this.right = right;
+        this.bottom = bottom;
+        this.left = left;
+        return this;
     }
 
     public EdgeInt setAll(int value)
@@ -151,14 +188,30 @@ public class EdgeInt
                                          this.top, this.left, this.right, this.bottom));
     }
 
+    public boolean isModified()
+    {
+        return this.left != this.defaultLeft ||
+               this.right != this.defaultRight ||
+               this.top != this.defaultTop ||
+               this.bottom != this.defaultBottom;
+    }
+
+    public void writeToJsonIfModified(JsonObject obj, String keyName)
+    {
+        if (this.isModified())
+        {
+            obj.add(keyName, this.toJson());
+        }
+    }
+
     public JsonArray toJson()
     {
         JsonArray arr = new JsonArray();
 
-        arr.add(this.getTop());
-        arr.add(this.getRight());
-        arr.add(this.getBottom());
-        arr.add(this.getLeft());
+        arr.add(this.top);
+        arr.add(this.right);
+        arr.add(this.bottom);
+        arr.add(this.left);
 
         return arr;
     }
@@ -169,8 +222,8 @@ public class EdgeInt
         {
             try
             {
-                // Read to locals first, so that we know that they all were able to be read as ints
-                // before changing any of the original values.
+                // Read to locals first, so that we know that they all were successfully
+                // read as int before changing any of the original values.
                 int top    = arr.get(0).getAsInt();
                 int right  = arr.get(1).getAsInt();
                 int bottom = arr.get(2).getAsInt();

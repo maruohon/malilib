@@ -78,6 +78,25 @@ public class ElementOffset
         return this;
     }
 
+    /**
+     * @return true if any of the values are not at the default values
+     */
+    public boolean isModified()
+    {
+        return this.xOffset != 0 ||
+               this.yOffset != 0 ||
+               this.centerHorizontally ||
+               this.centerVertically == false;
+    }
+
+    public void writeToJsonIfModified(JsonObject obj, String keyName)
+    {
+        if (this.isModified())
+        {
+            obj.add(keyName, this.toJsonModifiedOnly());
+        }
+    }
+
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
@@ -90,11 +109,23 @@ public class ElementOffset
         return obj;
     }
 
+    public JsonObject toJsonModifiedOnly()
+    {
+        JsonObject obj = new JsonObject();
+
+        if (this.centerHorizontally)        { obj.addProperty("center_h", this.centerHorizontally); }
+        if (this.centerVertically == false) { obj.addProperty("center_v", this.centerVertically); }
+        if (this.xOffset != 0) { obj.addProperty("off_x", this.xOffset); }
+        if (this.yOffset != 0) { obj.addProperty("off_y", this.yOffset); }
+
+        return obj;
+    }
+
     public void fromJson(JsonObject obj)
     {
         this.centerHorizontally = JsonUtils.getBooleanOrDefault(obj, "center_h", false);
         this.centerVertically = JsonUtils.getBooleanOrDefault(obj, "center_v", true);
-        this.xOffset = JsonUtils.getIntegerOrDefault(obj, "off_x", 4);
+        this.xOffset = JsonUtils.getIntegerOrDefault(obj, "off_x", 0);
         this.yOffset = JsonUtils.getIntegerOrDefault(obj, "off_y", 0);
     }
 

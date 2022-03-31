@@ -10,8 +10,10 @@ public class BorderSettings
 {
     protected final EdgeInt borderColor;
     @Nullable protected EventListener sizeChangeListener;
+    protected boolean defaultEnabled;
     protected boolean enabled;
-    protected int borderWidth = 1;
+    protected int defaultBorderWidth;
+    protected int borderWidth;
 
     public BorderSettings()
     {
@@ -20,18 +22,35 @@ public class BorderSettings
 
     public BorderSettings(int defaultColor)
     {
-        this.borderColor = new EdgeInt(defaultColor);
+        this(defaultColor, 0);
     }
 
-    public BorderSettings(int borderWidth, int defaultColor)
+    public BorderSettings(int defaultColor, int borderWidth)
     {
-        this.setBorderWidth(borderWidth);
         this.borderColor = new EdgeInt(defaultColor);
+        this.setBorderWidth(borderWidth);
+        this.defaultEnabled = this.enabled;
+        this.defaultBorderWidth = this.borderWidth;
     }
 
     public BorderSettings setSizeChangeListener(@Nullable EventListener sizeChangeListener)
     {
         this.sizeChangeListener = sizeChangeListener;
+        return this;
+    }
+
+    /**
+     * Sets the default enabled and borderWidth value, which are used for checking
+     * if the values have changed later on, and if the values should get serialized
+     * in writeToJsonIfModified(). This also sets the current values.
+     */
+    public BorderSettings setDefaults(boolean enabled, int borderWidth, int borderColor)
+    {
+        this.defaultEnabled = enabled;
+        this.enabled = enabled;
+        this.defaultBorderWidth = borderWidth;
+        this.borderWidth = borderWidth;
+        this.borderColor.setAllDefaults(borderColor);
         return this;
     }
 
@@ -101,12 +120,48 @@ public class BorderSettings
         }
     }
 
+    public boolean isModified()
+    {
+        return this.defaultEnabled != this.enabled ||
+               this.defaultBorderWidth != this.borderWidth ||
+               this.borderColor.isModified();
+    }
+
+    public void writeToJsonIfModified(JsonObject obj, String keyName)
+    {
+        if (this.isModified())
+        {
+            obj.add(keyName, this.toJsonModifiedOnly());
+        }
+    }
+
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
-        obj.addProperty("enabled", this.isEnabled());
+
+        obj.addProperty("enabled", this.enabled);
         obj.addProperty("width", this.borderWidth);
         obj.add("color", this.borderColor.toJson());
+
+        return obj;
+    }
+
+    public JsonObject toJsonModifiedOnly()
+    {
+        JsonObject obj = new JsonObject();
+
+        if (this.enabled != this.defaultEnabled)
+        {
+            obj.addProperty("enabled", this.enabled);
+        }
+
+        if (this.borderWidth != this.defaultBorderWidth)
+        {
+            obj.addProperty("width", this.borderWidth);
+        }
+
+        this.borderColor.writeToJsonIfModified(obj, "color");
+
         return obj;
     }
 
