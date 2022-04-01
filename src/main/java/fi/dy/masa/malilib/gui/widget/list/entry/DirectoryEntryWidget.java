@@ -62,6 +62,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         this.fullNameText = StyledTextLine.raw(this.getDisplayName());
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, this.isOdd ? 0xFF202020 : 0xFF303030);
         this.getBackgroundRenderer().getHoverSettings().setColor(0xFF404040);
+        this.getBorderRenderer().getHoverSettings().setEnabled(true);
 
         int textXOffset = 3;
         @Nullable MultiIcon icon = iconProvider != null ? iconProvider.getIconForEntry(entry) : null;

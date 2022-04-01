@@ -67,39 +67,55 @@ public class TextRenderSettings
         return this.lineHeight;
     }
 
-    public void setBackgroundEnabled(boolean backgroundEnabled)
+    public TextRenderSettings setBackgroundEnabled(boolean backgroundEnabled)
     {
         this.backgroundEnabled = backgroundEnabled;
+        return this;
     }
 
-    public void setTextShadowEnabled(boolean textShadowEnabled)
+    public TextRenderSettings setTextShadowEnabled(boolean textShadowEnabled)
     {
         this.textShadowEnabled = textShadowEnabled;
+        return this;
     }
 
-    public void setUseHoverTextColor(boolean useHoverTextColor)
+    public TextRenderSettings setUseHoverTextColor(boolean useHoverTextColor)
     {
         this.useHoverTextColor = useHoverTextColor;
+        return this;
     }
 
-    public void setBackgroundColor(int color)
+    public TextRenderSettings setBackgroundColor(int color)
     {
         this.backgroundColor = color;
+        return this;
     }
 
-    public void setTextColor(int color)
+    public TextRenderSettings setTextColor(int color)
     {
         this.textColor = color;
+        return this;
     }
 
-    public void setHoveredTextColor(int hoveredTextColor)
+    public TextRenderSettings setHoveredTextColor(int hoveredTextColor)
     {
         this.hoveredTextColor = hoveredTextColor;
+        return this;
     }
 
-    public void setLineHeight(int lineHeight)
+    public TextRenderSettings setLineHeight(int lineHeight)
     {
         this.lineHeight = lineHeight;
+        return this;
+    }
+
+    public TextRenderSettings setFrom(TextRenderSettings other)
+    {
+        this.backgroundEnabled = other.backgroundEnabled;
+        this.textShadowEnabled = other.textShadowEnabled;
+        this.backgroundColor = other.backgroundColor;
+        this.textColor = other.textColor;
+        return this;
     }
 
     public void toggleUseBackground()
@@ -110,14 +126,6 @@ public class TextRenderSettings
     public void toggleUseTextShadow()
     {
         this.textShadowEnabled = ! this.textShadowEnabled;
-    }
-
-    public void setFrom(TextRenderSettings other)
-    {
-        this.backgroundEnabled = other.backgroundEnabled;
-        this.textShadowEnabled = other.textShadowEnabled;
-        this.backgroundColor = other.backgroundColor;
-        this.textColor = other.textColor;
     }
 
     public boolean isModified()

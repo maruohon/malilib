@@ -22,14 +22,13 @@ public class BorderSettings
 
     public BorderSettings(int defaultColor)
     {
-        this(defaultColor, 0);
+        this(defaultColor, 1);
     }
 
     public BorderSettings(int defaultColor, int borderWidth)
     {
         this.borderColor = new EdgeInt(defaultColor);
-        this.setBorderWidth(borderWidth);
-        this.defaultEnabled = this.enabled;
+        this.borderWidth = borderWidth;
         this.defaultBorderWidth = this.borderWidth;
     }
 
