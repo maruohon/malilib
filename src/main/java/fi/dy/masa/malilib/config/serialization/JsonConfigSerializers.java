@@ -10,6 +10,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig.BooleanAndDouble;
+import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndIntConfig.BooleanAndInt;
 import fi.dy.masa.malilib.config.option.DualColorConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
@@ -246,14 +250,96 @@ public class JsonConfigSerializers
             else
             {
                 // Make sure to clear the old value in any case
-                config.loadValueFromConfig(Vec2i.ZERO);
+                config.loadValueFromConfig(config.getDefaultValue());
                 MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
             // Make sure to clear the old value in any case
-            config.loadValueFromConfig(Vec2i.ZERO);
+            config.loadValueFromConfig(config.getDefaultValue());
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+        }
+    }
+
+    public static JsonElement saveBooleanAndIntConfig(BooleanAndIntConfig config)
+    {
+        JsonObject obj = new JsonObject();
+        BooleanAndInt value = config.getValue();
+
+        obj.addProperty("b", value.booleanValue);
+        obj.addProperty("i", value.intValue);
+
+        return obj;
+    }
+
+    public static void loadBooleanAndIntConfig(BooleanAndIntConfig config, JsonElement element, String configName)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+
+                if (JsonUtils.hasBoolean(obj, "b") && JsonUtils.hasInteger(obj, "i"))
+                {
+                    boolean booleanValue = JsonUtils.getBoolean(obj, "b");
+                    int intValue = JsonUtils.getInteger(obj, "i");
+                    config.loadValueFromConfig(new BooleanAndInt(booleanValue, intValue));
+                }
+            }
+            else
+            {
+                // Make sure to clear the old value in any case
+                config.loadValueFromConfig(config.getDefaultValue());
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
+            }
+        }
+        catch (Exception e)
+        {
+            // Make sure to clear the old value in any case
+            config.loadValueFromConfig(config.getDefaultValue());
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+        }
+    }
+
+    public static JsonElement saveBooleanAndDoubleConfig(BooleanAndDoubleConfig config)
+    {
+        JsonObject obj = new JsonObject();
+        BooleanAndDouble value = config.getValue();
+
+        obj.addProperty("b", value.booleanValue);
+        obj.addProperty("d", value.doubleValue);
+
+        return obj;
+    }
+
+    public static void loadBooleanAndDoubleConfig(BooleanAndDoubleConfig config, JsonElement element, String configName)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+
+                if (JsonUtils.hasBoolean(obj, "b") && JsonUtils.hasDouble(obj, "d"))
+                {
+                    boolean booleanValue = JsonUtils.getBoolean(obj, "b");
+                    double doubleValue = JsonUtils.getDouble(obj, "d");
+                    config.loadValueFromConfig(new BooleanAndDouble(booleanValue, doubleValue));
+                }
+            }
+            else
+            {
+                // Make sure to clear the old value in any case
+                config.loadValueFromConfig(config.getDefaultValue());
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
+            }
+        }
+        catch (Exception e)
+        {
+            // Make sure to clear the old value in any case
+            config.loadValueFromConfig(config.getDefaultValue());
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
     }

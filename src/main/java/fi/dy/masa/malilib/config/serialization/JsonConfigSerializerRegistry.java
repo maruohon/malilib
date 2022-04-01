@@ -5,6 +5,8 @@ import java.util.HashMap;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
@@ -106,6 +108,8 @@ public class JsonConfigSerializerRegistry
         this.registerSerializers(StringConfig.class,    (c) -> new JsonPrimitive(c.getValue()),         (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        d::getAsString, d, n));
 
         this.registerSerializers(BlackWhiteListConfig.class,    JsonConfigSerializers::saveBlackWhiteListConfig,    JsonConfigSerializers::loadBlackWhiteListConfig);
+        this.registerSerializers(BooleanAndIntConfig.class,     JsonConfigSerializers::saveBooleanAndIntConfig,     JsonConfigSerializers::loadBooleanAndIntConfig);
+        this.registerSerializers(BooleanAndDoubleConfig.class,  JsonConfigSerializers::saveBooleanAndDoubleConfig,  JsonConfigSerializers::loadBooleanAndDoubleConfig);
         this.registerSerializers(DualColorConfig.class,         JsonConfigSerializers::saveDualColorConfig,         JsonConfigSerializers::loadDualColorConfig);
         this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::saveHotkeyedBooleanConfig,   JsonConfigSerializers::loadHotkeyedBooleanConfig);
         this.registerSerializers(OptionalDirectoryConfig.class, JsonConfigSerializers::saveOptionalDirectoryConfig, JsonConfigSerializers::loadOptionalDirectoryConfig);

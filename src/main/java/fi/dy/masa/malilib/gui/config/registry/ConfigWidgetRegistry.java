@@ -4,6 +4,8 @@ import java.util.HashMap;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.group.ExpandableConfigGroup;
 import fi.dy.masa.malilib.config.group.PopupConfigGroup;
+import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
@@ -32,6 +34,8 @@ import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.gui.config.MissingConfigTypeFactory;
 import fi.dy.masa.malilib.gui.config.NestedConfigWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BlackWhiteListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanAndDoubleConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanAndIntConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.CustomHotkeyEntryWidget;
@@ -113,6 +117,8 @@ public class ConfigWidgetRegistry
 
         this.registerConfigWidgetFactory(BlockListConfig.class,         BlockListConfigWidget::new);
         this.registerConfigWidgetFactory(BooleanConfig.class,           BooleanConfigWidget::new);
+        this.registerConfigWidgetFactory(BooleanAndIntConfig.class,     BooleanAndIntConfigWidget::new);
+        this.registerConfigWidgetFactory(BooleanAndDoubleConfig.class,  BooleanAndDoubleConfigWidget::new);
         this.registerConfigWidgetFactory(ColorConfig.class,             ColorConfigWidget::new);
         this.registerConfigWidgetFactory(CustomHotkeyDefinition.class,  CustomHotkeyEntryWidget::new);
         this.registerConfigWidgetFactory(DirectoryConfig.class,         DirectoryConfigWidget::new);

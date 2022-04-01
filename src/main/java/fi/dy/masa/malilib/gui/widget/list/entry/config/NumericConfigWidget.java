@@ -81,27 +81,34 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
     {
         super.updateSubWidgetPositions();
 
-        int x = this.getElementsStartPosition();
         int y = this.getY();
-        int elementWidth = this.getElementWidth();
         boolean enabled = this.config.isLocked() == false;
 
         this.sliderWidget.setEnabled(enabled);
+        this.textField.setEnabled(enabled);
+        this.valueAdjustButton.setEnabled(enabled);
+
+        this.updateNumberWidgetPositions();
+
+        this.valueAdjustButton.setPosition(this.textField.getRight() + 2, y + 3);
+
+        this.sliderToggleButton.setPosition(this.valueAdjustButton.getRight() + 2, y + 3);
+        this.sliderToggleButton.setEnabled(this.config.allowSlider());
+
+        this.resetButton.setPosition(this.sliderToggleButton.getRight() + 4, y + 1);
+    }
+
+    protected void updateNumberWidgetPositions()
+    {
+        int x = this.getElementsStartPosition();
+        int y = this.getY();
+        int elementWidth = this.getElementWidth();
+
         this.sliderWidget.setPosition(x, y + 1);
         this.sliderWidget.setWidth(elementWidth - 36);
 
-        this.textField.setEnabled(enabled);
         this.textField.setPosition(x, y + 3);
         this.textField.setWidth(elementWidth - 36);
-
-        this.valueAdjustButton.setEnabled(enabled);
-        this.valueAdjustButton.setPosition(this.textField.getRight() + 2, y + 3);
-
-        x += elementWidth - 16;
-        this.sliderToggleButton.setPosition(x, y + 3);
-        this.sliderToggleButton.setEnabled(this.config.allowSlider());
-
-        this.resetButton.setPosition(x + 20, y + 1);
     }
 
     @Override
