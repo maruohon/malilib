@@ -1,20 +1,21 @@
 package fi.dy.masa.malilib.overlay.message;
 
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
-import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.BaseGenericConfig;
 import fi.dy.masa.malilib.config.value.ScreenLocation;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.BooleanStorage;
 
 public class MessageUtils
 {
@@ -106,8 +107,9 @@ public class MessageUtils
         MessageDispatcher.generic(5000).fadeOut(500).customHotbar().translate(translationKey, args);
     }
 
-    public static void printBooleanConfigToggleMessage(MessageOutput type, BooleanConfig config,
-                                                       @Nullable Function<BooleanConfig, String> messageFactory)
+    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
+    void printBooleanConfigToggleMessage(MessageOutput type, CFG config,
+                                         @Nullable BooleanConfigMessageFactory messageFactory)
     {
         String msg = MessageHelpers.getBooleanConfigToggleMessage(config, messageFactory);
 

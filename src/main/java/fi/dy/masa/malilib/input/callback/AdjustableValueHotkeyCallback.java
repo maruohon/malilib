@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.util.data.DoubleStorage;
@@ -37,7 +38,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
     @Nullable protected BooleanSupplier enabledCondition;
     @Nullable protected HotkeyCallback callback;
     @Nullable protected Action keyAction;
-    @Nullable protected Function<BooleanConfig, String> toggleMessageFactory;
+    @Nullable protected BooleanConfigMessageFactory toggleMessageFactory;
     protected boolean reverseDirection;
     protected boolean triggerAlwaysOnRelease;
     protected boolean valueAdjusted;
@@ -81,7 +82,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         return this;
     }
 
-    public AdjustableValueHotkeyCallback setToggleMessageFactory(@Nullable Function<BooleanConfig, String> toggleMessageFactory)
+    public AdjustableValueHotkeyCallback setToggleMessageFactory(@Nullable BooleanConfigMessageFactory toggleMessageFactory)
     {
         this.toggleMessageFactory = toggleMessageFactory;
         return this;

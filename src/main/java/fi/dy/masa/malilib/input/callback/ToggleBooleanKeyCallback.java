@@ -1,15 +1,15 @@
 package fi.dy.masa.malilib.input.callback;
 
-import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
+import fi.dy.masa.malilib.util.data.BooleanStorage;
 
 public class ToggleBooleanKeyCallback implements HotkeyCallback
 {
-    protected final BooleanConfig config;
+    protected final BooleanStorage config;
 
-    public ToggleBooleanKeyCallback(BooleanConfig config)
+    public ToggleBooleanKeyCallback(BooleanStorage config)
     {
         this.config = config;
     }

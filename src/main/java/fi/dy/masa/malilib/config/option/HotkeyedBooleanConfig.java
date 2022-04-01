@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.config.option;
 
-import java.util.function.Function;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.action.Action;
 import fi.dy.masa.malilib.action.BooleanToggleAction;
@@ -9,6 +8,7 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
+import fi.dy.masa.malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -63,7 +63,7 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     /**
      * This will replace the default hotkey callback with the variant that takes in the message factory
      */
-    public void setSpecialToggleMessageFactory(@Nullable Function<BooleanConfig, String> messageFactory)
+    public void setSpecialToggleMessageFactory(@Nullable BooleanConfigMessageFactory messageFactory)
     {
         this.toggleAction = BooleanToggleAction.of(this, messageFactory, this.keyBind.getSettings()::getMessageType);
         this.keyBind.setCallback(HotkeyCallback.of(this.toggleAction));

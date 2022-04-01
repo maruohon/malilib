@@ -1,10 +1,11 @@
 package fi.dy.masa.malilib.overlay.message;
 
 import java.util.Locale;
-import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.BaseGenericConfig;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.BooleanStorage;
 
 public class MessageHelpers
 {
@@ -70,8 +71,8 @@ public class MessageHelpers
         return capitalize ? str.toUpperCase(Locale.ROOT) : str;
     }
 
-    public static String getBooleanConfigToggleMessage(BooleanConfig config,
-                                                       @Nullable Function<BooleanConfig, String> messageFactory)
+    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
+    String getBooleanConfigToggleMessage(CFG config, @Nullable BooleanConfigMessageFactory messageFactory)
     {
         boolean newValue = config.getBooleanValue();
         String message;
@@ -90,7 +91,7 @@ public class MessageHelpers
         }
         else if (messageFactory != null)
         {
-            message = messageFactory.apply(config);
+            message = messageFactory.getMessage(config);
         }
         else
         {
@@ -100,10 +101,41 @@ public class MessageHelpers
         return message;
     }
 
-    public static String getBasicBooleanConfigToggleMessage(BooleanConfig config)
+    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
+    String getBasicBooleanConfigToggleMessage(CFG config)
     {
         String msgKey = config.getBooleanValue() ? "malilib.message.info.toggled_config_on" :
                                                    "malilib.message.info.toggled_config_off";
         return StringUtils.translate(msgKey, config.getPrettyName());
+    }
+
+    public interface BooleanConfigMessageFactory
+    {
+        <CFG extends BaseGenericConfig<?> & BooleanStorage> String getMessage(CFG config);
+    }
+
+    public static class SimpleBooleanConfigMessageFactory implements BooleanConfigMessageFactory
+    {
+        protected final String translationKey;
+        protected final Supplier<String> valueFactory;
+
+        public SimpleBooleanConfigMessageFactory(String translationKey, Supplier<String> valueFactory)
+        {
+            this.translationKey = translationKey;
+            this.valueFactory = valueFactory;
+        }
+
+        @Override
+        public <CFG extends BaseGenericConfig<?> & BooleanStorage> String getMessage(CFG config)
+        {
+            if (config.getBooleanValue())
+            {
+                return StringUtils.translate(this.translationKey, this.valueFactory.get());
+            }
+            else
+            {
+                return MessageHelpers.getBasicBooleanConfigToggleMessage(config);
+            }
+        }
     }
 }

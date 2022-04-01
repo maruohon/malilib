@@ -1,21 +1,22 @@
 package fi.dy.masa.malilib.action;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.BaseGenericConfig;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.util.data.BooleanStorage;
 
-public class BooleanDisableAction implements Action
+public class BooleanDisableAction<CFG extends BaseGenericConfig<?> & BooleanStorage> implements Action
 {
-    protected final BooleanConfig config;
-    @Nullable protected final Function<BooleanConfig, String> messageFactory;
+    protected final CFG config;
+    @Nullable protected final BooleanConfigMessageFactory messageFactory;
     @Nullable protected final Supplier<MessageOutput> messageTypeSupplier;
 
-    protected BooleanDisableAction(BooleanConfig config,
-                                   @Nullable Function<BooleanConfig, String> messageFactory,
+    protected BooleanDisableAction(CFG config,
+                                   @Nullable BooleanConfigMessageFactory messageFactory,
                                    @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
         this.config = config;
@@ -37,10 +38,11 @@ public class BooleanDisableAction implements Action
         return ActionResult.SUCCESS;
     }
 
-    public static BooleanDisableAction of(BooleanConfig config,
-                                          @Nullable Function<BooleanConfig, String> messageFactory,
-                                          @Nullable Supplier<MessageOutput> messageTypeSupplier)
+    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
+    BooleanDisableAction<?> of(CFG config,
+                               @Nullable BooleanConfigMessageFactory messageFactory,
+                               @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
-        return new BooleanDisableAction(config, messageFactory, messageTypeSupplier);
+        return new BooleanDisableAction<>(config, messageFactory, messageTypeSupplier);
     }
 }
