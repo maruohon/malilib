@@ -7,9 +7,9 @@ import fi.dy.masa.malilib.util.data.RangedIntegerStorage;
 
 public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIntegerStorage
 {
+    protected final int minValue;
+    protected final int maxValue;
     protected int effectiveIntegerValue;
-    protected int minValue;
-    protected int maxValue;
 
     public IntegerConfig(String name, int defaultValue)
     {
@@ -35,9 +35,9 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
     {
         super(name, defaultValue, comment, sliderActive);
 
-        this.effectiveIntegerValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.setIntegerValue(defaultValue);
         this.sliderCallbackFactory = (listener) -> new IntegerSliderCallback(this, listener);
     }
 
@@ -82,18 +82,6 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
     public int getMaxIntegerValue()
     {
         return this.maxValue;
-    }
-
-    public void setMinIntegerValue(int minValue)
-    {
-        this.minValue = minValue;
-        this.setValue(this.value);
-    }
-
-    public void setMaxIntegerValue(int maxValue)
-    {
-        this.maxValue = maxValue;
-        this.setValue(this.value);
     }
 
     protected int getClampedValue(int value)

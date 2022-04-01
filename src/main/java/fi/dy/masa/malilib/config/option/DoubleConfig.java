@@ -7,9 +7,9 @@ import fi.dy.masa.malilib.util.data.RangedDoubleStorage;
 
 public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoubleStorage
 {
+    protected final double minValue;
+    protected final double maxValue;
     protected double effectiveDoubleValue;
-    protected double minValue;
-    protected double maxValue;
 
     public DoubleConfig(String name, double defaultValue)
     {
@@ -36,9 +36,9 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
     {
         super(name, defaultValue, comment, sliderActive);
 
-        this.effectiveDoubleValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.setDoubleValue(defaultValue);
         this.sliderCallbackFactory = (listener) -> new DoubleSliderCallback(this, listener);
     }
 
@@ -93,18 +93,6 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
     public double getMaxDoubleValue()
     {
         return this.maxValue;
-    }
-
-    public void setMinDoubleValue(double minValue)
-    {
-        this.minValue = minValue;
-        this.setValue(this.value);
-    }
-
-    public void setMaxDoubleValue(double maxValue)
-    {
-        this.maxValue = maxValue;
-        this.setValue(this.value);
     }
 
     protected double getClampedValue(double value)
