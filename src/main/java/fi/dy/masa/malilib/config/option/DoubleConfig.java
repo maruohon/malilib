@@ -116,11 +116,6 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
         return String.valueOf(this.effectiveDoubleValue);
     }
 
-    public String getDefaultStringValue()
-    {
-        return String.valueOf(this.defaultValue);
-    }
-
     public void setValueFromString(String value)
     {
         try

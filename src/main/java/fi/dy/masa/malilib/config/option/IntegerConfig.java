@@ -105,11 +105,6 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
         return String.valueOf(this.effectiveIntegerValue);
     }
 
-    public String getDefaultStringValue()
-    {
-        return String.valueOf(this.defaultValue);
-    }
-
     public void setValueFromString(String value)
     {
         try
