@@ -1,16 +1,16 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import java.util.function.Consumer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.position.Coordinate;
 
-public class BlockPosEditWidget extends BasePositionEditWidget<BlockPos, IntegerEditWidget>
+public class Vec3iEditWidget extends BasePositionEditWidget<Vec3i, IntegerEditWidget>
 {
-    public BlockPosEditWidget(int width, int height, int gap,
-                              boolean addMoveToPlayerButton,
-                              BlockPos initialPos,
-                              Consumer<BlockPos> posConsumer)
+    public Vec3iEditWidget(int width, int height, int gap,
+                           boolean addMoveToPlayerButton,
+                           Vec3i initialPos,
+                           Consumer<Vec3i> posConsumer)
     {
         super(width, height, gap, addMoveToPlayerButton, initialPos, posConsumer);
     }
@@ -18,7 +18,7 @@ public class BlockPosEditWidget extends BasePositionEditWidget<BlockPos, Integer
     @Override
     public void updateWidgetState()
     {
-        BlockPos pos = this.pos;
+        Vec3i pos = this.pos;
         this.xCoordinateWidget.setIntegerValue(pos.getX());
         this.yCoordinateWidget.setIntegerValue(pos.getY());
         this.zCoordinateWidget.setIntegerValue(pos.getZ());
@@ -32,13 +32,13 @@ public class BlockPosEditWidget extends BasePositionEditWidget<BlockPos, Integer
     }
 
     @Override
-    protected IntegerEditWidget createNumberEditWidget(int width, int height, BlockPos initialPos, Coordinate coord)
+    protected IntegerEditWidget createNumberEditWidget(int width, int height, Vec3i initialPos, Coordinate coord)
     {
         return new IntegerEditWidget(width, height, initialPos.getX(), (val) -> this.setPos(val, coord));
     }
 
     @Override
-    protected BlockPos getPositionFromPlayer()
+    protected Vec3i getPositionFromPlayer()
     {
         return EntityUtils.getCameraEntityBlockPos();
     }
