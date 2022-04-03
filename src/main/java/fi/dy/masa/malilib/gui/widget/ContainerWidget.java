@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 
-public abstract class ContainerWidget extends InteractableWidget
+public class ContainerWidget extends InteractableWidget
 {
     protected final List<InteractableWidget> subWidgets = new ArrayList<>(4);
     @Nullable protected MenuWidget activeContextMenuWidget;
@@ -151,7 +151,7 @@ public abstract class ContainerWidget extends InteractableWidget
     {
         for (InteractableWidget widget : this.subWidgets)
         {
-            widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
+            widget.moveBy(diffX, diffY);
         }
     }
 

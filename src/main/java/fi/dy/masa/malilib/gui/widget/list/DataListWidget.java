@@ -292,7 +292,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
         for (BaseListEntryWidget widget : this.entryWidgets)
         {
-            widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
+            widget.moveBy(diffX, diffY);
         }
     }
 

@@ -107,7 +107,7 @@ public class SearchBarWidget extends ContainerWidget
         // then the super call will not move the text field
         if (this.isSearchOpen() == false)
         {
-            this.textField.setPosition(this.textField.getX() + diffX, this.textField.getY() + diffY);
+            this.textField.moveBy(diffX, diffY);
         }
     }
 

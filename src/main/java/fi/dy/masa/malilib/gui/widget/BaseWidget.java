@@ -204,6 +204,11 @@ public class BaseWidget
         }
     }
 
+    public void moveBy(int diffX, int diffY)
+    {
+        this.setPosition(this.x + diffX, this.y + diffY);
+    }
+
     public void setPositionNoUpdate(int x, int y)
     {
         this.x = x;
