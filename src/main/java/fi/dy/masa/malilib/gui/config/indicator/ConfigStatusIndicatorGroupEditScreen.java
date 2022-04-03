@@ -83,6 +83,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.priorityEditWidget = new IntegerEditWidget(72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
         this.lineHeightEditWidget = new IntegerEditWidget(72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
         this.textScaleEditWidget = new DoubleEditWidget(72, 16, widget.getScale(), 0.25, 20, widget::setScale);
+        this.textScaleEditWidget.setBaseScrollAdjustAmount(0.5);
 
         this.addConfigsButton = GenericButton.create(16, "malilib.button.csi_edit.add_configs", this::openAddConfigsScreen);
         this.addConfigsButton.translateAndAddHoverString("malilib.hover.button.csi_edit.add_configs_to_widget");

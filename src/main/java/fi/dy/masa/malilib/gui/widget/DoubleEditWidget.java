@@ -12,6 +12,7 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     protected double minValue;
     protected double maxValue;
     protected double value;
+    protected double baseScrollAdjustAmount = 1.0;
 
     public DoubleEditWidget(int width, int height, double originalValue,
                             double minValue, double maxValue, DoubleConsumer consumer)
@@ -36,7 +37,8 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     @Override
     protected boolean onValueAdjustButtonClick(int mouseButton)
     {
-        double amount = mouseButton == 1 ? -0.25 : 0.25;
+        double amount = this.baseScrollAdjustAmount;
+        if (mouseButton == 1) amount = -amount;
         if (BaseScreen.isShiftDown()) { amount *= 4.0; }
         if (BaseScreen.isAltDown()) { amount *= 8.0; }
 
@@ -49,6 +51,11 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     protected void updateTextField()
     {
         this.textFieldWidget.setText(String.valueOf(this.value));
+    }
+
+    public void setBaseScrollAdjustAmount(double baseScrollAdjustAmount)
+    {
+        this.baseScrollAdjustAmount = baseScrollAdjustAmount;
     }
 
     public void setValidRange(double minValue, double maxValue)
