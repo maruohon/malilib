@@ -31,22 +31,13 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
     {
         super(screenId, screenTabs, defaultTab);
 
-        this.allActionTypesDropdown = new DropDownListWidget<>(-1, 14, 140, 10, ActionGroup.VALUES, ActionGroup::getDisplayName);
+        this.allActionTypesDropdown = new DropDownListWidget<>(14, 10, ActionGroup.VALUES, ActionGroup::getDisplayName);
         this.allActionTypesDropdown.setSelectedEntry(ActionGroup.ALL);
         this.allActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
         this.allActionTypesDropdown.translateAndAddHoverString("malilib.hover.action.action_types_explanation");
 
         this.leftSideListWidget = this.createLeftSideActionListWidget();
         this.screenCloseListener = this::saveChangesOnScreenClose;
-    }
-
-    @Override
-    protected void initScreen()
-    {
-        super.initScreen();
-
-        //this.leftSideListWidget.refreshEntries();
-        //this.rightSideListWidget.refreshEntries();
     }
 
     @Override

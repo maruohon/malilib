@@ -31,7 +31,7 @@ public class ActionListScreen extends BaseActionListScreen
 
         this.setTitle("malilib.title.screen.configs.action_list_screen", MaLiLibReference.MOD_VERSION);
 
-        this.userAddedActionTypesDropdown = new DropDownListWidget<>(-1, 14, 140, 10, ActionGroup.VALUES_USER_ADDED, ActionGroup::getDisplayName);
+        this.userAddedActionTypesDropdown = new DropDownListWidget<>(14, 10, ActionGroup.VALUES_USER_ADDED, ActionGroup::getDisplayName);
         this.userAddedActionTypesDropdown.setSelectedEntry(ActionGroup.USER_ADDED);
         this.userAddedActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
         this.userAddedActionTypesDropdown.translateAndAddHoverString("malilib.hover.action.action_types_explanation");

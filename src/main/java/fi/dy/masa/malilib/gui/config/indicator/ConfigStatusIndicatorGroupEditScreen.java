@@ -63,7 +63,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.useTitleHierarchy = false;
         this.setTitle("malilib.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
 
-        this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES,
+        this.locationDropdownWidget = new DropDownListWidget<>(16, 10, ScreenLocation.VALUES,
                                                                OptionListConfigValue::getDisplayName);
         this.locationDropdownWidget.setSelectedEntry(widget.getScreenLocation());
         this.locationDropdownWidget.setSelectionListener(this::changeWidgetLocation);

@@ -39,8 +39,9 @@ public class BaseValueListEditEntryWidget<DATATYPE> extends BaseOrderableListEdi
         int ddWidth = this.getWidth() - this.resetButton.getWidth() - this.labelWidget.getWidth()
                             - this.addButton.getWidth() - this.removeButton.getWidth()
                             - this.upButton.getWidth() - this.downButton.getWidth() - 20;
-        this.dropDownWidget = new DropDownListWidget<>(-ddWidth, 18, 216, 12, possibleValues, toStringConverter, iconWidgetFactory);
+        this.dropDownWidget = new DropDownListWidget<>(18, 12, possibleValues, toStringConverter, iconWidgetFactory);
 
+        this.dropDownWidget.setMaxWidth(ddWidth);
         this.dropDownWidget.setSelectedEntry(this.initialValue);
         this.dropDownWidget.setSelectionListener((entry) -> {
             if (this.originalListIndex < this.dataList.size())

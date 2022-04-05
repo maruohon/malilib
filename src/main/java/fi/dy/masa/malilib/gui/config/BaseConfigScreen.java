@@ -39,7 +39,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
         this.modInfo = modInfo;
         this.shouldRestoreScrollbarPosition = MaLiLibConfigs.Generic.REMEMBER_CONFIG_TAB_SCROLL_POSITIONS.getBooleanValue();
-        this.modSwitcherDropdown = new DropDownListWidget<>(-1, 16, 160, 10, Registry.CONFIG_SCREEN.getAllModsWithConfigScreens(), ModInfo::getModName);
+        this.modSwitcherDropdown = new DropDownListWidget<>(16, 10, Registry.CONFIG_SCREEN.getAllModsWithConfigScreens(), ModInfo::getModName);
         this.modSwitcherDropdown.setSelectedEntry(modInfo);
         this.modSwitcherDropdown.setSelectionListener(this::switchConfigScreenToMod);
 

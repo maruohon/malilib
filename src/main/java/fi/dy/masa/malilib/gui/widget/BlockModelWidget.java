@@ -17,6 +17,11 @@ public class BlockModelWidget extends BaseModelWidget
         this(16, state);
     }
 
+    public BlockModelWidget(@Nullable Block block)
+    {
+        this(16, block);
+    }
+
     public BlockModelWidget(int dimensions, @Nullable Block block)
     {
         this(dimensions, block != null ? block.getDefaultState() : null);

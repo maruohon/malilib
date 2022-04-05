@@ -82,9 +82,11 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.nameTextField = new BaseTextFieldWidget(140, 16, widget.getName());
         this.nameTextField.setListener(this.firstWidget::setName);
 
-        this.iconDropDownWidget = new DropDownListWidget<>(120, 16, 120, 10,
+        this.iconDropDownWidget = new DropDownListWidget<>(16, 10,
                                                            Registry.ICON.getAllIcons(),
-                                                           IconRegistry::getKeyForIcon, (h, i) -> new IconWidget(i));
+                                                           IconRegistry::getKeyForIcon, IconWidget::new);
+        this.iconDropDownWidget.setAutomaticWidth(false);
+        this.iconDropDownWidget.setWidth(120);
         this.iconDropDownWidget.setSelectedEntry(widget.getIcon());
         this.iconDropDownWidget.setSelectionListener(this.firstWidget::setIcon);
 

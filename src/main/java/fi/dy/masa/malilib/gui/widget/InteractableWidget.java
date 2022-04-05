@@ -21,7 +21,7 @@ import fi.dy.masa.malilib.util.position.Vec2i;
 
 public abstract class InteractableWidget extends BackgroundWidget
 {
-    protected final OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
+    protected OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
     @Nullable protected BooleanSupplier enabledStatusSupplier;
     @Nullable protected EventListener clickListener;
     @Nullable protected BaseWidget hoverInfoWidget;
@@ -253,7 +253,9 @@ public abstract class InteractableWidget extends BackgroundWidget
 
     public ImmutableList<StyledTextLine> getHoverText()
     {
-        if (this.hoverInfoRequiresShift && BaseScreen.isShiftDown() == false)
+        if (this.hoverInfoRequiresShift &&
+            BaseScreen.isShiftDown() == false &&
+            this.hoverInfoFactory.getStyledLines().isEmpty() == false)
         {
             return this.getHoverHelp();
         }
@@ -264,6 +266,11 @@ public abstract class InteractableWidget extends BackgroundWidget
     public OrderedStringListFactory getHoverInfoFactory()
     {
         return this.hoverInfoFactory;
+    }
+
+    public void setHoverInfoFactory(OrderedStringListFactory hoverInfoFactory)
+    {
+        this.hoverInfoFactory = hoverInfoFactory;
     }
 
     public void updateHoverStrings()

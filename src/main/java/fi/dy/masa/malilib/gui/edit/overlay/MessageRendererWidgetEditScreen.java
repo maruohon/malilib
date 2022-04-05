@@ -52,7 +52,7 @@ public class MessageRendererWidgetEditScreen extends BaseScreen
 
         this.setTitle("malilib.title.screen.message_renderer_configuration");
 
-        this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES,
+        this.locationDropdownWidget = new DropDownListWidget<>(16, 10, ScreenLocation.VALUES,
                                                                OptionListConfigValue::getDisplayName);
         this.locationDropdownWidget.setSelectedEntry(widget.getScreenLocation());
         this.locationDropdownWidget.setSelectionListener(this::changeWidgetLocation);

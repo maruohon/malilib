@@ -34,7 +34,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         super(0, 33, 0, 33);
 
         List<ActionList> lists = ActionList.getActionLists();
-        this.dropDownWidget = new DropDownListWidget<>(-1, 16, 80, 4, lists, ActionList::getDisplayName);
+        this.dropDownWidget = new DropDownListWidget<>(16, 4, lists, ActionList::getDisplayName);
         this.dropDownWidget.setSelectedEntry(ActionList.getSelectedList(lists));
         this.dropDownWidget.setSelectionListener(this::onListSelectionChanged);
 

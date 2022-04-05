@@ -549,7 +549,7 @@ public class GenericButton extends InteractableWidget
         return button;
     }
 
-    public static GenericButton create(Supplier<MultiIcon> iconSupplier, EventListener actionListener)
+    public static GenericButton create(@Nullable Supplier<MultiIcon> iconSupplier, EventListener actionListener)
     {
         GenericButton button = new GenericButton(-1, -1);
         button.getPadding().setAll(0);

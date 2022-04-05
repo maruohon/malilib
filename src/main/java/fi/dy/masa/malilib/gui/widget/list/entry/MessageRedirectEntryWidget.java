@@ -20,7 +20,7 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
 
         this.removeButton = GenericButton.create(14, "malilib.button.misc.remove", this::removeRedirect);
 
-        this.outputDropdown = new DropDownListWidget<>(-1, 14, 160, 10, MessageOutput.getValues(), MessageOutput::getDisplayName);
+        this.outputDropdown = new DropDownListWidget<>(14, 12, MessageOutput.getValues(), MessageOutput::getDisplayName);
         this.outputDropdown.setSelectedEntry(data.getOutput());
         this.outputDropdown.setSelectionListener(this::replaceRedirect);
 

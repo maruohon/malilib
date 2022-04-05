@@ -315,6 +315,7 @@ malilib.label.misc.default_message_renderer=Default Message Renderer
 malilib.label.misc.default_toast_renderer=Default Toast Renderer
 malilib.label.misc.delete.colored=§cDelete
 malilib.label.misc.delete_selected.colored=§cDelete Selected
+malilib.label.misc.dropdown.multiple_entries_selected=§7[§b%s§7 selected entries]
 malilib.label.misc.dropdown.type_to_search=Just start typing to search (in any DropDown widget)
 malilib.label.misc.edit=Edit
 malilib.label.misc.edit_selected=Edit Selected

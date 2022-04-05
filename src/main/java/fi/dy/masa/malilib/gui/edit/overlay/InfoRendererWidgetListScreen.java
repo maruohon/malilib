@@ -21,9 +21,9 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 {
     protected final Supplier<List<WIDGET>> widgetSupplier;
     protected final DataListEntryWidgetFactory<WIDGET> entryWidgetFactory;
-    @Nullable protected final Supplier<WIDGET> widgetFactory;
     protected final DropDownListWidget<ScreenLocation> locationDropdownWidget;
     protected final GenericButton createWidgetButton;
+    @Nullable protected final Supplier<WIDGET> widgetFactory;
     protected boolean canCreateNewWidgets;
 
     public InfoRendererWidgetListScreen(Supplier<List<WIDGET>> widgetSupplier,
@@ -47,7 +47,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         this.widgetFactory = widgetFactory;
         this.entryWidgetFactory = entryWidgetFactory;
 
-        this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES, OptionListConfigValue::getDisplayName);
+        this.locationDropdownWidget = new DropDownListWidget<>(16, 10, ScreenLocation.VALUES, OptionListConfigValue::getDisplayName);
         this.createWidgetButton = GenericButton.create(16, "malilib.button.csi_edit.add_csi_widget", this::createInfoRendererWidget);
 
         // Unconditionally save here, since we don't track the individual info container widget changes

@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.config.indicator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -25,9 +26,8 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 {
     protected final ConfigStatusIndicatorContainerWidget widget;
     protected final DropDownListWidget<ModInfo> modsDropDownWidget;
-    protected DropDownListWidget<ConfigTab> categoriesDropDownWidget;
+    protected final DropDownListWidget<ConfigTab> categoriesDropDownWidget;
     protected final GenericButton addEntriesButton;
-    protected final List<ConfigTab> currentCategories = new ArrayList<>();
 
     protected ConfigStatusIndicatorGroupAddConfigsScreen(ConfigStatusIndicatorContainerWidget widget)
     {
@@ -37,14 +37,11 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
         this.useTitleHierarchy = false;
         this.setTitle("malilib.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
 
-        List<ModInfo> mods = new ArrayList<>();
-        mods.add(null);
-        mods.addAll(((ConfigTabRegistryImpl) Registry.CONFIG_TAB).getAllModsWithConfigTabs());
-
-        this.modsDropDownWidget = new DropDownListWidget<>(-1, 14, 160, 10, mods, ModInfo::getModName);
+        List<ModInfo> mods = new ArrayList<>(((ConfigTabRegistryImpl) Registry.CONFIG_TAB).getAllModsWithConfigTabs());
+        this.modsDropDownWidget = new DropDownListWidget<>(14, 12, mods, ModInfo::getModName);
         this.modsDropDownWidget.setSelectionListener(this::onModSelected);
 
-        this.categoriesDropDownWidget = new DropDownListWidget<>(-1, 14, 160, 10, this.currentCategories, ConfigTab::getDisplayName);
+        this.categoriesDropDownWidget = new DropDownListWidget<>(14, 12, Collections.emptyList(), ConfigTab::getDisplayName);
         this.categoriesDropDownWidget.setSelectionListener(this::onCategorySelected);
 
         this.addEntriesButton = GenericButton.create("malilib.button.csi_edit.add_selected_configs", this::addSelectedConfigs);
@@ -94,20 +91,17 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
     protected void onModSelected(@Nullable ModInfo mod)
     {
-        this.currentCategories.clear();
-
         Supplier<List<ConfigTab>> tabProvider = mod != null ? Registry.CONFIG_TAB.getConfigTabProviderFor(mod) : null;
+        ArrayList<ConfigTab> list = new ArrayList<>();
 
         if (tabProvider != null)
         {
-            this.currentCategories.addAll(tabProvider.get());
-            this.currentCategories.sort(Comparator.comparing(ConfigTab::getDisplayName));
+            list.addAll(tabProvider.get());
+            list.sort(Comparator.comparing(ConfigTab::getDisplayName));
         }
 
-        // TODO remove after the dropdown widget gets refresh support
-        this.removeWidget(this.categoriesDropDownWidget);
-        this.categoriesDropDownWidget = new DropDownListWidget<>(-1, 14, 160, 10, this.currentCategories, ConfigTab::getDisplayName);
-        this.categoriesDropDownWidget.setSelectionListener(this::onCategorySelected);
+        this.categoriesDropDownWidget.replaceEntryList(list);
+        this.categoriesDropDownWidget.setSelectedEntry(null);
 
         int x = this.modsDropDownWidget.getRight() + 8;
         int y = this.modsDropDownWidget.getY();

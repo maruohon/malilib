@@ -32,7 +32,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         this.optionListButton.setChangeListener(this::updateWidgetState);
 
         ArrayList<OptionListConfigValue> values = new ArrayList<>(config.getAllowedValues());
-        this.dropDownWidget = new DropDownListWidget<>(80, 16, 200, 20, values, OptionListConfigValue::getDisplayName);
+        this.dropDownWidget = new DropDownListWidget<>(16, 12, values, OptionListConfigValue::getDisplayName);
         this.dropDownWidget.setSelectedEntry(config.getValue());
         this.dropDownWidget.getHoverInfoFactory()
                 .setTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 99);

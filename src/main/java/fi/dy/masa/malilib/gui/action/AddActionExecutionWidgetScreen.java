@@ -48,19 +48,22 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.hoverTextLabelWidget = new LabelWidget("malilib.label.misc.hover_text_optional");
         this.argumentLabelWidget = new LabelWidget("malilib.label.misc.argument");
 
-        this.actionDropDownWidget = new DropDownListWidget<>(160, 16, 240, 20,
+        this.actionDropDownWidget = new DropDownListWidget<>(16, 15,
                                                              Registry.ACTION_REGISTRY.getAllActions(),
                                                              NamedAction::getDisplayName);
         this.actionDropDownWidget.setSelectionListener(this::onActionSelected);
+        this.actionDropDownWidget.setAutomaticWidth(false);
+        this.actionDropDownWidget.setWidth(200);
 
-        this.typeDropDownWidget = new DropDownListWidget<>(-1, 16, 80, 4,
-                                                           BaseActionExecutionWidget.Type.VALUES,
+        this.typeDropDownWidget = new DropDownListWidget<>(16, 4, BaseActionExecutionWidget.Type.VALUES,
                                                            BaseActionExecutionWidget.Type::getDisplayName);
         this.typeDropDownWidget.setSelectedEntry(BaseActionExecutionWidget.Type.RECTANGULAR);
 
-        this.iconDropDownWidget = new DropDownListWidget<>(120, 16, 120, 10,
+        this.iconDropDownWidget = new DropDownListWidget<>(16, 8,
                                                            Registry.ICON.getAllIcons(),
-                                                           IconRegistry::getKeyForIcon, (h, i) -> new IconWidget(i));
+                                                           IconRegistry::getKeyForIcon, IconWidget::new);
+        this.iconDropDownWidget.setAutomaticWidth(false);
+        this.iconDropDownWidget.setWidth(200);
 
         this.addArgumentCheckbox = new CheckBoxWidget("malilib.button.action_widgets.add_argument",
                                                       "malilib.hover.action.add_action_execution_widget.add_argument");
@@ -73,7 +76,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.cancelButton = GenericButton.create("malilib.button.misc.cancel", this::openParentScreen);
 
         this.backgroundColor = 0xFF101010;
-        this.setScreenWidthAndHeight(240, 190);
+        this.setScreenWidthAndHeight(240, 210);
         this.centerOnScreen();
     }
 
@@ -115,36 +118,27 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
 
         int x = this.x + 10;
         int y = this.y + 24;
+        int gap = 6;
 
-        this.actionLabelWidget.setPosition(x, y + 4);
-        this.actionDropDownWidget.setPosition(this.actionLabelWidget.getRight() + 6, y);
+        this.actionLabelWidget.setPosition(x, y);
+        this.actionDropDownWidget.setPosition(x, this.actionLabelWidget.getBottom());
 
-        y += 20;
-        this.typeLabelWidget.setPosition(x, y + 4);
-        this.typeDropDownWidget.setPosition(this.typeLabelWidget.getRight() + 6, y);
+        this.typeLabelWidget.setPosition(x, this.actionDropDownWidget.getBottom() + gap);
+        this.typeDropDownWidget.setPosition(x, this.typeLabelWidget.getBottom());
 
-        y += 22;
-        this.nameLabelWidget.setPosition(x, y);
-        y += 10;
-        this.nameTextField.setPosition(x, y);
+        this.nameLabelWidget.setPosition(x, this.typeDropDownWidget.getBottom() + gap);
+        this.nameTextField.setPosition(x, this.nameLabelWidget.getBottom());
 
-        y += 22;
-        this.hoverTextLabelWidget.setPosition(x, y);
-        y += 10;
-        this.hoverTextTextField.setPosition(x, y);
+        this.hoverTextLabelWidget.setPosition(x, this.nameTextField.getBottom() + gap);
+        this.hoverTextTextField.setPosition(x, this.hoverTextLabelWidget.getBottom());
 
-        y += 22;
-        this.iconLabelWidget.setPosition(x, y);
-        y += 10;
-        this.iconDropDownWidget.setPosition(x, y);
+        this.iconLabelWidget.setPosition(x, this.hoverTextTextField.getBottom() + gap);
+        this.iconDropDownWidget.setPosition(x, this.iconLabelWidget.getBottom());
 
-        y += 24;
-        this.addArgumentCheckbox.setPosition(x, y);
+        this.addArgumentCheckbox.setPosition(x, this.iconDropDownWidget.getBottom() + gap);
 
-        y += 14;
-        this.argumentLabelWidget.setPosition(x, y);
-        y += 10;
-        this.argumentTextField.setPosition(x, y);
+        this.argumentLabelWidget.setPosition(x, this.addArgumentCheckbox.getBottom() + gap);
+        this.argumentTextField.setPosition(x, this.argumentLabelWidget.getBottom());
 
         if (this.hasArgumentElements)
         {
@@ -161,7 +155,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
 
     protected void updateHeight()
     {
-        int height = this.hasArgumentElements ? 238 : 190;
+        int height = this.hasArgumentElements ? 258 : 210;
         this.setScreenWidthAndHeight(240, height);
         this.centerOnScreen();
     }
