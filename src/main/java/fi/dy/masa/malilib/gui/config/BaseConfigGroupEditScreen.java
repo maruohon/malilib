@@ -29,7 +29,7 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
         this.renderBorder = true;
         this.useTitleHierarchy = false;
         this.backgroundColor = 0xFF000000;
-        this.screenWidth = Math.max(520, GuiUtils.getScaledWindowWidth() - 80);
+        this.screenWidth = Math.min(350, GuiUtils.getScaledWindowWidth() - 40);
         this.screenHeight = GuiUtils.getScaledWindowHeight() - 90;
 
         this.setParent(parent);

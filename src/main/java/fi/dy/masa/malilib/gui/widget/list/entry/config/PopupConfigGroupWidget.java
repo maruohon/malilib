@@ -49,6 +49,7 @@ public class PopupConfigGroupWidget extends BaseConfigWidget<PopupConfigGroup>
     {
         BaseConfigGroupEditScreen screen = new BaseConfigGroupEditScreen(this.config.getModInfo(),
                                                                          null, GuiUtils.getCurrentScreen());
+        screen.setScreenWidth(Math.max(520, GuiUtils.getScaledWindowWidth() - 80));
         screen.setConfigs(this.config.getConfigs());
         screen.setTitle(this.config.getDisplayName());
         BaseScreen.openPopupScreen(screen);
