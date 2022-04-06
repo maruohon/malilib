@@ -63,6 +63,19 @@ public class ShapeRenderUtils
         RenderUtils.drawBuffer();
     }
 
+    public static void renderOutlinedRectangle(float x, float y, float z, int width, int height, int bgColor, EdgeInt borderColor)
+    {
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
+
+        // Draw the background
+        renderRectangle(x + 1, y + 1, z, width - 2, height - 2, bgColor, buffer);
+
+        // Draw the border
+        renderOutline(x, y, z, width, height, 1, borderColor, buffer);
+
+        RenderUtils.drawBuffer();
+    }
+
     public static void renderOutline(float x, float y, float z, int width, int height, int borderWidth, int color)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
