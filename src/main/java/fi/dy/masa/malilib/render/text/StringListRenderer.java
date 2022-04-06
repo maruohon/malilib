@@ -206,7 +206,7 @@ public class StringListRenderer extends BaseWidget
 
     public StyledTextLine clampLineToWidth(StyledTextLine line, int maxWidth)
     {
-        return StyledTextUtils.clampStyledTextToMaxWidth(line, this.maxWidth, LeftRight.RIGHT, " ...");
+        return StyledTextUtils.clampStyledTextToMaxWidth(line, maxWidth, LeftRight.RIGHT, " ...");
     }
 
     protected void clampAndAddTextLine(StyledTextLine line)

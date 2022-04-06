@@ -193,15 +193,15 @@ public class LabelWidget extends InteractableWidget
         int height = this.hasMaxHeight() ? this.maxHeight : this.getHeight();
         int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
 
-        this.stringListRenderer.setMaxWidth(width - this.padding.getLeft() - this.padding.getRight() - bw);
-        this.stringListRenderer.setMaxHeight(height - this.padding.getTop() - this.padding.getBottom() - bw);
+        this.stringListRenderer.setMaxWidth(width - this.padding.getHorizontalTotal() - bw);
+        this.stringListRenderer.setMaxHeight(height - this.padding.getVerticalTotal() - bw);
         this.stringListRenderer.reAddLines();
     }
 
     @Override
     public void updateWidth()
     {
-        this.totalWidth = this.stringListRenderer.getTotalTextWidth() + this.padding.getLeft() + this.padding.getRight();
+        this.totalWidth = this.stringListRenderer.getTotalTextWidth() + this.padding.getHorizontalTotal();
         this.totalWidth += this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
 
         if (this.automaticWidth)
