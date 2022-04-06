@@ -50,7 +50,6 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected int dropdownHeight;
     protected int textColor = 0xFFF0F0F0;
     protected int totalHeight;
-    protected int visibleEntries;
 
     public DropDownListWidget(int height, int maxVisibleEntries, List<T> entries,
                               @Nullable Function<T, String> stringFactory)
@@ -104,6 +103,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.updateCurrentEntryBar();
         this.updateDropDownHeight();
         this.updateFilteredEntries("");
+        this.updateWidth();
     }
 
     @Override
@@ -112,11 +112,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         super.reAddSubWidgets();
 
         this.addWidgetIfNotNull(this.currentEntryBarWidget);
-
-        if (this.useCurrentEntryBar == false)
-        {
-            this.addWidget(this.openCloseButton);
-        }
+        this.addWidgetIf(this.openCloseButton, this.useCurrentEntryBar == false);
 
         if (this.isOpen())
         {
@@ -136,10 +132,18 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         super.updateSubWidgetPositions();
 
-        int x = this.getRight() - this.scrollBar.getWidth() - 1;
-        int y = this.currentEntryBarWidget.getBottom() + 1;
-        this.scrollBar.setPosition(x, y);
-        this.searchTextField.setBottom(this.getY());
+        this.scrollBar.setRight(this.getRight() - 1);
+        this.scrollBar.setY(this.getDropDownY() + 1);
+
+        // If the dropdown is above, then the search bar should be below
+        if (this.shouldMoveDropDownAbove())
+        {
+            this.searchTextField.setY(this.getY() + this.lineHeight);
+        }
+        else
+        {
+            this.searchTextField.setBottom(this.getY());
+        }
     }
 
     @Override
@@ -185,6 +189,12 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
+    public void updateWidgetState()
+    {
+        this.updateWidth();
+    }
+
+    @Override
     protected void onSizeChanged()
     {
         super.onSizeChanged();
@@ -202,12 +212,18 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected int getDropDownY()
     {
-        if (this.useCurrentEntryBar)
+        int y = this.getY();
+
+        if (this.shouldMoveDropDownAbove())
         {
-            return this.getY() + this.lineHeight;
+            y -= this.dropdownHeight;
+        }
+        else if (this.useCurrentEntryBar)
+        {
+            y += this.lineHeight;
         }
 
-        return this.getY();
+        return y;
     }
 
     @Override
@@ -332,8 +348,10 @@ public class DropDownListWidget<T> extends ContainerWidget
     public void setNoEntryBar(int buttonX, int buttonY, Supplier<MultiIcon> iconSupplier)
     {
         this.useCurrentEntryBar = false;
+        this.currentEntryBarWidget = null;
         this.openCloseButton.setButtonIconSupplier(iconSupplier);
         this.openCloseButton.setPosition(buttonX, buttonY);
+        this.reAddSubWidgets();
     }
 
     public void setCloseOnSelect(boolean closeOnSelect)
@@ -375,17 +393,47 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         this.entries = ImmutableList.copyOf(newEntries);
 
-        this.updateDropDownHeight();
         this.updateWidth();
-        this.updateCurrentEntryBar();
         this.updateFilteredEntries("");
+        this.updateCurrentEntryBar();
+    }
+
+    protected boolean shouldMoveDropDownAbove()
+    {
+        int y = this.getY();
+        int bottom = y + this.lineHeight;
+        int spaceBelow = GuiUtils.getScaledWindowHeight() - bottom;
+        int maxEntries = Math.min(this.maxVisibleEntries, this.filteredEntries.size());
+        int requiredHeight = maxEntries * this.lineHeight;
+
+        return spaceBelow < requiredHeight && y > spaceBelow;
+    }
+
+    protected int getMaxDropDownHeight()
+    {
+        int y = this.getY();
+        int bottom = y + this.lineHeight;
+        int spaceBelow = GuiUtils.getScaledWindowHeight() - bottom;
+
+        return Math.max(y, spaceBelow);
     }
 
     protected void updateDropDownHeight()
     {
-        this.currentMaxVisibleEntries = Math.max(1, Math.min(this.maxVisibleEntries, this.entries.size()));
+        int maxEntries = Math.min(this.maxVisibleEntries, this.filteredEntries.size());
+        maxEntries = Math.min(maxEntries, (this.getMaxDropDownHeight() - 2) / this.lineHeight);
+        this.currentMaxVisibleEntries = Math.max(1, maxEntries);
         this.dropdownHeight = this.currentMaxVisibleEntries * this.lineHeight + 2;
         this.totalHeight = this.dropdownHeight + this.lineHeight;
+
+        this.updateScrollBarHeight();
+    }
+
+    protected void updateScrollBarHeight()
+    {
+        int totalHeight = this.filteredEntries.size() * this.lineHeight;
+        this.scrollBar.setHeight(this.dropdownHeight - 2); // minus the border
+        this.scrollBar.setTotalHeight(totalHeight);
     }
 
     public boolean isOpen()
@@ -407,18 +455,30 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         this.clearWidgets();
         this.setZ(this.isOpen ? this.baseZLevel + 50 : this.baseZLevel);
-        this.updateCurrentEntryBar();
-        this.updateSubWidgetPositions();
 
         if (this.isOpen)
         {
             this.updateFilteredEntries("");
+
+            T selected = this.getSelectedEntry();
+
+            if (selected != null)
+            {
+                this.scrollBar.setValueNoNotify(this.entries.indexOf(selected));
+            }
         }
         else
         {
             this.searchOpen = false;
             this.searchTextField.setTextNoNotify("");
         }
+
+        // This needs to happen before any of the widgets are re-created or the positions updated,
+        // as this will update the max size of the dropdown part, and if it's located below or above
+        this.updateDropDownHeight();
+
+        this.updateCurrentEntryBar();
+        this.updateSubWidgetPositions();
 
         // Add/remove the sub widgets as needed
         this.reAddSubWidgets();
@@ -472,16 +532,8 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         this.scrollBar.setMaxValue(this.filteredEntries.size() - this.currentMaxVisibleEntries);
-        //this.updateMaxSize();
-        this.updateScrollBarHeight();
-    }
-
-    protected void updateScrollBarHeight()
-    {
-        this.visibleEntries = Math.min(this.currentMaxVisibleEntries, this.filteredEntries.size());
-        int totalHeight = Math.max(this.visibleEntries, this.filteredEntries.size()) * this.lineHeight;
-        this.scrollBar.setHeight(this.visibleEntries * this.lineHeight);
-        this.scrollBar.setTotalHeight(totalHeight);
+        this.updateDropDownHeight();
+        this.updateSubWidgetPositions();
     }
 
     protected boolean entryMatchesFilter(T entry, String filterText)
@@ -498,20 +550,16 @@ public class DropDownListWidget<T> extends ContainerWidget
         if (supportsMultiSelection)
         {
             String key = this.multiSelectionTranslationKey;
-            maxWidth = StyledTextLine.translate(key, 99).renderWidth;
+            maxWidth = StyledTextLine.translate(key, 99).renderWidth + 4;
         }
 
         for (T entry : entriesIn)
         {
             @Nullable StyledTextLine text = entryFactory.getText(entry);
             @Nullable InteractableWidget iconWidget = entryFactory.createIconWidget(entry);
-            int iconWidth = iconWidget != null ? iconWidget.getWidth() : 0;
-            int width = iconWidth + (text != null ? text.renderWidth : 0);
-
-            if (iconWidget != null)
-            {
-                width += iconWidget.getMargin().getRight();
-            }
+            int textWidth = text != null ? text.renderWidth + 4 : 0;
+            int iconWidth = iconWidget != null ? Math.min(iconWidget.getWidth(), this.lineHeight) + 4 : 0;
+            int width = textWidth + iconWidth;
 
             maxWidth = Math.max(width, maxWidth);
         }
@@ -568,8 +616,9 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected void createEntryWidgets()
     {
         int startIndex = this.scrollBar.getValue();
-        int endIndex = Math.min(startIndex + this.maxVisibleEntries, this.filteredEntries.size());
-        int width = this.getWidth() - this.getBorderRenderer().getNormalSettings().getBorderWidth() * 2 - this.scrollBar.getWidth();
+        int endIndex = Math.min(startIndex + this.currentMaxVisibleEntries, this.filteredEntries.size());
+        int borderWidth = this.getBorderRenderer().getNormalSettings().getBorderWidth() * 2;
+        int width = this.getWidth() - borderWidth - this.scrollBar.getWidth();
         int height = this.lineHeight;
         int x = this.getX() + 1;
         int y = this.getDropDownY() + 1;
@@ -795,7 +844,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 iconWidget.setMaxWidth(maxSize);
                 iconWidget.setMaxHeight(maxSize);
                 iconWidget.updateSize();
-                textOffset += maxSize + 4;
+                textOffset += Math.min(maxSize, iconWidget.getWidth()) + 4;
             }
 
             EntryWidget widget = new EntryWidget(width, height, iconWidget);

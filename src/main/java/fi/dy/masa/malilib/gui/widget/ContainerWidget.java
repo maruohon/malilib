@@ -49,8 +49,7 @@ public class ContainerWidget extends InteractableWidget
     {
         if (condition)
         {
-            this.subWidgets.add(widget);
-            this.onSubWidgetAdded(widget);
+            this.addWidget(widget);
         }
 
         return widget;

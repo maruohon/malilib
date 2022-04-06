@@ -380,6 +380,7 @@ public class BaseWidget
     public void setMaxWidth(int maxWidth)
     {
         this.maxWidth = maxWidth;
+        this.updateWidth();
     }
 
     /**
@@ -388,6 +389,7 @@ public class BaseWidget
     public void setMaxHeight(int maxHeight)
     {
         this.maxHeight = maxHeight;
+        this.updateHeight();
     }
 
     public void setAutomaticWidth(boolean automaticWidth)
