@@ -17,12 +17,7 @@ public abstract class BaseModelWidget extends InteractableWidget
     {
         super(dimensions, dimensions);
 
-        this.dimensions = dimensions;
-
-        if (dimensions > 0)
-        {
-            this.scale = (float) dimensions / 16.0f;
-        }
+        this.setDimensions(dimensions);
     }
 
     public BaseModelWidget setDoHighlight(boolean doHighlight)
@@ -37,6 +32,18 @@ public abstract class BaseModelWidget extends InteractableWidget
         return this;
     }
 
+    public BaseModelWidget setDimensions(int dimensions)
+    {
+        this.dimensions = dimensions;
+
+        if (dimensions > 0)
+        {
+            this.scale = (float) dimensions / 16.0f;
+        }
+
+        return this;
+    }
+
     public BaseModelWidget setScale(float scale)
     {
         this.scale = scale;
@@ -44,35 +51,15 @@ public abstract class BaseModelWidget extends InteractableWidget
     }
 
     @Override
-    public void updateWidth()
+    protected int getRequestedContentWidth()
     {
-        int width = this.dimensions;
-        BackgroundSettings settings = this.getBackgroundRenderer().getActiveSettings(false);
-
-        if (settings.isEnabled())
-        {
-            BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(false);
-            int bw = borderSettings.getActiveBorderWidth();
-            width += this.padding.getHorizontalTotal() + bw * 2;
-        }
-
-        this.setWidthNoUpdate(width);
+        return this.dimensions;
     }
 
     @Override
-    public void updateHeight()
+    protected int getRequestedContentHeight()
     {
-        int height = this.dimensions;
-        BackgroundSettings settings = this.getBackgroundRenderer().getActiveSettings(false);
-
-        if (settings.isEnabled())
-        {
-            BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(false);
-            int bw = borderSettings.getActiveBorderWidth();
-            height += this.padding.getVerticalTotal() + bw * 2;
-        }
-
-        this.setHeightNoUpdate(height);
+        return this.dimensions;
     }
 
     protected abstract void renderModel(int x, int y, float z, float scale, ScreenContext ctx);

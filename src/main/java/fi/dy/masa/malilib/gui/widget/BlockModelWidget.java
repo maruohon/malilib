@@ -47,8 +47,7 @@ public class BlockModelWidget extends BaseModelWidget
             this.model = null;
         }
 
-        this.updateWidth();
-        this.updateHeight();
+        this.updateSize();
 
         return this;
     }

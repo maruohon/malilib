@@ -1,5 +1,9 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.IntConsumer;
+import java.util.function.IntSupplier;
+import java.util.function.IntUnaryOperator;
 import javax.annotation.Nullable;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
@@ -157,6 +161,70 @@ public class BaseWidget
     public boolean hasMaxHeight()
     {
         return this.maxHeight > 0;
+    }
+
+    public boolean hasAutomaticWidth()
+    {
+        return this.automaticWidth;
+    }
+
+    public boolean hasAutomaticHeight()
+    {
+        return this.automaticHeight;
+    }
+
+    protected int clampToMaxWidth(int width)
+    {
+        if (this.hasMaxWidth())
+        {
+            width = Math.min(width, this.maxWidth);
+        }
+
+        return width;
+    }
+
+    protected int clampToMaxHeight(int height)
+    {
+        if (this.hasMaxHeight())
+        {
+            height = Math.min(height, this.maxHeight);
+        }
+
+        return height;
+    }
+
+    protected int getRequestedContentWidth()
+    {
+        Icon icon = this.getIcon();
+
+        if (icon != null)
+        {
+            return icon.getWidth() + this.getIconOffset().getXOffset();
+        }
+
+        return 0;
+    }
+
+    protected int getRequestedContentHeight()
+    {
+        Icon icon = this.getIcon();
+
+        if (icon != null)
+        {
+            return icon.getHeight() + this.getIconOffset().getYOffset();
+        }
+
+        return 0;
+    }
+
+    protected int getNonContentWidth()
+    {
+        return this.getPadding().getHorizontalTotal();
+    }
+
+    protected int getNonContentHeight()
+    {
+        return this.getPadding().getVerticalTotal();
     }
 
     public void setX(int x)
@@ -387,10 +455,24 @@ public class BaseWidget
 
     public void updateWidth()
     {
+        updateWidgetDimension(this::hasAutomaticWidth,
+                              this::getRequestedContentWidth,
+                              this::getNonContentWidth,
+                              this::clampToMaxWidth,
+                              this::setWidthNoUpdate);
+
+        this.setWidthNoUpdate(this.clampToMaxWidth(this.getWidth()));
     }
 
     public void updateHeight()
     {
+        updateWidgetDimension(this::hasAutomaticHeight,
+                              this::getRequestedContentHeight,
+                              this::getNonContentHeight,
+                              this::clampToMaxHeight,
+                              this::setHeightNoUpdate);
+
+        this.setHeightNoUpdate(this.clampToMaxHeight(this.getHeight()));
     }
 
     public void updateWidgetState()
@@ -714,6 +796,21 @@ public class BaseWidget
         }
 
         return height;
+    }
+
+    public static void updateWidgetDimension(BooleanSupplier automaticSizeChecker,
+                                             IntSupplier contentSizeSupplier,
+                                             IntSupplier extraSizeSupplier,
+                                             IntUnaryOperator sizeClamper,
+                                             IntConsumer sizeSetter)
+    {
+        if (automaticSizeChecker.getAsBoolean())
+        {
+            int extraSize = extraSizeSupplier.getAsInt();
+            int contentSize = contentSizeSupplier.getAsInt();
+            int size = sizeClamper.applyAsInt(contentSize + extraSize);
+            sizeSetter.accept(size);
+        }
     }
 
     public static void renderDebugOutline(double x, double y, double z, double w, double h,

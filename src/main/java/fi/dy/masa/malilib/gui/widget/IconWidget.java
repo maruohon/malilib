@@ -9,10 +9,12 @@ public class IconWidget extends InteractableWidget
 {
     protected boolean doHighlight;
     protected boolean enabled;
+    protected int iconWidth;
+    protected int iconHeight;
 
     public IconWidget(Icon icon)
     {
-        super(icon.getWidth(), icon.getHeight());
+        super(-1, -1);
 
         this.setIcon(icon);
     }
@@ -37,43 +39,12 @@ public class IconWidget extends InteractableWidget
     }
 
     @Override
-    public void updateWidth()
+    public void updateSize()
     {
-        Icon icon = this.getIcon();
-        int width = 0;
+        super.updateSize();
 
-        if (icon != null)
-        {
-            width = icon.getWidth();
-
-            if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
-            {
-                int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
-                width += this.padding.getHorizontalTotal() + bw * 2;
-            }
-        }
-
-        this.setWidthNoUpdate(width);
-    }
-
-    @Override
-    public void updateHeight()
-    {
-        Icon icon = this.getIcon();
-        int height = 0;
-
-        if (icon != null)
-        {
-            height = icon.getHeight();
-
-            if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
-            {
-                int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
-                height += this.padding.getVerticalTotal() + bw * 2;
-            }
-        }
-
-        this.setHeightNoUpdate(height);
+        this.iconWidth = this.getWidth() - this.getNonContentWidth();
+        this.iconHeight = this.getHeight() - this.getNonContentHeight();
     }
 
     @Override
@@ -94,5 +65,41 @@ public class IconWidget extends InteractableWidget
         }
 
         this.renderIcon(x, y, z, this.enabled, hovered, ctx);
+    }
+
+    @Override
+    protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
+    {
+        if (this.automaticWidth && this.automaticHeight)
+        {
+            super.renderIcon(x, y, z, enabled, hovered, ctx);
+            return;
+        }
+
+        Icon icon = this.getIcon();
+
+        if (icon != null)
+        {
+            int iconWidth = icon.getWidth();
+            int iconHeight = icon.getHeight();
+            int maxIconWidth = this.iconWidth;
+            int maxIconHeight = this.iconHeight;
+
+            if (iconWidth > maxIconWidth || iconHeight > maxIconHeight)
+            {
+                double widthScale = (double) maxIconWidth / (double) iconWidth;
+                double heightScale = (double) maxIconHeight / (double) iconHeight;
+                double scale = Math.min(widthScale, heightScale);
+                iconWidth = (int) Math.floor(scale * iconWidth);
+                iconHeight = (int) Math.floor(scale * iconHeight);
+            }
+
+            int usableWidth = this.getWidth() - this.getNonContentWidth();
+            int usableHeight = this.getHeight() - this.getNonContentHeight();
+            x = this.getIconPositionX(x, usableWidth, iconWidth);
+            y = this.getIconPositionY(y, usableHeight, iconHeight);
+
+            icon.renderScaledAt(x, y, z + 0.025f, iconWidth, iconHeight);
+        }
     }
 }

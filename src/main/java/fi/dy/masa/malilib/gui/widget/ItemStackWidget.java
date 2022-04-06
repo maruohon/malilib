@@ -26,8 +26,7 @@ public class ItemStackWidget extends BaseModelWidget
     {
         this.stack = stack;
 
-        this.updateWidth();
-        this.updateHeight();
+        this.updateSize();
 
         return this;
     }

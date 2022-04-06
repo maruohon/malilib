@@ -32,6 +32,34 @@ public class BackgroundWidget extends BaseWidget
         return this.borderRenderer;
     }
 
+    @Override
+    protected int getNonContentWidth()
+    {
+        int extraWidth = super.getNonContentWidth();
+
+        if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
+        {
+            int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
+            extraWidth += bw * 2;
+        }
+
+        return extraWidth;
+    }
+
+    @Override
+    protected int getNonContentHeight()
+    {
+        int extraHeight = super.getNonContentHeight();
+
+        if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
+        {
+            int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
+            extraHeight += bw * 2;
+        }
+
+        return extraHeight;
+    }
+
     protected int getBackgroundWidth(boolean hovered, ScreenContext ctx)
     {
         return this.getWidth();
