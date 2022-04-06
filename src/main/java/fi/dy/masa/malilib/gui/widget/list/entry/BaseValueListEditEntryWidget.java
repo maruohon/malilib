@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget.IconWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
@@ -29,6 +30,9 @@ public class BaseValueListEditEntryWidget<DATATYPE> extends BaseOrderableListEdi
         this.newEntryFactory = () -> this.defaultValue;
 
         this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%3d:", this.originalListIndex + 1));
+        this.labelWidget.setAutomaticWidth(false);
+        this.labelWidget.setWidth(24);
+        this.labelWidget.setHorizontalAlignment(HorizontalAlignment.RIGHT);
 
         this.resetButton = GenericButton.create(16, "malilib.button.misc.reset.caps");
         this.resetButton.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF404040);
