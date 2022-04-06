@@ -184,7 +184,7 @@ malilib.info.action.action_name_immutable=<c=ff0>Note: You can't change the acti
 malilib.info.custom_hotkey.name_immutable=<c=ff0>Note: You can't change the name later.</c>\n\nThe only way to "change" the name (in-game) is to delete the hotkey and create a new hotkey with the new name.
 
 malilib.label.actions.alias_action=Alias Action
-malilib.label.actions.alias_entry_widget_name=<c=24FEFA>%s §8[%s > %s]
+malilib.label.actions.alias_entry_widget_name=<c=24FEFA>%s <c=777>[%s > %s]
 malilib.label.actions.action_widget.icon_optional=Icon (optional):
 malilib.label.actions.action_widget.icon_scale_x=Icon X-scale:
 malilib.label.actions.action_widget.icon_scale_y=Icon Y-scale:
@@ -198,10 +198,10 @@ malilib.label.actions.lists.all_aliases=Aliases
 malilib.label.actions.lists.macro=Macro: %s
 malilib.label.actions.macro_action=Macro Action
 malilib.label.actions.macro_edit_screen.contained_actions=Actions in macro <c=FE24F3>%s</c>
-malilib.label.actions.macro_entry_widget_name=<c=FE24F3>%s §8[§b%s §8actions]
-malilib.label.actions.parameterizable_entry_widget_name=<c=FEFE24>%s §8[%s]
-malilib.label.actions.parameterized_entry_widget_name=<c=47FE24>%s §8[%s > %s]
-malilib.label.actions.simple_entry_widget_name=%s §8[%s]
+malilib.label.actions.macro_entry_widget_name=<c=FE24F3>%s <c=777>[§b%s <c=777>actions]
+malilib.label.actions.parameterizable_entry_widget_name=<c=FEFE24>%s <c=777>[%s]
+malilib.label.actions.parameterized_entry_widget_name=<c=47FE24>%s <c=777>[%s > %s]
+malilib.label.actions.simple_entry_widget_name=%s <c=777>[%s]
 malilib.label.action_widgets.action=Action:
 malilib.label.action_widgets.type.rectangular=Rectangular
 malilib.label.action_widgets.type.radial=Radial
@@ -247,8 +247,8 @@ malilib.label.confirm.file_deletion=Are you sure you want to delete the selected
 malilib.label.confirm.selected_configs_reset=Are you sure you want to reset all the configs matching the current search filters back to their default values?
 malilib.label.custom_hotkeys.create.hotkey_name=Hotkey name:
 malilib.label.custom_hotkeys.edit.bound_actions=Actions bound to the hotkey:
-malilib.label.custom_hotkeys.widget.action_display_name.multiple_actions=§8Contains §b%s§8 actions
-malilib.label.custom_hotkeys.widget.hotkey_name=§e%s
+malilib.label.custom_hotkeys.widget.action_display_name.multiple_actions=<c=666>Contains §b%s<c=666> actions
+malilib.label.custom_hotkeys.widget.hotkey_name=%s
 malilib.label.custom_icon_edit.coordinate.u=U:
 malilib.label.custom_icon_edit.coordinate.v=V:
 malilib.label.custom_icon_edit.icon_height=Icon Height:

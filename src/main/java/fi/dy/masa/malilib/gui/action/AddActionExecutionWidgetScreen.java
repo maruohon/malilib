@@ -53,7 +53,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
                                                              NamedAction::getDisplayName);
         this.actionDropDownWidget.setSelectionListener(this::onActionSelected);
         this.actionDropDownWidget.setAutomaticWidth(false);
-        this.actionDropDownWidget.setWidth(200);
+        this.actionDropDownWidget.setWidth(220);
 
         this.typeDropDownWidget = new DropDownListWidget<>(16, 4, BaseActionExecutionWidget.Type.VALUES,
                                                            BaseActionExecutionWidget.Type::getDisplayName);
@@ -63,7 +63,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
                                                            Registry.ICON.getAllIcons(),
                                                            IconRegistry::getKeyForIcon, IconWidget::new);
         this.iconDropDownWidget.setAutomaticWidth(false);
-        this.iconDropDownWidget.setWidth(200);
+        this.iconDropDownWidget.setWidth(220);
 
         this.addArgumentCheckbox = new CheckBoxWidget("malilib.button.action_widgets.add_argument",
                                                       "malilib.hover.action.add_action_execution_widget.add_argument");
@@ -120,13 +120,13 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         int y = this.y + 24;
         int gap = 6;
 
-        this.actionLabelWidget.setPosition(x, y);
-        this.actionDropDownWidget.setPosition(x, this.actionLabelWidget.getBottom());
-
-        this.typeLabelWidget.setPosition(x, this.actionDropDownWidget.getBottom() + gap);
+        this.typeLabelWidget.setPosition(x, y);
         this.typeDropDownWidget.setPosition(x, this.typeLabelWidget.getBottom());
 
-        this.nameLabelWidget.setPosition(x, this.typeDropDownWidget.getBottom() + gap);
+        this.actionLabelWidget.setPosition(x, this.typeDropDownWidget.getBottom() + gap);
+        this.actionDropDownWidget.setPosition(x, this.actionLabelWidget.getBottom());
+
+        this.nameLabelWidget.setPosition(x, this.actionDropDownWidget.getBottom() + gap);
         this.nameTextField.setPosition(x, this.nameLabelWidget.getBottom());
 
         this.hoverTextLabelWidget.setPosition(x, this.nameTextField.getBottom() + gap);

@@ -46,8 +46,8 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.removeButton = GenericButton.create("malilib.button.misc.remove", this::removeHotkey);
 
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
-        this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x30707070 : 0x50707070);
-        this.getBackgroundRenderer().getHoverSettings().setColor(0x50909090);
+        this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0xFF101010 : 0xFF181818);
+        this.getBackgroundRenderer().getHoverSettings().setColor(0xFF303030);
 
         ArrayList<StyledTextLine> lines = new ArrayList<>();
         MacroAction.getContainedActionsTooltip(data.getActionList(), lines::add, 8);
