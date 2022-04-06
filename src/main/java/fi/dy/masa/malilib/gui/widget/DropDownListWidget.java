@@ -12,12 +12,14 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.gui.util.ElementOffset;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.SingleTextLineRenderer;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.ToBooleanFunction;
 
@@ -77,14 +79,12 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.maxVisibleEntries = maxVisibleEntries;
         this.selectionHandler = new DefaultSingleEntrySelectionHandler<>();
 
-        int width = this.getRequiredWidth(entries, entryWidgetFactory) + 20;
-
         // The position gets updated in updateSubWidgetsToGeometryChanges
         this.scrollBar = new ScrollBarWidget(8, 100);
         this.scrollBar.setValueChangeListener(this::onScrolled);
         this.scrollBar.setBackgroundColor(0xFF202020);
 
-        this.searchTextField = new BaseTextFieldWidget(width, 16);
+        this.searchTextField = new BaseTextFieldWidget(100, 16); // The width will get updated later
         this.searchTextField.setUpdateListenerAlways(true);
         this.searchTextField.setUpdateListenerFromTextSet(true);
         this.searchTextField.setListener(this::onSearchTextChange);
@@ -100,7 +100,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.searchTipText = StyledTextLine.translate("malilib.label.misc.dropdown.type_to_search");
 
         this.setHoverInfoRequiresShift(true);
-        this.setWidthNoUpdate(width);
+        this.setWidthNoUpdate(120); // The width will get updated later
         this.updateCurrentEntryBar();
         this.updateDropDownHeight();
         this.updateFilteredEntries("");
@@ -139,6 +139,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         int x = this.getRight() - this.scrollBar.getWidth() - 1;
         int y = this.currentEntryBarWidget.getBottom() + 1;
         this.scrollBar.setPosition(x, y);
+        this.searchTextField.setBottom(this.getY());
     }
 
     @Override
@@ -171,8 +172,15 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         if (this.automaticWidth)
         {
-            this.setWidth(this.getRequiredWidth(this.entries, this.entryWidgetFactory) + 20);
-            this.searchTextField.setWidth(this.getWidth());
+            int width = this.getRequiredWidth(this.entries, this.entryWidgetFactory,
+                                              this.getSelectionHandler().supportsMultiSelection()) + 20;
+
+            if (this.hasMaxWidth())
+            {
+                width = Math.min(width, this.maxWidth);
+            }
+
+            this.setWidth(width);
         }
     }
 
@@ -181,6 +189,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         super.onSizeChanged();
         this.updateCurrentEntryBar();
+        this.searchTextField.setWidth(this.getWidth());
     }
 
     @Override
@@ -266,16 +275,14 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         if (this.isOpen())
         {
-            if (this.searchOpen)
+            if (this.searchOpen && this.searchTextField.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
-                return this.searchTextField.tryMouseScroll(mouseX, mouseY, mouseWheelDelta);
-            }
-            else
-            {
-                int amount = mouseWheelDelta < 0 ? 1 : -1;
-                this.scrollBar.offsetValue(amount);
                 return true;
             }
+
+            int amount = mouseWheelDelta < 0 ? 1 : -1;
+            this.scrollBar.offsetValue(amount);
+            return true;
         }
 
         return false;
@@ -284,11 +291,6 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (super.onKeyTyped(keyCode, scanCode, modifiers))
-        {
-            return true;
-        }
-
         if (this.isOpen())
         {
             if (keyCode == Keyboard.KEY_ESCAPE)
@@ -308,7 +310,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             return this.searchTextField.onKeyTyped(keyCode, scanCode, modifiers);
         }
 
-        return false;
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -403,16 +405,20 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         this.isOpen = isOpen && this.isEnabled();
 
-        if (this.isOpen == false)
-        {
-            this.searchOpen = false;
-            this.searchTextField.setTextNoNotify("");
-        }
-
         this.clearWidgets();
         this.setZ(this.isOpen ? this.baseZLevel + 50 : this.baseZLevel);
         this.updateCurrentEntryBar();
         this.updateSubWidgetPositions();
+
+        if (this.isOpen)
+        {
+            this.updateFilteredEntries("");
+        }
+        else
+        {
+            this.searchOpen = false;
+            this.searchTextField.setTextNoNotify("");
+        }
 
         // Add/remove the sub widgets as needed
         this.reAddSubWidgets();
@@ -425,14 +431,12 @@ public class DropDownListWidget<T> extends ContainerWidget
         if (isOpen)
         {
             this.searchTextField.setFocused(true);
+            this.reAddSubWidgets();
         }
         else
         {
             this.searchTextField.setText("");
-            //this.updateFilteredEntries("");
         }
-
-        this.reAddSubWidgets();
     }
 
     protected void onSearchTextChange(String searchText)
@@ -443,6 +447,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         this.updateFilteredEntries(searchText);
+        this.reAddSubWidgets();
     }
 
     protected void updateFilteredEntries(String searchText)
@@ -469,7 +474,6 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.scrollBar.setMaxValue(this.filteredEntries.size() - this.currentMaxVisibleEntries);
         //this.updateMaxSize();
         this.updateScrollBarHeight();
-        this.reAddSubWidgets();
     }
 
     protected void updateScrollBarHeight()
@@ -485,10 +489,17 @@ public class DropDownListWidget<T> extends ContainerWidget
         return filterText.isEmpty() || this.getDisplayString(entry).toLowerCase().contains(filterText);
     }
 
-    protected int getRequiredWidth(List<T> entriesIn, EntryWidgetFactory<T> entryFactory)
+    protected int getRequiredWidth(List<T> entriesIn,
+                                   EntryWidgetFactory<T> entryFactory,
+                                   boolean supportsMultiSelection)
     {
-        String key = this.multiSelectionTranslationKey;
-        int maxWidth = StyledTextLine.translate(key, 99).renderWidth;
+        int maxWidth = 0;
+
+        if (supportsMultiSelection)
+        {
+            String key = this.multiSelectionTranslationKey;
+            maxWidth = StyledTextLine.translate(key, 99).renderWidth;
+        }
 
         for (T entry : entriesIn)
         {
@@ -605,31 +616,38 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             if (count == 1 && selected != null)
             {
-                widget = this.entryWidgetFactory.createWidget(this.getWidth(), this.lineHeight, selected);
-            }
-            else if (count > 1)
-            {
-                widget = new ContainerWidget(this.getWidth(), this.lineHeight);
-                String key = this.multiSelectionTranslationKey;
-                widget.setText(StyledTextLine.translate(key, count));
+                EntryWidget entryWidget = this.entryWidgetFactory.createWidget(this.getWidth(), this.lineHeight, selected);
+                int unusableWidth = entryWidget.textOffset.getXOffset() + entryWidget.getPadding().getHorizontalTotal() + 16;
+                entryWidget.getTextLineRenderer().setMaxWidth(entryWidget.getWidth() - unusableWidth);
+                widget = entryWidget;
             }
             else
             {
                 widget = new ContainerWidget(this.getWidth(), this.lineHeight);
-                widget.setText(StyledTextLine.of("-"));
+                widget.getTextOffset().setYOffset(1);
+
+                if (count > 1)
+                {
+                    String key = this.multiSelectionTranslationKey;
+                    widget.setText(StyledTextLine.translate(key, count));
+                }
+                else
+                {
+                    widget.setText(StyledTextLine.of("-"));
+                }
             }
 
-            widget.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFFC0C0C0);
-            widget.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xFF000000);
-            widget.setClickListener(this::toggleOpen);
-            widget.setPosition(this.getX(), this.getY());
-            widget.getTextOffset().setYOffset(1);
-            widget.getIconOffset().setYOffset(1);
-            widget.getIconOffset().setXOffset(widget.getWidth() - 15);
             Icon icon = this.isOpen() ? DefaultIcons.ARROW_UP : DefaultIcons.ARROW_DOWN;
+            int borderColor = this.isOpen() ? this.borderColorOpen : 0xFFC0C0C0;
+            widget.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, borderColor);
+            widget.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xFF000000);
             widget.setIcon(icon);
+            widget.getIconOffset().setXOffset(widget.getWidth() - 15);
+            widget.getIconOffset().setYOffset(1);
+            widget.setClickListener(this::toggleOpen);
             widget.setHoverInfoFactory(this.getHoverInfoFactory());
             widget.setHoverInfoRequiresShift(true);
+            widget.setPosition(this.getX(), this.getY());
 
             this.currentEntryBarWidget = widget;
             this.addWidget(widget);
@@ -677,6 +695,66 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
     }
 
+    public static class EntryWidget extends ContainerWidget
+    {
+        protected final SingleTextLineRenderer textLineRenderer;
+        @Nullable protected InteractableWidget iconWidget;
+
+        public EntryWidget(int width, int height, @Nullable InteractableWidget iconWidget)
+        {
+            super(width, height);
+
+            this.textLineRenderer = new SingleTextLineRenderer(this::getTextSettings);
+            this.iconWidget = iconWidget;
+            this.textLineRenderer.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFF30C0C0);
+            this.textLineRenderer.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, 0xFF000000);
+            this.textLineRenderer.getPadding().setAll(3, 3, 1, 3);
+        }
+
+        @Override
+        public void reAddSubWidgets()
+        {
+            super.reAddSubWidgets();
+            this.addWidgetIfNotNull(this.iconWidget);
+        }
+
+        @Override
+        public void updateSubWidgetPositions()
+        {
+            super.updateSubWidgetPositions();
+
+            if (this.iconWidget != null)
+            {
+                this.iconWidget.setX(this.getX() + this.getPadding().getLeft());
+                this.iconWidget.centerVerticallyInside(this);
+            }
+        }
+
+        public SingleTextLineRenderer getTextLineRenderer()
+        {
+            return this.textLineRenderer;
+        }
+
+        @Override
+        public void setText(StyledTextLine text)
+        {
+            this.textLineRenderer.setStyledTextLine(text);
+        }
+
+        @Override
+        public void renderAt(int x, int y, float z, ScreenContext ctx)
+        {
+            super.renderAt(x, y, z, ctx);
+
+            int h = this.textLineRenderer.getTotalHeight();
+            int tx = x + this.textOffset.getXOffset();
+            int ty = y + ElementOffset.getCenteredElementOffset(this.getHeight(), h);
+
+            boolean highlight = this.textLineRenderer.hasClampedContent() && this.isHoveredForRender(ctx);
+            this.textLineRenderer.renderAt(tx, ty, z + 0.125f, highlight, ctx);
+        }
+    }
+
     public static class DefaultEntryWidgetFactory<T> implements EntryWidgetFactory<T>
     {
         @Nullable protected final Function<T, String> stringFactory;
@@ -703,25 +781,33 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         @Override
-        public InteractableWidget createWidget(int width, int height, T entry)
+        public EntryWidget createWidget(int width, int height, T entry)
         {
-            ContainerWidget widget = new ContainerWidget(width, height);
-
-            if (this.stringFactory != null)
-            {
-                widget.setText(StyledTextLine.of(getDisplayString(entry, this.stringFactory)));
-            }
-
-            widget.getTextOffset().setXOffset(5);
+            InteractableWidget iconWidget = null;
+            int textOffset = 0;
 
             if (this.iconWidgetFactory != null)
             {
-                InteractableWidget iconWidget = this.iconWidgetFactory.create(entry);
-                iconWidget.getMargin().setRight(4);
-                iconWidget.setX(2);
-                iconWidget.centerVerticallyInside(widget);
-                widget.addWidget(iconWidget);
-                widget.getTextOffset().setXOffset(iconWidget.getWidth() + 9);
+                iconWidget = this.iconWidgetFactory.create(entry);
+                int maxSize = height;
+                iconWidget.setAutomaticWidth(false);
+                iconWidget.setAutomaticHeight(false);
+                iconWidget.setMaxWidth(maxSize);
+                iconWidget.setMaxHeight(maxSize);
+                iconWidget.updateSize();
+                textOffset += maxSize + 4;
+            }
+
+            EntryWidget widget = new EntryWidget(width, height, iconWidget);
+            widget.getPadding().setLeft(4);
+
+            if (this.stringFactory != null)
+            {
+                widget.getTextOffset().setXOffset(textOffset);
+                widget.getTextOffset().setYOffset(0);
+                int unusableWidth = textOffset + 6;
+                widget.getTextLineRenderer().setMaxWidth(width - unusableWidth);
+                widget.setText(StyledTextLine.of(getDisplayString(entry, this.stringFactory)));
             }
 
             return widget;
@@ -826,6 +912,12 @@ public class DropDownListWidget<T> extends ContainerWidget
             this.selectionCountSupplier = selectionCountSupplier;
         }
 
+        @Override
+        public boolean supportsMultiSelection()
+        {
+            return true;
+        }
+
         @Nullable
         @Override
         public T getSelectedEntryIfSingle()
@@ -872,14 +964,19 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         @Nullable InteractableWidget createIconWidget(T data);
 
-        InteractableWidget createWidget(int width, int height, T entry);
+        EntryWidget createWidget(int width, int height, T entry);
     }
 
     public interface SelectionHandler<T>
     {
-        @Nullable T getSelectedEntryIfSingle();
+        default boolean supportsMultiSelection()
+        {
+            return false;
+        }
 
         int getSelectedEntryCount();
+
+        @Nullable T getSelectedEntryIfSingle();
 
         boolean isEntrySelected(T entry);
 
