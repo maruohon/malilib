@@ -265,13 +265,14 @@ public class LabelWidget extends InteractableWidget
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
 
+            int width = this.totalWidth;
+
             if (this.getBackgroundRenderer().getNormalSettings().isEnabled() == false &&
                 this.useBackgroundForHoverOverflow &&
                 this.stringListRenderer.hasClampedContent() &&
                 this.isHoveredForRender(ctx))
             {
                 z += 20;
-                int width = this.totalWidth;
                 int height = this.totalHeight;
                 BorderSettings borderSettings = this.getBorderRenderer().getHoverSettings();
                 BackgroundSettings bgSettings = this.getBackgroundRenderer().getHoverSettings();
@@ -286,6 +287,13 @@ public class LabelWidget extends InteractableWidget
             int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
             x += this.padding.getLeft() + bw;
             y += this.padding.getTop() + bw;
+
+            if (this.automaticWidth == false && this.getWidth() > this.totalWidth &&
+                this.stringListRenderer.hasClampedContent() == false &&
+                this.stringListRenderer.getHorizontalAlignment() == HorizontalAlignment.RIGHT)
+            {
+                x = this.getRight() - this.stringListRenderer.getTotalRenderWidth() - this.padding.getRight() - bw;
+            }
 
             this.stringListRenderer.renderAt(x, y, z, this.isHoveredForRender(ctx), ctx);
         }

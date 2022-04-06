@@ -87,6 +87,11 @@ public class StringListRenderer extends BaseWidget
         return this.originalTextLines.isEmpty();
     }
 
+    public HorizontalAlignment getHorizontalAlignment()
+    {
+        return this.horizontalAlignment;
+    }
+
     @Override
     public void setLineHeight(int lineHeight)
     {
