@@ -28,10 +28,12 @@ import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
+import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
 import fi.dy.masa.malilib.config.option.OverridableConfig;
-import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
@@ -170,11 +172,18 @@ public class ConfigOverrideUtils
             {
                 for (ConfigInfo config : category.getConfigOptions())
                 {
-                    if (config instanceof OverridableConfig<?>)
+                    ConfigSearchInfo<ConfigInfo> info = Registry.CONFIG_WIDGET.getSearchInfo(config);
+
+                    if (info != null && info.hasToggle)
                     {
-                        @SuppressWarnings("unchecked")
-                        C cfg = (C) config;
-                        configs.put(config.getModInfo().getModId(), Pair.of(category, cfg));
+                        BooleanStorageWithDefault storage = info.getBooleanStorage(config);
+
+                        if (storage instanceof OverridableConfig<?>)
+                        {
+                            @SuppressWarnings("unchecked")
+                            C cfg = (C) config;
+                            configs.put(config.getModInfo().getModId(), Pair.of(category, cfg));
+                        }
                     }
                 }
             }
@@ -326,14 +335,6 @@ public class ConfigOverrideUtils
                 continue;
             }
 
-            JsonConfigSerializerRegistry.JsonConfigDeSerializer<C> ds = Registry.JSON_CONFIG_SERIALIZER.getDeSerializer(cfg);
-
-            if (ds == null)
-            {
-                MaLiLib.LOGGER.warn("applyOverrides(): Missing JSON de-serializer for '{}'", cfg.getName());
-                continue;
-            }
-
             // TODO FIXME this needs a better/proper way to load the value from the JSON de-serializer,
             // and then set that value as the override value.
             try
@@ -343,13 +344,39 @@ public class ConfigOverrideUtils
                 if (info != null && info.hasToggle && overrideValue.isJsonPrimitive())
                 {
                     BooleanStorageWithDefault storage = info.getBooleanStorage(cfg);
+                    boolean booleanValue = overrideValue.getAsBoolean();
 
                     if (storage instanceof BooleanConfig)
                     {
-                        boolean booleanValue = overrideValue.getAsBoolean();
                         MaLiLib.debugLog("Overriding value of '{}' to '{}'", cfg.getName(), booleanValue);
                         ((BooleanConfig) cfg).enableOverrideWithValue(booleanValue);
-                        //ds.deSerializeConfigValue(cfg, overrideValue, cfg.getName());
+                        cfg.setOverrideMessage(message);
+                        ++count;
+                    }
+                    else if (storage instanceof BooleanAndIntConfig)
+                    {
+                        MaLiLib.debugLog("Overriding value of '{}' to '{}'", cfg.getName(), booleanValue);
+                        BooleanAndIntConfig config = (BooleanAndIntConfig) cfg;
+                        BooleanAndIntConfig.BooleanAndInt currentValue = config.getValue();
+                        config.enableOverrideWithValue(new BooleanAndIntConfig.BooleanAndInt(booleanValue, currentValue.intValue));
+                        cfg.setOverrideMessage(message);
+                        ++count;
+                    }
+                    else if (storage instanceof BooleanAndDoubleConfig)
+                    {
+                        MaLiLib.debugLog("Overriding value of '{}' to '{}'", cfg.getName(), booleanValue);
+                        BooleanAndDoubleConfig config = (BooleanAndDoubleConfig) cfg;
+                        BooleanAndDoubleConfig.BooleanAndDouble currentValue = config.getValue();
+                        config.enableOverrideWithValue(new BooleanAndDoubleConfig.BooleanAndDouble(booleanValue, currentValue.doubleValue));
+                        cfg.setOverrideMessage(message);
+                        ++count;
+                    }
+                    else if (storage instanceof BooleanAndFileConfig)
+                    {
+                        MaLiLib.debugLog("Overriding value of '{}' to '{}'", cfg.getName(), booleanValue);
+                        BooleanAndFileConfig config = (BooleanAndFileConfig) cfg;
+                        BooleanAndFileConfig.BooleanAndFile currentValue = config.getValue();
+                        config.enableOverrideWithValue(new BooleanAndFileConfig.BooleanAndFile(booleanValue, currentValue.fileValue));
                         cfg.setOverrideMessage(message);
                         ++count;
                     }

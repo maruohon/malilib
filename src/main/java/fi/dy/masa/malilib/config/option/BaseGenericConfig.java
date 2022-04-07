@@ -162,7 +162,7 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
      * for the dirty checks by the {@link ConfigOption#isDirty()} method later on.
      * @param value the value being loaded
      */
-    public void loadValueFromConfig(T value)
+    public void loadValue(T value)
     {
         this.value = value;
         this.cacheSavedValue();

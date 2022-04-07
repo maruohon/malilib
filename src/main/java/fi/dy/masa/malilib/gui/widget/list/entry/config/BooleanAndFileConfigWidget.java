@@ -1,19 +1,19 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import java.io.File;
-import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig;
-import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig.BooleanAndFile;
+import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndFileConfig.BooleanAndFile;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
-public class OptionalDirectoryConfigWidget extends BaseFileConfigWidget<BooleanAndFile, OptionalDirectoryConfig>
+public class BooleanAndFileConfigWidget extends BaseFileConfigWidget<BooleanAndFile, BooleanAndFileConfig>
 {
     protected final OnOffButton booleanButton;
 
-    public OptionalDirectoryConfigWidget(OptionalDirectoryConfig config,
-                                         DataListEntryWidgetData constructData,
-                                         ConfigWidgetContext ctx)
+    public BooleanAndFileConfigWidget(BooleanAndFileConfig config,
+                                      DataListEntryWidgetData constructData,
+                                      ConfigWidgetContext ctx)
     {
         super(config, constructData, ctx);
 

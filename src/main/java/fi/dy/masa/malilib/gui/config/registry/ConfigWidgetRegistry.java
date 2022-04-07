@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.group.ExpandableConfigGroup;
 import fi.dy.masa.malilib.config.group.PopupConfigGroup;
 import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
@@ -19,7 +20,6 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.NestedConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
@@ -35,6 +35,7 @@ import fi.dy.masa.malilib.gui.config.MissingConfigTypeFactory;
 import fi.dy.masa.malilib.gui.config.NestedConfigWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BlackWhiteListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanAndDoubleConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanAndFileConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanAndIntConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;
@@ -49,7 +50,6 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyedBooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.IntegerConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionListConfigWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionalDirectoryConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.PopupConfigGroupWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.Vec2iConfigWidget;
@@ -117,8 +117,9 @@ public class ConfigWidgetRegistry
 
         this.registerConfigWidgetFactory(BlockListConfig.class,         BlockListConfigWidget::new);
         this.registerConfigWidgetFactory(BooleanConfig.class,           BooleanConfigWidget::new);
-        this.registerConfigWidgetFactory(BooleanAndIntConfig.class,     BooleanAndIntConfigWidget::new);
         this.registerConfigWidgetFactory(BooleanAndDoubleConfig.class,  BooleanAndDoubleConfigWidget::new);
+        this.registerConfigWidgetFactory(BooleanAndFileConfig.class,    BooleanAndFileConfigWidget::new);
+        this.registerConfigWidgetFactory(BooleanAndIntConfig.class,     BooleanAndIntConfigWidget::new);
         this.registerConfigWidgetFactory(ColorConfig.class,             ColorConfigWidget::new);
         this.registerConfigWidgetFactory(CustomHotkeyDefinition.class,  CustomHotkeyEntryWidget::new);
         this.registerConfigWidgetFactory(DirectoryConfig.class,         DirectoryConfigWidget::new);
@@ -134,7 +135,6 @@ public class ConfigWidgetRegistry
         this.registerConfigWidgetFactory(IntegerConfig.class,           IntegerConfigWidget::new);
         this.registerConfigWidgetFactory(ItemListConfig.class,          ItemListConfigWidget::new);
         this.registerConfigWidgetFactory(NestedConfig.class,            new NestedConfigWidgetFactory());
-        this.registerConfigWidgetFactory(OptionalDirectoryConfig.class, OptionalDirectoryConfigWidget::new);
         this.registerConfigWidgetFactory(PopupConfigGroup.class,        PopupConfigGroupWidget::new);
         this.registerConfigWidgetFactory(StatusEffectListConfig.class,  StatusEffectListConfigWidget::new);
         this.registerConfigWidgetFactory(StringConfig.class,            StringConfigWidget::new);
@@ -146,10 +146,10 @@ public class ConfigWidgetRegistry
     {
         this.registerConfigSearchInfo(BooleanConfig.class,          new ConfigSearchInfo<BooleanConfig>(true, false).setBooleanStorageGetter((c) -> c));
         this.registerConfigSearchInfo(BooleanAndDoubleConfig.class, new ConfigSearchInfo<BooleanAndDoubleConfig>(true, false).setBooleanStorageGetter((c) -> c));
+        this.registerConfigSearchInfo(BooleanAndFileConfig.class,   new ConfigSearchInfo<BooleanAndFileConfig>(true, false).setBooleanStorageGetter((c) -> c));
         this.registerConfigSearchInfo(BooleanAndIntConfig.class,    new ConfigSearchInfo<BooleanAndIntConfig>(true, false).setBooleanStorageGetter((c) -> c));
         this.registerConfigSearchInfo(HotkeyConfig.class,           new ConfigSearchInfo<HotkeyConfig>(false, true).setKeyBindGetter(HotkeyConfig::getKeyBind));
         this.registerConfigSearchInfo(HotkeyedBooleanConfig.class,  new ConfigSearchInfo<HotkeyedBooleanConfig>(true, true).setBooleanStorageGetter((c) -> c).setKeyBindGetter(HotkeyedBooleanConfig::getKeyBind));
-        this.registerConfigSearchInfo(OptionalDirectoryConfig.class,new ConfigSearchInfo<OptionalDirectoryConfig>(true, false).setBooleanStorageGetter((c) -> c));
 
         this.registerConfigSearchInfo(CustomHotkeyDefinition.class, new ConfigSearchInfo<CustomHotkeyDefinition>(false, true).setKeyBindGetter(CustomHotkeyDefinition::getKeyBind));
     }

@@ -1,40 +1,89 @@
 package fi.dy.masa.malilib.config.serialization;
 
-import java.io.File;
-import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import org.apache.commons.lang3.tuple.Pair;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.config.option.BaseGenericConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig.BooleanAndDouble;
+import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndFileConfig.BooleanAndFile;
 import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndIntConfig.BooleanAndInt;
 import fi.dy.masa.malilib.config.option.DualColorConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig;
-import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig.BooleanAndFile;
 import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
-import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.Color4f;
+import fi.dy.masa.malilib.util.data.json.DataJsonDeserializers;
+import fi.dy.masa.malilib.util.data.json.DataJsonSerializers;
 import fi.dy.masa.malilib.util.position.Vec2i;
-import fi.dy.masa.malilib.util.restriction.UsageRestriction;
 
 public class JsonConfigSerializers
 {
-    public static <T> void loadGenericConfig(Consumer<T> consumer,
-                                             Supplier<T> supplier,
-                                             JsonElement element,
-                                             String configName)
+    public static JsonElement saveHotkeyedBooleanConfig(HotkeyedBooleanConfig config)
+    {
+        JsonObject obj = new JsonObject();
+        obj.add("enabled", new JsonPrimitive(config.getBooleanValue()));
+        obj.add("hotkey", config.getKeyBind().getAsJsonElement());
+        return obj;
+    }
+
+    public static JsonElement saveDualColorConfig(DualColorConfig config)
+    {
+        return DataJsonSerializers.serializeDualColorValue(config.getValue());
+    }
+
+    public static JsonElement saveVec2iConfig(Vec2iConfig config)
+    {
+        return DataJsonSerializers.serializeVec2iValue(config.getValue());
+    }
+
+    public static JsonElement saveBooleanAndIntConfig(BooleanAndIntConfig config)
+    {
+        return DataJsonSerializers.serializeBooleanAndIntValue(config.getValue());
+    }
+
+    public static JsonElement saveBooleanAndDoubleConfig(BooleanAndDoubleConfig config)
+    {
+        return DataJsonSerializers.serializeBooleanAndDoubleValue(config.getValue());
+    }
+
+    public static JsonElement saveBooleanAndFileConfig(BooleanAndFileConfig config)
+    {
+        return DataJsonSerializers.serializeBooleanAndFileValue(config.getValue());
+    }
+
+    public static <T extends OptionListConfigValue> JsonElement saveOptionListConfig(OptionListConfig<T> config)
+    {
+        return DataJsonSerializers.serializeOptionListValue(config.getValue());
+    }
+
+    public static <T> JsonElement saveValueListConfig(ValueListConfig<T> config)
+    {
+        return DataJsonSerializers.serializeValueListAsString(config.getValue(), config.getToStringConverter());
+    }
+
+    public static <T> JsonElement saveBlackWhiteListConfig(BlackWhiteListConfig<T> config)
+    {
+        return DataJsonSerializers.serializeBlackWhiteList(config.getValue());
+    }
+
+    public static <T> void loadPrimitiveConfig(Consumer<T> consumer,
+                                               Supplier<T> supplier,
+                                               JsonElement element,
+                                               String configName)
     {
         try
         {
@@ -51,51 +100,6 @@ public class JsonConfigSerializers
         {
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
-    }
-
-    public static JsonElement saveDualColorConfig(DualColorConfig config)
-    {
-        JsonObject obj = new JsonObject();
-        obj.add("color1", new JsonPrimitive(config.getFirstColorInt()));
-        obj.add("color2", new JsonPrimitive(config.getSecondColorInt()));
-        return obj;
-    }
-
-    public static void loadDualColorConfig(DualColorConfig config, JsonElement element, String configName)
-    {
-        try
-        {
-            if (element.isJsonObject())
-            {
-                JsonObject obj = element.getAsJsonObject();
-
-                if (JsonUtils.hasInteger(obj, "color1") &&
-                    JsonUtils.hasInteger(obj, "color2"))
-                {
-                    config.loadColorValueFromInts(JsonUtils.getInteger(obj, "color1"),
-                                                  JsonUtils.getInteger(obj, "color2"));
-                    return;
-                }
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        config.loadValueFromConfig(config.getDefaultValue());
-    }
-
-    public static JsonElement saveHotkeyedBooleanConfig(HotkeyedBooleanConfig config)
-    {
-        JsonObject obj = new JsonObject();
-        obj.add("enabled", new JsonPrimitive(config.getBooleanValue()));
-        obj.add("hotkey", config.getKeyBind().getAsJsonElement());
-        return obj;
     }
 
     public static void loadHotkeyedBooleanConfig(HotkeyedBooleanConfig config, JsonElement element, String configName)
@@ -125,282 +129,70 @@ public class JsonConfigSerializers
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
 
-        config.loadValueFromConfig(config.getDefaultValue());
+        config.loadValue(config.getDefaultValue());
     }
 
-    public static JsonElement saveOptionalDirectoryConfig(OptionalDirectoryConfig config)
+    public static void loadDualColorConfig(DualColorConfig config, JsonElement element, String configName)
     {
-        JsonObject obj = new JsonObject();
-        BooleanAndFile value = config.getValue();
-        obj.add("enabled", new JsonPrimitive(value.booleanValue));
-        obj.add("directory", new JsonPrimitive(value.fileValue.getAbsolutePath()));
-        return obj;
+        Optional<Pair<Color4f, Color4f>> optional = DataJsonDeserializers.readDualColorValue(element);
+        loadConfigValue(config, optional, element, configName);
     }
 
-    public static void loadOptionalDirectoryConfig(OptionalDirectoryConfig config, JsonElement element, String configName)
+    public static void loadBooleanAndFileConfig(BooleanAndFileConfig config, JsonElement element, String configName)
     {
-        try
-        {
-            if (element.isJsonObject())
-            {
-                JsonObject obj = element.getAsJsonObject();
-
-                if (JsonUtils.hasBoolean(obj, "enabled") &&
-                    JsonUtils.hasString(obj, "directory"))
-                {
-                    boolean booleanValue = JsonUtils.getBoolean(obj, "enabled");
-                    File fileValue = new File(JsonUtils.getString(obj, "directory"));
-                    config.loadValueFromConfig(new BooleanAndFile(booleanValue, fileValue));
-                    return;
-                }
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        config.loadValueFromConfig(config.getDefaultValue());
-    }
-
-    public static <T extends OptionListConfigValue> JsonElement saveOptionListConfig(OptionListConfig<T> config)
-    {
-        return new JsonPrimitive(config.getValue().getName());
+        Optional<BooleanAndFile> optional = DataJsonDeserializers.readBooleanAndFileValue(element);
+        loadConfigValue(config, optional, element, configName);
     }
 
     public static <T extends OptionListConfigValue> void loadOptionListConfig(OptionListConfig<T> config, JsonElement element, String configName)
     {
-        try
-        {
-            if (element.isJsonPrimitive())
-            {
-                config.loadValueFromConfig(BaseOptionListConfigValue.findValueByName(element.getAsString(), config.getAllValues()));
-                return;
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}' - not a JSON primitive", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        config.loadValueFromConfig(config.getDefaultValue());
-    }
-
-    public static <T> JsonElement saveValueListConfig(ValueListConfig<T> config)
-    {
-        JsonArray arr = new JsonArray();
-
-        for (String str : ValueListConfig.getValuesAsStringList(config.getValue(), config.getToStringConverter()))
-        {
-            arr.add(new JsonPrimitive(str));
-        }
-
-        return arr;
+        Optional<T> optional = DataJsonDeserializers.readOptionListValue(element, config.getAllValues());
+        loadConfigValue(config, optional, element, configName);
     }
 
     public static <T> void loadValueListConfig(ValueListConfig<T> config, JsonElement element, String configName)
     {
-        try
-        {
-            if (element.isJsonArray())
-            {
-                ImmutableList.Builder<T> builder = ImmutableList.builder();
-                List<String> strings = JsonUtils.arrayAsStringList(element.getAsJsonArray());
-
-                for (T value : ValueListConfig.getStringListAsValues(strings, config.getFromStringConverter()))
-                {
-                    builder.add(value);
-                }
-
-                config.loadValueFromConfig(builder.build());
-                return;
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        config.loadValueFromConfig(config.getDefaultValue());
-    }
-
-    public static JsonElement saveVec2iConfig(Vec2iConfig config)
-    {
-        JsonObject obj = new JsonObject();
-        Vec2i vec = config.getValue();
-
-        obj.addProperty("x", vec.x);
-        obj.addProperty("y", vec.y);
-
-        return obj;
+        Optional<ImmutableList<T>> optional = DataJsonDeserializers.readValueList(element, config.getFromStringConverter());
+        loadConfigValue(config, optional, element, configName);
     }
 
     public static void loadVec2iConfig(Vec2iConfig config, JsonElement element, String configName)
     {
-        try
-        {
-            if (element.isJsonObject())
-            {
-                JsonObject obj = element.getAsJsonObject();
-                int x = JsonUtils.getInteger(obj, "x");
-                int y = JsonUtils.getInteger(obj, "y");
-                config.loadValueFromConfig(new Vec2i(x, y));
-                return;
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        config.loadValueFromConfig(config.getDefaultValue());
-    }
-
-    public static JsonElement saveBooleanAndIntConfig(BooleanAndIntConfig config)
-    {
-        JsonObject obj = new JsonObject();
-        BooleanAndInt value = config.getValue();
-
-        obj.addProperty("b", value.booleanValue);
-        obj.addProperty("i", value.intValue);
-
-        return obj;
+        Optional<Vec2i> optional = DataJsonDeserializers.readVec2iValue(element);
+        loadConfigValue(config, optional, element, configName);
     }
 
     public static void loadBooleanAndIntConfig(BooleanAndIntConfig config, JsonElement element, String configName)
     {
-        try
-        {
-            if (element.isJsonObject())
-            {
-                JsonObject obj = element.getAsJsonObject();
-
-                if (JsonUtils.hasBoolean(obj, "b") && JsonUtils.hasInteger(obj, "i"))
-                {
-                    boolean booleanValue = JsonUtils.getBoolean(obj, "b");
-                    int intValue = JsonUtils.getInteger(obj, "i");
-                    config.loadValueFromConfig(new BooleanAndInt(booleanValue, intValue));
-                    return;
-                }
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        config.loadValueFromConfig(config.getDefaultValue());
-    }
-
-    public static JsonElement saveBooleanAndDoubleConfig(BooleanAndDoubleConfig config)
-    {
-        JsonObject obj = new JsonObject();
-        BooleanAndDouble value = config.getValue();
-
-        obj.addProperty("b", value.booleanValue);
-        obj.addProperty("d", value.doubleValue);
-
-        return obj;
+        Optional<BooleanAndInt> optional = DataJsonDeserializers.readBooleanAndIntValue(element);
+        loadConfigValue(config, optional, element, configName);
     }
 
     public static void loadBooleanAndDoubleConfig(BooleanAndDoubleConfig config, JsonElement element, String configName)
     {
-        try
-        {
-            if (element.isJsonObject())
-            {
-                JsonObject obj = element.getAsJsonObject();
-
-                if (JsonUtils.hasBoolean(obj, "b") && JsonUtils.hasDouble(obj, "d"))
-                {
-                    boolean booleanValue = JsonUtils.getBoolean(obj, "b");
-                    double doubleValue = JsonUtils.getDouble(obj, "d");
-                    config.loadValueFromConfig(new BooleanAndDouble(booleanValue, doubleValue));
-                    return;
-                }
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        config.loadValueFromConfig(config.getDefaultValue());
-    }
-
-    public static <T> JsonElement saveBlackWhiteListConfig(BlackWhiteListConfig<T> config)
-    {
-        JsonObject obj = new JsonObject();
-
-        BlackWhiteList<T> list = config.getValue();
-        obj.add("type", new JsonPrimitive(list.getListType().getName()));
-        obj.add("blacklist", JsonUtils.stringListAsArray(list.getBlackListAsString()));
-        obj.add("whitelist", JsonUtils.stringListAsArray(list.getWhiteListAsString()));
-
-        return obj;
+        Optional<BooleanAndDouble> optional = DataJsonDeserializers.readBooleanAndDoubleValue(element);
+        loadConfigValue(config, optional, element, configName);
     }
 
     public static <T> void loadBlackWhiteListConfig(BlackWhiteListConfig<T> config, JsonElement element, String configName)
     {
-        try
+        Optional<BlackWhiteList<T>> optional = DataJsonDeserializers.readBlackWhiteListValue(element, config);
+        loadConfigValue(config, optional, element, configName);
+    }
+
+    public static <T, C extends BaseGenericConfig<T>> void loadConfigValue(C config,
+                                                                           Optional<T> optional,
+                                                                           JsonElement element,
+                                                                           String configName)
+    {
+        if (optional.isPresent())
         {
-            if (element.isJsonObject())
-            {
-                JsonObject obj = element.getAsJsonObject();
-
-                if (JsonUtils.hasString(obj, "type") &&
-                    JsonUtils.hasArray(obj, "blacklist") &&
-                    JsonUtils.hasArray(obj, "whitelist"))
-                {
-                    UsageRestriction.ListType type = BaseOptionListConfigValue.findValueByName(JsonUtils.getString(obj, "type"), UsageRestriction.ListType.VALUES);
-                    List<String> blackListStr = JsonUtils.arrayAsStringList(obj.getAsJsonArray("blacklist"));
-                    List<String> whiteListStr = JsonUtils.arrayAsStringList(obj.getAsJsonArray("whitelist"));
-
-                    BlackWhiteList<T> list = config.getValue();
-                    ValueListConfig<T> blackList = list.getBlackList().copy();
-                    ValueListConfig<T> whiteList = list.getWhiteList().copy();
-
-                    blackList.setValue(ValueListConfig.getStringListAsValues(blackListStr, list.getFromStringConverter()));
-                    whiteList.setValue(ValueListConfig.getStringListAsValues(whiteListStr, list.getFromStringConverter()));
-
-                    config.loadValueFromConfig(new BlackWhiteList<>(type, blackList, whiteList, list.getToStringConverter(), list.getFromStringConverter()));
-                    return;
-                }
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
+            config.loadValue(optional.get());
         }
-        catch (Exception e)
+        else
         {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+            MaLiLib.LOGGER.warn("Failed to load the config value for '{}' from the JSON element '{}'", configName, element);
+            config.loadValue(config.getDefaultValue());
         }
-
-        config.loadValueFromConfig(config.getDefaultValue());
     }
 }

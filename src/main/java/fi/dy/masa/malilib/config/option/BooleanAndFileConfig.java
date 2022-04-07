@@ -2,12 +2,12 @@ package fi.dy.masa.malilib.config.option;
 
 import java.io.File;
 import java.util.Objects;
-import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig.BooleanAndFile;
+import fi.dy.masa.malilib.config.option.BooleanAndFileConfig.BooleanAndFile;
 import fi.dy.masa.malilib.util.data.BooleanStorageWithDefault;
 
-public class OptionalDirectoryConfig extends BaseGenericConfig<BooleanAndFile> implements BooleanStorageWithDefault
+public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> implements BooleanStorageWithDefault
 {
-    public OptionalDirectoryConfig(String name, boolean defaultBooleanValue, File defaultDirectory)
+    public BooleanAndFileConfig(String name, boolean defaultBooleanValue, File defaultDirectory)
     {
         super(name, new BooleanAndFile(defaultBooleanValue, defaultDirectory));
     }
