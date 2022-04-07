@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.StringJoiner;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.option.BooleanAndIntConfig.BooleanAndInt;
@@ -177,6 +178,15 @@ public class BooleanAndIntConfig extends BaseBooleanAndNumberConfig<BooleanAndIn
             int result = (this.booleanValue ? 1 : 0);
             result = 31 * result + this.intValue;
             return result;
+        }
+
+        @Override
+        public String toString()
+        {
+            return new StringJoiner(", ", BooleanAndInt.class.getSimpleName() + "[", "]")
+                    .add("booleanValue=" + this.booleanValue)
+                    .add("intValue=" + this.intValue)
+                    .toString();
         }
     }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.option.BaseConfigOption;
+import fi.dy.masa.malilib.config.option.BaseGenericConfig;
 import fi.dy.masa.malilib.config.option.SliderConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
@@ -15,7 +15,7 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYPE> & SliderConfig> extends BaseConfigOptionWidget<TYPE, CFG>
+public abstract class NumericConfigWidget<TYPE, CFG extends BaseGenericConfig<TYPE> & SliderConfig> extends BaseGenericConfigWidget<TYPE, CFG>
 {
     protected final BaseTextFieldWidget textField;
     protected final GenericButton valueAdjustButton;
@@ -35,7 +35,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
 
         this.fromStringSetter = fromStringSetter;
         this.toStringConverter = toStringConverter;
-        this.initialStringValue = String.valueOf(this.initialValue);
+        this.initialStringValue = toStringConverter.apply(config);
 
         this.textField = new BaseTextFieldWidget(60, 16);
         this.textField.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
@@ -126,7 +126,9 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
     {
         String text = this.textField.getText();
 
-        if (this.config.isSliderActive() == false && text.equals(this.initialStringValue) == false)
+        if (this.config.isSliderActive() == false &&
+            this.config.isLocked() == false &&
+            text.equals(this.initialStringValue) == false)
         {
             this.fromStringSetter.accept(this.config, text);
         }

@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.StringJoiner;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig.BooleanAndDouble;
@@ -185,6 +186,15 @@ public class BooleanAndDoubleConfig extends BaseBooleanAndNumberConfig<BooleanAn
             temp = Double.doubleToLongBits(this.doubleValue);
             result = 31 * result + (int) (temp ^ (temp >>> 32));
             return result;
+        }
+
+        @Override
+        public String toString()
+        {
+            return new StringJoiner(", ", BooleanAndDouble.class.getSimpleName() + "[", "]")
+                    .add("booleanValue=" + this.booleanValue)
+                    .add("doubleValue=" + this.doubleValue)
+                    .toString();
         }
     }
 }

@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
@@ -18,7 +18,6 @@ import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
@@ -99,24 +98,24 @@ public class JsonConfigSerializerRegistry
 
     protected void registerDefaultSerializers()
     {
-        this.registerSerializers(BooleanConfig.class,   (c) -> new JsonPrimitive(c.getBooleanValue()),  (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsBoolean, d, n));
-        this.registerSerializers(ColorConfig.class,     (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadColorValueFromString, d::getAsString, d, n));
-        this.registerSerializers(DirectoryConfig.class, (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, () -> new File(d.getAsString()), d, n));
-        this.registerSerializers(DoubleConfig.class,    (c) -> new JsonPrimitive(c.getDoubleValue()),   (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsDouble, d, n));
-        this.registerSerializers(FileConfig.class,      (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, () -> new File(d.getAsString()), d, n));
-        this.registerSerializers(HotkeyConfig.class,    (c) -> c.getKeyBind().getAsJsonElement(),       HotkeyConfig::loadHotkeyValueFromConfig);
-        this.registerSerializers(IntegerConfig.class,   (c) -> new JsonPrimitive(c.getIntegerValue()),  (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsInt, d, n));
-        this.registerSerializers(StringConfig.class,    (c) -> new JsonPrimitive(c.getValue()),         (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsString, d, n));
+        this.registerSerializers(BooleanConfig.class,   JsonConfigSerializers::serializeBooleanConfig,  (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsBoolean, d, n));
+        this.registerSerializers(ColorConfig.class,     JsonConfigSerializers::serializeColorConfig,    (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadColorValueFromString, d::getAsString, d, n));
+        this.registerSerializers(DirectoryConfig.class, JsonConfigSerializers::serializeFileConfig,     (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, () -> new File(d.getAsString()), d, n));
+        this.registerSerializers(DoubleConfig.class,    JsonConfigSerializers::serializeDoubleConfig,   (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsDouble, d, n));
+        this.registerSerializers(FileConfig.class,      JsonConfigSerializers::serializeFileConfig,     (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, () -> new File(d.getAsString()), d, n));
+        this.registerSerializers(IntegerConfig.class,   JsonConfigSerializers::serializeIntegerConfig,  (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsInt, d, n));
+        this.registerSerializers(StringConfig.class,    JsonConfigSerializers::serializeStringConfig,   (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsString, d, n));
 
-        this.registerSerializers(BlackWhiteListConfig.class,    JsonConfigSerializers::saveBlackWhiteListConfig,    JsonConfigSerializers::loadBlackWhiteListConfig);
-        this.registerSerializers(BooleanAndDoubleConfig.class,  JsonConfigSerializers::saveBooleanAndDoubleConfig,  JsonConfigSerializers::loadBooleanAndDoubleConfig);
-        this.registerSerializers(BooleanAndFileConfig.class,    JsonConfigSerializers::saveBooleanAndFileConfig,    JsonConfigSerializers::loadBooleanAndFileConfig);
-        this.registerSerializers(BooleanAndIntConfig.class,     JsonConfigSerializers::saveBooleanAndIntConfig,     JsonConfigSerializers::loadBooleanAndIntConfig);
-        this.registerSerializers(DualColorConfig.class,         JsonConfigSerializers::saveDualColorConfig,         JsonConfigSerializers::loadDualColorConfig);
-        this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::saveHotkeyedBooleanConfig,   JsonConfigSerializers::loadHotkeyedBooleanConfig);
-        this.registerSerializers(OptionListConfig.class,        JsonConfigSerializers::saveOptionListConfig,        JsonConfigSerializers::loadOptionListConfig);
-        this.registerSerializers(ValueListConfig.class,         JsonConfigSerializers::saveValueListConfig,         JsonConfigSerializers::loadValueListConfig);
-        this.registerSerializers(Vec2iConfig.class,             JsonConfigSerializers::saveVec2iConfig,             JsonConfigSerializers::loadVec2iConfig);
+        this.registerSerializers(BlackWhiteListConfig.class,    JsonConfigSerializers::serializeBlackWhiteListConfig,   JsonConfigSerializers::loadBlackWhiteListConfig);
+        this.registerSerializers(BooleanAndDoubleConfig.class,  JsonConfigSerializers::serializeBooleanAndDoubleConfig, JsonConfigSerializers::loadBooleanAndDoubleConfig);
+        this.registerSerializers(BooleanAndFileConfig.class,    JsonConfigSerializers::serializeBooleanAndFileConfig,   JsonConfigSerializers::loadBooleanAndFileConfig);
+        this.registerSerializers(BooleanAndIntConfig.class,     JsonConfigSerializers::serializeBooleanAndIntConfig,    JsonConfigSerializers::loadBooleanAndIntConfig);
+        this.registerSerializers(DualColorConfig.class,         JsonConfigSerializers::serializeDualColorConfig,        JsonConfigSerializers::loadDualColorConfig);
+        this.registerSerializers(HotkeyConfig.class,            JsonConfigSerializers::serializeHotkeyConfig,           JsonConfigSerializers::loadHotkeyConfig);
+        this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::serializeHotkeyedBooleanConfig,  JsonConfigSerializers::loadHotkeyedBooleanConfig);
+        this.registerSerializers(OptionListConfig.class,        JsonConfigSerializers::serializeOptionListConfig,       JsonConfigSerializers::loadOptionListConfig);
+        this.registerSerializers(ValueListConfig.class,         JsonConfigSerializers::serializeValueListConfig,        JsonConfigSerializers::loadValueListConfig);
+        this.registerSerializers(Vec2iConfig.class,             JsonConfigSerializers::serializeVec2iConfig,            JsonConfigSerializers::loadVec2iConfig);
     }
 
     public interface JsonConfigSerializer<C extends ConfigInfo>

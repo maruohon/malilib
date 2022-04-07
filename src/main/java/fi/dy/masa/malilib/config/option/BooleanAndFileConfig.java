@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.config.option;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.StringJoiner;
 import fi.dy.masa.malilib.config.option.BooleanAndFileConfig.BooleanAndFile;
 import fi.dy.masa.malilib.util.data.BooleanStorageWithDefault;
 
@@ -67,6 +68,15 @@ public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> impl
             int result = (this.booleanValue ? 1 : 0);
             result = 31 * result + (this.fileValue != null ? this.fileValue.hashCode() : 0);
             return result;
+        }
+
+        @Override
+        public String toString()
+        {
+            return new StringJoiner(", ", BooleanAndFile.class.getSimpleName() + "[", "]")
+                    .add("booleanValue=" + this.booleanValue)
+                    .add("fileValue=" + this.fileValue)
+                    .toString();
         }
     }
 }

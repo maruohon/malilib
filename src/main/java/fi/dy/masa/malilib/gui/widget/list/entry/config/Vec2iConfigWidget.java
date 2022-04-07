@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.gui.widget.Vec2iEditWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.position.Vec2i;
 
-public class Vec2iConfigWidget extends BaseConfigOptionWidget<Vec2i, Vec2iConfig>
+public class Vec2iConfigWidget extends BaseGenericConfigWidget<Vec2i, Vec2iConfig>
 {
     protected final Vec2iEditWidget editWidget;
 

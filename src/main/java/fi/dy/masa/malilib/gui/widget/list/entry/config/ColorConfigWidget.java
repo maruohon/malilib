@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.data.Color4f;
 
-public class ColorConfigWidget extends BaseConfigOptionWidget<Color4f, ColorConfig>
+public class ColorConfigWidget extends BaseGenericConfigWidget<Color4f, ColorConfig>
 {
     protected final ColorIndicatorWidget colorIndicatorWidget;
     protected final BaseTextFieldWidget textField;

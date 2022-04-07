@@ -5,9 +5,9 @@ import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigOptionWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseGenericConfigWidget;
 
-public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfig<TYPE>> extends BaseConfigOptionWidget<ImmutableList<TYPE>, CFG>
+public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfig<TYPE>> extends BaseGenericConfigWidget<ImmutableList<TYPE>, CFG>
 {
     protected final CFG config;
     protected final GenericButton button;

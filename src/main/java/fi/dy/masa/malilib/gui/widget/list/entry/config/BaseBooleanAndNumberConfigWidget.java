@@ -2,14 +2,14 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import fi.dy.masa.malilib.config.option.BaseConfigOption;
+import fi.dy.masa.malilib.config.option.BaseGenericConfig;
 import fi.dy.masa.malilib.config.option.SliderConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.data.BooleanStorage;
 
-public abstract class BaseBooleanAndNumberConfigWidget<TYPE, CFG extends BaseConfigOption<TYPE> & SliderConfig & BooleanStorage> extends NumericConfigWidget<TYPE, CFG>
+public abstract class BaseBooleanAndNumberConfigWidget<TYPE, CFG extends BaseGenericConfig<TYPE> & SliderConfig & BooleanStorage> extends NumericConfigWidget<TYPE, CFG>
 {
     protected final BooleanConfigButton booleanButton;
 

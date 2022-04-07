@@ -54,7 +54,7 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
 
     public boolean setValue(T newValue)
     {
-        if (this.locked == false && Objects.equals(this.value, newValue) == false)
+        if (this.isLocked() == false && Objects.equals(this.value, newValue) == false)
         {
             this.value = newValue;
             this.updateEffectiveValueAndNotify();
@@ -168,5 +168,15 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
         this.cacheSavedValue();
         this.updateEffectiveValue();
         this.onValueLoaded(this.effectiveValue);
+    }
+
+    /**
+     * @return the actual user-set underlying value, used for config serialization to file.
+     * This is needed if there are active config overrides, as then the normal {@link #getValue()}
+     * method will return the overridden value.
+     */
+    public T getValueForSerialization()
+    {
+        return this.value;
     }
 }

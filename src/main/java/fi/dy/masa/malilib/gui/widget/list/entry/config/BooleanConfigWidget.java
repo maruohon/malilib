@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
-public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, BooleanConfig>
+public class BooleanConfigWidget extends BaseGenericConfigWidget<Boolean, BooleanConfig>
 {
     protected final BooleanConfigButton booleanButton;
 

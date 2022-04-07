@@ -16,9 +16,16 @@ import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndFileConfig.BooleanAndFile;
 import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndIntConfig.BooleanAndInt;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.ColorConfig;
+import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.config.option.DualColorConfig;
+import fi.dy.masa.malilib.config.option.FileConfig;
+import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
+import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
+import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
@@ -32,52 +39,87 @@ import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class JsonConfigSerializers
 {
-    public static JsonElement saveHotkeyedBooleanConfig(HotkeyedBooleanConfig config)
+    public static JsonElement serializeHotkeyedBooleanConfig(HotkeyedBooleanConfig config)
     {
         JsonObject obj = new JsonObject();
-        obj.add("enabled", new JsonPrimitive(config.getBooleanValue()));
+        obj.add("enabled", new JsonPrimitive(config.getValueForSerialization()));
         obj.add("hotkey", config.getKeyBind().getAsJsonElement());
         return obj;
     }
 
-    public static JsonElement saveDualColorConfig(DualColorConfig config)
+    public static JsonElement serializeBooleanConfig(BooleanConfig config)
     {
-        return DataJsonSerializers.serializeDualColorValue(config.getValue());
+        return new JsonPrimitive(config.getValueForSerialization());
     }
 
-    public static JsonElement saveVec2iConfig(Vec2iConfig config)
+    public static JsonElement serializeIntegerConfig(IntegerConfig config)
     {
-        return DataJsonSerializers.serializeVec2iValue(config.getValue());
+        return new JsonPrimitive(config.getValueForSerialization());
     }
 
-    public static JsonElement saveBooleanAndIntConfig(BooleanAndIntConfig config)
+    public static JsonElement serializeDoubleConfig(DoubleConfig config)
     {
-        return DataJsonSerializers.serializeBooleanAndIntValue(config.getValue());
+        return new JsonPrimitive(config.getValueForSerialization());
     }
 
-    public static JsonElement saveBooleanAndDoubleConfig(BooleanAndDoubleConfig config)
+    public static JsonElement serializeStringConfig(StringConfig config)
     {
-        return DataJsonSerializers.serializeBooleanAndDoubleValue(config.getValue());
+        return new JsonPrimitive(config.getValueForSerialization());
     }
 
-    public static JsonElement saveBooleanAndFileConfig(BooleanAndFileConfig config)
+    public static JsonElement serializeColorConfig(ColorConfig config)
     {
-        return DataJsonSerializers.serializeBooleanAndFileValue(config.getValue());
+        return new JsonPrimitive(config.getValueForSerialization().toString());
     }
 
-    public static <T extends OptionListConfigValue> JsonElement saveOptionListConfig(OptionListConfig<T> config)
+    public static JsonElement serializeFileConfig(FileConfig config)
     {
-        return DataJsonSerializers.serializeOptionListValue(config.getValue());
+        return new JsonPrimitive(config.getValueForSerialization().getAbsolutePath());
     }
 
-    public static <T> JsonElement saveValueListConfig(ValueListConfig<T> config)
+    public static JsonElement serializeHotkeyConfig(HotkeyConfig config)
     {
-        return DataJsonSerializers.serializeValueListAsString(config.getValue(), config.getToStringConverter());
+        return config.getKeyBind().getAsJsonElement();
     }
 
-    public static <T> JsonElement saveBlackWhiteListConfig(BlackWhiteListConfig<T> config)
+    public static JsonElement serializeDualColorConfig(DualColorConfig config)
     {
-        return DataJsonSerializers.serializeBlackWhiteList(config.getValue());
+        return DataJsonSerializers.serializeDualColorValue(config.getValueForSerialization());
+    }
+
+    public static JsonElement serializeVec2iConfig(Vec2iConfig config)
+    {
+        return DataJsonSerializers.serializeVec2iValue(config.getValueForSerialization());
+    }
+
+    public static JsonElement serializeBooleanAndIntConfig(BooleanAndIntConfig config)
+    {
+        return DataJsonSerializers.serializeBooleanAndIntValue(config.getValueForSerialization());
+    }
+
+    public static JsonElement serializeBooleanAndDoubleConfig(BooleanAndDoubleConfig config)
+    {
+        return DataJsonSerializers.serializeBooleanAndDoubleValue(config.getValueForSerialization());
+    }
+
+    public static JsonElement serializeBooleanAndFileConfig(BooleanAndFileConfig config)
+    {
+        return DataJsonSerializers.serializeBooleanAndFileValue(config.getValueForSerialization());
+    }
+
+    public static <T extends OptionListConfigValue> JsonElement serializeOptionListConfig(OptionListConfig<T> config)
+    {
+        return DataJsonSerializers.serializeOptionListValue(config.getValueForSerialization());
+    }
+
+    public static <T> JsonElement serializeValueListConfig(ValueListConfig<T> config)
+    {
+        return DataJsonSerializers.serializeValueListAsString(config.getValueForSerialization(), config.getToStringConverter());
+    }
+
+    public static <T> JsonElement serializeBlackWhiteListConfig(BlackWhiteListConfig<T> config)
+    {
+        return DataJsonSerializers.serializeBlackWhiteList(config.getValueForSerialization());
     }
 
     public static <T> void loadPrimitiveConfig(Consumer<T> consumer,
@@ -100,6 +142,12 @@ public class JsonConfigSerializers
         {
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+    }
+
+    public static void loadHotkeyConfig(HotkeyConfig config, JsonElement element, String configName)
+    {
+        config.getKeyBind().setValueFromJsonElement(element, configName);
+        config.onValueLoaded(config.getKeyBind());
     }
 
     public static void loadHotkeyedBooleanConfig(HotkeyedBooleanConfig config, JsonElement element, String configName)

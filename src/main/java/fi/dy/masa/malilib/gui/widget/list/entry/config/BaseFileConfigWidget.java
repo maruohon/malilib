@@ -13,7 +13,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class BaseFileConfigWidget<T, CFG extends BaseGenericConfig<T>> extends BaseConfigOptionWidget<T, CFG>
+public abstract class BaseFileConfigWidget<T, CFG extends BaseGenericConfig<T>> extends BaseGenericConfigWidget<T, CFG>
 {
     protected final GenericButton openBrowserButton;
 

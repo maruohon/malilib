@@ -48,14 +48,17 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
 
     protected void saveConfigChanges()
     {
-        BlackWhiteList<TYPE> old = this.config.getDefaultValue();
-        BlackWhiteList<TYPE> list = new BlackWhiteList<>(this.typeConfig.getValue(),
-                                                         this.blackListConfig,
-                                                         this.whiteListConfig,
-                                                         old.getToStringConverter(),
-                                                         old.getFromStringConverter());
-        this.config.setValue(list);
-        this.externalSaveListener.onEvent();
+        if (this.config.isLocked() == false)
+        {
+            BlackWhiteList<TYPE> old = this.config.getDefaultValue();
+            BlackWhiteList<TYPE> list = new BlackWhiteList<>(this.typeConfig.getValue(),
+                                                             this.blackListConfig,
+                                                             this.whiteListConfig,
+                                                             old.getToStringConverter(),
+                                                             old.getFromStringConverter());
+            this.config.setValue(list);
+            this.externalSaveListener.onEvent();
+        }
     }
 
     @Override

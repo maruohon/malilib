@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.data.Color4f;
 
-public class DualColorConfigWidget extends BaseConfigOptionWidget<Pair<Color4f, Color4f>, DualColorConfig>
+public class DualColorConfigWidget extends BaseGenericConfigWidget<Pair<Color4f, Color4f>, DualColorConfig>
 {
     protected final ColorIndicatorWidget colorIndicatorWidget1;
     protected final ColorIndicatorWidget colorIndicatorWidget2;

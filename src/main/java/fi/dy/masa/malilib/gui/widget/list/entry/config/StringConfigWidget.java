@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
-public class StringConfigWidget extends BaseConfigOptionWidget<String, StringConfig>
+public class StringConfigWidget extends BaseGenericConfigWidget<String, StringConfig>
 {
     protected final BaseTextFieldWidget textField;
 
