@@ -74,6 +74,7 @@ public class JsonConfigSerializers
                 {
                     config.loadColorValueFromInts(JsonUtils.getInteger(obj, "color1"),
                                                   JsonUtils.getInteger(obj, "color2"));
+                    return;
                 }
             }
             else
@@ -85,6 +86,8 @@ public class JsonConfigSerializers
         {
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        config.loadValueFromConfig(config.getDefaultValue());
     }
 
     public static JsonElement saveHotkeyedBooleanConfig(HotkeyedBooleanConfig config)
@@ -110,6 +113,7 @@ public class JsonConfigSerializers
                 }
 
                 config.loadHotkeyedBooleanValueFromConfig(booleanValue);
+                return;
             }
             else
             {
@@ -120,6 +124,8 @@ public class JsonConfigSerializers
         {
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        config.loadValueFromConfig(config.getDefaultValue());
     }
 
     public static JsonElement saveOptionalDirectoryConfig(OptionalDirectoryConfig config)
@@ -145,6 +151,7 @@ public class JsonConfigSerializers
                     boolean booleanValue = JsonUtils.getBoolean(obj, "enabled");
                     File fileValue = new File(JsonUtils.getString(obj, "directory"));
                     config.loadValueFromConfig(new BooleanAndFile(booleanValue, fileValue));
+                    return;
                 }
             }
             else
@@ -156,6 +163,8 @@ public class JsonConfigSerializers
         {
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        config.loadValueFromConfig(config.getDefaultValue());
     }
 
     public static <T extends OptionListConfigValue> JsonElement saveOptionListConfig(OptionListConfig<T> config)
@@ -170,6 +179,7 @@ public class JsonConfigSerializers
             if (element.isJsonPrimitive())
             {
                 config.loadValueFromConfig(BaseOptionListConfigValue.findValueByName(element.getAsString(), config.getAllValues()));
+                return;
             }
             else
             {
@@ -180,6 +190,8 @@ public class JsonConfigSerializers
         {
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        config.loadValueFromConfig(config.getDefaultValue());
     }
 
     public static <T> JsonElement saveValueListConfig(ValueListConfig<T> config)
@@ -209,20 +221,19 @@ public class JsonConfigSerializers
                 }
 
                 config.loadValueFromConfig(builder.build());
+                return;
             }
             else
             {
-                // Make sure to clear the old value in any case
-                config.loadValueFromConfig(ImmutableList.of());
                 MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
-            // Make sure to clear the old value in any case
-            config.loadValueFromConfig(ImmutableList.of());
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        config.loadValueFromConfig(config.getDefaultValue());
     }
 
     public static JsonElement saveVec2iConfig(Vec2iConfig config)
@@ -246,20 +257,19 @@ public class JsonConfigSerializers
                 int x = JsonUtils.getInteger(obj, "x");
                 int y = JsonUtils.getInteger(obj, "y");
                 config.loadValueFromConfig(new Vec2i(x, y));
+                return;
             }
             else
             {
-                // Make sure to clear the old value in any case
-                config.loadValueFromConfig(config.getDefaultValue());
                 MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
-            // Make sure to clear the old value in any case
-            config.loadValueFromConfig(config.getDefaultValue());
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        config.loadValueFromConfig(config.getDefaultValue());
     }
 
     public static JsonElement saveBooleanAndIntConfig(BooleanAndIntConfig config)
@@ -286,21 +296,20 @@ public class JsonConfigSerializers
                     boolean booleanValue = JsonUtils.getBoolean(obj, "b");
                     int intValue = JsonUtils.getInteger(obj, "i");
                     config.loadValueFromConfig(new BooleanAndInt(booleanValue, intValue));
+                    return;
                 }
             }
             else
             {
-                // Make sure to clear the old value in any case
-                config.loadValueFromConfig(config.getDefaultValue());
                 MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
-            // Make sure to clear the old value in any case
-            config.loadValueFromConfig(config.getDefaultValue());
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        config.loadValueFromConfig(config.getDefaultValue());
     }
 
     public static JsonElement saveBooleanAndDoubleConfig(BooleanAndDoubleConfig config)
@@ -327,21 +336,20 @@ public class JsonConfigSerializers
                     boolean booleanValue = JsonUtils.getBoolean(obj, "b");
                     double doubleValue = JsonUtils.getDouble(obj, "d");
                     config.loadValueFromConfig(new BooleanAndDouble(booleanValue, doubleValue));
+                    return;
                 }
             }
             else
             {
-                // Make sure to clear the old value in any case
-                config.loadValueFromConfig(config.getDefaultValue());
                 MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
-            // Make sure to clear the old value in any case
-            config.loadValueFromConfig(config.getDefaultValue());
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        config.loadValueFromConfig(config.getDefaultValue());
     }
 
     public static <T> JsonElement saveBlackWhiteListConfig(BlackWhiteListConfig<T> config)
@@ -380,6 +388,7 @@ public class JsonConfigSerializers
                     whiteList.setValue(ValueListConfig.getStringListAsValues(whiteListStr, list.getFromStringConverter()));
 
                     config.loadValueFromConfig(new BlackWhiteList<>(type, blackList, whiteList, list.getToStringConverter(), list.getFromStringConverter()));
+                    return;
                 }
             }
             else
@@ -391,5 +400,7 @@ public class JsonConfigSerializers
         {
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        config.loadValueFromConfig(config.getDefaultValue());
     }
 }
