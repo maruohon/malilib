@@ -144,9 +144,12 @@ public class ConfigWidgetRegistry
 
     protected void registerDefaultSearchInfos()
     {
-        this.registerConfigSearchInfo(BooleanConfig.class,          new ConfigSearchInfo<BooleanConfig>(true, false).setBooleanConfigGetter((c) -> c));
+        this.registerConfigSearchInfo(BooleanConfig.class,          new ConfigSearchInfo<BooleanConfig>(true, false).setBooleanStorageGetter((c) -> c));
+        this.registerConfigSearchInfo(BooleanAndDoubleConfig.class, new ConfigSearchInfo<BooleanAndDoubleConfig>(true, false).setBooleanStorageGetter((c) -> c));
+        this.registerConfigSearchInfo(BooleanAndIntConfig.class,    new ConfigSearchInfo<BooleanAndIntConfig>(true, false).setBooleanStorageGetter((c) -> c));
         this.registerConfigSearchInfo(HotkeyConfig.class,           new ConfigSearchInfo<HotkeyConfig>(false, true).setKeyBindGetter(HotkeyConfig::getKeyBind));
-        this.registerConfigSearchInfo(HotkeyedBooleanConfig.class,  new ConfigSearchInfo<HotkeyedBooleanConfig>(true, true).setBooleanConfigGetter((c) -> c).setKeyBindGetter(HotkeyedBooleanConfig::getKeyBind));
+        this.registerConfigSearchInfo(HotkeyedBooleanConfig.class,  new ConfigSearchInfo<HotkeyedBooleanConfig>(true, true).setBooleanStorageGetter((c) -> c).setKeyBindGetter(HotkeyedBooleanConfig::getKeyBind));
+        this.registerConfigSearchInfo(OptionalDirectoryConfig.class,new ConfigSearchInfo<OptionalDirectoryConfig>(true, false).setBooleanStorageGetter((c) -> c));
 
         this.registerConfigSearchInfo(CustomHotkeyDefinition.class, new ConfigSearchInfo<CustomHotkeyDefinition>(false, true).setKeyBindGetter(CustomHotkeyDefinition::getKeyBind));
     }

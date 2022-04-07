@@ -4,10 +4,11 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.option.BooleanAndIntConfig.BooleanAndInt;
 import fi.dy.masa.malilib.gui.callback.IntegerSliderCallback;
-import fi.dy.masa.malilib.util.data.BooleanStorage;
+import fi.dy.masa.malilib.util.data.BooleanStorageWithDefault;
 import fi.dy.masa.malilib.util.data.RangedIntegerStorage;
 
-public class BooleanAndIntConfig extends BaseBooleanAndNumberConfig<BooleanAndInt> implements RangedIntegerStorage, BooleanStorage
+public class BooleanAndIntConfig extends BaseBooleanAndNumberConfig<BooleanAndInt>
+        implements RangedIntegerStorage, BooleanStorageWithDefault
 {
     protected final int minValue;
     protected final int maxValue;
@@ -93,6 +94,12 @@ public class BooleanAndIntConfig extends BaseBooleanAndNumberConfig<BooleanAndIn
     public boolean getBooleanValue()
     {
         return this.getValue().booleanValue;
+    }
+
+    @Override
+    public boolean getDefaultBooleanValue()
+    {
+        return this.defaultValue.booleanValue;
     }
 
     @Override

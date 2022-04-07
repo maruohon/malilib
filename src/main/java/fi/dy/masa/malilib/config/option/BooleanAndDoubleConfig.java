@@ -4,10 +4,11 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig.BooleanAndDouble;
 import fi.dy.masa.malilib.gui.callback.DoubleSliderCallback;
-import fi.dy.masa.malilib.util.data.BooleanStorage;
+import fi.dy.masa.malilib.util.data.BooleanStorageWithDefault;
 import fi.dy.masa.malilib.util.data.RangedDoubleStorage;
 
-public class BooleanAndDoubleConfig extends BaseBooleanAndNumberConfig<BooleanAndDouble> implements RangedDoubleStorage, BooleanStorage
+public class BooleanAndDoubleConfig extends BaseBooleanAndNumberConfig<BooleanAndDouble>
+        implements RangedDoubleStorage, BooleanStorageWithDefault
 {
     protected final double minValue;
     protected final double maxValue;
@@ -98,6 +99,12 @@ public class BooleanAndDoubleConfig extends BaseBooleanAndNumberConfig<BooleanAn
     public boolean getBooleanValue()
     {
         return this.getValue().booleanValue;
+    }
+
+    @Override
+    public boolean getDefaultBooleanValue()
+    {
+        return this.defaultValue.booleanValue;
     }
 
     @Override

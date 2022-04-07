@@ -3,9 +3,9 @@ package fi.dy.masa.malilib.config.option;
 import java.util.ArrayList;
 import java.util.List;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.data.BooleanStorage;
+import fi.dy.masa.malilib.util.data.BooleanStorageWithDefault;
 
-public class BooleanConfig extends BaseGenericConfig<Boolean> implements BooleanStorage
+public class BooleanConfig extends BaseGenericConfig<Boolean> implements BooleanStorageWithDefault
 {
     protected final List<EventListener> enableListeners = new ArrayList<>(0);
     protected boolean effectiveBooleanValue;
@@ -31,6 +31,12 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
     public boolean getBooleanValue()
     {
         return this.effectiveBooleanValue;
+    }
+
+    @Override
+    public boolean getDefaultBooleanValue()
+    {
+        return this.defaultValue;
     }
 
     @Override

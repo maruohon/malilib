@@ -2,15 +2,15 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.input.KeyBind;
+import fi.dy.masa.malilib.util.data.BooleanStorageWithDefault;
 
 public class ConfigSearchInfo<C extends ConfigInfo>
 {
     public final boolean hasHotkey;
     public final boolean hasToggle;
-    protected Function<C, BooleanConfig> booleanConfigGetter = (c) -> null;
+    protected Function<C, BooleanStorageWithDefault> booleanConfigGetter = (c) -> null;
     protected Function<C, KeyBind> keyBindGetter = (c) -> null;
 
     public ConfigSearchInfo(boolean hasToggle, boolean hasHotkey)
@@ -20,7 +20,7 @@ public class ConfigSearchInfo<C extends ConfigInfo>
     }
 
     @Nullable
-    public BooleanConfig getBooleanConfig(C config)
+    public BooleanStorageWithDefault getBooleanStorage(C config)
     {
         return this.booleanConfigGetter.apply(config);
     }
@@ -35,8 +35,8 @@ public class ConfigSearchInfo<C extends ConfigInfo>
     {
         if (this.hasToggle)
         {
-            BooleanConfig booleanConfig = this.booleanConfigGetter.apply(config);
-            return booleanConfig != null && booleanConfig.getBooleanValue();
+            BooleanStorageWithDefault storage = this.booleanConfigGetter.apply(config);
+            return storage != null && storage.getBooleanValue();
         }
 
         return false;
@@ -46,8 +46,8 @@ public class ConfigSearchInfo<C extends ConfigInfo>
     {
         if (this.hasToggle)
         {
-            BooleanConfig booleanConfig = this.booleanConfigGetter.apply(config);
-            return booleanConfig != null && booleanConfig.getBooleanValue() == false;
+            BooleanStorageWithDefault storage = this.booleanConfigGetter.apply(config);
+            return storage != null && storage.getBooleanValue() == false;
         }
 
         return false;
@@ -57,10 +57,10 @@ public class ConfigSearchInfo<C extends ConfigInfo>
     {
         if (this.hasToggle)
         {
-            BooleanConfig booleanConfig = this.booleanConfigGetter.apply(config);
+            BooleanStorageWithDefault storage = this.booleanConfigGetter.apply(config);
             // Can't use isModified() here, because it may be checking other
             // things as well, such as in HotkeyedBooleanConfig
-            return booleanConfig != null && booleanConfig.isModified();
+            return storage != null && storage.getBooleanValue() != storage.getDefaultBooleanValue();
         }
 
         return false;
@@ -99,7 +99,7 @@ public class ConfigSearchInfo<C extends ConfigInfo>
         return false;
     }
 
-    public ConfigSearchInfo<C> setBooleanConfigGetter(Function<C, BooleanConfig> getter)
+    public ConfigSearchInfo<C> setBooleanStorageGetter(Function<C, BooleanStorageWithDefault> getter)
     {
         this.booleanConfigGetter = getter;
         return this;
