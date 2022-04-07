@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.StringUtils;
 
 public class FileNameUtils
 {
@@ -59,7 +60,16 @@ public class FileNameUtils
     public static String generateSimpleSafeFileName(String name)
     {
         boolean endsInUnderscore = name.length() >= 1 && name.charAt(name.length() - 1) == '_';
-        name = name.toLowerCase(Locale.US).replaceAll("\\W", "_").replaceAll("__", "_");
+        String baseName = getFileNameWithoutExtension(name);
+        String extension = getFileNameExtension(name);
+        baseName = baseName.toLowerCase(Locale.US).replaceAll("[^a-z0-9_.-]", "_").replaceAll("__", "_");
+        name = baseName;
+
+        if (StringUtils.isBlank(extension) == false)
+        {
+            extension = extension.toLowerCase(Locale.US).replaceAll("[^a-z0-9_.-]", "_").replaceAll("__", "_");
+            name += "." + extension;
+        }
 
         // Remove the generated trailing underscore, if any
         if (endsInUnderscore == false && name.length() >= 2 && name.charAt(name.length() - 1) == '_')

@@ -472,12 +472,11 @@ public class StringUtils
 
     /**
      * Returns a file name based on the current server or world name.
-     * If <b>globalData</b> is false, the the name will also include the current dimension ID.
-     * @param globalData
-     * @param prefix
-     * @param suffix
+     * @param globalData if false, then the name will also include the current dimension ID.
+     * @param prefix the prefix to add to the name
+     * @param suffix the suffix/file name extension to use
      * @param defaultName the default file name, if getting a per-server/world name fails
-     * @return
+     * @return a safe file name for the current server or world
      */
     public static String getStorageFileName(boolean globalData, String prefix, String suffix, String defaultName)
     {
@@ -487,7 +486,7 @@ public class StringUtils
         {
             if (globalData)
             {
-                name = prefix + name + suffix;
+                name = prefix + name;
             }
             else
             {
@@ -495,16 +494,16 @@ public class StringUtils
 
                 if (world != null)
                 {
-                    name = prefix + name + "_dim" + WorldUtils.getDimensionAsString(world) + suffix;
+                    name = prefix + name + "_dim" + WorldUtils.getDimensionAsString(world);
                 }
             }
         }
         else
         {
-            name = prefix + defaultName + suffix;
+            name = prefix + defaultName;
         }
 
-        return FileNameUtils.generateSimpleSafeFileName(name);
+        return FileNameUtils.generateSimpleSafeFileName(name) + suffix;
     }
 
     public static String getStackString(ItemStack stack)
