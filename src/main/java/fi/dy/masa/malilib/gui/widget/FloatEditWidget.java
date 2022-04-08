@@ -42,6 +42,7 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
 
         this.setFloatValue(this.value + amount);
         this.consumer.accept(this.value);
+        this.sliderWidget.updateWidgetState();
 
         return true;
     }

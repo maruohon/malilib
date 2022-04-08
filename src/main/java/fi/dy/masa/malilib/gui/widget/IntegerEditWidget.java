@@ -13,6 +13,12 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     protected int maxValue;
     protected int value;
 
+    public IntegerEditWidget(int width, int height, RangedIntegerStorage storage)
+    {
+        this(width, height, storage.getIntegerValue(), storage.getMinIntegerValue(),
+             storage.getMaxIntegerValue(), storage::setIntegerValue);
+    }
+
     public IntegerEditWidget(int width, int height, IntConsumer consumer)
     {
         this(width, height, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, consumer);
@@ -51,6 +57,7 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
 
         this.setIntegerValue(this.value + amount);
         this.consumer.accept(this.value);
+        this.sliderWidget.updateWidgetState();
 
         return true;
     }

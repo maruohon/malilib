@@ -14,6 +14,12 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     protected double value;
     protected double baseScrollAdjustAmount = 1.0;
 
+    public DoubleEditWidget(int width, int height, RangedDoubleStorage storage)
+    {
+        this(width, height, storage.getDoubleValue(), storage.getMinDoubleValue(),
+             storage.getMaxDoubleValue(), storage::setDoubleValue);
+    }
+
     public DoubleEditWidget(int width, int height, double originalValue,
                             double minValue, double maxValue, DoubleConsumer consumer)
     {
@@ -44,6 +50,7 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
 
         this.setDoubleValue(this.value + amount);
         this.consumer.accept(this.value);
+        this.sliderWidget.updateWidgetState();
 
         return true;
     }
