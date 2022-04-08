@@ -38,6 +38,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected ImmutableList<T> entries;
     protected SelectionHandler<T> selectionHandler;
     protected String multiSelectionTranslationKey = "malilib.label.misc.dropdown.multiple_entries_selected";
+    @Nullable protected Supplier<List<StyledTextLine>> multiSelectionHoverTextSupplier;
     @Nullable protected SelectionListener<T> selectionListener;
     @Nullable protected InteractableWidget currentEntryBarWidget;
     protected boolean closeOnSelect = true;
@@ -389,6 +390,16 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.updateCurrentEntryBar();
     }
 
+    /**
+     * Sets the hover text supplier that will be used for multi-selection dropdowns if the
+     * selected entry count is larger than 1.
+     */
+    public void setMultiSelectionHoverTextSupplier(@Nullable Supplier<List<StyledTextLine>> multiSelectionHoverTextSupplier)
+    {
+        this.multiSelectionHoverTextSupplier = multiSelectionHoverTextSupplier;
+        this.updateCurrentEntryBar();
+    }
+
     public void replaceEntryList(List<T> newEntries)
     {
         this.entries = ImmutableList.copyOf(newEntries);
@@ -679,6 +690,11 @@ public class DropDownListWidget<T> extends ContainerWidget
                 {
                     String key = this.multiSelectionTranslationKey;
                     widget.setText(StyledTextLine.translate(key, count));
+
+                    if (this.multiSelectionHoverTextSupplier != null)
+                    {
+                        widget.getHoverInfoFactory().setTextLineProvider("entries", this.multiSelectionHoverTextSupplier);
+                    }
                 }
                 else
                 {
@@ -694,7 +710,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             widget.getIconOffset().setXOffset(widget.getWidth() - 15);
             widget.getIconOffset().setYOffset(1);
             widget.setClickListener(this::toggleOpen);
-            widget.setHoverInfoFactory(this.getHoverInfoFactory());
+            widget.getHoverInfoFactory().setTextLineProvider("delegate", this.getHoverInfoFactory()::getStyledLines);
             widget.setHoverInfoRequiresShift(true);
             widget.setPosition(this.getX(), this.getY());
 
