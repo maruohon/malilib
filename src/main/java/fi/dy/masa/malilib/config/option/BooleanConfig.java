@@ -24,7 +24,7 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
     {
         super(name, defaultValue, name, prettyNameTranslationKey, comment);
 
-        this.effectiveBooleanValue = defaultValue;
+        this.updateEffectiveValue();
     }
 
     @Override

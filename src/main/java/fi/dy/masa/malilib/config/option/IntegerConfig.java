@@ -37,7 +37,7 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
 
         this.minValue = minValue;
         this.maxValue = maxValue;
-        this.setIntegerValue(defaultValue);
+        this.updateEffectiveValue();
         this.sliderCallbackFactory = (listener) -> new IntegerSliderCallback(this, listener);
     }
 
