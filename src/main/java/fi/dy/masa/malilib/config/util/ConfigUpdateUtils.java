@@ -3,7 +3,9 @@ package fi.dy.masa.malilib.config.util;
 import java.util.List;
 import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang3.tuple.Pair;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.JsonModConfig.ConfigDataUpdater;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
@@ -49,17 +51,12 @@ public class ConfigUpdateUtils
     public static class KeyBindSettingsResetter implements ConfigDataUpdater
     {
         protected final Supplier<List<? extends Hotkey>> hotkeyListSupplier;
-        protected final int minimumConfigVersion;
+        protected final int maximumConfigVersion;
 
-        public KeyBindSettingsResetter(Supplier<List<? extends Hotkey>> hotkeyListSupplier, int minimumConfigVersion)
+        public KeyBindSettingsResetter(Supplier<List<? extends Hotkey>> hotkeyListSupplier, int maximumConfigVersion)
         {
             this.hotkeyListSupplier = hotkeyListSupplier;
-            this.minimumConfigVersion = minimumConfigVersion;
-        }
-
-        @Override
-        public void updateConfigDataBeforeLoading(JsonObject root, int configDataVersion)
-        {
+            this.maximumConfigVersion = maximumConfigVersion;
         }
 
         @Override
@@ -67,17 +64,54 @@ public class ConfigUpdateUtils
                                               int readConfigDataVersion,
                                               int currentConfigDataVersion)
         {
-            if (readConfigDataVersion < this.minimumConfigVersion)
+            if (readConfigDataVersion <= this.maximumConfigVersion)
             {
                 String name = categories.size() > 0 ? categories.get(0).getModInfo().getModId() : "?";
-                MaLiLib.debugLog("Resetting KeyBindSettings of mod '{}' - read: {} current: {}, min: {}",
-                                 name, readConfigDataVersion, currentConfigDataVersion, this.minimumConfigVersion);
+                MaLiLib.debugLog("Resetting KeyBindSettings of mod '{}' - read: {} current: {}, max: {}",
+                                 name, readConfigDataVersion, currentConfigDataVersion, this.maximumConfigVersion);
 
                 List<? extends Hotkey> list = this.hotkeyListSupplier.get();
 
                 if (list != null)
                 {
                     ConfigUtils.resetAllKeybindSettingsToDefaults(list);
+                }
+            }
+        }
+    }
+
+    public static class ConfigCategoryRenamer implements ConfigDataUpdater
+    {
+        protected final List<Pair<String, String>> renamedCategories;
+        protected final int maximumConfigVersion;
+        protected final int minimumConfigVersion;
+
+        public ConfigCategoryRenamer(List<Pair<String, String>> renamedCategories,
+                                     int minimumConfigVersion,
+                                     int maximumConfigVersion)
+        {
+            this.renamedCategories = renamedCategories;
+            this.minimumConfigVersion = minimumConfigVersion;
+            this.maximumConfigVersion = maximumConfigVersion;
+        }
+
+        @Override
+        public void updateConfigDataBeforeLoading(JsonObject root, int configDataVersion)
+        {
+            if (configDataVersion >= this.minimumConfigVersion &&
+                configDataVersion <= this.maximumConfigVersion)
+            {
+                for (Pair<String, String> pair : this.renamedCategories)
+                {
+                    String oldName = pair.getLeft();
+                    String newName = pair.getRight();
+                    JsonElement el = root.get(oldName);
+
+                    if (el != null)
+                    {
+                        root.remove(oldName);
+                        root.add(newName, el);
+                    }
                 }
             }
         }

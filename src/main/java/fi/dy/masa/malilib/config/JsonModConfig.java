@@ -104,7 +104,9 @@ public class JsonModConfig extends BaseModConfig
          * @param configDataVersion the config version that was read from file.
          *                          This will be 0 if the file did not yet use a version number.
          */
-        void updateConfigDataBeforeLoading(JsonObject root, int configDataVersion);
+        default void updateConfigDataBeforeLoading(JsonObject root, int configDataVersion)
+        {
+        }
 
         /**
          * Updates or modifies the configs after they have been read from file.
@@ -112,9 +114,11 @@ public class JsonModConfig extends BaseModConfig
          * @param readConfigDataVersion the config data version that was read from the config file
          * @param currentConfigDataVersion the current config data version in the running mod instance
          */
-        void updateConfigsAfterLoading(List<ConfigOptionCategory> categories,
-                                       int readConfigDataVersion,
-                                       int currentConfigDataVersion);
+        default void updateConfigsAfterLoading(List<ConfigOptionCategory> categories,
+                                               int readConfigDataVersion,
+                                               int currentConfigDataVersion)
+        {
+        }
     }
 
     public static ModConfig createJsonModConfig(ModInfo modInfo, int configVersion,
