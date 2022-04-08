@@ -272,8 +272,8 @@ public class TextRenderUtils
     public static void renderDefaultHoverTextBackground(int x, int y, float z, int width, int height)
     {
         int fillColor = 0xF0180018;
-        int borderColor1 = 0xC05000FF;
-        int borderColor2 = 0xC028007F;
+        int borderColor1 = 0xD02060FF;
+        int borderColor2 = 0xC01030A0;
 
         renderHoverTextBackground(x, y, z, width, height, fillColor, borderColor1, borderColor2);
     }
