@@ -7,14 +7,9 @@ import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.icon.MultiIcon;
-import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
-import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.button.BooleanConfigButton;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindSettingsConfigs;
@@ -110,35 +105,10 @@ public class KeybindSettingsScreen extends BaseScreen
         else if (config instanceof IntegerConfig)
         {
             IntegerConfig intConfig = (IntegerConfig) config;
-
-            if (intConfig.isSliderActive())
-            {
-                SliderWidget widget = new SliderWidget(82, 16, intConfig.getSliderCallback(null));
-                widget.setPosition(x, y);
-                this.addWidget(widget);
-            }
-            else
-            {
-                BaseTextFieldWidget textField = new BaseTextFieldWidget(82, 16);
-                textField.setPosition(x, y);
-                textField.setText(intConfig.getStringValue());
-                int min = intConfig.getMinIntegerValue();
-                int max = intConfig.getMaxIntegerValue();
-                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(min, max));
-                textField.setListener(intConfig::setValueFromString);
-                this.addWidget(textField);
-            }
-
-            MultiIcon icon = intConfig.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
-            GenericButton sliderToggleButton = GenericButton.create(icon);
-            sliderToggleButton.setPosition(x + 84, y);
-
-            sliderToggleButton.setActionListener(() -> {
-                intConfig.toggleSliderActive();
-                this.initScreen();
-            });
-
-            this.addWidget(sliderToggleButton);
+            IntegerEditWidget widget = new IntegerEditWidget(80, 16, intConfig);
+            widget.setAddSlider(true);
+            widget.setPosition(x, y);
+            this.addWidget(widget);
         }
     }
 
