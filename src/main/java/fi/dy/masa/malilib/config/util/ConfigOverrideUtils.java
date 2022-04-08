@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.multiplayer.ServerData;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.ModConfig;
@@ -125,7 +127,8 @@ public class ConfigOverrideUtils
 
     protected static void tryApplyOverridesFromLocalConfig()
     {
-        File file = new File(ConfigUtils.getActiveConfigDirectory(), "malilib_config_overrides.json");
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File file = configDir.resolve(MaLiLibReference.MOD_ID).resolve("config_overrides.json").toFile();
         String str = FileUtils.readFileAsString(file, -1);
 
         if (str != null)

@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.util.BackupUtils;
 import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
@@ -282,7 +282,6 @@ public class OverlayRendererContainer
     public void saveToFile(boolean isDimensionChangeOnly)
     {
         ArrayListMultimap<File, BaseOverlayRenderer> map = this.getModGroupedRenderersForSerialization(isDimensionChangeOnly);
-        int backupCount = MaLiLibConfigs.Generic.CONFIG_BACKUP_COUNT.getIntegerValue();
 
         for (File file : map.keySet())
         {
@@ -294,7 +293,10 @@ public class OverlayRendererContainer
                 obj.add(renderer.getSaveId(), renderer.toJson());
             }
 
-            JsonUtils.saveToFile(dir, new File(dir, "backups"), file, backupCount, () -> obj);
+            if (BackupUtils.createRegularBackup(file, new File(dir, "backups")))
+            {
+                JsonUtils.writeJsonToFile(obj, file);
+            }
         }
     }
 

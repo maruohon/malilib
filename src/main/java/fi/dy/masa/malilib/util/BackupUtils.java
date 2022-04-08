@@ -8,9 +8,46 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import org.apache.commons.codec.digest.DigestUtils;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 
 public class BackupUtils
 {
+    /**
+     * Create a "normal/regular" backup of the given file, in the default backup directory
+     * at "<active_config_dir>/backups/<file_name>.bak_<number>".
+     * The maximum number of backups to keep, and whether they should be "anti-duplicated"
+     * come from the malilib configs.
+     * @return true on success, false on failure
+     */
+    public static boolean createRegularBackup(File fileIn)
+    {
+        File configDir = ConfigUtils.getActiveConfigDirectory();
+        File backupDir = configDir.toPath().resolve("backups").toFile();
+
+        return createRegularBackup(fileIn, backupDir);
+    }
+
+    /**
+     * Create a "normal/regular" backup of the given file, in the given backup directory.
+     * The maximum number of backups to keep, and whether they should be "anti-duplicated"
+     * come from the malilib configs.
+     * @return true on success, false on failure
+     */
+    public static boolean createRegularBackup(File fileIn, File backupDir)
+    {
+        int backupCount = MaLiLibConfigs.Generic.CONFIG_BACKUP_COUNT.getIntegerValue();
+
+        if (backupCount <= 0)
+        {
+            return true;
+        }
+
+        boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
+
+        return createRollingBackup(fileIn, backupDir, ".bak_", backupCount, antiDuplicate);
+    }
+
     /**
      * Creates a rolling backup copy of the given file <b>fileIn</b>.
      * The backup copies are only rotated up to the first possible empty slot/backup name.
@@ -29,6 +66,11 @@ public class BackupUtils
     public static boolean createRollingBackup(File fileIn, File backupDirectory, String suffix,
                                               int maxBackups, boolean antiDuplicate)
     {
+        if (maxBackups <= 0)
+        {
+            return true;
+        }
+
         if (backupDirectory.isDirectory() == false && backupDirectory.mkdirs() == false)
         {
             MaLiLib.LOGGER.error("Failed to create the config backup directory '{}'", backupDirectory.getAbsolutePath());

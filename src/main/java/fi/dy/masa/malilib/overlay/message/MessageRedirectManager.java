@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.overlay.message;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -8,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
+import fi.dy.masa.malilib.util.BackupUtils;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class MessageRedirectManager
@@ -118,19 +119,24 @@ public class MessageRedirectManager
 
     public boolean saveToFile()
     {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-        File backupDir = new File(dir, "config_backups");
-        File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_message_redirects.json");
-        boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("message_redirects.json").toFile();
+        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).toFile();
 
-        this.dirty = false;
+        if (BackupUtils.createRegularBackup(saveFile, backupDir) &&
+            JsonUtils.writeJsonToFile(this.toJson(), saveFile))
+        {
+            this.dirty = false;
+            return true;
+        }
 
-        return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, antiDuplicate, this::toJson);
+        return false;
     }
 
     public void loadFromFile()
     {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-        JsonUtils.loadFromFile(dir, MaLiLibReference.MOD_ID + "_message_redirects.json", this::fromJson);
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("message_redirects.json").toFile();
+        JsonUtils.loadFromFile(saveFile, this::fromJson);
     }
 }

@@ -1,17 +1,18 @@
 package fi.dy.masa.malilib.overlay;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.registry.Registry;
+import fi.dy.masa.malilib.util.BackupUtils;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class InfoWidgetManager
@@ -129,21 +130,26 @@ public class InfoWidgetManager
         return false;
     }
 
-    public void loadFromFile()
-    {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-        JsonUtils.loadFromFile(dir, MaLiLibReference.MOD_ID + "_info_widgets.json", this::fromJson);
-    }
-
     public boolean saveToFile()
     {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-        File backupDir = new File(dir, "config_backups");
-        File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_info_widgets.json");
-        boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("info_widgets.json").toFile();
+        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).toFile();
 
-        this.dirty = false;
+        if (BackupUtils.createRegularBackup(saveFile, backupDir) &&
+            JsonUtils.writeJsonToFile(this.toJson(), saveFile))
+        {
+            this.dirty = false;
+            return true;
+        }
 
-        return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, antiDuplicate, this::toJson);
+        return false;
+    }
+
+    public void loadFromFile()
+    {
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("info_widgets.json").toFile();
+        JsonUtils.loadFromFile(saveFile, this::fromJson);
     }
 }

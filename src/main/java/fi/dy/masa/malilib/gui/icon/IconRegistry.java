@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.icon;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,9 +12,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
+import fi.dy.masa.malilib.util.BackupUtils;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class IconRegistry
@@ -165,21 +166,25 @@ public class IconRegistry
 
     public boolean saveToFile()
     {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-        File backupDir = new File(dir, "config_backups");
-        File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_custom_icons.json");
-        boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_icons.json").toFile();
+        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).toFile();
 
-        this.dirty = false;
+        if (BackupUtils.createRegularBackup(saveFile, backupDir) &&
+            JsonUtils.writeJsonToFile(this.toJson(), saveFile))
+        {
+            this.dirty = false;
+            return true;
+        }
 
-        return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, antiDuplicate, this::toJson);
+        return false;
     }
 
     public void loadFromFile()
     {
-        File configDir = ConfigUtils.getActiveConfigDirectory();
-        String fileName = MaLiLibReference.MOD_ID + "_custom_icons.json";
-        JsonUtils.loadFromFile(configDir, fileName, this::loadDataFromJson);
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_icons.json").toFile();
+        JsonUtils.loadFromFile(saveFile, this::loadDataFromJson);
     }
 
     public static String getKeyForIcon(Icon icon)

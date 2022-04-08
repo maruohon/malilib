@@ -16,7 +16,6 @@ import java.util.function.DoubleConsumer;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.gson.Gson;
@@ -29,7 +28,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.util.BackupUtils;
 import fi.dy.masa.malilib.util.data.BooleanConsumer;
 import fi.dy.masa.malilib.util.data.FloatConsumer;
 
@@ -623,13 +621,10 @@ public class JsonUtils
         {
             String fileName = file.getAbsolutePath();
 
-            try
+            try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))
             {
                 JsonParser parser = new JsonParser();
-                InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-
                 JsonElement element = parser.parse(reader);
-                reader.close();
 
                 return element;
             }
@@ -660,19 +655,24 @@ public class JsonUtils
 
     public static boolean writeJsonToFile(Gson gson, JsonElement root, File file)
     {
-        OutputStreamWriter writer = null;
-        File fileTmp = new File(file.getParentFile(), file.getName() + ".tmp");
+        File dir = file.getParentFile();
+
+        if (dir.exists() == false && dir.mkdirs() == false)
+        {
+            MaLiLib.LOGGER.error("Failed to create directory '{}'", dir.getName());
+            return false;
+        }
+
+        File fileTmp = new File(dir, file.getName() + ".tmp");
 
         if (fileTmp.exists())
         {
             fileTmp = new File(file.getParentFile(), UUID.randomUUID() + ".tmp");
         }
 
-        try
+        try (OutputStreamWriter writer  = new OutputStreamWriter(new FileOutputStream(fileTmp), StandardCharsets.UTF_8))
         {
-            writer = new OutputStreamWriter(new FileOutputStream(fileTmp), StandardCharsets.UTF_8);
             writer.write(gson.toJson(root));
-            writer.close();
 
             if (file.exists() && file.isFile() && file.delete() == false)
             {
@@ -685,77 +685,21 @@ public class JsonUtils
         {
             MaLiLib.LOGGER.warn("Failed to write JSON data to file '{}'", fileTmp.getAbsolutePath(), e);
         }
-        finally
-        {
-            try
-            {
-                if (writer != null)
-                {
-                    writer.close();
-                }
-            }
-            catch (Exception e)
-            {
-                MaLiLib.LOGGER.warn("Failed to close JSON file", e);
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Saves JSON data to a file, optionally creating a rolling backup copy first.
-     * @param dir the directory the save file is in. This will be created if it doesn't exist.
-     * @param backupDir the directory to keep the rolling backups in, if enabled
-     * @param saveFile the file to save teh data to
-     * @param backupCount the number of backup copies to keep. Set to 0 to disable backups.
-     * @param dataSource the source of the JSON data
-     * @return true on success, false on failure
-     */
-    public static boolean saveToFile(File dir, File backupDir, File saveFile,
-                                     int backupCount, Supplier<JsonElement> dataSource)
-    {
-        return saveToFile(dir, backupDir, saveFile, backupCount, true, dataSource);
-    }
-
-    /**
-     * Saves JSON data to a file, optionally creating a rolling backup copy first.
-     * @param dir the directory the save file is in. This will be created if it doesn't exist.
-     * @param backupDir the directory to keep the rolling backups in, if enabled
-     * @param saveFile the file to save teh data to
-     * @param backupCount the number of backup copies to keep. Set to 0 to disable backups.
-     * @param deDuplicate if true, then existing identical backups are searched for first and re-used
-     * @param dataSource the source of the JSON data
-     * @return true on success, false on failure
-     */
-    public static boolean saveToFile(File dir, File backupDir, File saveFile,
-                                     int backupCount, boolean deDuplicate, Supplier<JsonElement> dataSource)
-    {
-        if (dir.exists() == false && dir.mkdirs() == false)
-        {
-            MaLiLib.LOGGER.error("Failed to create directory '{}'", dir.getName());
-        }
-
-        if (dir.exists() && dir.isDirectory())
-        {
-            if (backupCount > 0)
-            {
-                BackupUtils.createRollingBackup(saveFile, backupDir, ".bak_", backupCount, deDuplicate);
-            }
-
-            return writeJsonToFile(dataSource.get(), saveFile);
-        }
 
         return false;
     }
 
     public static void loadFromFile(File dir, String fileName, Consumer<JsonElement> dataConsumer)
     {
-        File saveFile = new File(dir, fileName);
+        File file = new File(dir, fileName);
+        loadFromFile(file, dataConsumer);
+    }
 
-        if (saveFile.exists() && saveFile.isFile() && saveFile.canRead())
+    public static void loadFromFile(File file, Consumer<JsonElement> dataConsumer)
+    {
+        if (file.exists() && file.isFile() && file.canRead())
         {
-            JsonElement element = parseJsonFile(saveFile);
+            JsonElement element = parseJsonFile(file);
 
             if (element != null)
             {

@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.action.ActionWidgetScreenData;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.util.BackupUtils;
 import fi.dy.masa.malilib.util.FileNameUtils;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
@@ -74,21 +74,24 @@ public class ActionExecutionWidgetManager
     protected boolean saveDataToFile(String name, ActionWidgetScreenData data)
     {
         name = FileNameUtils.generateSimpleSafeFileName(name);
-        File configDir = ConfigUtils.getActiveConfigDirectory();
-        File backupDir = configDir.toPath().resolve("config_backups").resolve(MaLiLibReference.MOD_ID).resolve("action_screens").toFile();
-        Path saveDir = configDir.toPath().resolve(MaLiLibReference.MOD_ID).resolve("action_screens");
-        File saveFile = saveDir.resolve(name + ".json").toFile();
-        boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("action_screens").resolve(name + ".json").toFile();
+        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).resolve("action_screens").toFile();
 
-        return JsonUtils.saveToFile(saveDir.toFile(), backupDir, saveFile, 20, antiDuplicate, data::toJson);
+        if (BackupUtils.createRegularBackup(saveFile, backupDir))
+        {
+            return JsonUtils.writeJsonToFile(data.toJson(), saveFile);
+        }
+
+        return false;
     }
 
     protected void loadFromFile(String name)
     {
         final String safeName = FileNameUtils.generateSimpleSafeFileName(name);
-        File configDir = ConfigUtils.getActiveConfigDirectory();
-        Path saveDir = configDir.toPath().resolve(MaLiLibReference.MOD_ID).resolve("action_screens");
-        JsonUtils.loadFromFile(saveDir.toFile(), name + ".json", (el) -> this.loadDataFromJson(safeName, el));
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("action_screens").resolve(name + ".json").toFile();
+        JsonUtils.loadFromFile(saveFile, (el) -> this.loadDataFromJson(safeName, el));
     }
 
     public static boolean createActionWidgetScreen(String arg)

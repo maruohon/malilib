@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.config.util;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import com.mumfrey.liteloader.core.LiteLoader;
 import org.apache.commons.lang3.StringUtils;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -24,13 +26,22 @@ import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.overlay.OverlayRendererContainer;
-import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ConfigUtils
 {
+    public static File getConfigDirectory()
+    {
+        return LiteLoader.getCommonConfigFolder();
+    }
+
+    public static Path getConfigDirectoryPath()
+    {
+        return getConfigDirectory().toPath();
+    }
+
     /**
      * @return The currently active config directory. This takes into account a possible active config profile.
      */
@@ -45,13 +56,41 @@ public class ConfigUtils
      */
     public static File getActiveConfigDirectory(String profile)
     {
-        File baseConfigDir = FileUtils.getConfigDirectory();
+        Path baseConfigDir = getConfigDirectoryPath();
 
         if (StringUtils.isBlank(profile) == false)
         {
             try
             {
-                return baseConfigDir.toPath().resolve("config_profiles").resolve(profile).toFile();
+                return baseConfigDir.resolve("config_profiles").resolve(profile).toFile();
+            }
+            catch (InvalidPathException ignore) {}
+        }
+
+        return baseConfigDir.toFile();
+    }
+
+    /**
+     * @return The currently active config directory. This takes into account a possible active config profile.
+     */
+    public static Path getActiveConfigDirectoryPath()
+    {
+        String profile = MaLiLibConfigs.Internal.ACTIVE_CONFIG_PROFILE.getValue();
+        return getActiveConfigDirectoryPath(profile);
+    }
+
+    /**
+     * @return The currently active config directory for the given config profile.
+     */
+    public static Path getActiveConfigDirectoryPath(String profile)
+    {
+        Path baseConfigDir = getConfigDirectoryPath();
+
+        if (StringUtils.isBlank(profile) == false)
+        {
+            try
+            {
+                return baseConfigDir.resolve("config_profiles").resolve(profile);
             }
             catch (InvalidPathException ignore) {}
         }

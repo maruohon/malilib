@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import com.mumfrey.liteloader.core.LiteLoader;
 import fi.dy.masa.malilib.MaLiLib;
 
 public class FileUtils
@@ -23,11 +22,6 @@ public class FileUtils
     public static final FileFilter ALWAYS_FALSE_FILEFILTER = (file) -> false;
     public static final FileFilter ANY_FILE_FILEFILTER = File::isFile;
     public static final FileFilter JSON_FILEFILTER = (f) -> f.isFile() && f.getName().endsWith(".json");
-
-    public static File getConfigDirectory()
-    {
-        return LiteLoader.getCommonConfigFolder();
-    }
 
     public static File getMinecraftDirectory()
     {
@@ -319,6 +313,12 @@ public class FileUtils
         return success;
     }
 
+    /**
+     * Reads the given file as a String.
+     * @param file the file to read
+     * @param maxFileSize only read the file if it's at most this size. Use -1 for no limit.
+     * @return the file contents as a String
+     */
     @Nullable
     public static String readFileAsString(File file, int maxFileSize)
     {

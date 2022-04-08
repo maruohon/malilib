@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.action;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -10,10 +11,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.util.BackupUtils;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class ActionRegistry
@@ -260,24 +261,25 @@ public class ActionRegistry
 
     public boolean saveToFile()
     {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-        File backupDir = new File(dir, "config_backups");
-        File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_actions.json");
-        boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
-        boolean success = JsonUtils.saveToFile(dir, backupDir, saveFile, 10, antiDuplicate, this::toJson);
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("actions.json").toFile();
+        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).toFile();
 
-        if (success)
+        if (BackupUtils.createRegularBackup(saveFile, backupDir) &&
+            JsonUtils.writeJsonToFile(this.toJson(), saveFile))
         {
             this.dirty = false;
+            return true;
         }
 
-        return success;
+        return false;
     }
 
     public void loadFromFile()
     {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-        JsonUtils.loadFromFile(dir, MaLiLibReference.MOD_ID + "_actions.json", this::fromJson);
+        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
+        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("actions.json").toFile();
+        JsonUtils.loadFromFile(saveFile, this::fromJson);
     }
 
     public static <T extends NamedAction> ImmutableList<T> getActionsSortedByName(Collection<T> actions)
