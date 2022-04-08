@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.util.ConfigOverrideUtils;
 import fi.dy.masa.malilib.registry.Registry;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class ConfigOverridePacketHandler extends BasePacketHandler
 {

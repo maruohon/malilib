@@ -6,8 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.input.ActionResult;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class ParameterizableNamedAction extends NamedAction
 {

@@ -14,7 +14,7 @@ import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry.Json
 import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry.JsonConfigSerializer;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class JsonConfigUtils
 {

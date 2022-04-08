@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.input;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class KeyBindSettings
 {

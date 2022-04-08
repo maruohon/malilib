@@ -12,7 +12,7 @@ import fi.dy.masa.malilib.config.option.CommonDescription;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class CustomHotkeyDefinition extends CommonDescription implements Hotkey, ConfigInfo
 {

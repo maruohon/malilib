@@ -30,8 +30,8 @@ import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.EdgeInt;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContainer

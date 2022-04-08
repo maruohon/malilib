@@ -8,11 +8,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.apache.commons.lang3.tuple.Pair;
 import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig;
-import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.position.Vec2i;
 

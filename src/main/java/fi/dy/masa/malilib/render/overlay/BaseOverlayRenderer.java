@@ -16,8 +16,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public abstract class BaseOverlayRenderer
 {

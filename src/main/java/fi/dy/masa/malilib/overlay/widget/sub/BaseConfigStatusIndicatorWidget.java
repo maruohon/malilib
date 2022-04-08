@@ -18,8 +18,8 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.BaseOverlayWidget;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> extends BaseOverlayWidget
 {

@@ -10,8 +10,8 @@ import fi.dy.masa.malilib.config.option.CommonDescription;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public abstract class NamedAction extends CommonDescription
 {

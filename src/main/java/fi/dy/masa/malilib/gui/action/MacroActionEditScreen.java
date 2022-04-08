@@ -25,8 +25,8 @@ import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntry
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class MacroActionEditScreen extends BaseActionListScreen
 {

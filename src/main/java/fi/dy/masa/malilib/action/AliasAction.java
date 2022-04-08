@@ -7,9 +7,9 @@ import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class AliasAction extends NamedAction
 {

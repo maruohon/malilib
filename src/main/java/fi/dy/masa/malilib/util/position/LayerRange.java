@@ -13,8 +13,8 @@ import fi.dy.masa.malilib.config.value.LayerMode;
 import fi.dy.masa.malilib.listener.LayerRangeChangeListener;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.EntityUtils;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class LayerRange
 {

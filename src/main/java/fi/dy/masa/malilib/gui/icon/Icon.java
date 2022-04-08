@@ -6,8 +6,8 @@ import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public interface Icon
 {

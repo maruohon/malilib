@@ -25,8 +25,8 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.EdgeInt;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public abstract class InfoRendererWidget extends BaseOverlayWidget
 {

@@ -29,10 +29,10 @@ import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.BooleanAndDoubleConfig;
+import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
 import fi.dy.masa.malilib.config.option.OverridableConfig;
 import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.input.ActionResult;
@@ -40,8 +40,8 @@ import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.GameUtils;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.BooleanStorageWithDefault;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class ConfigOverrideUtils
 {

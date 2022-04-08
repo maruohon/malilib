@@ -13,9 +13,9 @@ import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextStyle;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<BooleanConfig>
 {

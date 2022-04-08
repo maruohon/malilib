@@ -7,8 +7,8 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.gui.util.GeometryResizeNotifier;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.MarkerManager;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public abstract class BaseOverlayWidget extends BaseWidget
 {

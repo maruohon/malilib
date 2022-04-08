@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.util;
 
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class BackgroundSettings
 {

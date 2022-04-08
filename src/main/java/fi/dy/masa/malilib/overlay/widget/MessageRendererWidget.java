@@ -12,8 +12,8 @@ import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidge
 import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.text.StyledText;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class MessageRendererWidget extends InfoRendererWidget
 {

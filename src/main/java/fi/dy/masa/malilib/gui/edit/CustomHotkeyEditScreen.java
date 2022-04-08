@@ -18,7 +18,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntry
 import fi.dy.masa.malilib.input.CustomHotkeyDefinition;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class CustomHotkeyEditScreen extends BaseActionListScreen
 {

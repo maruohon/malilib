@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.gui.util;
 import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.EdgeInt;
+import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class BorderSettings
 {
