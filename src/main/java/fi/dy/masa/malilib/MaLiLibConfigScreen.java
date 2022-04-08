@@ -97,8 +97,6 @@ public class MaLiLibConfigScreen
 
         list.add(ConfigUtils.extractOptionsToGroup(list, MOD_INFO, "appearance",
                                                    MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND,
-                                                   MaLiLibConfigs.Generic.CUSTOM_HOTBAR_MESSAGE_LIMIT,
-                                                   MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE,
                                                    MaLiLibConfigs.Generic.HOVERED_LIST_ENTRY_COLOR,
                                                    MaLiLibConfigs.Generic.HOVER_TEXT_MAX_WIDTH,
                                                    MaLiLibConfigs.Generic.MESSAGE_FADE_OUT_TIME,
