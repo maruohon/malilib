@@ -95,16 +95,16 @@ public class MaLiLibConfigScreen
     {
         ArrayList<ConfigInfo> list = new ArrayList<>(MaLiLibConfigs.Generic.OPTIONS);
 
-        list.add(ConfigUtils.extractOptionsToGroup(list, MOD_INFO, "appearance",
-                                                   MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND,
-                                                   MaLiLibConfigs.Generic.HOVERED_LIST_ENTRY_COLOR,
-                                                   MaLiLibConfigs.Generic.HOVER_TEXT_MAX_WIDTH,
-                                                   MaLiLibConfigs.Generic.MESSAGE_FADE_OUT_TIME,
-                                                   MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_USE_DROPDOWN,
-                                                   MaLiLibConfigs.Generic.SELECTED_LIST_ENTRY_COLOR,
-                                                   MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME,
-                                                   MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME,
-                                                   MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS));
+        list.add(ConfigUtils.extractOptionsToExpandableGroup(list, MOD_INFO, "appearance",
+                                                             MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND,
+                                                             MaLiLibConfigs.Generic.HOVERED_LIST_ENTRY_COLOR,
+                                                             MaLiLibConfigs.Generic.HOVER_TEXT_MAX_WIDTH,
+                                                             MaLiLibConfigs.Generic.MESSAGE_FADE_OUT_TIME,
+                                                             MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_USE_DROPDOWN,
+                                                             MaLiLibConfigs.Generic.SELECTED_LIST_ENTRY_COLOR,
+                                                             MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME,
+                                                             MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME,
+                                                             MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS));
         ConfigUtils.sortConfigsByDisplayName(list);
 
         return ImmutableList.copyOf(list);

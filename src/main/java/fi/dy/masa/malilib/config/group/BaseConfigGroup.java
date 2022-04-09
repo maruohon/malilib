@@ -97,4 +97,9 @@ public abstract class BaseConfigGroup extends CommonDescription implements Confi
             config.resetToDefault();
         }
     }
+
+    public interface ConfigGroupFactory
+    {
+        BaseConfigGroup create(ModInfo modInfo, String name, List<ConfigInfo> configs);
+    }
 }

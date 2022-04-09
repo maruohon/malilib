@@ -12,7 +12,7 @@ public class KeyBindSettings
     public static final KeyBindSettings INGAME_BOTH                 = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, false, true, CancelCondition.ON_SUCCESS);
     public static final KeyBindSettings INGAME_MODIFIER             = builderInGameModifier().build();
     public static final KeyBindSettings INGAME_MODIFIER_EMPTY       = builderInGameModifier().empty().build();
-    public static final KeyBindSettings INGAME_MODIFIER_BOTH        = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, false, false, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_MODIFIER_BOTH        = builderInGameModifier().both().build();
     public static final KeyBindSettings INGAME_RELEASE              = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, CancelCondition.ALWAYS);
     public static final KeyBindSettings INGAME_RELEASE_EXCLUSIVE    = builder().release().exclusive().cancel(CancelCondition.ALWAYS).build();
     public static final KeyBindSettings GUI_DEFAULT                 = new KeyBindSettings(Context.GUI, KeyAction.PRESS, false, true, CancelCondition.ON_SUCCESS);
@@ -254,7 +254,7 @@ public class KeyBindSettings
         protected boolean firstOnly;
         protected boolean invertHeld;
         protected boolean orderSensitive = true;
-        protected boolean showToast;
+        protected boolean showToast = true;
         protected boolean toggle;
         protected int priority = 50;
 

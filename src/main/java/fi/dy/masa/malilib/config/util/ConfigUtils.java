@@ -17,6 +17,8 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
+import fi.dy.masa.malilib.config.group.BaseConfigGroup;
+import fi.dy.masa.malilib.config.group.BaseConfigGroup.ConfigGroupFactory;
 import fi.dy.masa.malilib.config.group.ExpandableConfigGroup;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
@@ -121,27 +123,53 @@ public class ConfigUtils
      * Removes the given configs from the given list,
      * and returns them as an expandable config group.
      */
-    public static ExpandableConfigGroup extractOptionsToGroup(ArrayList<ConfigInfo> originalList,
-                                                              ModInfo mod,
-                                                              String groupName,
-                                                              ConfigInfo... toExtract)
+    public static BaseConfigGroup extractOptionsToExpandableGroup(ArrayList<ConfigInfo> originalList,
+                                                                  ModInfo mod,
+                                                                  String groupName,
+                                                                  ConfigInfo... toExtract)
+    {
+        return extractOptionsToGroup(originalList, mod, groupName, ExpandableConfigGroup::new, toExtract);
+    }
+
+    /**
+     * Removes the given configs from the given list,
+     * and returns them as a config group using the provided factory.
+     */
+    public static BaseConfigGroup extractOptionsToGroup(ArrayList<ConfigInfo> originalList,
+                                                        ModInfo mod,
+                                                        String groupName,
+                                                        ConfigGroupFactory factory,
+                                                        ConfigInfo... toExtract)
     {
         List<ConfigInfo> extractedList = Arrays.asList(toExtract);
 
         originalList.removeAll(extractedList);
         ConfigUtils.sortConfigsByDisplayName(extractedList);
 
-        return new ExpandableConfigGroup(mod, groupName, extractedList);
+        return factory.create(mod, groupName, extractedList);
     }
 
     /**
      * Removes the configs matching the given Predicate from the given list,
      * and returns them as an expandable config group.
      */
-    public static ExpandableConfigGroup extractOptionsToGroup(ArrayList<ConfigInfo> originalList,
-                                                              ModInfo mod,
-                                                              String groupName,
-                                                              Predicate<ConfigInfo> extractTest)
+    public static BaseConfigGroup extractOptionsToExpandableGroup(ArrayList<ConfigInfo> originalList,
+                                                                  ModInfo mod,
+                                                                  String groupName,
+                                                                  Predicate<ConfigInfo> extractTest)
+    {
+        return extractOptionsToGroup(originalList, mod, groupName, extractTest, ExpandableConfigGroup::new);
+    }
+
+    /**
+     * Removes the configs matching the given Predicate from the given list,
+     * and returns them as a config group using the provided factory.
+     */
+    public static BaseConfigGroup extractOptionsToGroup(ArrayList<ConfigInfo> originalList,
+                                                        ModInfo mod,
+                                                        String groupName,
+                                                        Predicate<ConfigInfo> extractTest,
+                                                        ConfigGroupFactory factory)
     {
         ArrayList<ConfigInfo> extractedList = new ArrayList<>();
 
@@ -149,7 +177,7 @@ public class ConfigUtils
         originalList.removeAll(extractedList);
         ConfigUtils.sortConfigsByDisplayName(extractedList);
 
-        return new ExpandableConfigGroup(mod, groupName, extractedList);
+        return factory.create(mod, groupName, extractedList);
     }
 
     /**
