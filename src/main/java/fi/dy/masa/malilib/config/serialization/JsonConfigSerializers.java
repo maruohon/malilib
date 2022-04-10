@@ -26,6 +26,7 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
+import fi.dy.masa.malilib.config.option.Vec2dConfig;
 import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
@@ -35,6 +36,7 @@ import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.data.json.DataJsonDeserializers;
 import fi.dy.masa.malilib.util.data.json.DataJsonSerializers;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
+import fi.dy.masa.malilib.util.position.Vec2d;
 import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class JsonConfigSerializers
@@ -85,6 +87,11 @@ public class JsonConfigSerializers
     public static JsonElement serializeDualColorConfig(DualColorConfig config)
     {
         return DataJsonSerializers.serializeDualColorValue(config.getValueForSerialization());
+    }
+
+    public static JsonElement serializeVec2dConfig(Vec2dConfig config)
+    {
+        return DataJsonSerializers.serializeVec2dValue(config.getValueForSerialization());
     }
 
     public static JsonElement serializeVec2iConfig(Vec2iConfig config)
@@ -201,6 +208,12 @@ public class JsonConfigSerializers
     public static <T> void loadValueListConfig(ValueListConfig<T> config, JsonElement element, String configName)
     {
         Optional<ImmutableList<T>> optional = DataJsonDeserializers.readValueList(element, config.getFromStringConverter());
+        loadConfigValue(config, optional, element, configName);
+    }
+
+    public static void loadVec2dConfig(Vec2dConfig config, JsonElement element, String configName)
+    {
+        Optional<Vec2d> optional = DataJsonDeserializers.readVec2dValue(element);
         loadConfigValue(config, optional, element, configName);
     }
 

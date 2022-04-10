@@ -13,6 +13,7 @@ import fi.dy.masa.malilib.config.option.BooleanAndIntConfig;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.util.data.Color4f;
+import fi.dy.masa.malilib.util.position.Vec2d;
 import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class DataJsonSerializers
@@ -47,6 +48,14 @@ public class DataJsonSerializers
         JsonObject obj = new JsonObject();
         obj.add("color1", new JsonPrimitive(value.getLeft().intValue));
         obj.add("color2", new JsonPrimitive(value.getRight().intValue));
+        return obj;
+    }
+
+    public static JsonElement serializeVec2dValue(Vec2d value)
+    {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("x", value.x);
+        obj.addProperty("y", value.y);
         return obj;
     }
 

@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.util.position.Coordinate;
 
-public abstract class BasePositionEditWidget<T, W extends BaseNumberEditWidget> extends ContainerWidget
+public abstract class BaseTripleNumberEditWidget<T, W extends BaseNumberEditWidget> extends ContainerWidget
 {
     protected final Consumer<T> posConsumer;
     protected final W xCoordinateWidget;
@@ -16,10 +16,10 @@ public abstract class BasePositionEditWidget<T, W extends BaseNumberEditWidget> 
     protected int gap;
     protected boolean addMoveToPlayerButton;
 
-    public BasePositionEditWidget(int width, int height, int gap,
-                                  boolean addMoveToPlayerButton,
-                                  T initialPos,
-                                  Consumer<T> posConsumer)
+    public BaseTripleNumberEditWidget(int width, int height, int gap,
+                                      boolean addMoveToPlayerButton,
+                                      T initialPos,
+                                      Consumer<T> posConsumer)
     {
         super(width, height);
 

@@ -156,6 +156,7 @@ malilib.hover.config.expandable_config_group.config_entry=<c=909090>%s §8[%s]
 malilib.hover.config.expandable_config_group.contained_configs=<c=606060>Contained configs (§b%s<c=777>):
 malilib.hover.config.expandable_config_group.more=<c=606060>... and §b%s<c=606060> more
 malilib.hover.config.info_entry_widget=§7Display name: §f%s\n§7Internal name: §f%s\n§7Config type: §6%s
+malilib.hover.config.numeric.range=Range: §b%s§r ... §b%s§r
 malilib.hover.config.numeric.range_and_default=Range: §b%s§r ... §b%s§r\nDefault: §b%s
 malilib.hover.config.open_color_editor=Open color editor\nCurrent color: §f%s§7 (AARRGGBB)
 malilib.hover.config.open_quad_color_editor=Open color editor\nCurrent colors (AARRGGBB):\n  Top: §f%s§r\n  Bottom: §f%s§r\n  Left: §f%s§r\n  Right: §f%s§r

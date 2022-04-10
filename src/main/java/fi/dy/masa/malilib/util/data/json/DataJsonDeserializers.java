@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.util.data.Color4f;
+import fi.dy.masa.malilib.util.position.Vec2d;
 import fi.dy.masa.malilib.util.position.Vec2i;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction;
 
@@ -233,6 +234,31 @@ public class DataJsonDeserializers
         catch (Exception e)
         {
             MaLiLib.LOGGER.warn("Failed to read a list of values from the JSON element '{}'", element, e);
+        }
+
+        return Optional.empty();
+    }
+
+    public static Optional<Vec2d> readVec2dValue(JsonElement element)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+                double x = JsonUtils.getDouble(obj, "x");
+                double y = JsonUtils.getDouble(obj, "y");
+
+                return Optional.of(new Vec2d(x, y));
+            }
+            else
+            {
+                MaLiLib.LOGGER.warn("Failed to read Vec2d value from the JSON element '{}'", element);
+            }
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Failed to read Vec2d value from the JSON element '{}'", element, e);
         }
 
         return Optional.empty();

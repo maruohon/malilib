@@ -5,7 +5,7 @@ import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.position.Coordinate;
 
-public class Vec3dEditWidget extends BasePositionEditWidget<Vec3d, DoubleEditWidget>
+public class Vec3dEditWidget extends BaseTripleNumberEditWidget<Vec3d, DoubleEditWidget>
 {
     public Vec3dEditWidget(int width, int height, int gap,
                            boolean addMoveToPlayerButton,

@@ -5,7 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.position.Coordinate;
 
-public class BlockPosEditWidget extends BasePositionEditWidget<BlockPos, IntegerEditWidget>
+public class BlockPosEditWidget extends BaseTripleNumberEditWidget<BlockPos, IntegerEditWidget>
 {
     public BlockPosEditWidget(int width, int height, int gap,
                               boolean addMoveToPlayerButton,
@@ -34,7 +34,7 @@ public class BlockPosEditWidget extends BasePositionEditWidget<BlockPos, Integer
     @Override
     protected IntegerEditWidget createNumberEditWidget(int width, int height, BlockPos initialPos, Coordinate coord)
     {
-        return new IntegerEditWidget(width, height, initialPos.getX(), (val) -> this.setPos(val, coord));
+        return new IntegerEditWidget(width, height, coord.asInt(initialPos), (val) -> this.setPos(val, coord));
     }
 
     @Override

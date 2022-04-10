@@ -1,9 +1,12 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.IntConsumer;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.callback.IntegerSliderCallback;
+import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.RangedIntegerStorage;
 
 public class IntegerEditWidget extends BaseNumberEditWidget implements RangedIntegerStorage
@@ -40,6 +43,9 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         this.setIntegerValue(originalValue);
 
         this.textFieldWidget.setText(String.valueOf(originalValue));
+
+        this.textFieldWidget.getHoverInfoFactory().setStringListProvider("range", this::getRangeHoverTooltip);
+        this.sliderWidget.getHoverInfoFactory().setStringListProvider("range", this::getRangeHoverTooltip);
     }
 
     @Override
@@ -114,5 +120,11 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     public int getMaxIntegerValue()
     {
         return this.maxValue;
+    }
+
+    protected List<String> getRangeHoverTooltip()
+    {
+        return Collections.singletonList(StringUtils.translate("malilib.hover.config.numeric.range",
+                                                               this.minValue, this.maxValue));
     }
 }

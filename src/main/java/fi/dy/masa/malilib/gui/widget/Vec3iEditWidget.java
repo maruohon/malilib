@@ -5,7 +5,7 @@ import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.position.Coordinate;
 
-public class Vec3iEditWidget extends BasePositionEditWidget<Vec3i, IntegerEditWidget>
+public class Vec3iEditWidget extends BaseTripleNumberEditWidget<Vec3i, IntegerEditWidget>
 {
     public Vec3iEditWidget(int width, int height, int gap,
                            boolean addMoveToPlayerButton,
@@ -34,7 +34,7 @@ public class Vec3iEditWidget extends BasePositionEditWidget<Vec3i, IntegerEditWi
     @Override
     protected IntegerEditWidget createNumberEditWidget(int width, int height, Vec3i initialPos, Coordinate coord)
     {
-        return new IntegerEditWidget(width, height, initialPos.getX(), (val) -> this.setPos(val, coord));
+        return new IntegerEditWidget(width, height, coord.asInt(initialPos), (val) -> this.setPos(val, coord));
     }
 
     @Override

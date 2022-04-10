@@ -21,6 +21,7 @@ import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.NestedConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
+import fi.dy.masa.malilib.config.option.Vec2dConfig;
 import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.BlockListConfig;
@@ -52,6 +53,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.IntegerConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.PopupConfigGroupWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.Vec2dConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.Vec2iConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.BlockListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.EquipmentSlotListConfigWidget;
@@ -139,6 +141,7 @@ public class ConfigWidgetRegistry
         this.registerConfigWidgetFactory(StatusEffectListConfig.class,  StatusEffectListConfigWidget::new);
         this.registerConfigWidgetFactory(StringConfig.class,            StringConfigWidget::new);
         this.registerConfigWidgetFactory(StringListConfig.class,        StringListConfigWidget::new);
+        this.registerConfigWidgetFactory(Vec2dConfig.class,             Vec2dConfigWidget::new);
         this.registerConfigWidgetFactory(Vec2iConfig.class,             Vec2iConfigWidget::new);
     }
 

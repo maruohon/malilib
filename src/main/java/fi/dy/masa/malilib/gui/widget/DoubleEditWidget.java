@@ -1,9 +1,12 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.DoubleConsumer;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.callback.DoubleSliderCallback;
+import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.RangedDoubleStorage;
 
 public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoubleStorage
@@ -32,6 +35,9 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
 
         this.textFieldWidget.setText(String.valueOf(originalValue));
         this.textFieldWidget.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(minValue, maxValue));
+
+        this.textFieldWidget.getHoverInfoFactory().setStringListProvider("range", this::getRangeHoverTooltip);
+        this.sliderWidget.getHoverInfoFactory().setStringListProvider("range", this::getRangeHoverTooltip);
     }
 
     @Override
@@ -48,7 +54,8 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
         if (BaseScreen.isShiftDown()) { amount *= 4.0; }
         if (BaseScreen.isAltDown()) { amount *= 8.0; }
 
-        this.setDoubleValue(this.value + amount);
+        double v = (double) ((int) ((this.value + amount) * 100000)) / 100000.0;
+        this.setDoubleValue(v);
         this.consumer.accept(this.value);
         this.sliderWidget.updateWidgetState();
 
@@ -70,6 +77,16 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.textFieldWidget.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(minValue, maxValue));
+
+        double scrollAmount = maxValue / 128.0 - minValue / 128.0;
+
+        if (scrollAmount > 0 && scrollAmount <= 1.0)
+        {
+            this.setBaseScrollAdjustAmount(scrollAmount);
+        }
+
+        this.textFieldWidget.getHoverInfoFactory().updateList();
+        this.sliderWidget.getHoverInfoFactory().updateList();
     }
 
     @Override
@@ -112,5 +129,11 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     public double getMaxDoubleValue()
     {
         return this.maxValue;
+    }
+
+    protected List<String> getRangeHoverTooltip()
+    {
+        return Collections.singletonList(StringUtils.translate("malilib.hover.config.numeric.range",
+                                                               this.minValue, this.maxValue));
     }
 }

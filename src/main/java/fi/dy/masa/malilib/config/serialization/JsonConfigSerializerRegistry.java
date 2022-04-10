@@ -19,6 +19,7 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
+import fi.dy.masa.malilib.config.option.Vec2dConfig;
 import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
@@ -115,6 +116,7 @@ public class JsonConfigSerializerRegistry
         this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::serializeHotkeyedBooleanConfig,  JsonConfigSerializers::loadHotkeyedBooleanConfig);
         this.registerSerializers(OptionListConfig.class,        JsonConfigSerializers::serializeOptionListConfig,       JsonConfigSerializers::loadOptionListConfig);
         this.registerSerializers(ValueListConfig.class,         JsonConfigSerializers::serializeValueListConfig,        JsonConfigSerializers::loadValueListConfig);
+        this.registerSerializers(Vec2dConfig.class,             JsonConfigSerializers::serializeVec2dConfig,            JsonConfigSerializers::loadVec2dConfig);
         this.registerSerializers(Vec2iConfig.class,             JsonConfigSerializers::serializeVec2iConfig,            JsonConfigSerializers::loadVec2iConfig);
     }
 
