@@ -174,6 +174,12 @@ public class JsonConfigSerializers
                 config.loadHotkeyedBooleanValueFromConfig(booleanValue);
                 return;
             }
+            // Fallback support for loading old configs
+            else if (element.isJsonPrimitive())
+            {
+                config.loadHotkeyedBooleanValueFromConfig(element.getAsBoolean());
+                return;
+            }
             else
             {
                 MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
