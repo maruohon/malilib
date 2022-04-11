@@ -3,9 +3,8 @@ package fi.dy.masa.malilib.overlay.message;
 import java.util.Locale;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.BaseGenericConfig;
+import fi.dy.masa.malilib.config.option.BooleanContainingConfig;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.data.BooleanStorage;
 
 public class MessageHelpers
 {
@@ -71,8 +70,8 @@ public class MessageHelpers
         return capitalize ? str.toUpperCase(Locale.ROOT) : str;
     }
 
-    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
-    String getBooleanConfigToggleMessage(CFG config, @Nullable BooleanConfigMessageFactory messageFactory)
+    public static String getBooleanConfigToggleMessage(BooleanContainingConfig<?> config,
+                                                       @Nullable BooleanConfigMessageFactory messageFactory)
     {
         boolean newValue = config.getBooleanValue();
         String message;
@@ -101,8 +100,7 @@ public class MessageHelpers
         return message;
     }
 
-    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
-    String getBasicBooleanConfigToggleMessage(CFG config)
+    public static String getBasicBooleanConfigToggleMessage(BooleanContainingConfig<?> config)
     {
         String msgKey = config.getBooleanValue() ? "malilib.message.info.toggled_config_on" :
                                                    "malilib.message.info.toggled_config_off";
@@ -111,7 +109,7 @@ public class MessageHelpers
 
     public interface BooleanConfigMessageFactory
     {
-        <CFG extends BaseGenericConfig<?> & BooleanStorage> String getMessage(CFG config);
+        String getMessage(BooleanContainingConfig<?> config);
     }
 
     public static class SimpleBooleanConfigMessageFactory implements BooleanConfigMessageFactory
@@ -126,7 +124,7 @@ public class MessageHelpers
         }
 
         @Override
-        public <CFG extends BaseGenericConfig<?> & BooleanStorage> String getMessage(CFG config)
+        public String getMessage(BooleanContainingConfig<?> config)
         {
             if (config.getBooleanValue())
             {

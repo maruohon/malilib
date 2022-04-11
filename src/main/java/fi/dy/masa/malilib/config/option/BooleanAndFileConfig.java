@@ -4,9 +4,8 @@ import java.io.File;
 import java.util.Objects;
 import java.util.StringJoiner;
 import fi.dy.masa.malilib.config.option.BooleanAndFileConfig.BooleanAndFile;
-import fi.dy.masa.malilib.util.data.BooleanStorageWithDefault;
 
-public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> implements BooleanStorageWithDefault
+public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> implements BooleanContainingConfig<BooleanAndFile>
 {
     public BooleanAndFileConfig(String name, boolean defaultBooleanValue, File defaultDirectory)
     {

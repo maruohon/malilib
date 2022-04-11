@@ -2,20 +2,19 @@ package fi.dy.masa.malilib.action;
 
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.BaseGenericConfig;
+import fi.dy.masa.malilib.config.option.BooleanContainingConfig;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
-import fi.dy.masa.malilib.util.data.BooleanStorage;
 
-public class BooleanToggleAction<CFG extends BaseGenericConfig<?> & BooleanStorage> implements Action
+public class BooleanToggleAction implements Action
 {
-    protected final CFG config;
+    protected final BooleanContainingConfig<?> config;
     @Nullable protected final BooleanConfigMessageFactory messageFactory;
     @Nullable protected final Supplier<MessageOutput> messageTypeSupplier;
 
-    protected BooleanToggleAction(CFG config,
+    protected BooleanToggleAction(BooleanContainingConfig<?> config,
                                   @Nullable BooleanConfigMessageFactory messageFactory,
                                   @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
@@ -38,11 +37,10 @@ public class BooleanToggleAction<CFG extends BaseGenericConfig<?> & BooleanStora
         return ActionResult.SUCCESS;
     }
 
-    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
-    BooleanToggleAction<?> of(CFG config,
-                           @Nullable BooleanConfigMessageFactory messageFactory,
-                           @Nullable Supplier<MessageOutput> messageTypeSupplier)
+    public static BooleanToggleAction of(BooleanContainingConfig<?> config,
+                                         @Nullable BooleanConfigMessageFactory messageFactory,
+                                         @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
-        return new BooleanToggleAction<>(config, messageFactory, messageTypeSupplier);
+        return new BooleanToggleAction(config, messageFactory, messageTypeSupplier);
     }
 }

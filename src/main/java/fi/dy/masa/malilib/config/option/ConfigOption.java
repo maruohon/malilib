@@ -30,6 +30,11 @@ public interface ConfigOption<T> extends ConfigInfo
     }
 
     /**
+     * @return the comment translation/localization key for this config
+     */
+    String getCommentTranslationKey();
+
+    /**
      * Returns true if the value of this config has been changed since
      * it was last saved to file.
      * @return true if the config has been modified since last saving

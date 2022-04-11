@@ -8,8 +8,8 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.config.option.BaseGenericConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.BooleanContainingConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.input.ActionResult;
@@ -19,7 +19,6 @@ import fi.dy.masa.malilib.overlay.message.MessageHelpers.BooleanConfigMessageFac
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.data.BooleanStorage;
 import fi.dy.masa.malilib.util.data.ModInfo;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
@@ -77,8 +76,7 @@ public class ActionUtils
         return namedAction;
     }
 
-    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
-    void registerBooleanConfigActions(ModInfo modInfo, CFG config)
+    public static void registerBooleanConfigActions(ModInfo modInfo, BooleanContainingConfig<?> config)
     {
         registerBooleanConfigActions(modInfo, config, null, null);
     }
@@ -94,28 +92,26 @@ public class ActionUtils
         registerBooleanConfigActions(modInfo, config, null, keyBind.getSettings()::getMessageType);
     }
 
-    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
-    void registerBooleanConfigActions(ModInfo modInfo,
-                                      CFG config,
-                                      @Nullable BooleanConfigMessageFactory messageFactory,
-                                      @Nullable Supplier<MessageOutput> messageTypeSupplier)
+    public static void registerBooleanConfigActions(ModInfo modInfo,
+                                                    BooleanContainingConfig<?> config,
+                                                    @Nullable BooleanConfigMessageFactory messageFactory,
+                                                    @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
-        BooleanToggleAction<?> toggleAction = BooleanToggleAction.of(config, messageFactory, messageTypeSupplier);
+        BooleanToggleAction toggleAction = BooleanToggleAction.of(config, messageFactory, messageTypeSupplier);
         registerBooleanConfigActions(modInfo, config, messageFactory, messageTypeSupplier, toggleAction);
     }
 
-    public static <CFG extends BaseGenericConfig<?> & BooleanStorage>
-    void registerBooleanConfigActions(ModInfo modInfo,
-                                      CFG config,
-                                      @Nullable BooleanConfigMessageFactory messageFactory,
-                                      @Nullable Supplier<MessageOutput> messageTypeSupplier,
-                                      Action toggleAction)
+    public static void registerBooleanConfigActions(ModInfo modInfo,
+                                                    BooleanContainingConfig<?> config,
+                                                    @Nullable BooleanConfigMessageFactory messageFactory,
+                                                    @Nullable Supplier<MessageOutput> messageTypeSupplier,
+                                                    Action toggleAction)
     {
         String configName = org.apache.commons.lang3.StringUtils.capitalize(config.getName());
         String commentKey = config.getCommentTranslationKey();
 
-        BooleanEnableAction<?> enableAction = BooleanEnableAction.of(config, messageFactory, messageTypeSupplier);
-        BooleanDisableAction<?> disableAction = BooleanDisableAction.of(config, messageFactory, messageTypeSupplier);
+        BooleanEnableAction enableAction = BooleanEnableAction.of(config, messageFactory, messageTypeSupplier);
+        BooleanDisableAction disableAction = BooleanDisableAction.of(config, messageFactory, messageTypeSupplier);
         SimpleNamedAction namedToggleAction = SimpleNamedAction.of(modInfo, "toggle" + configName, toggleAction, commentKey);
         SimpleNamedAction namedEnableAction = SimpleNamedAction.of(modInfo, "enable" + configName, enableAction, commentKey);
         SimpleNamedAction namedDisableAction = SimpleNamedAction.of(modInfo, "disable" + configName, disableAction, commentKey);

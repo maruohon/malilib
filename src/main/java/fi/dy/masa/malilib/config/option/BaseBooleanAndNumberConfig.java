@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.option;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class BaseBooleanAndNumberConfig<T> extends BaseSliderConfig<T>
+public abstract class BaseBooleanAndNumberConfig<T> extends BaseSliderConfig<T> implements BooleanContainingConfig<T>
 {
     @Nullable protected Pair<String, String> labels;
     @Nullable protected Pair<String, String> hoverTexts;

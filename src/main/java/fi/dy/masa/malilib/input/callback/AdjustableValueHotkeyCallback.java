@@ -14,7 +14,7 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.Action;
 import fi.dy.masa.malilib.action.ActionContext;
-import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.BooleanContainingConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
@@ -33,7 +33,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
     protected static final List<AdjustableValueHotkeyCallback> ACTIVE_CALLBACKS = new ArrayList<>(2);
 
     protected final List<EventListener> adjustListeners = new ArrayList<>(2);
-    @Nullable protected final BooleanConfig toggleConfig;
+    @Nullable protected final BooleanContainingConfig<?> toggleConfig;
     @Nullable protected final IntConsumer valueAdjuster;
     @Nullable protected BooleanSupplier enabledCondition;
     @Nullable protected HotkeyCallback callback;
@@ -52,7 +52,8 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
      * The hotkey callback has priority over the boolean callback, if both are provided.
      * So it only makes sense to provide one. 
      */
-    public AdjustableValueHotkeyCallback(@Nullable BooleanConfig toggleConfig, @Nullable IntConsumer valueAdjuster)
+    public AdjustableValueHotkeyCallback(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                         @Nullable IntConsumer valueAdjuster)
     {
         this.toggleConfig = toggleConfig;
         this.valueAdjuster = valueAdjuster;
@@ -202,31 +203,36 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         return onScrollAdjust(1);
     }
 
-    public static AdjustableValueHotkeyCallback create(@Nullable BooleanConfig toggleConfig, OptionListConfig<?> config)
+    public static AdjustableValueHotkeyCallback create(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                       OptionListConfig<?> config)
     {
         IntConsumer adjuster = (v) -> config.cycleValue(v > 0);
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback create(@Nullable BooleanConfig toggleConfig, IntegerStorage intConfig)
+    public static AdjustableValueHotkeyCallback create(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                       IntegerStorage intConfig)
     {
         IntConsumer adjuster = (v) -> intConfig.setIntegerValue(intConfig.getIntegerValue() + v);
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback create(@Nullable BooleanConfig toggleConfig, IntegerStorage intConfig, int multiplier)
+    public static AdjustableValueHotkeyCallback create(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                       IntegerStorage intConfig, int multiplier)
     {
         IntConsumer adjuster = (v) -> intConfig.setIntegerValue(intConfig.getIntegerValue() + v * multiplier);
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback create(@Nullable BooleanConfig toggleConfig, IntegerStorage intConfig, IntSupplier multiplier)
+    public static AdjustableValueHotkeyCallback create(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                       IntegerStorage intConfig, IntSupplier multiplier)
     {
         IntConsumer adjuster = (v) -> intConfig.setIntegerValue(intConfig.getIntegerValue() + v * multiplier.getAsInt());
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback createWrapping(@Nullable BooleanConfig toggleConfig, IntegerStorage intConfig, int minValue, int maxValue)
+    public static AdjustableValueHotkeyCallback createWrapping(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                               IntegerStorage intConfig, int minValue, int maxValue)
     {
         IntConsumer adjuster = (v) -> {
             int currentValue = intConfig.getIntegerValue();
@@ -238,18 +244,21 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback createClamped(@Nullable BooleanConfig toggleConfig, RangedIntegerStorage intConfig)
+    public static AdjustableValueHotkeyCallback createClamped(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                              RangedIntegerStorage intConfig)
     {
         return createClamped(toggleConfig, intConfig, intConfig.getMinIntegerValue(), intConfig.getMaxIntegerValue());
     }
 
-    public static AdjustableValueHotkeyCallback createClamped(@Nullable BooleanConfig toggleConfig, IntegerStorage intConfig, int minValue, int maxValue)
+    public static AdjustableValueHotkeyCallback createClamped(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                              IntegerStorage intConfig, int minValue, int maxValue)
     {
         IntConsumer adjuster = (v) -> intConfig.setIntegerValue(MathHelper.clamp(intConfig.getIntegerValue() + v, minValue, maxValue));
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback createBitShifter(@Nullable BooleanConfig toggleConfig, IntegerStorage intConfig)
+    public static AdjustableValueHotkeyCallback createBitShifter(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                                 IntegerStorage intConfig)
     {
         IntBinaryOperator op = (value, amount) -> {
             if (value == 0) return amount > 0 ? 1 : -1;
@@ -261,51 +270,62 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback createScaled(@Nullable BooleanConfig toggleConfig, IntegerStorage intConfig, int intervalMs, int multiplier)
+    public static AdjustableValueHotkeyCallback createScaled(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                             IntegerStorage intConfig, int intervalMs, int multiplier)
     {
         TimeIntervalValueScaler scaler = new TimeIntervalValueScaler(intervalMs, multiplier);
         IntConsumer adjuster = (v) -> intConfig.setIntegerValue(intConfig.getIntegerValue() + scaler.getScaledValue(v));
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback create(@Nullable BooleanConfig toggleConfig, DoubleStorage doubleConfig)
+    public static AdjustableValueHotkeyCallback create(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                       DoubleStorage doubleConfig)
     {
         IntConsumer adjuster = (v) -> doubleConfig.setDoubleValue(doubleConfig.getDoubleValue() + v);
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback create(@Nullable BooleanConfig toggleConfig, DoubleStorage doubleConfig, double multiplier)
+    public static AdjustableValueHotkeyCallback create(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                       DoubleStorage doubleConfig, double multiplier)
     {
         IntConsumer adjuster = (v) -> doubleConfig.setDoubleValue(doubleConfig.getDoubleValue() + (double) v * multiplier);
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback create(@Nullable BooleanConfig toggleConfig, DoubleStorage doubleConfig, DoubleSupplier multiplier)
+    public static AdjustableValueHotkeyCallback create(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                       DoubleStorage doubleConfig, DoubleSupplier multiplier)
     {
         IntConsumer adjuster = (v) -> doubleConfig.setDoubleValue(doubleConfig.getDoubleValue() + (double) v * multiplier.getAsDouble());
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback createScaled(@Nullable BooleanConfig toggleConfig, DoubleStorage doubleConfig, int intervalMs, int multiplier)
+    public static AdjustableValueHotkeyCallback createScaled(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                             DoubleStorage doubleConfig, int intervalMs, int multiplier)
     {
         TimeIntervalValueScaler scaler = new TimeIntervalValueScaler(intervalMs, multiplier);
         IntConsumer adjuster = (v) -> doubleConfig.setDoubleValue(doubleConfig.getDoubleValue() + scaler.getScaledValue(v));
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback createClamped(@Nullable BooleanConfig toggleConfig, RangedDoubleStorage doubleConfig, DoubleSupplier multiplier)
+    public static AdjustableValueHotkeyCallback createClamped(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                              RangedDoubleStorage doubleConfig, DoubleSupplier multiplier)
     {
         return createClamped(toggleConfig, doubleConfig, doubleConfig.getMinDoubleValue(), doubleConfig.getMaxDoubleValue(), multiplier);
     }
 
-    public static AdjustableValueHotkeyCallback createClamped(@Nullable BooleanConfig toggleConfig, DoubleStorage doubleConfig, double minValue, double maxValue, DoubleSupplier multiplier)
+    public static AdjustableValueHotkeyCallback createClamped(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                              DoubleStorage doubleConfig,
+                                                              double minValue, double maxValue, DoubleSupplier multiplier)
     {
         IntConsumer adjuster = (v) -> doubleConfig.setDoubleValue(MathHelper.clamp(doubleConfig.getDoubleValue() +
                                                                                    (double) v * multiplier.getAsDouble(), minValue, maxValue));
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback createClampedDoubleDelegate(@Nullable BooleanConfig toggleConfig, Supplier<DoubleStorage> doubleDelegate, double minValue, double maxValue, DoubleSupplier multiplier)
+    public static AdjustableValueHotkeyCallback createClampedDoubleDelegate(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                                            Supplier<DoubleStorage> doubleDelegate,
+                                                                            double minValue, double maxValue,
+                                                                            DoubleSupplier multiplier)
     {
         IntConsumer adjuster = (v) -> {
             DoubleStorage doubleConfig = doubleDelegate.get();
@@ -314,7 +334,10 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
-    public static AdjustableValueHotkeyCallback createClampedDoubleDelegate(@Nullable BooleanConfig toggleConfig, Supplier<DoubleStorage> doubleDelegate, double minValue, double maxValue, Function<Integer, Double> multiplier)
+    public static AdjustableValueHotkeyCallback createClampedDoubleDelegate(@Nullable BooleanContainingConfig<?> toggleConfig,
+                                                                            Supplier<DoubleStorage> doubleDelegate,
+                                                                            double minValue, double maxValue,
+                                                                            Function<Integer, Double> multiplier)
     {
         IntConsumer adjuster = (v) -> {
             DoubleStorage doubleConfig = doubleDelegate.get();
