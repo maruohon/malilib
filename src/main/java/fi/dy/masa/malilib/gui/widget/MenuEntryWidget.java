@@ -37,24 +37,28 @@ public class MenuEntryWidget extends InteractableWidget
         this.getTextSettings().setTextColor(color);
     }
 
-    public void setMenuCloseHook(@Nullable EventListener menuCloseHook)
-    {
-        this.menuCloseHook = menuCloseHook;
-    }
-
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.isEnabled())
         {
             this.action.onEvent();
-
-            if (this.menuCloseHook != null)
-            {
-                this.menuCloseHook.onEvent();
-            }
+            this.tryCloseMenu();
         }
 
         return true;
+    }
+
+    public void setMenuCloseHook(@Nullable EventListener menuCloseHook)
+    {
+        this.menuCloseHook = menuCloseHook;
+    }
+
+    public void tryCloseMenu()
+    {
+        if (this.menuCloseHook != null)
+        {
+            this.scheduleTask(this.menuCloseHook::onEvent);
+        }
     }
 }

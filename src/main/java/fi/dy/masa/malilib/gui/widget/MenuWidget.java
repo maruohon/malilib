@@ -75,15 +75,19 @@ public class MenuWidget extends ContainerWidget
         this.menuEntries.clear();
         this.menuEntries.addAll(menuEntries);
 
-        for (MenuEntryWidget widget : this.menuEntries)
-        {
-            widget.setMenuCloseHook(this.menuCloseHook);
-        }
-
+        this.setCloseHookToEntries();
         this.updateSize();
         this.clampToScreen();
         this.updateSubWidgetPositions();
         this.reAddSubWidgets();
+    }
+
+    protected void setCloseHookToEntries()
+    {
+        for (MenuEntryWidget widget : this.menuEntries)
+        {
+            widget.setMenuCloseHook(this.menuCloseHook);
+        }
     }
 
     public MenuWidget setRenderEntryBackground(boolean renderEntryBackground)
@@ -107,14 +111,7 @@ public class MenuWidget extends ContainerWidget
     public void setMenuCloseHook(@Nullable EventListener menuCloseHook)
     {
         this.menuCloseHook = menuCloseHook;
-    }
-
-    public void tryCloseMenu()
-    {
-        if (this.menuCloseHook != null)
-        {
-            this.scheduleTask(this.menuCloseHook::onEvent);
-        }
+        this.setCloseHookToEntries();
     }
 
     @Override
@@ -137,6 +134,7 @@ public class MenuWidget extends ContainerWidget
         this.setSizeNoUpdate(width, height);
     }
 
+    /* This won't do anything, since the entry widgets are consuming the click
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
@@ -144,4 +142,13 @@ public class MenuWidget extends ContainerWidget
         this.tryCloseMenu();
         return true;
     }
+
+    public void tryCloseMenu()
+    {
+        if (this.menuCloseHook != null)
+        {
+            this.scheduleTask(this.menuCloseHook::onEvent);
+        }
+    }
+    */
 }
