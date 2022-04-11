@@ -39,7 +39,6 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public void init(File configPath)
     {
-        Registry.INITIALIZATION_DISPATCHER.registerInitializationHandler(new MaLiLibInitHandler());
     }
 
     @Override

@@ -117,7 +117,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig GUI_DEBUG                 = new BooleanConfig("guiDebug", false);
         public static final BooleanConfig GUI_DEBUG_ALL             = new BooleanConfig("guiDebugAll", true);
         public static final BooleanConfig GUI_DEBUG_INFO_ALWAYS     = new BooleanConfig("guiDebugInfoAlways", false);
-        public static final HotkeyConfig  GUI_DEBUG_KEY             = new HotkeyConfig("guiDebugKey", "LMENU", KeyBindSettings.GUI_MODIFIER);
+        public static final HotkeyConfig  GUI_DEBUG_KEY             = new HotkeyConfig( "guiDebugKey", "L_ALT", KeyBindSettings.GUI_MODIFIER);
         public static final BooleanConfig INFO_OVERLAY_DEBUG        = new BooleanConfig("infoOverlayDebug", false);
         public static final BooleanConfig KEYBIND_DEBUG             = new BooleanConfig("keybindDebug", false);
         public static final BooleanConfig KEYBIND_DEBUG_ACTIONBAR   = new BooleanConfig("keybindDebugActionBar", false);

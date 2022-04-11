@@ -28,6 +28,7 @@ public class ConfigManagerImpl implements ConfigManager
             return;
         }
 
+        MaLiLib.debugLog("Registering config handler for mod {}, containing {} categories", modInfo.getModId(), handler.getConfigOptionCategories().size());
         handler.getConfigOptionCategories().forEach((category) -> category.getConfigOptions().forEach((config) -> config.setModInfo(modInfo)));
 
         this.configHandlers.put(modInfo, handler);
