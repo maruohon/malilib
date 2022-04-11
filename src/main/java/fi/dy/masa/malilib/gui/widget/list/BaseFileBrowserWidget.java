@@ -65,6 +65,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected boolean shouldStoreKeyboardNavigationPosition = true;
     protected boolean showFileSize;
     protected boolean showFileModificationTime;
+    protected boolean showHiddenFiles;
 
     public BaseFileBrowserWidget(File defaultDirectory,
                                  File rootDirectory,
@@ -88,6 +89,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.currentDirectory = cache != null ? cache.getCurrentDirectoryForContext(this.browserContext) : null;
         this.allowKeyboardNavigation = true;
         this.rememberScrollPosition = MaLiLibConfigs.Generic.REMEMBER_FILE_BROWSER_SCROLL_POSITIONS.getBooleanValue();
+        this.showHiddenFiles = MaLiLibConfigs.Generic.FILE_BROWSER_SHOW_HIDDEN_FILES.getBooleanValue();
         this.entryWidgetFixedHeight = 14;
         this.scrollPositions.defaultReturnValue(0);
 
@@ -176,6 +178,13 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.showFileModificationTime = showFileModificationTime;
         this.hasDataColumns = this.showFileSize || this.showFileModificationTime;
         this.updateActiveColumnsAndRefresh();
+    }
+
+    public void toggleShowHiddenFiles()
+    {
+        this.showHiddenFiles = ! this.showHiddenFiles;
+        this.directoryContentsCache.clear();
+        this.refreshEntries();
     }
 
     public void toggleShowFileSize()
@@ -334,10 +343,21 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         return false;
     }
 
-    protected List<File> getContents(final File dir, final FileFilter filter)
+    protected List<File> getContents(final File dir, FileFilter filter)
     {
-        Pair<File, FileFilter> cacheKey = Pair.of(dir, filter);
-        return this.directoryContentsCache.computeIfAbsent(cacheKey, (k) -> Arrays.asList(dir.listFiles(filter)));
+        final FileFilter finalFilter = this.getFileFilterObeyingHiddenFiles(filter);
+        Pair<File, FileFilter> cacheKey = Pair.of(dir, finalFilter); // FIXME this won't work now...
+        return this.directoryContentsCache.computeIfAbsent(cacheKey, (k) -> Arrays.asList(dir.listFiles(finalFilter)));
+    }
+
+    protected FileFilter getFileFilterObeyingHiddenFiles(FileFilter original)
+    {
+        if (this.showHiddenFiles == false)
+        {
+            return f -> f.getName().startsWith(".") == false && original.accept(f);
+        }
+
+        return original;
     }
 
     protected File getRootDirectory()
@@ -424,7 +444,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected void openSettingsContextMenu(int mouseX, int mouseY)
     {
         MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
-        menuWidget.setMenuEntries(this.getColumnToggleMenuEntries());
+        menuWidget.setMenuEntries(this.getSettingsMenuEntries());
         menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
         this.openContextMenu(menuWidget);
     }
@@ -449,7 +469,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         List<MenuEntryWidget> entries = new ArrayList<>(listIndex >= 0 ?
                                                         this.getFileOperationMenuEntriesForFile() :
                                                         this.getFileOperationMenuEntriesForNonFile());
-        entries.addAll(this.getColumnToggleMenuEntries());
+        entries.addAll(this.getSettingsMenuEntries());
 
         MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
         menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
@@ -481,15 +501,18 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                 new MenuEntryWidget(textRename, this::renameFiles));
     }
 
-    protected List<MenuEntryWidget> getColumnToggleMenuEntries()
+    protected List<MenuEntryWidget> getSettingsMenuEntries()
     {
-        String sizeKey = this.showFileSize ? "malilib.label.file_browser.hide_file_size" : "malilib.label.file_browser.show_file_size";
-        String mTimeKey = this.showFileModificationTime ? "malilib.label.file_browser.hide_file_mtime" : "malilib.label.file_browser.show_file_mtime";
+        String sizeKey = this.showFileSize ? "malilib.label.file_browser.context_menu.hide_file_size" : "malilib.label.file_browser.context_menu.show_file_size";
+        String mTimeKey = this.showFileModificationTime ? "malilib.label.file_browser.context_menu.hide_file_mtime" : "malilib.label.file_browser.context_menu.show_file_mtime";
+        String hiddenKey = this.showHiddenFiles ? "malilib.label.file_browser.context_menu.dont_show_hidden_files" : "malilib.label.file_browser.context_menu.show_hidden_files";
         StyledTextLine textShowSize = StyledTextLine.translate(sizeKey);
         StyledTextLine textShowDate = StyledTextLine.translate(mTimeKey);
+        StyledTextLine textShowHidden = StyledTextLine.translate(hiddenKey);
 
         return ImmutableList.of(new MenuEntryWidget(textShowSize, this::toggleShowFileSize),
-                                new MenuEntryWidget(textShowDate, this::toggleShowModificationTime));
+                                new MenuEntryWidget(textShowDate, this::toggleShowModificationTime),
+                                new MenuEntryWidget(textShowHidden, this::toggleShowHiddenFiles));
     }
 
     protected void copyFiles()
