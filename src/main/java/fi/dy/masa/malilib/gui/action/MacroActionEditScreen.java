@@ -214,7 +214,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
     {
         String title = "malilib.title.screen.macro_edit.export_import";
         MacroAction macro = new MacroAction(this.macro.getName(), ImmutableList.copyOf(this.macroActionsList));
-        String settingsStr = JsonUtils.jsonToString(macro.toJson(), false);
+        String settingsStr = JsonUtils.jsonToString(macro.toJson(), true);
         SettingsExportImportScreen screen = new SettingsExportImportScreen(title, settingsStr, this::importOverwrite);
         screen.setAppendStringConsumer(this::importAppend);
         screen.setRadioWidgetHoverText("malilib.hover.macro_action_export_import_screen.append_overwrite");

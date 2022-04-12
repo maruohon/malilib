@@ -112,7 +112,7 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
     {
         String title = "malilib.title.screen.custom_hotkey_edit.export_import";
         this.hotkey.setActionList(ImmutableList.copyOf(this.currentActionsList));
-        String settingsStr = JsonUtils.jsonToString(this.hotkey.toJson(), false);
+        String settingsStr = JsonUtils.jsonToString(this.hotkey.toJson(), true);
         SettingsExportImportScreen screen = new SettingsExportImportScreen(title, settingsStr, this::importOverwrite);
         screen.setAppendStringConsumer(this::importAppend);
         screen.setRadioWidgetHoverText("malilib.hover.custom_hotkey_export_import_screen.append_overwrite");
