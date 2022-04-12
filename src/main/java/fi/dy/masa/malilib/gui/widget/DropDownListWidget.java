@@ -143,7 +143,14 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
         else
         {
-            this.searchTextField.setBottom(this.getY());
+            int y = this.getY() - this.searchTextField.getHeight();
+
+            if (y < 0)
+            {
+                y = this.getDropDownY() + this.dropdownHeight;
+            }
+
+            this.searchTextField.setY(y);
         }
     }
 
@@ -749,10 +756,17 @@ public class DropDownListWidget<T> extends ContainerWidget
             int sw = this.searchTipText.renderWidth + 10;
             int right = tx + sw;
             int windowWidth = GuiUtils.getScaledWindowWidth();
+            int searchRight = this.searchTextField.getRight();
 
             if (right > windowWidth)
             {
-                tx -= (right - windowWidth);
+                tx = (searchRight - sw);
+            }
+
+            if (ty < 0)
+            {
+                ty = Math.max(this.getY() + this.lineHeight, this.getDropDownY() + this.dropdownHeight);
+                ty = Math.max(ty, this.searchTextField.getBottom());
             }
 
             ShapeRenderUtils.renderOutlinedRectangle(tx, ty, z, sw, 16, 0xFF000000, 0xFFFFFF20);
