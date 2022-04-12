@@ -680,7 +680,14 @@ public class JsonUtils
                 MaLiLib.LOGGER.warn("Failed to delete file '{}'", file.getAbsolutePath());
             }
 
-            return fileTmp.renameTo(file);
+            if (fileTmp.renameTo(file) == false)
+            {
+                MaLiLib.LOGGER.warn("Failed to rename file '{}' to '{}'",
+                                    fileTmp.getAbsolutePath(), file.getAbsolutePath());
+                return false;
+            }
+
+            return true;
         }
         catch (Exception e)
         {
