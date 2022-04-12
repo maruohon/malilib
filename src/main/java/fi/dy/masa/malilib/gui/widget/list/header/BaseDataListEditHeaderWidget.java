@@ -70,7 +70,7 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
     protected void insertEntry()
     {
         this.dataList.add(0, this.getNewDataEntry());
-        this.listWidget.reCreateListEntryWidgets();
+        this.listWidget.refreshEntries();
         this.listWidget.focusWidget(0);
     }
 }

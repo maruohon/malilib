@@ -62,6 +62,13 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
              screenTitle);
     }
 
+    @Override
+    public void updateWidgetState()
+    {
+        this.valueStrings = this.config.getValuesAsString();
+        super.updateWidgetState();
+    }
+
     protected BaseScreen createScreen(@Nullable GuiScreen currentScreen)
     {
         return new BaseValueListEditScreen<>(this.screenTitle, this.config, this.saveListener,

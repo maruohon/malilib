@@ -55,6 +55,6 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
     public void updateWidgetState()
     {
         super.updateWidgetState();
-        this.button.updateButtonState();
+        this.button.updateWidgetState();
     }
 }

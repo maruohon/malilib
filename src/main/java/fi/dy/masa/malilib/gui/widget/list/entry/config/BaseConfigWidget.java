@@ -108,7 +108,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     @Override
     public void updateWidgetState()
     {
-        this.resetButton.updateButtonState();
+        this.resetButton.updateWidgetState();
     }
 
     protected boolean isResetEnabled()
