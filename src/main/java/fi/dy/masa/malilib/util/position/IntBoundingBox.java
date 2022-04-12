@@ -124,6 +124,12 @@ public class IntBoundingBox
         return createProper(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
     }
 
+    public static IntBoundingBox createProper(Vec3i pos1, Vec3i pos2)
+    {
+        return createProper(pos1.getX(), pos1.getY(), pos1.getZ(),
+                            pos2.getX(), pos2.getY(), pos2.getZ());
+    }
+
     public static IntBoundingBox createProper(int x1, int y1, int z1, int x2, int y2, int z2)
     {
         return new IntBoundingBox(

@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.util.nbt;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -19,6 +20,94 @@ import fi.dy.masa.malilib.util.data.Constants;
 
 public class NbtUtils
 {
+    public static boolean hasByte(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_BYTE);
+    }
+
+    public static boolean hasShort(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_SHORT);
+    }
+
+    public static boolean hasInt(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_INT);
+    }
+
+    public static boolean hasLong(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_LONG);
+    }
+
+    public static boolean hasFloat(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_FLOAT);
+    }
+
+    public static boolean hasDouble(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_DOUBLE);
+    }
+
+    public static boolean hasString(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_STRING);
+    }
+
+    public static boolean hasCompound(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_COMPOUND);
+    }
+
+    public static boolean hasList(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_LIST);
+    }
+
+    public static boolean hasByteArray(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_BYTE_ARRAY);
+    }
+
+    public static boolean hasIntArray(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_INT_ARRAY);
+    }
+
+    public static boolean hasLongArray(NBTTagCompound tag, String name)
+    {
+        return tag.hasKey(name, Constants.NBT.TAG_LONG_ARRAY);
+    }
+
+    @Nullable
+    public static UUID readUUID(NBTTagCompound tag)
+    {
+        return readUUID(tag, "UUIDM", "UUIDL");
+    }
+
+    @Nullable
+    public static UUID readUUID(NBTTagCompound tag, String keyM, String keyL)
+    {
+        if (hasLong(tag, keyM) && hasLong(tag, keyL))
+        {
+            return new UUID(tag.getLong(keyM), tag.getLong(keyL));
+        }
+
+        return null;
+    }
+
+    public static void writeUUID(NBTTagCompound tag, UUID uuid)
+    {
+        writeUUID(tag, uuid, "UUIDM", "UUIDL");
+    }
+
+    public static void writeUUID(NBTTagCompound tag, UUID uuid, String keyM, String keyL)
+    {
+        tag.setLong(keyM, uuid.getMostSignificantBits());
+        tag.setLong(keyL, uuid.getLeastSignificantBits());
+    }
+
     public static NBTTagCompound getOrCreateCompound(NBTTagCompound tagIn, String tagName)
     {
         NBTTagCompound nbt;
