@@ -5,8 +5,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.util.ConfigOverrideUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
@@ -46,7 +46,7 @@ public class ConfigOverridePacketHandler extends BasePacketHandler
         }
         catch (Exception ignore) {}
 
-        MaLiLib.LOGGER.warn("Invalid config override packet received");
+        MessageDispatcher.error().console().translate("malilib.message.error.invalid_config_override_packet");
     }
 
     public static void updateRegistration(boolean enabled)
