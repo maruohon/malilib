@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.config;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ConfigManagerImpl implements ConfigManager
 {
-    protected final Map<ModInfo, ModConfig> configHandlers = new HashMap<>();
+    protected final Map<ModInfo, ModConfig> configHandlers = new LinkedHashMap<>();
 
     public ConfigManagerImpl()
     {
@@ -73,6 +73,7 @@ public class ConfigManagerImpl implements ConfigManager
     {
         for (ModConfig handler : this.configHandlers.values())
         {
+            MaLiLib.debugLog("Loading configs for mod {}", handler.getModInfo().getModId());
             handler.loadFromFile();
         }
     }
