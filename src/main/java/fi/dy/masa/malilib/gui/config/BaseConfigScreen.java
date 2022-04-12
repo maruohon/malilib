@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
@@ -13,7 +12,6 @@ import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
@@ -24,10 +22,8 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements ConfigScreen, KeybindEditingScreen
 {
     protected final ModInfo modInfo;
-    protected final DropDownListWidget<ModInfo> modSwitcherDropdown;
     @Nullable protected EventListener configSaveListener;
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
-    protected boolean addModSwitcherDropdown = true;
     protected int configElementsWidth = 120;
 
     public BaseConfigScreen(ModInfo modInfo, @Nullable GuiScreen parent,
@@ -39,10 +35,8 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
         this.modInfo = modInfo;
         this.shouldRestoreScrollbarPosition = MaLiLibConfigs.Generic.REMEMBER_CONFIG_TAB_SCROLL_POSITIONS.getBooleanValue();
-        this.modSwitcherDropdown = new DropDownListWidget<>(16, 10, Registry.CONFIG_SCREEN.getAllModsWithConfigScreens(), ModInfo::getModName);
-        this.modSwitcherDropdown.setSelectedEntry(modInfo);
-        this.modSwitcherDropdown.setSelectionListener(this::switchConfigScreenToMod);
 
+        this.createSwitchModConfigScreenDropDown(modInfo);
         this.setTitle(titleKey, args);
         this.setParent(parent);
     }
@@ -56,27 +50,6 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         }
 
         super.onScreenClosed();
-    }
-
-    @Override
-    protected void reAddActiveWidgets()
-    {
-        super.reAddActiveWidgets();
-
-        if (this.addModSwitcherDropdown)
-        {
-            this.addWidget(this.modSwitcherDropdown);
-        }
-    }
-
-    @Override
-    protected void updateWidgetPositions()
-    {
-        super.updateWidgetPositions();
-
-        int x = this.x + this.screenWidth - 16;
-        this.modSwitcherDropdown.setRight(x);
-        this.modSwitcherDropdown.setY(this.y + 2);
     }
 
     @Override
@@ -147,24 +120,6 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     {
         this.configElementsWidth = configElementsWidth;
         return this;
-    }
-
-    protected void switchConfigScreenToMod(@Nullable ModInfo modInfo)
-    {
-        if (modInfo != null)
-        {
-            Supplier<BaseScreen> factory = Registry.CONFIG_SCREEN.getConfigScreenFactoryFor(modInfo);
-
-            if (factory != null)
-            {
-                BaseScreen screen = factory.get();
-
-                if (screen != null)
-                {
-                    openScreen(screen);
-                }
-            }
-        }
     }
 
     @Override

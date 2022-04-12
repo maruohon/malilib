@@ -52,6 +52,8 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 
         // Unconditionally save here, since we don't track the individual info container widget changes
         this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
+
+        this.createSwitchModConfigScreenDropDown(MaLiLibReference.MOD_INFO);
     }
 
     @Override

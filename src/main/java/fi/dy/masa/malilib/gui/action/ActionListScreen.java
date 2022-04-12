@@ -45,6 +45,8 @@ public class ActionListScreen extends BaseActionListScreen
         this.executeActionButton.setEnabledStatusSupplier(this::canExecuteAction);
 
         this.rightSideListWidget = this.createRightSideActionListWidget();
+
+        this.createSwitchModConfigScreenDropDown(MaLiLibReference.MOD_INFO);
     }
 
     @Override

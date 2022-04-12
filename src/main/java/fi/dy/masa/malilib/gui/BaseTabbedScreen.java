@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.tab.TabbedScreenState;
 import fi.dy.masa.malilib.gui.widget.CyclableContainerWidget;
+import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.registry.Registry;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public abstract class BaseTabbedScreen extends BaseScreen
 {
@@ -20,6 +24,7 @@ public abstract class BaseTabbedScreen extends BaseScreen
     protected final List<GenericButton> tabButtons = new ArrayList<>();
     protected final String screenId;
     @Nullable protected final ScreenTab defaultTab;
+    @Nullable protected DropDownListWidget<ModInfo> modConfigScreenSwitcherDropdown;
     @Nullable protected CyclableContainerWidget tabButtonContainerWidget;
     protected boolean shouldCreateTabButtons;
     protected boolean shouldRestoreScrollbarPosition;
@@ -70,6 +75,17 @@ public abstract class BaseTabbedScreen extends BaseScreen
     }
 
     @Override
+    protected void reAddActiveWidgets()
+    {
+        super.reAddActiveWidgets();
+
+        if (this.modConfigScreenSwitcherDropdown != null)
+        {
+            this.addWidget(this.modConfigScreenSwitcherDropdown);
+        }
+    }
+
+    @Override
     protected void updateWidgetPositions()
     {
         super.updateWidgetPositions();
@@ -80,6 +96,12 @@ public abstract class BaseTabbedScreen extends BaseScreen
         if (this.tabButtonContainerWidget != null)
         {
             this.tabButtonContainerWidget.setPosition(x, y);
+        }
+
+        if (this.modConfigScreenSwitcherDropdown != null)
+        {
+            this.modConfigScreenSwitcherDropdown.setRight(this.getRight() - 16);
+            this.modConfigScreenSwitcherDropdown.setY(this.y + 2);
         }
     }
 
@@ -145,6 +167,31 @@ public abstract class BaseTabbedScreen extends BaseScreen
 
     protected void setCurrentScrollbarPosition(int position)
     {
+    }
+
+    protected void createSwitchModConfigScreenDropDown(ModInfo modInfo)
+    {
+        this.modConfigScreenSwitcherDropdown = new DropDownListWidget<>(16, 10, Registry.CONFIG_SCREEN.getAllModsWithConfigScreens(), ModInfo::getModName);
+        this.modConfigScreenSwitcherDropdown.setSelectedEntry(modInfo);
+        this.modConfigScreenSwitcherDropdown.setSelectionListener(this::switchConfigScreenToMod);
+    }
+
+    protected void switchConfigScreenToMod(@Nullable ModInfo modInfo)
+    {
+        if (modInfo != null)
+        {
+            Supplier<BaseScreen> factory = Registry.CONFIG_SCREEN.getConfigScreenFactoryFor(modInfo);
+
+            if (factory != null)
+            {
+                BaseScreen screen = factory.get();
+
+                if (screen != null)
+                {
+                    openScreen(screen);
+                }
+            }
+        }
     }
 
     protected boolean shouldRestoreScrollBarPosition()
