@@ -348,6 +348,7 @@ public class FileUtils
             try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))
             {
                 writer.write(str);
+                writer.close();
                 return true;
             }
             catch (Exception e)

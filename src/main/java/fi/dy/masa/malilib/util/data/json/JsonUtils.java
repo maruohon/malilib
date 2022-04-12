@@ -670,9 +670,10 @@ public class JsonUtils
             fileTmp = new File(file.getParentFile(), UUID.randomUUID() + ".tmp");
         }
 
-        try (OutputStreamWriter writer  = new OutputStreamWriter(new FileOutputStream(fileTmp), StandardCharsets.UTF_8))
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileTmp), StandardCharsets.UTF_8))
         {
             writer.write(gson.toJson(root));
+            writer.close();
 
             if (file.exists() && file.isFile() && file.delete() == false)
             {
