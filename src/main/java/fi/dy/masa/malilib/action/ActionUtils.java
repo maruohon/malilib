@@ -12,7 +12,6 @@ import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.BooleanContainingConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
-import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
@@ -24,16 +23,6 @@ import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class ActionUtils
 {
-    public static ActionResult runVanillaCommand(ActionContext ctx, String arg)
-    {
-        if (ctx.getPlayer() != null)
-        {
-            ctx.getPlayer().sendChatMessage(arg);
-            return ActionResult.SUCCESS;
-        }
-        return ActionResult.FAIL;
-    }
-
     public static void registerBooleanConfigActions(List<? extends ConfigInfo> list)
     {
         for (ConfigInfo cfg : list)

@@ -4,6 +4,7 @@ import fi.dy.masa.malilib.action.Action;
 import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.action.ParameterizedAction;
+import fi.dy.masa.malilib.action.UtilityActions;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.action.ActionPromptScreen;
 import fi.dy.masa.malilib.gui.action.ActionWidgetScreen;
@@ -30,8 +31,19 @@ public class MaLiLibActions
         register("openCustomIconsListScreen", CustomIconListScreen::openCustomIconListScreenAction);
         register("openMessageRedirectsListScreen", MessageRedirectListScreen::openMessageRedirectListScreenAction);
         register("openPreviousActionWidgetScreen", ActionWidgetScreen::openPreviousActionWidgetScreen);
-        register("runCommand", ActionUtils::runVanillaCommand);
         register("switchConfigProfile", ConfigUtils::switchConfigProfile);
+
+        register("cycleGameMode", UtilityActions::cycleGameMode);
+        register("dropHeldStack", UtilityActions::dropHeldStack);
+        register("runCommand", UtilityActions::runVanillaCommand);
+        register("setPlayerPitch", UtilityActions::setPlayerPitch);
+        register("setPlayerYaw", UtilityActions::setPlayerYaw);
+        register("setSelectedHotbarSlot", UtilityActions::setSelectedHotbarSlot);
+        register("takeScreenshot", UtilityActions::takeScreenshot);
+        register("toggleChunkBorders", UtilityActions::toggleChunkBorders);
+        register("toggleF3Screen", UtilityActions::toggleF3Screen);
+        register("toggleF3ScreenLagometer", UtilityActions::toggleF3ScreenLagometer);
+        register("toggleF3ScreenProfilerPieChart", UtilityActions::toggleF3ScreenProfilerPieChart);
 
         ActionUtils.registerBooleanConfigActions(MaLiLibConfigs.Generic.OPTIONS);
         ActionUtils.registerBooleanConfigActions(MaLiLibConfigs.Debug.OPTIONS);
