@@ -69,12 +69,17 @@ public class KeyBindConfigButton extends GenericButton
 
         if (this.isSelected())
         {
-            if (mouseButton != 0 || this.isMouseOver(mouseX, mouseY))
+            if (this.isMouseOver(mouseX, mouseY))
             {
                 this.addKey(mouseButton - 100);
                 this.updateButtonState();
-                handled = true;
             }
+            else if (this.host != null)
+            {
+                this.host.setActiveKeyBindButton(null);
+            }
+
+            handled = true;
         }
         else if (mouseButton == 0 && this.isMouseOver(mouseX, mouseY))
         {
