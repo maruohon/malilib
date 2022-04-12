@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.FileNameUtils;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -32,7 +33,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
         this.confirmButton = GenericButton.create(16, this.getButtonLabel());
         this.confirmButton.setActionListener(this::onConfirm);
 
-        this.fileNameTextField = new BaseTextFieldWidget(300, 16);
+        this.fileNameTextField = new BaseTextFieldWidget(240, 16);
 
         this.setTitle("malilib.title.screen.file_browser");
     }
@@ -56,18 +57,16 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
         super.updateWidgetPositions();
 
         int x = this.getListX();
+        int listBottom = this.getListWidget().getBottom() + 4;
 
         if (this.allowCreatingFiles)
         {
-            int y = 40;
-            this.setListPosition(this.getListX(), y);
-            this.fileNameTextField.setPosition(x, y - 20);
-            this.fileNameTextField.setFocused(true);
-            this.confirmButton.setPosition(this.fileNameTextField.getRight() + 4, y - 20);
+            this.fileNameTextField.setPosition(x, listBottom);
+            this.confirmButton.setPosition(this.fileNameTextField.getRight() + 4, listBottom);
         }
         else
         {
-            this.confirmButton.setPosition(x, this.y + this.screenHeight - 26);
+            this.confirmButton.setPosition(x, listBottom);
         }
     }
 
@@ -110,6 +109,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 
             if (org.apache.commons.lang3.StringUtils.isBlank(name))
             {
+                MessageDispatcher.error("malilib.message.error.no_file_name_given");
                 return;
             }
 
@@ -131,6 +131,10 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
             {
                 BaseScreen.openScreen(this.getParent());
             }
+        }
+        else
+        {
+            MessageDispatcher.error("malilib.message.error.no_file_selected");
         }
     }
 
