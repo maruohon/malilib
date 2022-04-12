@@ -13,15 +13,22 @@ public class Glyph
     public final int height;
     public final int renderWidth;
     public final boolean whiteSpace;
+    public final char c;
 
-    public Glyph(ResourceLocation texture, float u1, float v1, float u2, float v2,
-                 int width, int height, boolean whiteSpace)
+    public Glyph(ResourceLocation texture,
+                 float u1, float v1,
+                 float u2, float v2,
+                 int width, int height,
+                 boolean whiteSpace, char c)
     {
-        this(texture, u1, v1, u2, v2, width, height, width, whiteSpace);
+        this(texture, u1, v1, u2, v2, width, height, width, whiteSpace, c);
     }
 
-    public Glyph(ResourceLocation texture, float u1, float v1, float u2, float v2,
-                 int width, int height, int renderWidth, boolean whiteSpace)
+    public Glyph(ResourceLocation texture,
+                 float u1, float v1,
+                 float u2, float v2,
+                 int width, int height,
+                 int renderWidth, boolean whiteSpace, char c)
     {
         this.texture = texture;
         this.u1 = u1;
@@ -32,6 +39,7 @@ public class Glyph
         this.height = height;
         this.renderWidth = renderWidth;
         this.whiteSpace = whiteSpace;
+        this.c = c;
     }
 
     @Override
@@ -39,7 +47,8 @@ public class Glyph
     {
         StringBuilder sb = new StringBuilder("Glyph{");
 
-        sb.append("texture=").append(this.texture);
+        sb.append("c=").append(this.c);
+        sb.append(",texture=").append(this.texture);
         sb.append(", u1=").append(this.u1);
         sb.append(", u2=").append(this.u2);
         sb.append(", v1=").append(this.v1);

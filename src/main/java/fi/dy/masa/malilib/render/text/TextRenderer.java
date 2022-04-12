@@ -34,7 +34,7 @@ public class TextRenderer implements IResourceManagerReloadListener
     public static final String VANILLA_COLOR_CODES = "0123456789abcdef";
     public static final ResourceLocation ASCII_TEXTURE = new ResourceLocation("textures/font/ascii.png");
 
-    protected static final Glyph EMPTY_GLYPH = new Glyph(ASCII_TEXTURE, 0, 0, 0, 0, 4, 8, 4, true);
+    protected static final Glyph EMPTY_GLYPH = new Glyph(ASCII_TEXTURE, 0, 0, 0, 0, 4, 8, 4, true, ' ');
     protected static final ResourceLocation[] UNICODE_PAGE_LOCATIONS = new ResourceLocation[256];
 
     // This needs to be below the other static fields, because the resource manager reload will access the  other fields!
@@ -235,14 +235,19 @@ public class TextRenderer implements IResourceManagerReloadListener
             return EMPTY_GLYPH;
         }
 
+        boolean whiteSpace = c == ' ' || c == '\t' || c == '\n';
+
         // 16 characters per row and column
         float u1 = (float) (characterLocation % 16) / 16.0F;
         float v1 = (float) (characterLocation / 16) / 16.0F;
-        float u2 = u1 + ((float) width / (float) this.asciiGlyphWidth / 16.0F);
-        float v2 = v1 + 0.0625F;
-        boolean whiteSpace = c == ' ' || c == '\t' || c == '\n';
 
-        return new Glyph(this.asciiTexture, u1, v1, u2, v2, width, this.asciiGlyphHeight, whiteSpace);
+        // The character widths are scaled to be in the range 0 ... 8 in
+        // textRendererUtils.readCharacterWidthsFromFontTexture().
+        // So the sheet here is equivalent to 128 wide, even if it's actually a different width.
+        float u2 = u1 + ((float) width / 128.0F);
+        float v2 = v1 + 0.0625F;
+
+        return new Glyph(this.asciiTexture, u1, v1, u2, v2, width, 8, whiteSpace, c);
     }
 
     protected Glyph generateUnicodeCharacterGlyph(char c)
@@ -271,7 +276,7 @@ public class TextRenderer implements IResourceManagerReloadListener
         boolean whiteSpace = c == ' ' || c == '\t' || c == '\n';
 
         return new Glyph(this.getUnicodePageLocation(c >> 8), u1, v1, u2, v2,
-                         width / 2, height / 2, width / 2 + 1, whiteSpace);
+                         width / 2, height / 2, width / 2 + 1, whiteSpace, c);
     }
 
     public void startBuffers()
@@ -486,9 +491,9 @@ public class TextRenderer implements IResourceManagerReloadListener
         float w = (float) glyph.width;
         float h = (float) glyph.height;
         float u1 = glyph.u1;
-        float u2 = glyph.u2 - 0.00125F;
+        float u2 = glyph.u2;
         float v1 = glyph.v1;
-        float v2 = glyph.v2 - 0.00125F;
+        float v2 = glyph.v2;
 
         buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
         buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();
