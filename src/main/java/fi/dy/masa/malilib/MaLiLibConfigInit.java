@@ -16,8 +16,9 @@ public class MaLiLibConfigInit
         MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_DECREASE.createCallbackForAction(AdjustableValueHotkeyCallback::scrollAdjustDecrease);
         MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_INCREASE.createCallbackForAction(AdjustableValueHotkeyCallback::scrollAdjustIncrease);
 
-        MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_USE_DROPDOWN.addValueChangeListener(GuiUtils::reInitCurrentScreen);
+        MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.addValueChangeListener(GuiUtils::reInitCurrentScreen);
         MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.addValueChangeListener(BaseScreen::applyCustomScreenScaleChange);
+        MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_USE_DROPDOWN.addValueChangeListener(GuiUtils::reInitCurrentScreen);
         MaLiLibConfigs.Generic.SERVER_MESSAGES.setValueChangeCallback((n, o) -> MessagePacketHandler.updateRegistration(n));
         MaLiLibConfigs.Generic.SERVER_MESSAGES.setValueLoadCallback(MessagePacketHandler::updateRegistration);
 
