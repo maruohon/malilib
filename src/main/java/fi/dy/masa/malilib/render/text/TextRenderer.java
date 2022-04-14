@@ -271,8 +271,8 @@ public class TextRenderer implements IResourceManagerReloadListener
         // 16 glyphs per row and column
         float u1 = (((c & 0x0F) * (sheetWidth / 16.0F)) + startPos) / sheetWidth;
         float v1 = (float) (c & 0xF0) / sheetWidth;
-        float u2 = u1 + (float) width / sheetWidth - 0.02F / sheetWidth;
-        float v2 = v1 + 0.0625F - 0.02F / sheetWidth;
+        float u2 = u1 + (float) width / sheetWidth;
+        float v2 = v1 + 0.0625F;
         boolean whiteSpace = c == ' ' || c == '\t' || c == '\n';
 
         return new Glyph(this.getUnicodePageLocation(c >> 8), u1, v1, u2, v2,
@@ -491,9 +491,17 @@ public class TextRenderer implements IResourceManagerReloadListener
         float w = (float) glyph.width;
         float h = (float) glyph.height;
         float u1 = glyph.u1;
-        float u2 = glyph.u2 - 0.00102F;
+        float u2 = glyph.u2;
         float v1 = glyph.v1;
-        float v2 = glyph.v2 - 0.00102F;
+        float v2 = glyph.v2;
+
+        // These weird offsets are for some reason needed in the unicode mode,
+        // otherwise the text looks all distorted and broken...
+        if (this.unicode)
+        {
+            u2 -= 0.00102F;
+            v2 -= 0.00102F;
+        }
 
         buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
         buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();
