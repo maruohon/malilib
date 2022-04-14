@@ -131,7 +131,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         }
         else if (this.keyAction != null)
         {
-            return this.keyAction.execute(ActionContext.COMMON);
+            return this.keyAction.execute(new ActionContext(key.getSettings().getMessageType()));
         }
         else if (this.toggleConfig != null)
         {

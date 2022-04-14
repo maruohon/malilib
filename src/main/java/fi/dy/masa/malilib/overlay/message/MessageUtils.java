@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.option.BooleanContainingConfig;
 import fi.dy.masa.malilib.config.value.ScreenLocation;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
@@ -99,6 +100,20 @@ public class MessageUtils
         Predicate<T> predicateMarker = w -> w.getMarkerManager().matchesMarker(marker);
         Predicate<T> filter = predicateLocation.and(predicateMarker);
         return Registry.INFO_OVERLAY.findWidget(widgetClass, filter);
+    }
+
+    /**
+     * Prints the message to the MessageOutput set in the given Hotkey's advanced KeyBindSetting
+     */
+    public static void printMessage(Hotkey hotkey, String translationKey, Object... args)
+    {
+        MessageOutput output = hotkey.getKeyBind().getSettings().getMessageType();
+        printMessage(output, translationKey, args);
+    }
+
+    public static void printMessage(MessageOutput output, String translationKey, Object... args)
+    {
+        MessageDispatcher.generic().type(output).translate(translationKey, args);
     }
 
     public static void printCustomActionbarMessage(String translationKey, Object... args)
