@@ -491,9 +491,9 @@ public class TextRenderer implements IResourceManagerReloadListener
         float w = (float) glyph.width;
         float h = (float) glyph.height;
         float u1 = glyph.u1;
-        float u2 = glyph.u2;
+        float u2 = glyph.u2 - 0.00102F;
         float v1 = glyph.v1;
-        float v2 = glyph.v2;
+        float v2 = glyph.v2 - 0.00102F;
 
         buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
         buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();
