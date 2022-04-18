@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.util.nbt;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nullable;
@@ -80,6 +81,93 @@ public class NbtUtils
         return tag.hasKey(name, Constants.NBT.TAG_LONG_ARRAY);
     }
 
+    public static boolean getBoolean(NBTTagCompound tag, String name)
+    {
+        return tag.getBoolean(name);
+    }
+
+    public static byte getByte(NBTTagCompound tag, String name)
+    {
+        return tag.getByte(name);
+    }
+
+    public static short getShort(NBTTagCompound tag, String name)
+    {
+        return tag.getShort(name);
+    }
+
+    public static int getInt(NBTTagCompound tag, String name)
+    {
+        return tag.getInteger(name);
+    }
+
+    public static long getLong(NBTTagCompound tag, String name)
+    {
+        return tag.getLong(name);
+    }
+
+    public static float getFloat(NBTTagCompound tag, String name)
+    {
+        return tag.getFloat(name);
+    }
+
+    public static double getDouble(NBTTagCompound tag, String name)
+    {
+        return tag.getDouble(name);
+    }
+
+    public static String getString(NBTTagCompound tag, String name)
+    {
+        return tag.getString(name);
+    }
+
+    public static NBTTagCompound getCompound(NBTTagCompound tag, String name)
+    {
+        return tag.getCompoundTag(name);
+    }
+
+    public static NBTTagList getList(NBTTagCompound tag, String name, int type)
+    {
+        return tag.getTagList(name, type);
+    }
+
+    public static byte[] getByteArray(NBTTagCompound tag, String name)
+    {
+        return tag.getByteArray(name);
+    }
+
+    public static int[] getIntArray(NBTTagCompound tag, String name)
+    {
+        return tag.getIntArray(name);
+    }
+
+    /*
+    public static long[] getLongArray(NBTTagCompound tag, String name)
+    {
+        return tag.getTag(name);
+    }
+    */
+
+    public static void remove(NBTTagCompound tag, String name)
+    {
+        tag.removeTag(name);
+    }
+
+    public static Set<String> getKeys(NBTTagCompound tag)
+    {
+        return tag.getKeySet();
+    }
+
+    public static int getListSize(NBTTagList list)
+    {
+        return list.tagCount();
+    }
+
+    public static NBTTagList getListOfCompounds(NBTTagCompound tag, String name)
+    {
+        return tag.getTagList(name, Constants.NBT.TAG_COMPOUND);
+    }
+
     @Nullable
     public static UUID readUUID(NBTTagCompound tag)
     {
@@ -112,7 +200,7 @@ public class NbtUtils
     {
         NBTTagCompound nbt;
 
-        if (tagIn.hasKey(tagName, Constants.NBT.TAG_COMPOUND))
+        if (hasCompound(tagIn, tagName))
         {
             nbt = tagIn.getCompoundTag(tagName);
         }
@@ -177,9 +265,9 @@ public class NbtUtils
     public static BlockPos readBlockPos(@Nullable NBTTagCompound tag)
     {
         if (tag != null &&
-            tag.hasKey("x", Constants.NBT.TAG_INT) &&
-            tag.hasKey("y", Constants.NBT.TAG_INT) &&
-            tag.hasKey("z", Constants.NBT.TAG_INT))
+            hasInt(tag, "x") &&
+            hasInt(tag, "y") &&
+            hasInt(tag, "z"))
         {
             return new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
         }
@@ -190,7 +278,7 @@ public class NbtUtils
     @Nullable
     public static BlockPos readBlockPosFromListTag(NBTTagCompound tag, String tagName)
     {
-        if (tag.hasKey(tagName, Constants.NBT.TAG_LIST))
+        if (hasList(tag, tagName))
         {
             NBTTagList tagList = tag.getTagList(tagName, Constants.NBT.TAG_INT);
 
@@ -206,7 +294,7 @@ public class NbtUtils
     @Nullable
     public static BlockPos readBlockPosFromArrayTag(NBTTagCompound tag, String tagName)
     {
-        if (tag.hasKey(tagName, Constants.NBT.TAG_INT_ARRAY))
+        if (hasIntArray(tag, tagName))
         {
             int[] pos = tag.getIntArray("Pos");
 
@@ -248,9 +336,9 @@ public class NbtUtils
     public static Vec3d readVec3d(@Nullable NBTTagCompound tag)
     {
         if (tag != null &&
-            tag.hasKey("dx", Constants.NBT.TAG_DOUBLE) &&
-            tag.hasKey("dy", Constants.NBT.TAG_DOUBLE) &&
-            tag.hasKey("dz", Constants.NBT.TAG_DOUBLE))
+            hasDouble(tag, "dx") &&
+            hasDouble(tag, "dy") &&
+            hasDouble(tag, "dz"))
         {
             return new Vec3d(tag.getDouble("dx"), tag.getDouble("dy"), tag.getDouble("dz"));
         }
@@ -267,7 +355,7 @@ public class NbtUtils
     @Nullable
     public static Vec3d readVec3dFromListTag(@Nullable NBTTagCompound tag, String tagName)
     {
-        if (tag != null && tag.hasKey(tagName, Constants.NBT.TAG_LIST))
+        if (tag != null && hasList(tag, tagName))
         {
             NBTTagList tagList = tag.getTagList(tagName, Constants.NBT.TAG_DOUBLE);
 
