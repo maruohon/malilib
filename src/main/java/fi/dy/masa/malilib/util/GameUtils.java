@@ -13,6 +13,12 @@ public class GameUtils
         return Minecraft.getMinecraft();
     }
 
+    public static String getPlayerName()
+    {
+        EntityPlayerSP player = getClientPlayer();
+        return player != null ? player.getName() : "?";
+    }
+
     @Nullable
     public static WorldClient getClientWorld()
     {

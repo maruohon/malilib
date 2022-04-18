@@ -216,6 +216,8 @@ public class GenericButton extends InteractableWidget
                 this.mc.getSoundHandler().playSound(sound);
             }
 
+            super.onMouseClicked(mouseX, mouseY, mouseButton); // Call the possible click listener
+
             this.updateButtonState();
         }
 
