@@ -3,9 +3,11 @@ package fi.dy.masa.malilib.render.shader;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Optional;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import fi.dy.masa.malilib.MaLiLib;
 
@@ -85,7 +87,7 @@ public class ShaderProgram
             return 0;
         }
 
-        final String code = loadFile(new Identifier(domain, filename));
+        final String code = this.loadFile(new Identifier(domain, filename));
 
         if (code == null)
         {
@@ -110,8 +112,15 @@ public class ShaderProgram
     {
         try
         {
+            Optional<Resource> optional = this.mc.getResourceManager().getResource(resourceLocation);
+
+            if (optional.isPresent() == false)
+            {
+                return null;
+            }
+
             final StringBuilder code = new StringBuilder();
-            final InputStream inputStream = this.mc.getResourceManager().getResource(resourceLocation).getInputStream();
+            final InputStream inputStream = optional.get().getInputStream();
             final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;
