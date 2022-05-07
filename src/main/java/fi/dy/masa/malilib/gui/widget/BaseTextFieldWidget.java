@@ -722,7 +722,7 @@ public class BaseTextFieldWidget extends InteractableWidget
 
         if (selectedText != null)
         {
-            GuiScreen.setClipboardString(selectedText);
+            BaseScreen.setStringToClipboard(selectedText);
             this.deleteSelectedText();
             return true;
         }
@@ -736,7 +736,7 @@ public class BaseTextFieldWidget extends InteractableWidget
 
         if (selectedText != null)
         {
-            GuiScreen.setClipboardString(selectedText);
+            BaseScreen.setStringToClipboard(selectedText);
             return true;
         }
 
@@ -750,7 +750,7 @@ public class BaseTextFieldWidget extends InteractableWidget
             this.deleteSelectedText();
         }
 
-        this.insertText(GuiScreen.getClipboardString());
+        this.insertText(BaseScreen.getStringFromClipboard());
     }
 
     @Override

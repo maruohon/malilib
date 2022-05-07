@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.render.text;
 
-import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.util.data.Identifier;
 
 public class Glyph
 {
-    public final ResourceLocation texture;
+    public final Identifier texture;
     public final float u1;
     public final float u2;
     public final float v1;
@@ -15,7 +15,7 @@ public class Glyph
     public final boolean whiteSpace;
     public final char c;
 
-    public Glyph(ResourceLocation texture,
+    public Glyph(Identifier texture,
                  float u1, float v1,
                  float u2, float v2,
                  int width, int height,
@@ -24,7 +24,7 @@ public class Glyph
         this(texture, u1, v1, u2, v2, width, height, width, whiteSpace, c);
     }
 
-    public Glyph(ResourceLocation texture,
+    public Glyph(Identifier texture,
                  float u1, float v1,
                  float u2, float v2,
                  int width, int height,

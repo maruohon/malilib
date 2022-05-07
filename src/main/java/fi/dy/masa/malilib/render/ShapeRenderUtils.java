@@ -13,18 +13,18 @@ import fi.dy.masa.malilib.util.position.IntBoundingBox;
 
 public class ShapeRenderUtils
 {
-    public static void renderHorizontalLine(float x, float y, float z, int width, int color)
+    public static void renderHorizontalLine(double x, double y, double z, double width, int color)
     {
         renderRectangle(x, y, z, width, 1, color);
     }
 
-    public static void renderVerticalLine(float x, float y, float z, int height, int color)
+    public static void renderVerticalLine(double x, double y, double z, double height, int color)
     {
         renderRectangle(x, y, z, 1, height, color);
     }
 
-    public static void renderGrid(float x, float y, float z, int width, int height,
-                                  int gridInterval, int lineWidth, int color)
+    public static void renderGrid(double x, double y, double z, double width, double height,
+                                  double gridInterval, double lineWidth, int color)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
@@ -33,24 +33,24 @@ public class ShapeRenderUtils
         RenderUtils.drawBuffer();
     }
 
-    public static void renderGrid(float x, float y, float z, int width, int height,
-                                  int gridInterval, int lineWidth, int color, BufferBuilder buffer)
+    public static void renderGrid(double x, double y, double z, double width, double height,
+                                  double gridInterval, double lineWidth, int color, BufferBuilder buffer)
     {
-        float endX = x + width;
-        float endY = y + height;
+        double endX = x + width;
+        double endY = y + height;
 
-        for (float tmpX = x; tmpX <= endX; tmpX += gridInterval)
+        for (double tmpX = x; tmpX <= endX; tmpX += gridInterval)
         {
-            renderRectangle(tmpX, y, z + 0.000125f, lineWidth, height, color, buffer);
+            renderRectangle(tmpX, y, z + 0.000125, lineWidth, height, color, buffer);
         }
 
-        for (float tmpY = y; tmpY <= endY; tmpY += gridInterval)
+        for (double tmpY = y; tmpY <= endY; tmpY += gridInterval)
         {
             renderRectangle(x, tmpY, z, width, lineWidth, color, buffer);
         }
     }
 
-    public static void renderOutlinedRectangle(float x, float y, float z, int width, int height, int colorBg, int colorBorder)
+    public static void renderOutlinedRectangle(double x, double y, double z, double width, double height, int colorBg, int colorBorder)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
@@ -63,7 +63,7 @@ public class ShapeRenderUtils
         RenderUtils.drawBuffer();
     }
 
-    public static void renderOutlinedRectangle(float x, float y, float z, int width, int height, int bgColor, EdgeInt borderColor)
+    public static void renderOutlinedRectangle(double x, double y, double z, double width, double height, int bgColor, EdgeInt borderColor)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
@@ -76,7 +76,7 @@ public class ShapeRenderUtils
         RenderUtils.drawBuffer();
     }
 
-    public static void renderOutline(float x, float y, float z, int width, int height, int borderWidth, int color)
+    public static void renderOutline(double x, double y, double z, double width, double height, double borderWidth, int color)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
@@ -85,7 +85,7 @@ public class ShapeRenderUtils
         RenderUtils.drawBuffer();
     }
 
-    public static void renderOutline(float x, float y, float z, int width, int height, int borderWidth, EdgeInt color)
+    public static void renderOutline(double x, double y, double z, double width, double height, double borderWidth, EdgeInt color)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
@@ -97,8 +97,8 @@ public class ShapeRenderUtils
     /**
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
-    public static void renderOutline(float x, float y, float z, int width, int height,
-                                     int borderWidth, int color, BufferBuilder buffer)
+    public static void renderOutline(double x, double y, double z, double width, double height,
+                                     double borderWidth, int color, BufferBuilder buffer)
     {
         renderRectangle(x                      , y                       , z, borderWidth            , height     , color, buffer); // left edge
         renderRectangle(x + width - borderWidth, y                       , z, borderWidth            , height     , color, buffer); // right edge
@@ -109,8 +109,8 @@ public class ShapeRenderUtils
     /**
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
-    public static void renderOutline(float x, float y, float z, int width, int height,
-                                     int borderWidth, EdgeInt color, BufferBuilder buffer)
+    public static void renderOutline(double x, double y, double z, double width, double height,
+                                     double borderWidth, EdgeInt color, BufferBuilder buffer)
     {
         renderRectangle(x                      , y                       , z, borderWidth            , height     , color.getLeft(),   buffer); // left edge
         renderRectangle(x + width - borderWidth, y                       , z, borderWidth            , height     , color.getRight(),  buffer); // right edge
@@ -121,9 +121,9 @@ public class ShapeRenderUtils
     /**
      * Takes in a BufferBuilder initialized in GL_TRIANGLES, POSITION_COLOR mode
      */
-    public static void renderTriangle(float x1, float y1, float z1,
-                                      float x2, float y2, float z2,
-                                      float x3, float y3, float z3,
+    public static void renderTriangle(double x1, double y1, double z1,
+                                      double x2, double y2, double z2,
+                                      double x3, double y3, double z3,
                                       int color, BufferBuilder buffer)
     {
         int a = (color >> 24) & 0xFF;
@@ -136,7 +136,7 @@ public class ShapeRenderUtils
         buffer.pos(x3, y3, z3).color(r, g, b, a).endVertex();
     }
 
-    public static void renderRectangle(float x, float y, float z, int width, int height, int color)
+    public static void renderRectangle(double x, double y, double z, double width, double height, int color)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
@@ -148,7 +148,7 @@ public class ShapeRenderUtils
     /**
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
-    public static void renderRectangle(float x, float y, float z, float width, float height,
+    public static void renderRectangle(double x, double y, double z, double width, double height,
                                        int color, BufferBuilder buffer)
     {
         float a = (float) ((color >> 24) & 0xFF) / 255.0F;
@@ -165,7 +165,7 @@ public class ShapeRenderUtils
     /**
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
-    public static void renderRectangle(float x, float y, float z, float width, float height,
+    public static void renderRectangle(double x, double y, double z, double width, double height,
                                        Color4f color, BufferBuilder buffer)
     {
         buffer.pos(x        , y         , z).color(color.r, color.g, color.b, color.a).endVertex();
@@ -178,7 +178,7 @@ public class ShapeRenderUtils
      * Renders a textured rectangle.<br>
      * Assumes the bound texture sheet dimensions to be 256 x 256 pixels.
      */
-    public static void renderTexturedRectangle256(float x, float y, float z,
+    public static void renderTexturedRectangle256(double x, double y, double z,
                                                   int u, int v,
                                                   int width, int height)
     {
@@ -194,12 +194,12 @@ public class ShapeRenderUtils
      * Assumes the bound texture sheet dimensions to be 256 x 256 pixels.<br>
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_TEX mode
      */
-    public static void renderTexturedRectangle256(float x, float y, float z,
+    public static void renderTexturedRectangle256(double x, double y, double z,
                                                   int u, int v,
                                                   int width, int height,
                                                   BufferBuilder buffer)
     {
-        float pixelSize = 0.00390625F; // 1 / 256
+        double pixelSize = 0.00390625; // 1 / 256
         renderTexturedRectangle(x, y, z, u, v, width, height, pixelSize, pixelSize, buffer);
     }
 
@@ -208,10 +208,10 @@ public class ShapeRenderUtils
      * is indicated by the pixelWidth and pixelHeight arguments, which are the
      * relative width and height of one pixel on the sheet.
      */
-    public static void renderTexturedRectangle(float x, float y, float z,
+    public static void renderTexturedRectangle(double x, double y, double z,
                                                int u, int v,
                                                int renderWidth, int renderHeight,
-                                               float pixelWidth, float pixelHeight)
+                                               double pixelWidth, double pixelHeight)
     {
         renderScaledTexturedRectangle(x, y, z, u, v,
                                       renderWidth, renderHeight,
@@ -225,10 +225,10 @@ public class ShapeRenderUtils
      * relative width and height of one pixel on the sheet.
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_TEX mode
      */
-    public static void renderTexturedRectangle(float x, float y, float z,
+    public static void renderTexturedRectangle(double x, double y, double z,
                                                int u, int v,
                                                int renderWidth, int renderHeight,
-                                               float pixelWidth, float pixelHeight,
+                                               double pixelWidth, double pixelHeight,
                                                BufferBuilder buffer)
     {
         renderScaledTexturedRectangle(x, y, z, u, v,
@@ -244,11 +244,11 @@ public class ShapeRenderUtils
      * The renderWidth and renderHeight parameters are the rendered size of the rectangle/texture, whereas the
      * textureWidth and textureHeight parameters define which region of the texture sheet is used.
      */
-    public static void renderScaledTexturedRectangle(float x, float y, float z,
+    public static void renderScaledTexturedRectangle(double x, double y, double z,
                                                      int u, int v,
                                                      int renderWidth, int renderHeight,
                                                      int textureWidth, int textureHeight,
-                                                     float pixelWidth, float pixelHeight)
+                                                     double pixelWidth, double pixelHeight)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
@@ -268,18 +268,18 @@ public class ShapeRenderUtils
      * textureWidth and textureHeight parameters define which region of the texture sheet is used.
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_TEX mode
      */
-    public static void renderScaledTexturedRectangle(float x, float y, float z,
+    public static void renderScaledTexturedRectangle(double x, double y, double z,
                                                      int u, int v,
                                                      int renderWidth, int renderHeight,
                                                      int textureWidth, int textureHeight,
-                                                     float pixelWidth, float pixelHeight, BufferBuilder buffer)
+                                                     double pixelWidth, double pixelHeight, BufferBuilder buffer)
     {
-        float x2 = x + renderWidth;
-        float y2 = y + renderHeight;
-        float u1 = u                  * pixelWidth;
-        float u2 = (u + textureWidth) * pixelWidth;
-        float v1 = v                   * pixelHeight;
-        float v2 = (v + textureHeight) * pixelHeight;
+        double x2 = x + renderWidth;
+        double y2 = y + renderHeight;
+        double u1 = u                  * pixelWidth;
+        double u2 = (u + textureWidth) * pixelWidth;
+        double v1 = v                   * pixelHeight;
+        double v2 = (v + textureHeight) * pixelHeight;
 
         buffer.pos(x , y2, z).tex(u1, v2).endVertex();
         buffer.pos(x2, y2, z).tex(u2, v2).endVertex();

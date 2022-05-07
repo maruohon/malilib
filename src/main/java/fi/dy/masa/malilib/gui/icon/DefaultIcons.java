@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.icon;
 
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.registry.Registry;
-import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.Identifier;
 
 public class DefaultIcons
 {
@@ -66,33 +66,33 @@ public class DefaultIcons
 
     public static final BaseMultiIcon BUTTON_BACKGROUND             = register(new BaseMultiIcon( 56, 196, 200, 20, 0, 20));
 
-    public static final BaseIcon TOAST_BACKGROUND                   = register(new BaseIcon(0, 0, 256, 128, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/toasts.png")));
+    public static final BaseIcon TOAST_BACKGROUND                   = register(new BaseIcon(0, 0, 256, 128, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/toasts.png")));
 
-    public static final BaseIcon INV_BACKGROUND_EMPTY_13_X_13       = register(new BaseIcon(  0,   0, 248, 248, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_empty_13x13.png")));
-    public static final BaseIcon INV_BACKGROUND_GENERIC_54          = register(new BaseIcon(  0,   0, 176, 122, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png")));
+    public static final BaseIcon INV_BACKGROUND_EMPTY_13_X_13       = register(new BaseIcon(  0,   0, 248, 248, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_empty_13x13.png")));
+    public static final BaseIcon INV_BACKGROUND_GENERIC_54          = register(new BaseIcon(  0,   0, 176, 122, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png")));
 
-    public static final BaseIcon INV_BACKGROUND_BREWING_STAND       = register(new BaseIcon(128, 183, 117,  73, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_DROPPER             = register(new BaseIcon(176,   0,  68,  68, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_FURNACE             = register(new BaseIcon(  0, 188,  96,  68, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_GENERIC_27          = register(new BaseIcon(  0,   0, 176,  68, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_HOPPER              = register(new BaseIcon(  0,  68, 104,  32, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_HORSE_EQUIPMENT     = register(new BaseIcon( 96, 206,  32,  50, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_HORSE_INVENTORY     = register(new BaseIcon(103, 102, 105,  68, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_LIVING_ENTITY       = register(new BaseIcon(  0, 102,  53,  86, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_VILLAGER_INV        = register(new BaseIcon( 53, 102,  50,  86, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_BREWING_STAND       = register(new BaseIcon(128, 183, 117,  73, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_DROPPER             = register(new BaseIcon(176,   0,  68,  68, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_FURNACE             = register(new BaseIcon(  0, 188,  96,  68, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_GENERIC_27          = register(new BaseIcon(  0,   0, 176,  68, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_HOPPER              = register(new BaseIcon(  0,  68, 104,  32, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_HORSE_EQUIPMENT     = register(new BaseIcon( 96, 206,  32,  50, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_HORSE_INVENTORY     = register(new BaseIcon(103, 102, 105,  68, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_LIVING_ENTITY       = register(new BaseIcon(  0, 102,  53,  86, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_VILLAGER_INV        = register(new BaseIcon( 53, 102,  50,  86, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
 
-    public static final BaseIcon INV_BACKGROUND_14_SLOTS_HORIZONTAL = register(new BaseIcon(  4, 238, 252,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png")));
-    public static final BaseIcon INV_BACKGROUND_14_SLOTS_VERTICAL   = register(new BaseIcon(238,   4,  18, 252, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png")));
+    public static final BaseIcon INV_BACKGROUND_14_SLOTS_HORIZONTAL = register(new BaseIcon(  4, 238, 252,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png")));
+    public static final BaseIcon INV_BACKGROUND_14_SLOTS_VERTICAL   = register(new BaseIcon(238,   4,  18, 252, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png")));
 
-    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_HEAD      = register(new BaseIcon(104,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_CHEST     = register(new BaseIcon(122,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_LEGS      = register(new BaseIcon(140,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_BOOTS     = register(new BaseIcon(158,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_EQUIPMENT_SHIELD          = register(new BaseIcon(176,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_HEAD      = register(new BaseIcon(104,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_CHEST     = register(new BaseIcon(122,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_LEGS      = register(new BaseIcon(140,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_BOOTS     = register(new BaseIcon(158,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_SHIELD          = register(new BaseIcon(176,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
 
-    public static final BaseIcon INV_SLOT_HORSE_ARMOR               = register(new BaseIcon(194,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_HORSE_SADDLE              = register(new BaseIcon(212,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_LLAMA_CARPET              = register(new BaseIcon(230,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_HORSE_ARMOR               = register(new BaseIcon(194,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_HORSE_SADDLE              = register(new BaseIcon(212,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_LLAMA_CARPET              = register(new BaseIcon(230,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
 
     public static <T extends Icon> T register(T icon)
     {

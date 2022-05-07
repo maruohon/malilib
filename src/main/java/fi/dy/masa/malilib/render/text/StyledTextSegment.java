@@ -3,21 +3,24 @@ package fi.dy.masa.malilib.render.text;
 import java.util.List;
 import java.util.Objects;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.util.ListUtils;
+import fi.dy.masa.malilib.util.data.Identifier;
 
 public class StyledTextSegment
 {
     protected final ImmutableList<Glyph> glyphs;
-    public final ResourceLocation texture;
+    public final Identifier texture;
     public final TextStyle style;
     public final String displayText;
     public final String originalString;
     public final int glyphCount;
     public final int renderWidth;
 
-    public StyledTextSegment(ResourceLocation texture, TextStyle style, ImmutableList<Glyph> glyphs,
-                             String displayText, String originalString)
+    public StyledTextSegment(Identifier texture,
+                             TextStyle style,
+                             ImmutableList<Glyph> glyphs,
+                             String displayText,
+                             String originalString)
     {
         this.texture = texture;
         this.style = style;

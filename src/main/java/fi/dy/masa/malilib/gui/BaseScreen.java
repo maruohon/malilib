@@ -224,7 +224,7 @@ public abstract class BaseScreen extends GuiScreen
 
         if (parent instanceof BaseScreen)
         {
-            BaseScreen parentBaseScreen = (BaseScreen) this.getParent();
+            BaseScreen parentBaseScreen = (BaseScreen) parent;
             x = parentBaseScreen.x + parentBaseScreen.getScreenWidth() / 2;
             y = parentBaseScreen.y + parentBaseScreen.getScreenHeight() / 2;
         }
@@ -953,6 +953,16 @@ public abstract class BaseScreen extends GuiScreen
     public static boolean isAltDown()
     {
         return isAltKeyDown();
+    }
+
+    public static void setStringToClipboard(String str)
+    {
+        setClipboardString(str);
+    }
+
+    public static String getStringFromClipboard()
+    {
+        return getClipboardString();
     }
 
     public void renderDebug(ScreenContext ctx)

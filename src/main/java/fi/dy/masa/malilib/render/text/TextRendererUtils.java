@@ -12,9 +12,9 @@ import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
-import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.data.Identifier;
 
 public class TextRendererUtils
 {
@@ -52,7 +52,7 @@ public class TextRendererUtils
 
     public static void readGlyphSizes(byte[] glyphWidth)
     {
-        try (IResource resource = GameUtils.getClient().getResourceManager().getResource(new ResourceLocation("font/glyph_sizes.bin")))
+        try (IResource resource = GameUtils.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin")))
         {
             if (resource.getInputStream().read(glyphWidth) <= 0)
             {
@@ -65,7 +65,7 @@ public class TextRendererUtils
         }
     }
 
-    public static void readCharacterWidthsFromFontTexture(ResourceLocation texture, int[] charWidthArray,
+    public static void readCharacterWidthsFromFontTexture(Identifier texture, int[] charWidthArray,
                                                           IntConsumer glyphWidthListener, IntConsumer glyphHeightListener)
     {
         BufferedImage bufferedImage;
@@ -146,7 +146,7 @@ public class TextRendererUtils
                                                          Consumer<StyledTextSegment> consumer, GlyphSource glyphSource)
     {
         List<Glyph> glyphs = new ArrayList<>();
-        ResourceLocation texture = null;
+        Identifier texture = null;
         final int len = displayString.length();
         int displayStringStart = 0;
         int originalStringStart = 0;

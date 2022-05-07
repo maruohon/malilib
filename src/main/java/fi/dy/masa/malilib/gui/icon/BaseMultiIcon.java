@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.icon;
 
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.util.data.Identifier;
 
 public class BaseMultiIcon extends BaseIcon implements MultiIcon
 {
@@ -13,7 +13,7 @@ public class BaseMultiIcon extends BaseIcon implements MultiIcon
         this(u, v, w, h, w, 0, BaseIcon.MALILIB_GUI_WIDGETS_TEXTURE);
     }
 
-    public BaseMultiIcon(int u, int v, int w, int h, ResourceLocation texture)
+    public BaseMultiIcon(int u, int v, int w, int h, Identifier texture)
     {
         this(u, v, w, h, w, 0, texture);
     }
@@ -26,13 +26,13 @@ public class BaseMultiIcon extends BaseIcon implements MultiIcon
         this.variantOffsetV = variantOffsetV;
     }
 
-    public BaseMultiIcon(int u, int v, int w, int h, int variantOffsetU, int variantOffsetV, ResourceLocation texture)
+    public BaseMultiIcon(int u, int v, int w, int h, int variantOffsetU, int variantOffsetV, Identifier texture)
     {
         this(u, v, w, h, variantOffsetU, variantOffsetV, 256, 256, texture);
     }
 
     public BaseMultiIcon(int u, int v, int w, int h, int variantOffsetU, int variantOffsetV,
-                         int textureWidth, int textureHeight, ResourceLocation texture)
+                         int textureWidth, int textureHeight, Identifier texture)
     {
         super(u, v, w, h, textureWidth, textureHeight, texture);
 

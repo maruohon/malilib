@@ -3,10 +3,9 @@ package fi.dy.masa.malilib.gui.icon;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
-import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.Identifier;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public interface Icon
@@ -54,7 +53,7 @@ public interface Icon
     /**
      * @return the identifier/location of the texture sheet used for this icon
      */
-    ResourceLocation getTexture();
+    Identifier getTexture();
 
     /**
      * Renders the icon at the given location, possibly using an icon variant chosen
@@ -200,7 +199,7 @@ public interface Icon
         }
 
         JsonObject obj = el.getAsJsonObject();
-        ResourceLocation texture = StringUtils.identifier(JsonUtils.getStringOrDefault(obj, "texture", ""));
+        Identifier texture = new Identifier(JsonUtils.getStringOrDefault(obj, "texture", ""));
 
         if (texture == null)
         {

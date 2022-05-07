@@ -1,13 +1,13 @@
 package fi.dy.masa.malilib.gui.icon;
 
 import java.util.Objects;
-import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.Identifier;
 
 public class BaseIcon implements Icon
 {
-    public static final ResourceLocation MALILIB_GUI_WIDGETS_TEXTURE = StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
+    public static final Identifier MALILIB_GUI_WIDGETS_TEXTURE = StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
     protected final int u;
     protected final int v;
@@ -17,19 +17,19 @@ public class BaseIcon implements Icon
     protected final int textureSheetHeight;
     protected final float texturePixelWidth;
     protected final float texturePixelHeight;
-    protected ResourceLocation texture;
+    protected Identifier texture;
 
     BaseIcon(int u, int v, int w, int h)
     {
         this(u, v, w, h, MALILIB_GUI_WIDGETS_TEXTURE);
     }
 
-    public BaseIcon(int u, int v, int w, int h, ResourceLocation texture)
+    public BaseIcon(int u, int v, int w, int h, Identifier texture)
     {
         this(u, v, w, h, 256, 256, texture);
     }
 
-    public BaseIcon(int u, int v, int w, int h, int textureWidth, int textureHeight, ResourceLocation texture)
+    public BaseIcon(int u, int v, int w, int h, int textureWidth, int textureHeight, Identifier texture)
     {
         this.u = u;
         this.v = v;
@@ -91,7 +91,7 @@ public class BaseIcon implements Icon
     }
 
     @Override
-    public ResourceLocation getTexture()
+    public Identifier getTexture()
     {
         return this.texture;
     }

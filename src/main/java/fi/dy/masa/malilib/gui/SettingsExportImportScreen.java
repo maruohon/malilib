@@ -164,13 +164,13 @@ public class SettingsExportImportScreen extends TextInputScreen
 
     protected void copyToClipboard()
     {
-        GuiScreen.setClipboardString(this.textField.getText());
+        setStringToClipboard(this.textField.getText());
         MessageDispatcher.success(this.messageDisplayTime).translate(this.copyToClipboardMessage);
     }
 
     protected void pasteFromClipboard()
     {
-        this.textField.setText(GuiScreen.getClipboardString());
+        this.textField.setText(getStringFromClipboard());
         this.textField.setCursorToStart();
         this.textField.setFocused(true);
         MessageDispatcher.success(this.messageDisplayTime).translate(this.pasteFromClipboardMessage);

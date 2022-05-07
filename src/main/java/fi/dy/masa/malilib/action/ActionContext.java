@@ -38,13 +38,13 @@ public class ActionContext
     @Nullable
     public WorldClient getWorld()
     {
-        return GameUtils.getClient().world;
+        return GameUtils.getClientWorld();
     }
 
     @Nullable
     public EntityPlayerSP getPlayer()
     {
-        return GameUtils.getClient().player;
+        return GameUtils.getClientPlayer();
     }
 
     @Nullable

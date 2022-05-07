@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.edit;
 
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.icon.BaseMultiIcon;
@@ -16,6 +15,7 @@ import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.Identifier;
 
 public class CustomIconEditScreen extends BaseScreen
 {
@@ -39,7 +39,7 @@ public class CustomIconEditScreen extends BaseScreen
     protected final IntegerEditWidget variantOffsetUEditWidget;
     protected final IntegerEditWidget variantOffsetVEditWidget;
     protected final BaseTextFieldWidget textureNameTextField;
-    @Nullable protected ResourceLocation texture;
+    @Nullable protected Identifier texture;
     protected int u;
     protected int v;
     protected int iconWidth;

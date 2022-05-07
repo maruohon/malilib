@@ -552,7 +552,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     {
         if (mouseButton == 0 && isShiftDown())
         {
-            setClipboardString(this.getSettingsExportString());
+            setStringToClipboard(this.getSettingsExportString());
             MessageDispatcher.success("malilib.message.info.action_screen_settings_copied_to_clipboard");
         }
         else if (mouseButton == 0)
@@ -570,7 +570,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     {
         if (mouseButton == 1 && isCtrlDown() && isShiftDown())
         {
-            this.applySettingsFromImportString(getClipboardString());
+            this.applySettingsFromImportString(getStringFromClipboard());
         }
         else if (mouseButton == 0)
         {

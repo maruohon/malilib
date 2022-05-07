@@ -19,16 +19,17 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.data.Identifier;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StringUtils
 {
     @Nullable
-    public static ResourceLocation identifier(String fullPath)
+    public static Identifier identifier(String fullPath)
     {
         try
         {
-            return new ResourceLocation(fullPath);
+            return new Identifier(fullPath);
         }
         catch (Exception e)
         {
@@ -38,11 +39,11 @@ public class StringUtils
     }
 
     @Nullable
-    public static ResourceLocation identifier(String nameSpace, String path)
+    public static Identifier identifier(String nameSpace, String path)
     {
         try
         {
-            return new ResourceLocation(nameSpace, path);
+            return new Identifier(nameSpace, path);
         }
         catch (Exception e)
         {

@@ -7,13 +7,7 @@ import java.util.function.IntUnaryOperator;
 import javax.annotation.Nullable;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
-import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.ElementOffset;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -29,6 +23,7 @@ import fi.dy.masa.malilib.render.text.TextStyle;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.data.EdgeInt;
+import fi.dy.masa.malilib.util.data.Identifier;
 
 public class BaseWidget
 {
@@ -617,7 +612,7 @@ public class BaseWidget
         this.icon = icon;
     }
 
-    public void bindTexture(ResourceLocation texture)
+    public void bindTexture(Identifier texture)
     {
         RenderUtils.bindTexture(texture);
     }
@@ -827,32 +822,11 @@ public class BaseWidget
     public static void renderDebugOutline(double x, double y, double z, double w, double h,
                                           boolean hovered, int color, ScreenContext ctx)
     {
-        float a = (float) (color >> 24 & 255) / 255.0F;
-        float r = (float) (color >> 16 & 255) / 255.0F;
-        float g = (float) (color >>  8 & 255) / 255.0F;
-        float b = (float) (color       & 255) / 255.0F;
-        float lineWidth = hovered ? 3f : 1.0f;
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        GlStateManager.disableTexture2D();
-        GlStateManager.glLineWidth(lineWidth);
-
+        double lineWidth = hovered ? 3.0 : 1.0;
         double x1 = x -     lineWidth / 4;
-        double x2 = x + w + lineWidth / 4;
         double y1 = y -     lineWidth / 4;
-        double y2 = y + h + lineWidth / 4;
-        buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
 
-        buffer.pos(x1, y1, z).color(r, g, b, a).endVertex();
-        buffer.pos(x1, y2, z).color(r, g, b, a).endVertex();
-        buffer.pos(x2, y2, z).color(r, g, b, a).endVertex();
-        buffer.pos(x2, y1, z).color(r, g, b, a).endVertex();
-
-        tessellator.draw();
-
-        GlStateManager.enableTexture2D();
+        ShapeRenderUtils.renderOutline(x1, y1, z, w + lineWidth / 2, h + lineWidth / 2, lineWidth, color);
     }
 
     public static void addDebugText(int mouseX, int mouseY, int x, int y, double z, int w, int h, String text)
