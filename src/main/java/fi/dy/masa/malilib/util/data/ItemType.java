@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.util.data;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 /**
  * A wrapper around ItemStack, that implements hashCode() and equals().
@@ -61,14 +61,9 @@ public class ItemType
         int result = 1;
         result = prime * result + this.stack.getItem().hashCode();
 
-        if (this.ignoreDamage == false || this.stack.isItemStackDamageable() == false)
-        {
-            result = prime * result + this.stack.getMetadata();
-        }
-
         if (this.checkNbt())
         {
-            result = prime * result + (this.stack.getTagCompound() != null ? this.stack.getTagCompound().hashCode() : 0);
+            result = prime * result + (this.stack.getNbt() != null ? this.stack.getNbt().hashCode() : 0);
         }
 
         return result;
@@ -97,28 +92,20 @@ public class ItemType
                 return false;
             }
 
-            if ((this.ignoreDamage == false || this.stack.isItemStackDamageable() == false) &&
-                this.stack.getMetadata() != other.stack.getMetadata())
-            {
-                return false;
-            }
-
-            return this.checkNbt() == false || ItemStack.areItemStackTagsEqual(this.stack, other.stack);
+            return this.checkNbt() == false || ItemStack.areNbtEqual(this.stack, other.stack);
         }
     }
 
     @Override
     public String toString()
     {
+        Identifier rl = Registry.ITEM.getId(this.stack.getItem());
+
         if (this.checkNbt())
         {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
-            return rl.toString() + "@" + this.stack.getMetadata() + this.stack.getTagCompound();
+            return rl + this.stack.getNbt().toString();
         }
-        else
-        {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
-            return rl.toString() + "@" + this.stack.getMetadata();
-        }
+
+        return rl.toString();
     }
 }

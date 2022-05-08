@@ -23,7 +23,7 @@ import com.google.gson.JsonObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.network.ServerInfo;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.action.ActionContext;
@@ -139,7 +139,7 @@ public class ConfigOverrideUtils
 
     protected static void tryApplyOverridesFromServer()
     {
-        ServerData serverData = GameUtils.getClient().getCurrentServerData();
+        ServerInfo serverData = GameUtils.getClient().getCurrentServerEntry();
 
         if (serverData != null)
         {

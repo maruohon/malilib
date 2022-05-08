@@ -4,9 +4,8 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.LayerMode;
@@ -23,7 +22,7 @@ public class LayerRange
 
     protected final LayerRangeChangeListener listener;
     protected LayerMode layerMode = LayerMode.ALL;
-    protected EnumFacing.Axis axis = EnumFacing.Axis.Y;
+    protected Direction.Axis axis = Direction.Axis.Y;
     protected int layerSingle = 0;
     protected int layerAbove = 0;
     protected int layerBelow = 0;
@@ -44,7 +43,7 @@ public class LayerRange
         return this.layerMode;
     }
 
-    public EnumFacing.Axis getAxis()
+    public Direction.Axis getAxis()
     {
         return this.axis;
     }
@@ -176,7 +175,7 @@ public class LayerRange
         }
     }
 
-    public void setAxis(EnumFacing.Axis axis)
+    public void setAxis(Direction.Axis axis)
     {
         this.axis = axis;
 
@@ -278,9 +277,9 @@ public class LayerRange
     {
         switch (this.axis)
         {
-            case X: return MathHelper.floor(entity.posX);
-            case Y: return MathHelper.floor(entity.posY);
-            case Z: return MathHelper.floor(entity.posZ);
+            case X: return MathHelper.floor(entity.getX());
+            case Y: return MathHelper.floor(entity.getY());
+            case Z: return MathHelper.floor(entity.getZ());
         }
 
         return 0;
@@ -492,7 +491,7 @@ public class LayerRange
 
     protected boolean layerRangeIsMinClosest(Entity entity)
     {
-        double playerPos = this.axis == Axis.Y ? entity.posY : (this.axis == Axis.X ? entity.posX : entity.posZ);
+        double playerPos = this.axis == Direction.Axis.Y ? entity.getY() : (this.axis == Direction.Axis.X ? entity.getX() : entity.getZ());
         double min = this.layerRangeMin + 0.5D;
         double max = this.layerRangeMax + 0.5D;
 
@@ -585,13 +584,13 @@ public class LayerRange
         return false;
     }
 
-    public boolean isPositionAtRenderEdgeOnSide(BlockPos pos, EnumFacing side)
+    public boolean isPositionAtRenderEdgeOnSide(BlockPos pos, Direction side)
     {
         switch (this.axis)
         {
-            case X: return (side == EnumFacing.WEST  && pos.getX() == this.getMinLayerBoundary()) || (side == EnumFacing.EAST  && pos.getX() == this.getMaxLayerBoundary());
-            case Y: return (side == EnumFacing.DOWN  && pos.getY() == this.getMinLayerBoundary()) || (side == EnumFacing.UP    && pos.getY() == this.getMaxLayerBoundary());
-            case Z: return (side == EnumFacing.NORTH && pos.getZ() == this.getMinLayerBoundary()) || (side == EnumFacing.SOUTH && pos.getZ() == this.getMaxLayerBoundary());
+            case X: return (side == Direction.WEST  && pos.getX() == this.getMinLayerBoundary()) || (side == Direction.EAST  && pos.getX() == this.getMaxLayerBoundary());
+            case Y: return (side == Direction.DOWN  && pos.getY() == this.getMinLayerBoundary()) || (side == Direction.UP    && pos.getY() == this.getMaxLayerBoundary());
+            case Z: return (side == Direction.NORTH && pos.getZ() == this.getMinLayerBoundary()) || (side == Direction.SOUTH && pos.getZ() == this.getMaxLayerBoundary());
         }
 
         return false;
@@ -647,7 +646,7 @@ public class LayerRange
         }
     }
 
-    public int getClampedValue(int value, EnumFacing.Axis axis)
+    public int getClampedValue(int value, Direction.Axis axis)
     {
         if (this.axis == axis)
         {
@@ -761,8 +760,8 @@ public class LayerRange
     public void fromJson(JsonObject obj)
     {
         this.layerMode = BaseOptionListConfigValue.findValueByName(JsonUtils.getString(obj, "mode"), LayerMode.VALUES);
-        this.axis = EnumFacing.Axis.byName(JsonUtils.getString(obj, "axis"));
-        if (this.axis == null) { this.axis = EnumFacing.Axis.Y; }
+        this.axis = Direction.Axis.fromName(JsonUtils.getString(obj, "axis"));
+        if (this.axis == null) { this.axis = Direction.Axis.Y; }
 
         this.followPlayer = JsonUtils.getBoolean(obj, "follow_player");
         this.layerSingle = JsonUtils.getInteger(obj, "layer_single");

@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.screen.PlayerScreenHandler;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.collection.DefaultedList;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Constants;
 import fi.dy.masa.malilib.util.data.IntRange;
@@ -28,7 +28,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqual(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
+        return ItemStack.areItemsEqual(stack1, stack2) && ItemStack.areNbtEqual(stack1, stack2);
     }
 
     /**
@@ -37,7 +37,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2, boolean ignoreNbt)
     {
-        return ItemStack.areItemsEqual(stack1, stack2) && (ignoreNbt || ItemStack.areItemStackTagsEqual(stack1, stack2));
+        return ItemStack.areItemsEqual(stack1, stack2) && (ignoreNbt || ItemStack.areNbtEqual(stack1, stack2));
     }
 
     /**
@@ -45,7 +45,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
+        return ItemStack.areItemsEqualIgnoreDamage(stack1, stack2) && ItemStack.areNbtEqual(stack1, stack2);
     }
 
     /**
@@ -54,16 +54,16 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2, boolean ignoreNbt)
     {
-        return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) && (ignoreNbt || ItemStack.areItemStackTagsEqual(stack1, stack2));
+        return ItemStack.areItemsEqualIgnoreDamage(stack1, stack2) && (ignoreNbt || ItemStack.areNbtEqual(stack1, stack2));
     }
 
     /**
      * Swaps the stack from the slot <b>slotNum</b> to the given hotbar slot <b>hotbarSlot</b>
      */
-    public static void swapSlots(Container container, int slotNum, int hotbarSlot)
+    public static void swapSlots(ScreenHandler container, int slotNum, int hotbarSlot)
     {
-        Minecraft mc = GameUtils.getClient();
-        mc.playerController.windowClick(container.windowId, slotNum, hotbarSlot, ClickType.SWAP, mc.player);
+        MinecraftClient mc = GameUtils.getClient();
+        mc.interactionManager.clickSlot(container.syncId, slotNum, hotbarSlot, SlotActionType.SWAP, mc.player);
     }
 
     /**
@@ -81,21 +81,21 @@ public class InventoryUtils
      * Whether or not the offhand slot is valid, depends on the <b>allowOffhand</b> argument.
      * @return the slot number, or -1 if none were found
      */
-    public static int findEmptySlotInPlayerInventory(Container containerPlayer, boolean allowOffhand, boolean reverse)
+    public static int findEmptySlotInPlayerInventory(ScreenHandler containerPlayer, boolean allowOffhand, boolean reverse)
     {
-        final int startSlot = reverse ? containerPlayer.inventorySlots.size() - 1 : 0;
-        final int endSlot = reverse ? -1 : containerPlayer.inventorySlots.size();
+        final int startSlot = reverse ? containerPlayer.slots.size() - 1 : 0;
+        final int endSlot = reverse ? -1 : containerPlayer.slots.size();
         final int increment = reverse ? -1 : 1;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
-            Slot slot = containerPlayer.inventorySlots.get(slotNum);
+            Slot slot = containerPlayer.slots.get(slotNum);
             ItemStack stackSlot = slot.getStack();
 
             // Inventory crafting, armor and offhand slots are not valid
-            if (stackSlot.isEmpty() && isRegularInventorySlot(slot.slotNumber, allowOffhand))
+            if (stackSlot.isEmpty() && isRegularInventorySlot(slot.id, allowOffhand))
             {
-                return slot.slotNumber;
+                return slot.id;
             }
         }
 
@@ -109,7 +109,7 @@ public class InventoryUtils
      * @param reverse if true, then the slots are iterated in reverse order
      * @return the slot number, or -1 if none were found
      */
-    public static int findPlayerInventorySlotWithItem(Container container, ItemStack stackReference, boolean reverse)
+    public static int findPlayerInventorySlotWithItem(ScreenHandler container, ItemStack stackReference, boolean reverse)
     {
         return findPlayerInventorySlotWithItem(container, stackReference, false, reverse);
     }
@@ -121,25 +121,25 @@ public class InventoryUtils
      * @param reverse if true, then the slots are iterated in reverse order
      * @return the slot number, or -1 if none were found
      */
-    public static int findPlayerInventorySlotWithItem(Container container, ItemStack stackReference, boolean ignoreNbt, boolean reverse)
+    public static int findPlayerInventorySlotWithItem(ScreenHandler container, ItemStack stackReference, boolean ignoreNbt, boolean reverse)
     {
-        if ((container instanceof ContainerPlayer) == false)
+        if ((container instanceof PlayerScreenHandler) == false)
         {
             return -1;
         }
 
-        final int startSlot = reverse ? container.inventorySlots.size() - 1 : 0;
-        final int endSlot = reverse ? -1 : container.inventorySlots.size();
+        final int startSlot = reverse ? container.slots.size() - 1 : 0;
+        final int endSlot = reverse ? -1 : container.slots.size();
         final int increment = reverse ? -1 : 1;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
-            Slot slot = container.inventorySlots.get(slotNum);
+            Slot slot = container.slots.get(slotNum);
 
-            if (isRegularInventorySlot(slot.slotNumber, false) &&
+            if (isRegularInventorySlot(slot.id, false) &&
                 areStacksEqualIgnoreDurability(slot.getStack(), stackReference, ignoreNbt))
             {
-                return slot.slotNumber;
+                return slot.id;
             }
         }
 
@@ -150,9 +150,9 @@ public class InventoryUtils
      * Tries to find a slot with the given item for pick-blocking.
      * Prefers the hotbar to the rest of the inventory.
      */
-    public static int findSlotWithItemToPickBlock(Container container, ItemStack stackReference, boolean ignoreNbt)
+    public static int findSlotWithItemToPickBlock(ScreenHandler container, ItemStack stackReference, boolean ignoreNbt)
     {
-        if ((container instanceof ContainerPlayer) == false)
+        if ((container instanceof PlayerScreenHandler) == false)
         {
             return -1;
         }
@@ -169,12 +169,12 @@ public class InventoryUtils
         return findSlotWithItem(container, stackReference, IntRange.of(9, 27 + 1), true, ignoreNbt);
     }
 
-    public static int findSlotWithItem(Container container, ItemStack stackReference,
+    public static int findSlotWithItem(ScreenHandler container, ItemStack stackReference,
                                        IntRange intRange, boolean ignoreDurability, boolean ignoreNbt)
     {
         final int startSlot = intRange.getFirst();
         final int endSlot = intRange.getLast();
-        List<Slot> slots = container.inventorySlots;
+        List<Slot> slots = container.slots;
 
         if (startSlot < 0 || endSlot >= slots.size())
         {
@@ -188,7 +188,7 @@ public class InventoryUtils
             if ((ignoreDurability          && areStacksEqualIgnoreDurability(slot.getStack(), stackReference, ignoreNbt)) ||
                 (ignoreDurability == false && areStacksEqual(slot.getStack(), stackReference, ignoreNbt)))
             {
-                return slot.slotNumber;
+                return slot.id;
             }
         }
 
@@ -210,29 +210,29 @@ public class InventoryUtils
      */
     public static boolean swapItemToMainHand(ItemStack stackReference, boolean ignoreNbt)
     {
-        Minecraft mc = GameUtils.getClient();
-        EntityPlayer player = mc.player;
+        MinecraftClient mc = GameUtils.getClient();
+        PlayerEntity player = mc.player;
 
         // Already holding the requested item
-        if (areStacksEqual(stackReference, player.getHeldItemMainhand(), ignoreNbt))
+        if (areStacksEqual(stackReference, player.getMainHandStack(), ignoreNbt))
         {
             return false;
         }
 
         if (GameUtils.isCreativeMode())
         {
-            player.inventory.setPickedItemStack(stackReference.copy());
-            mc.playerController.sendSlotPacket(stackReference.copy(), 36 + player.inventory.currentItem);
+            player.getInventory().addPickBlock(stackReference.copy());
+            mc.interactionManager.clickCreativeStack(stackReference.copy(), 36 + player.getInventory().selectedSlot);
             return true;
         }
         else
         {
-            int slot = findPlayerInventorySlotWithItem(player.inventoryContainer, stackReference, true);
+            int slot = findPlayerInventorySlotWithItem(player.playerScreenHandler, stackReference, true);
 
             if (slot != -1)
             {
-                int currentHotbarSlot = player.inventory.currentItem;
-                mc.playerController.windowClick(player.inventoryContainer.windowId, slot, currentHotbarSlot, ClickType.SWAP, mc.player);
+                int currentHotbarSlot = player.getInventory().selectedSlot;
+                mc.interactionManager.clickSlot(player.playerScreenHandler.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
             }
         }
@@ -245,22 +245,22 @@ public class InventoryUtils
      * @param threshold the number of items at or below which the re-stocking will happen
      * @param allowHotbar whether or not to allow taking items from other hotbar slots
      */
-    public static void preRestockHand(EntityPlayer player, EnumHand hand, int threshold, boolean allowHotbar)
+    public static void preRestockHand(PlayerEntity player, Hand hand, int threshold, boolean allowHotbar)
     {
-        final ItemStack stackHand = player.getHeldItem(hand);
+        final ItemStack stackHand = player.getStackInHand(hand);
         final int count = stackHand.getCount();
-        final int max = stackHand.getMaxStackSize();
+        final int max = stackHand.getMaxCount();
 
         if (stackHand.isEmpty() == false &&
-            player.openContainer == player.inventoryContainer &&
-            player.inventory.getItemStack().isEmpty() &&
+            player.currentScreenHandler == player.playerScreenHandler &&
+            player.currentScreenHandler.getCursorStack().isEmpty() &&
             (count <= threshold && count < max))
         {
-            Minecraft mc = GameUtils.getClient();
-            Container container = player.inventoryContainer;
+            MinecraftClient mc = GameUtils.getClient();
+            ScreenHandler container = player.playerScreenHandler;
             int endSlot = allowHotbar ? 44 : 35;
-            int currentMainHandSlot = player.inventory.currentItem + 36;
-            int currentSlot = hand == EnumHand.MAIN_HAND ? currentMainHandSlot : 45;
+            int currentMainHandSlot = player.getInventory().selectedSlot + 36;
+            int currentSlot = hand == Hand.MAIN_HAND ? currentMainHandSlot : 45;
 
             for (int slotNum = 9; slotNum <= endSlot; ++slotNum)
             {
@@ -269,7 +269,7 @@ public class InventoryUtils
                     continue;
                 }
 
-                Slot slot = container.inventorySlots.get(slotNum);
+                Slot slot = container.slots.get(slotNum);
                 ItemStack stackSlot = slot.getStack();
 
                 if (areStacksEqual(stackSlot, stackHand))
@@ -278,8 +278,8 @@ public class InventoryUtils
                     // stack in hand, then left click, otherwise right click to split the stack
                     int button = stackSlot.getCount() + count <= max ? 0 : 1;
 
-                    mc.playerController.windowClick(container.windowId, slot.slotNumber, button, ClickType.PICKUP, player);
-                    mc.playerController.windowClick(container.windowId, currentSlot, 0, ClickType.PICKUP, player);
+                    mc.interactionManager.clickSlot(container.syncId, slot.id, button, SlotActionType.PICKUP, player);
+                    mc.interactionManager.clickSlot(container.syncId, currentSlot, 0, SlotActionType.PICKUP, player);
 
                     break;
                 }
@@ -294,16 +294,16 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stack)
     {
-        NBTTagCompound nbt = stack.getTagCompound();
+        NbtCompound nbt = stack.getNbt();
 
-        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tag = nbt.getCompoundTag("BlockEntityTag");
+            NbtCompound tag = nbt.getCompound("BlockEntityTag");
 
-            if (tag.hasKey("Items", Constants.NBT.TAG_LIST))
+            if (tag.contains("Items", Constants.NBT.TAG_LIST))
             {
-                NBTTagList tagList = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-                return tagList.tagCount() > 0;
+                NbtList tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
+                return tagList.size() > 0;
             }
         }
 
@@ -315,23 +315,23 @@ public class InventoryUtils
      * (or other storage item with the same NBT data structure).
      * Does not keep empty slots.
      */
-    public static NonNullList<ItemStack> getStoredItemsNonEmpty(ItemStack stackIn)
+    public static DefaultedList<ItemStack> getStoredItemsNonEmpty(ItemStack stackIn)
     {
-        NBTTagCompound nbt = stackIn.getTagCompound();
+        NbtCompound nbt = stackIn.getNbt();
 
-        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompoundTag("BlockEntityTag");
+            NbtCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.hasKey("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
-                NonNullList<ItemStack> items = NonNullList.create();
-                NBTTagList tagList = tagBlockEntity.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-                final int count = tagList.tagCount();
+                DefaultedList<ItemStack> items = DefaultedList.of();
+                NbtList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                final int count = tagList.size();
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = new ItemStack(tagList.getCompoundTagAt(i));
+                    ItemStack stack = ItemStack.fromNbt(tagList.getCompound(i));
 
                     if (stack.isEmpty() == false)
                     {
@@ -343,7 +343,7 @@ public class InventoryUtils
             }
         }
 
-        return NonNullList.create();
+        return DefaultedList.of();
     }
 
     public static InventoryView getExactStoredItemsView(ItemStack stackIn)
@@ -368,21 +368,21 @@ public class InventoryUtils
 
     public static void readStoredItems(ItemStack containerStack, Consumer<Pair<Integer, ItemStack>> consumer)
     {
-        NBTTagCompound nbt = containerStack.getTagCompound();
+        NbtCompound nbt = containerStack.getNbt();
 
-        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompoundTag("BlockEntityTag");
+            NbtCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.hasKey("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
-                NBTTagList tagList = tagBlockEntity.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-                final int count = tagList.tagCount();
+                NbtList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                final int count = tagList.size();
 
                 for (int i = 0; i < count; ++i)
                 {
-                    NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                    ItemStack stack = new ItemStack(tag);
+                    NbtCompound tag = tagList.getCompound(i);
+                    ItemStack stack = ItemStack.fromNbt(tag);
                     int slot = tag.getByte("Slot");
 
                     if (slot >= 0 && stack.isEmpty() == false)
@@ -410,7 +410,7 @@ public class InventoryUtils
     public static Object2IntOpenHashMap<ItemType> getStoredItemCounts(ItemStack stackIn)
     {
         Object2IntOpenHashMap<ItemType> map = new Object2IntOpenHashMap<>();
-        NonNullList<ItemStack> items = getStoredItemsNonEmpty(stackIn);
+        DefaultedList<ItemStack> items = getStoredItemsNonEmpty(stackIn);
 
         for (ItemStack stack : items)
         {
@@ -428,14 +428,14 @@ public class InventoryUtils
      * This also counts the contents of any Shulker Boxes
      * (or other storage item with the same NBT data structure).
      */
-    public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(IInventory inv)
+    public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(Inventory inv)
     {
         Object2IntOpenHashMap<ItemType> map = new Object2IntOpenHashMap<>();
-        final int slots = inv.getSizeInventory();
+        final int slots = inv.size();
 
         for (int slot = 0; slot < slots; ++slot)
         {
-            ItemStack stack = inv.getStackInSlot(slot);
+            ItemStack stack = inv.getStack(slot);
 
             if (stack.isEmpty() == false)
             {

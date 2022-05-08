@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util;
 
 import java.io.File;
+import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -8,17 +9,22 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.util.data.Identifier;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -121,12 +127,13 @@ public class StringUtils
         return true;
     }
 
-    public static void sendOpenFileChatMessage(ICommandSender sender, String messageKey, File file)
+    public static void sendOpenFileChatMessage(Entity sender, String messageKey, File file)
     {
-        TextComponentString name = new TextComponentString(file.getName());
-        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
-        name.getStyle().setUnderlined(Boolean.TRUE);
-        sender.sendMessage(new TextComponentTranslation(messageKey, name));
+        MutableText name = (Text.literal(file.getName()))
+                .formatted(Formatting.UNDERLINE)
+                .styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath())));
+
+        sender.sendMessage(Text.translatable(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -446,25 +453,60 @@ public class StringUtils
         return name != null ? name : defaultStr;
     }
 
+    public static String stringifyAddress(SocketAddress address)
+    {
+        String str = address.toString();
+
+        if (str.contains("/"))
+        {
+            str = str.substring(str.indexOf('/') + 1);
+        }
+
+        return str.replace(':', '_');
+    }
+
     @Nullable
     public static String getWorldOrServerName()
     {
-        if (GameUtils.isSinglePlayer())
+        MinecraftClient mc = GameUtils.getClient();
+
+        if (mc.isIntegratedServerRunning())
         {
-            IntegratedServer server = GameUtils.getClient().getIntegratedServer();
+            IntegratedServer server = mc.getServer();
 
             if (server != null)
             {
-                return FileNameUtils.generateSimpleSafeFileName(server.getFolderName());
+                // This used to be just MinecraftServer::getLevelName().
+                // Getting the name would now require an @Accessor for MinecraftServer.field_23784
+                String name = server.getSaveProperties().getLevelName();
+                return FileNameUtils.generateSimpleSafeFileName(name);
             }
         }
         else
         {
-            ServerData server = GameUtils.getClient().getCurrentServerData();
+            if (mc.isConnectedToRealms())
+            {
+                if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
+                {
+                    return "realms";
+                }
+                else
+                {
+                    ClientPlayNetworkHandler handler = mc.getNetworkHandler();
+                    ClientConnection connection = handler != null ? handler.getConnection() : null;
+
+                    if (connection != null)
+                    {
+                        return "realms_" + stringifyAddress(connection.getAddress());
+                    }
+                }
+            }
+
+            ServerInfo server = mc.getCurrentServerEntry();
 
             if (server != null)
             {
-                return server.serverIP.trim().replace(':', '_');
+                return server.address.replace(':', '_');
             }
         }
 
@@ -511,11 +553,11 @@ public class StringUtils
     {
         if (stack.isEmpty() == false)
         {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
+            net.minecraft.util.Identifier rl = Registry.ITEM.getId(stack.getItem());
 
-            return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
-                    rl != null ? rl.toString() : "null", stack.getMetadata(), stack.getDisplayName(),
-                    stack.getTagCompound() != null ? stack.getTagCompound().toString() : "<no NBT>", stack);
+            return String.format("[%s - display: %s - NBT: %s] (%s)",
+                    rl != null ? rl.toString() : "null", stack.getName().getString(),
+                    stack.getNbt() != null ? stack.getNbt().toString() : "<no NBT>", stack);
         }
 
         return "<empty>";
@@ -571,7 +613,7 @@ public class StringUtils
     {
         try
         {
-            return net.minecraft.client.resources.I18n.format(translationKey, args);
+            return I18n.translate(translationKey, args);
         }
         catch (Exception e)
         {
@@ -585,7 +627,7 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return GameUtils.getClient().fontRenderer.FONT_HEIGHT;
+        return GameUtils.getClient().textRenderer.fontHeight;
     }
 
     /**
@@ -595,6 +637,6 @@ public class StringUtils
      */
     public static int getStringWidth(String text)
     {
-        return GameUtils.getClient().fontRenderer.getStringWidth(text);
+        return GameUtils.getClient().textRenderer.getWidth(text);
     }
 }

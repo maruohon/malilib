@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
@@ -19,7 +19,7 @@ import fi.dy.masa.malilib.registry.Registry;
 @Mixin(GuiScreen.class)
 public abstract class MixinGuiScreen extends Gui
 {
-    @Shadow protected Minecraft mc;
+    @Shadow protected MinecraftClient mc;
 
     @Inject(method = "renderToolTip", at = @At("RETURN"))
     private void onRenderToolTip(ItemStack stack, int x, int y, CallbackInfo ci)

@@ -7,7 +7,7 @@ import com.mumfrey.liteloader.LiteMod;
 import com.mumfrey.liteloader.ShutdownListener;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.event.dispatch.InitializationDispatcherImpl;
 import fi.dy.masa.malilib.registry.Registry;
@@ -47,7 +47,7 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     }
 
     @Override
-    public void onInitCompleted(Minecraft minecraft, LiteLoader loader)
+    public void onInitCompleted(MinecraftClient minecraft, LiteLoader loader)
     {
         // Dispatch the init calls to all the registered handlers
         ((InitializationDispatcherImpl) Registry.INITIALIZATION_DISPATCHER).onGameInitDone();

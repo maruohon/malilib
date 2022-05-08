@@ -7,7 +7,7 @@ import java.util.function.IntUnaryOperator;
 import javax.annotation.Nullable;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.ElementOffset;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -34,7 +34,7 @@ public class BaseWidget
     private static int lastDebugOutlineColorHue;
     private static int nextWidgetId;
 
-    protected final Minecraft mc = GameUtils.getClient();
+    protected final MinecraftClient mc = GameUtils.getClient();
     protected final EdgeInt margin = new EdgeInt();
     protected final EdgeInt padding = new EdgeInt();
     protected final ElementOffset iconOffset = new ElementOffset();

@@ -2,8 +2,9 @@ package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.profiler.Profiler;
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
 import fi.dy.masa.malilib.event.PostScreenRenderer;
@@ -56,86 +57,90 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost(Minecraft mc)
+    public void onRenderGameOverlayPost(MinecraftClient mc)
     {
         if (this.overlayRenderers.isEmpty() == false)
         {
-            mc.profiler.startSection("malilib_game_overlay_last");
+            Profiler profiler = mc.getProfiler();
+            profiler.push("malilib_game_overlay_last");
 
             for (PostGameOverlayRenderer renderer : this.overlayRenderers)
             {
-                mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
+                profiler.push(renderer.getProfilerSectionSupplier());
                 renderer.onPostGameOverlayRender();
-                mc.profiler.endSection();
+                profiler.pop();
             }
 
-            mc.profiler.endSection();
+            profiler.pop();
         }
     }
 
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderScreenPost(Minecraft mc, float partialTicks)
+    public void onRenderScreenPost(MinecraftClient mc, float partialTicks)
     {
         if (this.screenPostRenderers.isEmpty() == false)
         {
-            mc.profiler.startSection("malilib_screen_post");
+            Profiler profiler = mc.getProfiler();
+            profiler.push("malilib_screen_post");
 
             for (PostScreenRenderer renderer : this.screenPostRenderers)
             {
-                mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
+                profiler.push(renderer.getProfilerSectionSupplier());
                 renderer.onPostScreenRender(mc, partialTicks);
-                mc.profiler.endSection();
+                profiler.pop();
             }
 
-            mc.profiler.endSection();
+            profiler.pop();
         }
     }
 
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderTooltipPost(ItemStack stack, int x, int y, Minecraft mc)
+    public void onRenderTooltipPost(ItemStack stack, int x, int y, MinecraftClient mc)
     {
         if (this.tooltipLastRenderers.isEmpty() == false)
         {
-            mc.profiler.startSection("malilib_tooltip_last");
+            Profiler profiler = mc.getProfiler();
+            profiler.push("malilib_tooltip_last");
 
             for (PostItemTooltipRenderer renderer : this.tooltipLastRenderers)
             {
-                mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
+                profiler.push(renderer.getProfilerSectionSupplier());
                 renderer.onPostRenderItemTooltip(stack, x, y, mc);
-                mc.profiler.endSection();
+                profiler.pop();
             }
 
-            mc.profiler.endSection();
+            profiler.pop();
         }
     }
 
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(Minecraft mc, float partialTicks)
+    public void onRenderWorldLast(MinecraftClient mc, float partialTicks)
     {
-        mc.profiler.startSection("malilib_world_last");
+        Profiler profiler = mc.getProfiler();
+        profiler.push("malilib_world_last");
 
-        mc.profiler.startSection("overlays");
+        profiler.push("overlays");
         OverlayRendererContainer.INSTANCE.render(mc, partialTicks);
-        mc.profiler.endSection();
+        profiler.pop();
 
         if (this.worldLastRenderers.isEmpty() == false)
         {
 
             for (PostWorldRenderer renderer : this.worldLastRenderers)
             {
-                mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
+                profiler.push(renderer.getProfilerSectionSupplier());
                 renderer.onPostWorldRender(mc, partialTicks);
-                mc.profiler.endSection();
+                profiler.pop();
             }
 
         }
 
-        mc.profiler.endSection();
+        profiler.pop();
     }
 }

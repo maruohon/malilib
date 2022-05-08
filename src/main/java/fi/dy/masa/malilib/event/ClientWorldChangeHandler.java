@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.event;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 
 public interface ClientWorldChangeHandler
 {
@@ -15,7 +15,7 @@ public interface ClientWorldChangeHandler
      * @param worldAfter the new world reference that is going to be assigned
      * @param mc
      */
-    default void onPreClientWorldChange(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc) {}
+    default void onPreClientWorldChange(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, MinecraftClient mc) {}
 
     /**
      * Called after the client world reference has been changed.
@@ -25,5 +25,5 @@ public interface ClientWorldChangeHandler
      * @param worldAfter the new world reference that is going to be assigned
      * @param mc
      */
-    default void onPostClientWorldChange(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc) {}
+    default void onPostClientWorldChange(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, MinecraftClient mc) {}
 }

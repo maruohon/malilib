@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.action;
 
 import java.util.ArrayList;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.math.MathHelper;
@@ -81,7 +81,7 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            Minecraft mc = ctx.getClient();
+            MinecraftClient mc = ctx.getClient();
             mc.gameSettings.showDebugInfo = ! mc.gameSettings.showDebugInfo;
 
             if (mc.gameSettings.showDebugInfo == false)
@@ -98,7 +98,7 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            Minecraft mc = ctx.getClient();
+            MinecraftClient mc = ctx.getClient();
             mc.gameSettings.showDebugProfilerChart = ! mc.gameSettings.showDebugProfilerChart;
             boolean state = mc.gameSettings.showDebugProfilerChart;
             if (arg.equalsIgnoreCase("on")) state = true;
@@ -113,7 +113,7 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            Minecraft mc = ctx.getClient();
+            MinecraftClient mc = ctx.getClient();
             mc.gameSettings.showLagometer = ! mc.gameSettings.showLagometer;
             boolean state = mc.gameSettings.showLagometer;
             if (arg.equalsIgnoreCase("on")) state = true;
@@ -137,7 +137,7 @@ public class UtilityActions
 
     public static ActionResult takeScreenshot(ActionContext ctx)
     {
-        Minecraft mc = ctx.getClient();
+        MinecraftClient mc = ctx.getClient();
         mc.ingameGUI.getChatGUI().printChatMessage(ScreenShotHelper.saveScreenshot(mc.gameDir,
                                     mc.displayWidth, mc.displayHeight, mc.getFramebuffer()));
         return ActionResult.SUCCESS;

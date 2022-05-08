@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -33,7 +33,7 @@ import fi.dy.masa.malilib.util.position.Vec2i;
 
 public abstract class BaseScreen extends GuiScreen
 {
-    protected final Minecraft mc = GameUtils.getClient();
+    protected final MinecraftClient mc = GameUtils.getClient();
     protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
     protected final List<Runnable> tasks = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
@@ -90,7 +90,7 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height)
+    public void setWorldAndResolution(MinecraftClient mc, int width, int height)
     {
         if (this.getParent() != null)
         {

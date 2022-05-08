@@ -2,7 +2,8 @@ package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.profiler.Profiler;
 import fi.dy.masa.malilib.event.ClientTickHandler;
 
 public class TickEventDispatcherImpl implements TickEventDispatcher
@@ -25,20 +26,21 @@ public class TickEventDispatcherImpl implements TickEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onClientTick(Minecraft mc)
+    public void onClientTick(MinecraftClient mc)
     {
         if (this.clientTickHandlers.isEmpty() == false)
         {
-            mc.profiler.startSection("malilib_client_tick");
+            Profiler profiler = mc.getProfiler();
+            profiler.push("malilib_client_tick");
 
             for (ClientTickHandler handler : this.clientTickHandlers)
             {
-                mc.profiler.func_194340_a(handler.getProfilerSectionSupplier());
+                profiler.push(handler.getProfilerSectionSupplier());
                 handler.onClientTick();
-                mc.profiler.endSection();
+                profiler.pop();
             }
 
-            mc.profiler.endSection();
+            profiler.pop();
         }
     }
 }

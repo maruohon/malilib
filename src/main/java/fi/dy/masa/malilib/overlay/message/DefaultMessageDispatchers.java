@@ -1,7 +1,11 @@
 package fi.dy.masa.malilib.overlay.message;
 
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.network.ChatMessageSender;
+import net.minecraft.network.MessageType;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
@@ -52,31 +56,35 @@ public class DefaultMessageDispatchers
 
     public static void sendVanillaHotbarMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        TextComponentString msg = new TextComponentString(translatedMessage);
-        GameUtils.getClient().ingameGUI.addChatMessage(ChatType.GAME_INFO, msg);
+        MutableText msg = Text.translatable(translatedMessage);
+        ChatMessageSender sender = new ChatMessageSender(Util.NIL_UUID, msg);
+        GameUtils.getClient().inGameHud.onChatMessage(Registry.field_39206.get(MessageType.GAME_INFO), msg, new ChatMessageSender(Util.NIL_UUID, msg));
     }
 
     public static void sendVanillaHotbarMessageText(StyledText text, MessageDispatcher messageDispatcher)
     {
         if (text.lines.size() > 0)
         {
-            TextComponentString msg = new TextComponentString(text.lines.get(0).displayText);
-            GameUtils.getClient().ingameGUI.addChatMessage(ChatType.GAME_INFO, msg);
+            MutableText msg = Text.translatable(text.lines.get(0).displayText);
+            ChatMessageSender sender = new ChatMessageSender(Util.NIL_UUID, msg);
+            GameUtils.getClient().inGameHud.onChatMessage(Registry.field_39206.get(MessageType.GAME_INFO), msg, sender);
         }
     }
 
     public static void sendVanillaChatMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        TextComponentString msg = new TextComponentString(translatedMessage);
-        GameUtils.getClient().ingameGUI.addChatMessage(ChatType.CHAT, msg);
+        MutableText msg = Text.translatable(translatedMessage);
+        ChatMessageSender sender = new ChatMessageSender(Util.NIL_UUID, msg);
+        GameUtils.getClient().inGameHud.onChatMessage(Registry.field_39206.get(MessageType.CHAT), msg, sender);
     }
 
     public static void sendVanillaChatMessageText(StyledText text, MessageDispatcher messageDispatcher)
     {
         if (text.lines.size() > 0)
         {
-            TextComponentString msg = new TextComponentString(text.lines.get(0).displayText);
-            GameUtils.getClient().ingameGUI.addChatMessage(ChatType.CHAT, msg);
+            MutableText msg = Text.translatable(text.lines.get(0).displayText);
+            ChatMessageSender sender = new ChatMessageSender(Util.NIL_UUID, msg);
+            GameUtils.getClient().inGameHud.onChatMessage(Registry.field_39206.get(MessageType.CHAT), msg, sender);
         }
     }
 

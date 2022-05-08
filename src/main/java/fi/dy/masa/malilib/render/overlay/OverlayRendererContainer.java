@@ -8,7 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -89,7 +89,7 @@ public class OverlayRendererContainer
         this.enabledRenderersNeedUpdate = false;
     }
 
-    public void render(Minecraft mc, float partialTicks)
+    public void render(MinecraftClient mc, float partialTicks)
     {
         Entity cameraEntity = EntityUtils.getCameraEntity();
 
@@ -125,7 +125,7 @@ public class OverlayRendererContainer
         mc.profiler.endSection();
     }
 
-    protected void update(Vec3d cameraPos, Entity entity, Minecraft mc)
+    protected void update(Vec3d cameraPos, Entity entity, MinecraftClient mc)
     {
         if (this.enabledRenderersNeedUpdate)
         {
@@ -155,7 +155,7 @@ public class OverlayRendererContainer
         }
     }
 
-    protected void draw(Vec3d cameraPos, Minecraft mc)
+    protected void draw(Vec3d cameraPos, MinecraftClient mc)
     {
         if (this.resourcesAllocated && this.countActive > 0)
         {
