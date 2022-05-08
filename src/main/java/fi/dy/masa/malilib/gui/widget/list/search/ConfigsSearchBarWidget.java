@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
@@ -22,6 +21,7 @@ import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -208,7 +208,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         {
             this.hotkeySearchButton.onKeyTyped(keyCode, scanCode, modifiers);
 
-            if (keyCode == Keyboard.KEY_ESCAPE)
+            if (keyCode == Keys.KEY_ESCAPE)
             {
                 this.hotkeySearchButton.onClearSelection();
             }

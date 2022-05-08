@@ -16,12 +16,12 @@ public class InputDispatcherImpl implements InputDispatcher
 
     public InputDispatcherImpl()
     {
-        this.modifierKeys.add(Keyboard.KEY_LSHIFT);
-        this.modifierKeys.add(Keyboard.KEY_RSHIFT);
-        this.modifierKeys.add(Keyboard.KEY_LCONTROL);
-        this.modifierKeys.add(Keyboard.KEY_RCONTROL);
-        this.modifierKeys.add(Keyboard.KEY_LMENU);
-        this.modifierKeys.add(Keyboard.KEY_RMENU);
+        this.modifierKeys.add(Keys.KEY_LEFT_SHIFT);
+        this.modifierKeys.add(Keys.KEY_RIGHT_SHIFT);
+        this.modifierKeys.add(Keys.KEY_LEFT_CONTROL);
+        this.modifierKeys.add(Keys.KEY_RIGHT_CONTROL);
+        this.modifierKeys.add(Keys.KEY_LEFT_ALT);
+        this.modifierKeys.add(Keys.KEY_RIGHT_ALT);
     }
 
     @Override

@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
@@ -15,6 +14,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -67,7 +67,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
                 return true;
             }
 
-            if (keyCode == Keyboard.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
+            if (keyCode == Keys.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
             {
                 BaseScreen.openScreen(this.getParent());
                 return true;

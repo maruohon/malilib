@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
@@ -25,6 +24,7 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyBindImpl;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
@@ -297,7 +297,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == Keyboard.KEY_DELETE)
+        if (keyCode == Keys.KEY_DELETE)
         {
             this.deleteSelectedWidgets();
             return true;

@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import org.lwjgl.input.Keyboard;
 import net.minecraft.client.settings.KeyBinding;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -314,7 +313,7 @@ public class KeyBindImpl implements KeyBind
         }
         else if (pressedLast == false)
         {
-            if (this.keyCodes.contains(Keyboard.KEY_F3))
+            if (this.keyCodes.contains(Keys.KEY_F3))
             {
                 // Prevent the debug GUI from opening after the F3 key is released
                 ((MinecraftClientAccessor) GameUtils.getClient()).setActionKeyF3(true);

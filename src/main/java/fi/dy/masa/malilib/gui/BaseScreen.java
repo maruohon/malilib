@@ -21,6 +21,7 @@ import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -687,7 +688,7 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == Keyboard.KEY_TAB &&
+        if (keyCode == Keys.KEY_TAB &&
             GuiUtils.changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
         {
             return true;
@@ -702,7 +703,7 @@ public abstract class BaseScreen extends GuiScreen
             }
         }
 
-        if (keyCode == Keyboard.KEY_ESCAPE)
+        if (keyCode == Keys.KEY_ESCAPE)
         {
             this.closeScreenOrShowParent();
             return true;

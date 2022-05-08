@@ -3,12 +3,12 @@ package fi.dy.masa.malilib.gui;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseListWidget;
+import fi.dy.masa.malilib.input.Keys;
 
 public class BaseMultiListScreen extends BaseTabbedScreen
 {
@@ -136,7 +136,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         // Try to handle everything except ESC in the parent first
-        if (keyCode != Keyboard.KEY_ESCAPE && super.onKeyTyped(keyCode, scanCode, modifiers))
+        if (keyCode != Keys.KEY_ESCAPE && super.onKeyTyped(keyCode, scanCode, modifiers))
         {
             return true;
         }
@@ -150,7 +150,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
         }
 
         // If the list widget or its sub widgets didn't consume the ESC, then send that to the parent (to close the GUI)
-        return keyCode == Keyboard.KEY_ESCAPE && super.onKeyTyped(keyCode, scanCode, modifiers);
+        return keyCode == Keys.KEY_ESCAPE && super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
     @Override

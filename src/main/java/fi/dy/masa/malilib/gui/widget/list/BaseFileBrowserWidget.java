@@ -17,7 +17,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ConfirmActionScreen;
@@ -35,6 +34,7 @@ import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.list.header.DirectoryNavigationWidget;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryCache;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -737,12 +737,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             return true;
         }
 
-        if ((keyCode == Keyboard.KEY_BACK || keyCode == Keyboard.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
+        if ((keyCode == Keys.KEY_BACKSPACE || keyCode == Keys.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
         {
             this.switchToParentDirectory();
             return true;
         }
-        else if (keyCode == Keyboard.KEY_RIGHT || keyCode == Keyboard.KEY_RETURN)
+        else if (keyCode == Keys.KEY_RIGHT || keyCode == Keys.KEY_ENTER)
         {
             DirectoryEntry entry = this.getKeyboardNavigationEntry();
 
@@ -752,7 +752,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                 return true;
             }
         }
-        else if (keyCode == Keyboard.KEY_N && BaseScreen.isCtrlDown() && BaseScreen.isShiftDown())
+        else if (keyCode == Keys.KEY_N && BaseScreen.isCtrlDown() && BaseScreen.isShiftDown())
         {
             DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this);
             TextInputScreen gui = new TextInputScreen("malilib.title.screen.create_directory", "",

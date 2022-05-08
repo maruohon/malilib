@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -21,6 +20,7 @@ import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.list.search.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.util.DefaultWidgetPositioner;
 import fi.dy.masa.malilib.gui.widget.util.WidgetPositioner;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.data.EdgeInt;
 
@@ -462,13 +462,13 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
 
         if (this.allowKeyboardNavigation)
         {
-                 if (keyCode == Keyboard.KEY_UP)    this.keyboardNavigateByOne(false);
-            else if (keyCode == Keyboard.KEY_DOWN)  this.keyboardNavigateByOne(true);
-            else if (keyCode == Keyboard.KEY_PRIOR) this.keyboardNavigateByOnePage(false);
-            else if (keyCode == Keyboard.KEY_NEXT)  this.keyboardNavigateByOnePage(true);
-            else if (keyCode == Keyboard.KEY_HOME)  this.keyboardNavigateToEnd(false);
-            else if (keyCode == Keyboard.KEY_END)   this.keyboardNavigateToEnd(true);
-            else if (keyCode == Keyboard.KEY_SPACE) this.toggleKeyboardNavigationPositionSelection();
+                 if (keyCode == Keys.KEY_UP)        this.keyboardNavigateByOne(false);
+            else if (keyCode == Keys.KEY_DOWN)      this.keyboardNavigateByOne(true);
+            else if (keyCode == Keys.KEY_PAGE_UP)   this.keyboardNavigateByOnePage(false);
+            else if (keyCode == Keys.KEY_PAGE_DOWN) this.keyboardNavigateByOnePage(true);
+            else if (keyCode == Keys.KEY_HOME)      this.keyboardNavigateToEnd(false);
+            else if (keyCode == Keys.KEY_END)       this.keyboardNavigateToEnd(true);
+            else if (keyCode == Keys.KEY_SPACE)     this.toggleKeyboardNavigationPositionSelection();
             else return false;
 
             return true;

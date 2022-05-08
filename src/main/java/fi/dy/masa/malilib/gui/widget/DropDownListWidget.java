@@ -7,7 +7,6 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
@@ -17,6 +16,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.SelectionListener;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.SingleTextLineRenderer;
@@ -317,7 +317,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         if (this.isOpen())
         {
-            if (keyCode == Keyboard.KEY_ESCAPE)
+            if (keyCode == Keys.KEY_ESCAPE)
             {
                 if (this.searchOpen && this.searchTextField.isFocused())
                 {

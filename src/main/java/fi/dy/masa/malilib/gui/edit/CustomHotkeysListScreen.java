@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigScreen;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.BaseListScreen;
@@ -23,6 +22,7 @@ import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
+import fi.dy.masa.malilib.input.Keys;
 
 public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditingScreen
 {
@@ -101,7 +101,7 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
                 return true;
             }
 
-            if (keyCode == Keyboard.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
+            if (keyCode == Keys.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
             {
                 this.openParentScreen();
                 return true;

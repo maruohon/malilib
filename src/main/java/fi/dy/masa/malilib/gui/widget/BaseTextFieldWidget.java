@@ -6,8 +6,6 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import org.lwjgl.input.Keyboard;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
@@ -17,6 +15,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.util.TextRegion;
 import fi.dy.masa.malilib.gui.widget.util.TextFieldValidator;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -815,11 +814,11 @@ public class BaseTextFieldWidget extends InteractableWidget
         {
             boolean selectText = BaseScreen.isShiftDown();
 
-            if (keyCode == Keyboard.KEY_ESCAPE)
+            if (keyCode == Keys.KEY_ESCAPE)
             {
                 this.setFocused(false);
             }
-            else if (keyCode == Keyboard.KEY_BACK)
+            else if (keyCode == Keys.KEY_BACKSPACE)
             {
                 if (BaseScreen.isCtrlDown())
                 {
@@ -829,7 +828,7 @@ public class BaseTextFieldWidget extends InteractableWidget
 
                 this.deleteSelectionOrCharacter(false);
             }
-            else if (keyCode == Keyboard.KEY_DELETE)
+            else if (keyCode == Keys.KEY_DELETE)
             {
                 if (BaseScreen.isCtrlDown())
                 {
@@ -839,16 +838,16 @@ public class BaseTextFieldWidget extends InteractableWidget
 
                 this.deleteSelectionOrCharacter(true);
             }
-            else if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_TAB)
+            else if (keyCode == Keys.KEY_ENTER || keyCode == Keys.KEY_TAB)
             {
-                if (keyCode == Keyboard.KEY_RETURN)
+                if (keyCode == Keys.KEY_ENTER)
                 {
                     this.notifyListenerIfNeeded();
                 }
 
-                return keyCode != Keyboard.KEY_TAB; // Don't cancel on tab input, to allow the container to handle focus change
+                return keyCode != Keys.KEY_TAB; // Don't cancel on tab input, to allow the container to handle focus change
             }
-            else if (keyCode == Keyboard.KEY_LEFT)
+            else if (keyCode == Keys.KEY_LEFT)
             {
                 if (BaseScreen.isCtrlDown())
                 {
@@ -859,7 +858,7 @@ public class BaseTextFieldWidget extends InteractableWidget
                     this.moveCursor(LeftRight.LEFT, selectText);
                 }
             }
-            else if (keyCode == Keyboard.KEY_RIGHT)
+            else if (keyCode == Keys.KEY_RIGHT)
             {
                 if (BaseScreen.isCtrlDown())
                 {
@@ -870,28 +869,28 @@ public class BaseTextFieldWidget extends InteractableWidget
                     this.moveCursor(LeftRight.RIGHT, selectText);
                 }
             }
-            else if (keyCode == Keyboard.KEY_HOME)
+            else if (keyCode == Keys.KEY_HOME)
             {
                 this.setCursorToBeginning(selectText);
             }
-            else if (keyCode == Keyboard.KEY_END)
+            else if (keyCode == Keys.KEY_END)
             {
                 this.setCursorToEnd(selectText);
             }
-            else if (GuiScreen.isKeyComboCtrlA(keyCode))
+            else if (BaseScreen.isKeyComboCtrlA(keyCode))
             {
                 this.setCursorToBeginning(false);
                 this.setCursorToEnd(true);
             }
-            else if (GuiScreen.isKeyComboCtrlX(keyCode))
+            else if (BaseScreen.isKeyComboCtrlX(keyCode))
             {
                 this.cutSelectedText();
             }
-            else if (GuiScreen.isKeyComboCtrlC(keyCode))
+            else if (BaseScreen.isKeyComboCtrlC(keyCode))
             {
                 this.copySelectedText();
             }
-            else if (GuiScreen.isKeyComboCtrlV(keyCode))
+            else if (BaseScreen.isKeyComboCtrlV(keyCode))
             {
                 this.pasteText();
             }

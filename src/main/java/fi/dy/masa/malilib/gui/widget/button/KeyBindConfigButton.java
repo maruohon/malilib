@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.input.Hotkey;
@@ -126,7 +125,7 @@ public class KeyBindConfigButton extends GenericButton
     {
         if (this.isSelected())
         {
-            if (keyCode == Keyboard.KEY_ESCAPE)
+            if (keyCode == Keys.KEY_ESCAPE)
             {
                 if (this.firstKey)
                 {

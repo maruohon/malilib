@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.TextRenderer;
@@ -173,12 +173,12 @@ public abstract class BaseTextInputScreen extends BaseScreen
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == Keyboard.KEY_RETURN)
+        if (keyCode == Keys.KEY_ENTER)
         {
             this.closeScreenIfValueApplied();
             return true;
         }
-        else if (keyCode == Keyboard.KEY_ESCAPE)
+        else if (keyCode == Keys.KEY_ESCAPE)
         {
             this.openParentScreen();
             return true;
