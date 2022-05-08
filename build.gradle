@@ -1,24 +1,15 @@
-buildscript {
-	repositories {
-		maven {
-			name = "forge"
-			url = "https://files.minecraftforge.net/maven"
-		}
-		maven {
-			name = 'sponge'
-			url = 'https://repo.spongepowered.org/repository/maven-public'
-		}
-	}
-
-	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
-		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-	}
+plugins {
+	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'maven-publish'
 }
 
-apply plugin: 'net.minecraftforge.gradle.liteloader'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'maven-publish'
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+	maven { url 'https://maven.terraformersmc.com/releases/' }
+	// maven { url 'https://maven.quiltmc.org/repository/release/' }
+}
 
 ext.configFile = file "build.properties"
 
@@ -28,120 +19,66 @@ configFile.withReader {
 	project.ext.config = new ConfigSlurper().parse prop
 }
 
-minecraft {
-	version = config.minecraft_version
-	mappings = config.mappings_version
-	runDir = 'minecraft'
-	makeObfSourceJar = false
+dependencies {
+	minecraft "com.mojang:minecraft:${config.minecraft_version}"
+	mappings "net.fabricmc:yarn:${config.mappings_version}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${config.fabric_loader_version}"
+	implementation "com.google.code.findbugs:jsr305:3.0.2"
 
-	ext.mod_version = config.mod_version
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	//modImplementation "net.fabricmc.fabric-api:fabric-api:" + config.fabric_version
 
-	if (mod_version.endsWith('-dev')) {
-		mod_version = mod_version + "." + new Date().format('yyyyMMdd.HHmmss')
-	}
+	modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${config.fabric_resource_loader_version}"
+	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${config.fabric_resource_loader_version}"
 
-	replaceIn "MaLiLibReference.java"
-	replace "@MOD_VERSION@", mod_version
+	modCompileOnly "com.terraformersmc:modmenu:${config.mod_menu_version}"
 }
 
-compileJava {
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
-	options.encoding = 'UTF-8'
-}
-
-sourceSets {
-	main {
-		ext.refMap = 'mixins.' + config.mod_id + '.refmap.json'
-	}
-}
-
-group = config.group + "." + config.mod_id // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = config.group + "." + config.mod_id
 archivesBaseName = config.mod_file_name + '-' + config.minecraft_version_out
-version = project.minecraft.mod_version
+version = config.mod_version
 
-/**
- * This section allows you to customise the generated litemod.json file
- */
-litemod {
-	json {
-		name = config.mod_id
-		displayName = config.mod_name
-		mcversion = config.minecraft_version
-		version = config.mod_version
-		author = config.author
-
-		// Uncomment any of the following lines and fill in your own details as required
-		//dependsOn = [ 'modid', 'othermod' ]
-		//requiredAPIs = [ 'someapi' ]
-		//tweakClass = 'name.of.tweaker.here'
-		mixinConfigs = [ 'mixins.' + config.mod_id + '.json' ]
-	}
+if (version.endsWith('-dev')) {
+	version += "." + new Date().format('yyyyMMdd.HHmmss')
 }
 
-/**
- * This section allows you to customise your generated jar (litemod) file. By
- * default it includes the generated litemod.json file, however if you prefer to
- * include your own file from resources, simply remove the line below.
- */
-jar {
-	// Remove the "-mc1.12" suffix from the file name
-	classifier = ""
-	// Don't append a 'mod-' filename prefix >_>
-	baseName = archivesBaseName
-
-	from litemod.outputs
-
-	/*
-	manifest.mainAttributes (
-		'Built-By': System.properties['user.name'],
-		'Created-By': System.properties['java.vm.version'] + " (" + System.properties['java.vm.vendor'] + ")",
-		'Implementation-Title': config.mod_id,
-		'Implementation-Version': project.version
-	)
-	*/
-}
-
-mixin {
-	defaultObfuscationEnv notch
-}
-
-//tasks.withType(Jar)*.baseName = archivesBaseName
-
-processResources
-{
+processResources {
 	// Exclude the GIMP image files
 	exclude '**/*.xcf'
 	exclude '**/xcf'
 
 	// this will ensure that this task is redone when the versions change.
-	inputs.property "mod_version", project.minecraft.mod_version
-	inputs.property "minecraft_version", project.config.minecraft_version
+	//inputs.property "minecraft_version", project.config.minecraft_version
 
-	// replace stuff in mcmod.info, nothing else
-	from(sourceSets.main.resources.srcDirs) {
-		include 'mcmod.info'
-				
-		// replace version and mcversion
-		expand 'mod_version': project.minecraft.mod_version, 'minecraft_version': project.config.minecraft_version
-	}
-	  
-	// copy everything else, thats not the mcmod.info
-	from(sourceSets.main.resources.srcDirs) {
-		exclude 'mcmod.info'
+	inputs.property "mod_version", config.mod_version
+
+	filesMatching("fabric.mod.json") {
+		expand "mod_version": config.mod_version
 	}
 }
 
-task deobfJar(type: Jar) {
-	from sourceSets.main.output
-	// This classifier is standard and should not be changed
-	classifier = 'deobf'
+tasks.withType(JavaCompile).configureEach {
+	// ensure that the encoding is set to UTF-8, no matter what the system default is
+	// this fixes some edge cases with special characters not displaying correctly
+	// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+	// If Javadoc is generated, this must be specified in that task too.
+	it.options.encoding = "UTF-8"
+
+	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+	it.options.release = 17
 }
 
-// This section enables the last two tasks
-artifacts {
-	//archives sourcesJar
-	archives deobfJar
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
 }
 
 tasks.publish.dependsOn build
@@ -149,10 +86,10 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			artifactId project.archivesBaseName
-			from components.java
 
-			artifact deobfJar
-			artifact sourceJar
+			// add all the jars that should be included when publishing to maven
+			//artifact(jar)             { builtBy remapJar }
+			from components.java
 		}
 	}
 
