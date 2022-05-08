@@ -6,7 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -84,12 +84,12 @@ public abstract class BaseOverlayRenderer
     /**
      * Should this renderer draw anything at the moment, ie. is it enabled for example
      */
-    public abstract boolean shouldRender(Minecraft mc);
+    public abstract boolean shouldRender(MinecraftClient mc);
 
     /**
      * @return true, if this renderer should get re-drawn/updated
      */
-    public abstract boolean needsUpdate(Entity entity, Minecraft mc);
+    public abstract boolean needsUpdate(Entity entity, MinecraftClient mc);
 
     /**
      * Update the renderer (draw again to the buffers). This method is called
@@ -102,7 +102,7 @@ public abstract class BaseOverlayRenderer
      *                  and the camera position during the draw() call.
      * @param entity The current camera entity
      */
-    public abstract void update(Vec3d cameraPos, Entity entity, Minecraft mc);
+    public abstract void update(Vec3d cameraPos, Entity entity, MinecraftClient mc);
 
     protected void preRender()
     {

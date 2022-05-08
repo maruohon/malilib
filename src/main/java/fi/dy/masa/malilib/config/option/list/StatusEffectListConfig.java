@@ -6,7 +6,8 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class StatusEffectListConfig extends ValueListConfig<Potion>
 {
@@ -38,7 +39,7 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
     {
         try
         {
-            return Potion.REGISTRY.getObject(new ResourceLocation(name));
+            return Registry.POTION.get(new Identifier(name));
         }
         catch (Exception e)
         {
@@ -50,7 +51,7 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
     {
         try
         {
-            return Potion.REGISTRY.getNameForObject(effect).toString();
+            return Registry.POTION.getId(effect).toString();
         }
         catch (Exception e)
         {

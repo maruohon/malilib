@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.event.dispatch;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.profiler.Profiler;
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
 import fi.dy.masa.malilib.event.PostScreenRenderer;

@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util.game;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -15,11 +16,11 @@ public class PlacementUtils
      * based on the replaceability of the material instead. If <b>checkMaterial</b> is true, then the
      * replaceability of the material can override the non-replaceability of the block for the return value.
      */
-    public static boolean isReplaceable(World world, BlockPos pos, boolean checkMaterial)
+    public static boolean isReplaceable(ItemPlacementContext ctx, boolean checkMaterial)
     {
-        IBlockState state = world.getBlockState(pos);
+        BlockState state = ctx.getWorld().getBlockState(ctx.getBlockPos());
 
-        return state.getBlock().isReplaceable(world, pos) ||
+        return state.canReplace(ctx) ||
                (checkMaterial && state.getMaterial().isReplaceable());
     }
 
@@ -35,11 +36,11 @@ public class PlacementUtils
      * the block's replaceability is checked, and it's enough for the position to be offset.
      * @param checkMaterial whether or not to check the replaceability of the material too, or only the block
      */
-    public static HitPosition getPlacementPositionForClickPosition(World world, HitPosition originalPos, boolean checkMaterial)
+    public static HitPosition getPlacementPositionForClickPosition(ItemPlacementContext ctx, HitPosition originalPos, boolean checkMaterial)
     {
         BlockPos origBlockPos = originalPos.getBlockPos();
 
-        if (isReplaceable(world, origBlockPos, checkMaterial) == false)
+        if (isReplaceable(ctx, origBlockPos, checkMaterial) == false)
         {
             BlockPos offsetBlockPos = origBlockPos.offset(originalPos.getSide());
             Vec3d origExactPos = originalPos.getExactPos();

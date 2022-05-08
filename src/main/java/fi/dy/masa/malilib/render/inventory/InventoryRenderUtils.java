@@ -12,7 +12,7 @@ import net.minecraft.block.BlockFurnace;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -481,7 +481,7 @@ public class InventoryRenderUtils
     }
 
     @Nullable
-    public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory(Minecraft mc)
+    public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory(MinecraftClient mc)
     {
         World world = WorldUtils.getBestWorld(mc);
 

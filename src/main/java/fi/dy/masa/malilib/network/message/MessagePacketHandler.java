@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.network.message;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 import fi.dy.masa.malilib.config.value.ScreenLocation;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
@@ -31,18 +31,18 @@ import fi.dy.masa.malilib.registry.Registry;
 public class MessagePacketHandler extends BasePacketHandler
 {
     public static final String CHANNEL_NAME = "malilib:message";
-    public static final List<ResourceLocation> CHANNELS = ImmutableList.of(new ResourceLocation(CHANNEL_NAME));
+    public static final List<Identifier> CHANNELS = ImmutableList.of(new Identifier(CHANNEL_NAME));
 
     private static final MessagePacketHandler INSTANCE = new MessagePacketHandler();
 
     @Override
-    public List<ResourceLocation> getChannels()
+    public List<Identifier> getChannels()
     {
         return CHANNELS;
     }
 
     @Override
-    public void onPacketReceived(PacketBuffer buf)
+    public void onPacketReceived(PacketByteBuf buf)
     {
         // type (string)
         // displayTimeMs (varInt)

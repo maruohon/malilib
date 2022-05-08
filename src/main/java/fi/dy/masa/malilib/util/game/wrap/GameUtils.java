@@ -3,36 +3,36 @@ package fi.dy.masa.malilib.util.game.wrap;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.Util;
+import net.minecraft.util.hit.HitResult;
 
 public class GameUtils
 {
-    public static Minecraft getClient()
+    public static MinecraftClient getClient()
     {
-        return Minecraft.getMinecraft();
+        return MinecraftClient.getInstance();
     }
 
     @Nullable
-    public static WorldClient getClientWorld()
+    public static ClientWorld getClientWorld()
     {
         return getClient().world;
     }
 
     @Nullable
-    public static EntityPlayerSP getClientPlayer()
+    public static ClientPlayerEntity getClientPlayer()
     {
         return getClient().player;
     }
 
-    public static PlayerControllerMP getInteractionManager()
+    public static ClientPlayerInteractionManager getInteractionManager()
     {
-        return getClient().playerController;
+        return getClient().interactionManager;
     }
 
     /**
@@ -41,88 +41,79 @@ public class GameUtils
     @Nullable
     public static Entity getCameraEntity()
     {
-        Minecraft mc = getClient();
-        Entity entity = mc.getRenderViewEntity();
+        MinecraftClient mc = getClient();
+        Entity entity = mc.getCameraEntity();
         return entity != null ? entity : mc.player;
     }
 
     public static String getPlayerName()
     {
         Entity player = getClientPlayer();
-        return player != null ? player.getName() : "?";
+        return player != null ? player.getName().getString() : "?";
     }
 
     @Nullable
-    public static RayTraceResult getHitResult()
+    public static HitResult getHitResult()
     {
-        return getClient().objectMouseOver;
+        return getClient().crosshairTarget;
     }
 
     public static boolean isCreativeMode()
     {
-        EntityPlayerSP player = getClientPlayer();
-        return player != null && player.capabilities.isCreativeMode;
+        ClientPlayerEntity player = getClientPlayer();
+        return player != null && player.getAbilities().creativeMode;
     }
 
     public static int getRenderDistanceChunks()
     {
-        return getClient().gameSettings.renderDistanceChunks;
+        return getClient().options.getViewDistance().getValue();
     }
 
     public static boolean isSinglePlayer()
     {
-        return getClient().isSingleplayer();
+        return getClient().isIntegratedServerRunning();
     }
 
     public static void scheduleToClientThread(Runnable task)
     {
-        Minecraft mc = getClient();
-
-        if (mc.isCallingFromMinecraftThread())
-        {
-            task.run();
-        }
-        else
-        {
-            mc.addScheduledTask(task);
-        }
+        getClient().execute(task);
     }
 
     public static void profilerPush(String name)
     {
-        getClient().profiler.startSection(name);
+        getClient().getProfiler().push(name);
     }
 
     public static void profilerPush(Supplier<String> nameSupplier)
     {
-        getClient().profiler.func_194340_a(nameSupplier);
+        getClient().getProfiler().push(nameSupplier);
     }
 
     public static void profilerSwap(String name)
     {
-        getClient().profiler.endStartSection(name);
+        getClient().getProfiler().swap(name);
     }
 
     public static void profilerSwap(Supplier<String> nameSupplier)
     {
-        getClient().profiler.func_194339_b(nameSupplier);
+        getClient().getProfiler().swap(nameSupplier);
     }
 
     public static void profilerPop()
     {
-        getClient().profiler.endSection();
+        getClient().getProfiler().pop();
     }
 
     public static void openFile(Path file)
     {
-        OpenGlHelper.openFile(file.toFile());
+        Util.getOperatingSystem().open(file.toFile());
     }
 
     public static class Options
     {
         public static boolean hideGui()
         {
-            return getClient().gameSettings.hideGUI;
+            return getClient().options.hudHidden;
         }
     }
 }

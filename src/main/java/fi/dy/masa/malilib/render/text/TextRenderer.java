@@ -11,7 +11,7 @@ import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
@@ -125,7 +125,7 @@ public class TextRenderer implements IResourceManagerReloadListener
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
     {
-        Minecraft mc = GameUtils.getClient();
+        MinecraftClient mc = GameUtils.getClient();
         this.unicode = mc.isUnicode();
 
         if (mc.gameSettings.anaglyph != this.anaglyph)
@@ -281,7 +281,7 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public void startBuffers()
     {
-        Minecraft mc = GameUtils.getClient();
+        MinecraftClient mc = GameUtils.getClient();
 
         if (this.unicode != mc.isUnicode())
         {

@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -129,7 +129,7 @@ public class RenderUtils
 
     public static int getVanillaScreenScale()
     {
-        Minecraft mc = GameUtils.getClient();
+        MinecraftClient mc = GameUtils.getClient();
         int displayWidth = mc.displayWidth;
         int displayHeight = mc.displayHeight;
         int scale = Math.min(displayWidth / 320, displayHeight / 240);

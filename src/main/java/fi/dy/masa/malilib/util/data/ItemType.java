@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.util.data;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
 /**
@@ -63,14 +63,9 @@ public class ItemType
         int result = 1;
         result = prime * result + this.stack.getItem().hashCode();
 
-        if (this.ignoreDamage == false || this.stack.isItemStackDamageable() == false)
-        {
-            result = prime * result + this.stack.getMetadata();
-        }
-
         if (this.checkNbt())
         {
-            NBTTagCompound tag = ItemWrap.getTag(this.stack);
+            NbtCompound tag = ItemWrap.getTag(this.stack);
             result = prime * result + (tag != null ? tag.hashCode() : 0);
         }
 
@@ -100,28 +95,21 @@ public class ItemType
                 return false;
             }
 
-            if ((this.ignoreDamage == false || this.stack.isItemStackDamageable() == false) &&
-                this.stack.getMetadata() != other.stack.getMetadata())
-            {
-                return false;
-            }
-
-            return this.checkNbt() == false || ItemStack.areItemStackTagsEqual(this.stack, other.stack);
+            return this.checkNbt() == false || ItemStack.areNbtEqual(this.stack, other.stack);
         }
     }
 
     @Override
     public String toString()
     {
+        Identifier rl = Registry.ITEM.getId(this.stack.getItem());
+
         if (this.checkNbt())
         {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
-            return rl.toString() + "@" + this.stack.getMetadata() + ItemWrap.getTag(this.stack);
+            NbtCompound tag = ItemWrap.getTag(this.stack);
+            return tag != null ? rl + tag.toString() : rl.toString();
         }
-        else
-        {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
-            return rl.toString() + "@" + this.stack.getMetadata();
-        }
+
+        return rl.toString();
     }
 }

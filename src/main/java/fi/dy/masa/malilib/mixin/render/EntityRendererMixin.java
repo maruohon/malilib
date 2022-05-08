@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.EntityRenderer;
 import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcherImpl;
 import fi.dy.masa.malilib.registry.Registry;
@@ -15,7 +15,7 @@ import fi.dy.masa.malilib.registry.Registry;
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin
 {
-    @Shadow @Final private Minecraft mc;
+    @Shadow @Final private MinecraftClient mc;
 
     @Inject(method = "renderWorldPass(IFJ)V", at = @At(
             value = "FIELD",

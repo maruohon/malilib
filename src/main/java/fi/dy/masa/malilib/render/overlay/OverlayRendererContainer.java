@@ -9,7 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -186,7 +186,7 @@ public class OverlayRendererContainer
             double cx = cameraPos.x;
             double cy = cameraPos.y;
             double cz = cameraPos.z;
-            Minecraft mc = GameUtils.getClient();
+            MinecraftClient mc = GameUtils.getClient();
 
             for (BaseOverlayRenderer renderer : this.enabledRenderers)
             {

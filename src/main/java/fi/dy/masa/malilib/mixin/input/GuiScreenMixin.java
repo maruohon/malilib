@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.input.InputDispatcherImpl;
@@ -17,7 +17,7 @@ import fi.dy.masa.malilib.registry.Registry;
 @Mixin(GuiScreen.class)
 public abstract class GuiScreenMixin extends Gui
 {
-    @Shadow protected Minecraft mc;
+    @Shadow protected MinecraftClient mc;
 
     @Inject(method = "handleInput", cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleKeyboardInput()V"))

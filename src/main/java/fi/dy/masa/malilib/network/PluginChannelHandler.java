@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.network;
 
 import java.util.List;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 
 public interface PluginChannelHandler
 {
@@ -23,10 +23,10 @@ public interface PluginChannelHandler
     /**
      * @return a list of message channels this handler can handle
      */
-    List<ResourceLocation> getChannels();
+    List<Identifier> getChannels();
 
     /**
      * Called when the packet is received from the other end of the connection
      */
-    void onPacketReceived(PacketBuffer buf);
+    void onPacketReceived(PacketByteBuf buf);
 }

@@ -9,9 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import com.mumfrey.liteloader.core.LiteLoader;
 import org.apache.commons.lang3.StringUtils;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.Formatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
@@ -31,12 +30,13 @@ import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class ConfigUtils
 {
     public static Path getConfigDirectory()
     {
-        return LiteLoader.getCommonConfigFolder().toPath();
+        return GameUtils.getClient().runDirectory.toPath().resolve("config");
     }
 
     /**
@@ -94,7 +94,7 @@ public class ConfigUtils
      */
     public static void sortConfigsByDisplayName(List<ConfigInfo> configs)
     {
-        configs.sort(Comparator.comparing((c) -> TextFormatting.getTextWithoutFormattingCodes(c.getDisplayName())));
+        configs.sort(Comparator.comparing((c) -> Formatting.strip(c.getDisplayName())));
     }
 
     /**
