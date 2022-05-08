@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.event;
 
-import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.util.ProfilerSectionSupplierSupplier;
 
 public interface ClientTickHandler extends ProfilerSectionSupplierSupplier
@@ -14,5 +13,5 @@ public interface ClientTickHandler extends ProfilerSectionSupplierSupplier
      * Note: The client world and the client player are checked
      * to not be null before this method is called.
      */
-    void onClientTick(Minecraft mc);
+    void onClientTick();
 }

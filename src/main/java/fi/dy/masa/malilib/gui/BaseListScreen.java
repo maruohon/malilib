@@ -138,7 +138,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
         {
             this.listWidget = this.createListWidget();
             this.listWidget.setTaskQueue(this::addTask);
-            this.listWidget.setZ((int) this.zLevel + 10);
+            this.listWidget.setZ(this.z + 10);
             this.listWidget.initListWidget();
         }
 

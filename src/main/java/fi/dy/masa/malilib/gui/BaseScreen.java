@@ -49,6 +49,7 @@ public abstract class BaseScreen extends GuiScreen
     protected int customScreenScale;
     protected int x;
     protected int y;
+    protected float z;
     protected int lastMouseX = -1;
     protected int lastMouseY = -1;
     protected int screenWidth;
@@ -99,8 +100,8 @@ public abstract class BaseScreen extends GuiScreen
 
         if (this.useCustomScreenScaling)
         {
-            width = this.width;
-            height = this.height;
+            width = this.getTotalWidth();
+            height = this.getTotalHeight();
         }
 
         super.setWorldAndResolution(mc, width, height);
@@ -137,8 +138,8 @@ public abstract class BaseScreen extends GuiScreen
 
         if (this.useCustomScreenScaling)
         {
-            width = this.width;
-            height = this.height;
+            width = this.getTotalWidth();
+            height = this.getTotalHeight();
         }
 
         // Don't override custom screen sizes when the window is resized or whatever,
@@ -156,7 +157,7 @@ public abstract class BaseScreen extends GuiScreen
 
     protected boolean isFullScreen()
     {
-        return this.screenWidth == this.width && this.screenHeight == this.height;
+        return this.screenWidth == this.getTotalWidth() && this.screenHeight == this.getTotalHeight();
     }
 
     protected void updateCustomScreenScale()
@@ -181,7 +182,7 @@ public abstract class BaseScreen extends GuiScreen
         int width = (int) Math.ceil((double) this.mc.displayWidth / scaleFactor);
         int height = (int) Math.ceil((double) this.mc.displayHeight / scaleFactor);
 
-        if (this.width != width || this.height != height)
+        if (this.getTotalWidth() != width || this.getTotalHeight() != height)
         {
             // Only set the screen size if it was originally the same as the window dimensions,
             // ie. the screen was not a smaller (popup?) screen.
@@ -213,6 +214,16 @@ public abstract class BaseScreen extends GuiScreen
     public void setScreenHeight(int screenHeight)
     {
         this.screenHeight = screenHeight;
+    }
+
+    public int getTotalWidth()
+    {
+        return this.width;
+    }
+
+    public int getTotalHeight()
+    {
+        return this.height;
     }
 
     public void centerOnScreen()
@@ -413,8 +424,8 @@ public abstract class BaseScreen extends GuiScreen
 
     public ScreenContext getContext()
     {
-        int mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
-        int mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
+        int mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
+        int mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
         boolean isActiveScreen = GuiUtils.getCurrentScreen() == this;
         int hoveredWidgetId = this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
 
@@ -479,8 +490,8 @@ public abstract class BaseScreen extends GuiScreen
     @Override
     public void handleMouseInput() throws IOException
     {
-        int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+        int mouseX = GuiUtils.getMouseScreenX();
+        int mouseY = GuiUtils.getMouseScreenY();
         int mouseWheelDelta = Mouse.getEventDWheel();
 
         boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
@@ -508,8 +519,8 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (this.useCustomScreenScaling)
         {
-            mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
-            mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
+            mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
+            mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
         }
 
         if (this.onMouseClicked(mouseX, mouseY, mouseButton) == false)
@@ -525,8 +536,8 @@ public abstract class BaseScreen extends GuiScreen
 
         if (this.useCustomScreenScaling)
         {
-            mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
-            mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
+            mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
+            mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
         }
 
         if (this.onMouseReleased(mouseX, mouseY, mouseButton) == false)
@@ -738,7 +749,7 @@ public abstract class BaseScreen extends GuiScreen
 
     public BaseScreen setZ(float z)
     {
-        this.zLevel = z;
+        this.z = z;
 
         for (InteractableWidget widget : this.widgets)
         {
@@ -752,7 +763,7 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (gui instanceof BaseScreen)
         {
-            this.setZ(((BaseScreen) gui).zLevel + this.getPopupGuiZLevelIncrement());
+            this.setZ(((BaseScreen) gui).z + this.getPopupGuiZLevelIncrement());
         }
 
         return this;
@@ -762,7 +773,7 @@ public abstract class BaseScreen extends GuiScreen
     {
         this.widgets.add(widget);
         widget.setTaskQueue(this::addTask);
-        widget.onWidgetAdded(this.zLevel);
+        widget.onWidgetAdded(this.z);
         return widget;
     }
 
@@ -838,13 +849,13 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (this.renderBorder)
         {
-            ShapeRenderUtils.renderOutlinedRectangle(this.x, this.y, this.zLevel,
+            ShapeRenderUtils.renderOutlinedRectangle(this.x, this.y, this.z,
                                                      this.screenWidth, this.screenHeight,
                                                      this.backgroundColor, this.borderColor);
         }
         else
         {
-            ShapeRenderUtils.renderRectangle(this.x, this.y, this.zLevel,
+            ShapeRenderUtils.renderRectangle(this.x, this.y, this.z,
                                              this.screenWidth, this.screenHeight,
                                              this.backgroundColor);
         }
@@ -857,7 +868,7 @@ public abstract class BaseScreen extends GuiScreen
             int x = this.x + this.titleX;
             int y = this.y + this.titleY;
 
-            this.textRenderer.renderLine(x, y, this.zLevel + 0.125f, this.titleColor, true, this.titleText, ctx);
+            this.textRenderer.renderLine(x, y, this.z + 0.125f, this.titleColor, true, this.titleText, ctx);
         }
     }
 
@@ -976,13 +987,13 @@ public abstract class BaseScreen extends GuiScreen
 
             int x = this.x + 1;
             int y = this.y + 1;
-            float z = this.zLevel + 20;
+            float z = this.z + 20;
             int w = line.renderWidth + 4;
 
             // if this is a popup-screen or other screen that does not extend
             // to the bottom of the display, then render the info bar below the
             // screen area, to not obstruct other widgets.
-            if (this.y + this.screenHeight + 14 < this.height)
+            if (this.y + this.screenHeight + 14 < this.getTotalHeight())
             {
                 x = this.x;
                 y = this.y + this.screenHeight + 1;
@@ -992,7 +1003,7 @@ public abstract class BaseScreen extends GuiScreen
                 x = this.x;
                 y = this.y - 15;
             }
-            else if (ctx.mouseY < this.height / 2)
+            else if (ctx.mouseY < this.getTotalHeight() / 2)
             {
                 y = this.y + this.screenHeight - 15;
             }

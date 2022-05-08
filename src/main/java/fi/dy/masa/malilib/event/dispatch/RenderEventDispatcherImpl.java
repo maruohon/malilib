@@ -56,7 +56,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost(Minecraft mc, float partialTicks)
+    public void onRenderGameOverlayPost(Minecraft mc)
     {
         if (this.overlayRenderers.isEmpty() == false)
         {
@@ -65,7 +65,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostGameOverlayRenderer renderer : this.overlayRenderers)
             {
                 mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
-                renderer.onPostGameOverlayRender(mc, partialTicks);
+                renderer.onPostGameOverlayRender();
                 mc.profiler.endSection();
             }
 

@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import net.minecraft.client.renderer.OpenGlHelper;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
@@ -25,6 +24,7 @@ import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -355,7 +355,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     {
         if (BaseScreen.isShiftDown())
         {
-            OpenGlHelper.openFile(dir);
+            GameUtils.openFile(dir);
         }
         else
         {

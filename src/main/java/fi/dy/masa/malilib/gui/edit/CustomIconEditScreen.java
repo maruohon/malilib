@@ -248,7 +248,7 @@ public class CustomIconEditScreen extends BaseScreen
         {
             int x = this.x + 10;
             int y = this.previewLabel.getBottom() + 2;
-            float z = this.zLevel + 0.5f;
+            float z = this.z + 0.5f;
 
             float pw = 1.0F / (float) this.textureSheetWidth;
             float ph = 1.0F / (float) this.textureSheetHeight;

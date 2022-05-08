@@ -34,7 +34,7 @@ public class TickEventDispatcherImpl implements TickEventDispatcher
             for (ClientTickHandler handler : this.clientTickHandlers)
             {
                 mc.profiler.func_194340_a(handler.getProfilerSectionSupplier());
-                handler.onClientTick(mc);
+                handler.onClientTick();
                 mc.profiler.endSection();
             }
 

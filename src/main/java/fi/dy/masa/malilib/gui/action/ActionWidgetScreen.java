@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
@@ -315,8 +314,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         {
             this.closeScreen();
 
-            int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
-            int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+            int mouseX = GuiUtils.getMouseScreenX();
+            int mouseY = GuiUtils.getMouseScreenY();
             BaseActionExecutionWidget widget = this.getHoveredActionWidget(mouseX, mouseY);
 
             if (widget != null)
@@ -394,7 +393,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                                        new MenuEntryWidget(textRemove, () -> this.removeActionWidget(widget)));
 
         this.addWidget(this.menuWidget);
-        this.menuWidget.setZ(this.zLevel + 40);
+        this.menuWidget.setZ(this.z + 40);
         this.menuWidget.updateSubWidgetPositions();
     }
 
@@ -408,7 +407,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                                        new MenuEntryWidget(textRemove, this::deleteSelectedWidgets));
 
         this.addWidget(this.menuWidget);
-        this.menuWidget.setZ(this.zLevel + 40);
+        this.menuWidget.setZ(this.z + 40);
         this.menuWidget.updateSubWidgetPositions();
     }
 
@@ -621,7 +620,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
             {
                 int color = 0x30FFFFFF;
 
-                ShapeRenderUtils.renderGrid(this.x, this.y, this.zLevel + 0.1f,
+                ShapeRenderUtils.renderGrid(this.x, this.y, this.z + 0.1f,
                                             this.screenWidth, this.screenHeight, this.gridSize, 1, color);
             }
 
@@ -632,7 +631,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                 int maxX = Math.max(ctx.mouseX, this.selectionStart.x);
                 int maxY = Math.max(ctx.mouseY, this.selectionStart.y);
 
-                ShapeRenderUtils.renderOutlinedRectangle(minX, minY, this.zLevel + 50f,
+                ShapeRenderUtils.renderOutlinedRectangle(minX, minY, this.z + 50f,
                                                          maxX - minX, maxY - minY, 0x30FFFFFF, 0xFFFFFFFF);
             }
         }

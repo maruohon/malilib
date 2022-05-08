@@ -53,7 +53,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     protected void addListWidget(BaseListWidget widget)
     {
         widget.setTaskQueue(this::addTask);
-        widget.setZ((int) this.zLevel + 10);
+        widget.setZ(this.z + 10);
         widget.initListWidget();
 
         this.listWidgets.add(widget);

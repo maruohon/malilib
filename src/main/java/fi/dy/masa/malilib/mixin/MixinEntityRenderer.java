@@ -37,7 +37,7 @@ public abstract class MixinEntityRenderer
     {
         if (this.mc.world != null && this.mc.player != null)
         {
-            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderGameOverlayPost(this.mc, partialTicks);
+            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderGameOverlayPost(this.mc);
         }
     }
 

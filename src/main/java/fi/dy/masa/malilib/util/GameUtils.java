@@ -1,9 +1,11 @@
 package fi.dy.masa.malilib.util;
 
+import java.io.File;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.math.RayTraceResult;
 
 public class GameUtils
@@ -64,6 +66,19 @@ public class GameUtils
         else
         {
             mc.addScheduledTask(task);
+        }
+    }
+
+    public static void openFile(File file)
+    {
+        OpenGlHelper.openFile(file);
+    }
+
+    public static class Options
+    {
+        public static boolean hideGui()
+        {
+            return getClient().gameSettings.hideGUI;
         }
     }
 }

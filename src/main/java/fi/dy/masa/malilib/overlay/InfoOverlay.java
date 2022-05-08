@@ -29,7 +29,6 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     protected final List<InfoRendererWidget> enabledGuiWidgets = new ArrayList<>();
     protected final List<InfoRendererWidget> allEnabledWidgets = new ArrayList<>();
     protected final List<InfoArea> activeInfoAreas = new ArrayList<>();
-    protected final Minecraft mc = GameUtils.getClient();
     protected boolean needsReFetch;
 
     public InfoArea getOrCreateInfoArea(ScreenLocation location)
@@ -38,9 +37,9 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     }
 
     @Override
-    public void onPostGameOverlayRender(Minecraft mc, float partialTicks)
+    public void onPostGameOverlayRender()
     {
-        if (mc.gameSettings.hideGUI == false)
+        if (GameUtils.Options.hideGui() == false)
         {
             this.renderInGame();
         }
@@ -53,7 +52,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     }
 
     @Override
-    public void onClientTick(Minecraft mc)
+    public void onClientTick()
     {
         this.tick();
     }
@@ -146,7 +145,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      */
     public void renderInGame()
     {
-        if (this.mc.gameSettings.hideGUI == false)
+        if (GameUtils.Options.hideGui() == false)
         {
             boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
             boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();

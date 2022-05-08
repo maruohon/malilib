@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
+import org.lwjgl.input.Mouse;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -45,6 +46,26 @@ public class GuiUtils
     public static int getDisplayHeight()
     {
         return GameUtils.getClient().displayHeight;
+    }
+
+    public static int getMouseScreenX()
+    {
+        return getMouseScreenX(getCurrentScreen().width);
+    }
+
+    public static int getMouseScreenX(int screenWidth)
+    {
+        return Mouse.getEventX() * screenWidth / getDisplayWidth();
+    }
+
+    public static int getMouseScreenY()
+    {
+        return getMouseScreenY(getCurrentScreen().height);
+    }
+
+    public static int getMouseScreenY(int screenHeight)
+    {
+        return screenHeight - Mouse.getEventY() * screenHeight / getDisplayHeight() - 1;
     }
 
     @Nullable
