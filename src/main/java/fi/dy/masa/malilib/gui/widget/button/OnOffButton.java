@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.gui.widget.button;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexFormats;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
@@ -163,7 +163,7 @@ public class OnOffButton extends GenericButton
         int v2 = v1 + icon.getHeight() - iconHeight2;
 
         RenderUtils.bindTexture(icon.getTexture());
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE, true);
         ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1, buffer);
         ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2, buffer);
         RenderUtils.drawBuffer();

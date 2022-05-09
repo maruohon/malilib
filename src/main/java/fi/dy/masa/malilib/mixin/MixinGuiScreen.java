@@ -27,18 +27,6 @@ public abstract class MixinGuiScreen extends Gui
         ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderTooltipPost(stack, x, y, this.mc);
     }
 
-    @Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/client/entity/EntityPlayerSP;sendChatMessage(Ljava/lang/String;)V"),
-            cancellable = true)
-    private void onSendMessage(String msg, boolean addToChat, CallbackInfo ci)
-    {
-        if (Registry.CLIENT_COMMAND_HANDLER.executeCommand(this.mc.player, msg) != 0)
-        {
-            ci.cancel();
-        }
-    }
-
     @Inject(method = "handleInput", cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleKeyboardInput()V"))
     private void onKeyboardInputGui(CallbackInfo ci) throws IOException

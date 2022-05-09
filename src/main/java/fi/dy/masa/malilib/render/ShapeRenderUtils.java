@@ -1,7 +1,8 @@
 package fi.dy.masa.malilib.render;
 
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
@@ -182,7 +183,7 @@ public class ShapeRenderUtils
                                                   int u, int v,
                                                   int width, int height)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE, true);
 
         renderTexturedRectangle256(x, y, z, u, v, width, height, buffer);
 

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.edit;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Direction;
 import fi.dy.masa.malilib.config.value.LayerMode;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.BaseTabbedScreen;
@@ -236,9 +236,9 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
             }
             else if (this.type == Type.AXIS)
             {
-                EnumFacing.Axis axis = this.layerRange.getAxis();
+                Direction.Axis axis = this.layerRange.getAxis();
                 int next = mouseButton == 0 ? ((axis.ordinal() + 1) % 3) : (axis.ordinal() == 0 ? 2 : axis.ordinal() - 1);
-                axis = EnumFacing.Axis.values()[next % 3];
+                axis = Direction.Axis.values()[next % 3];
                 this.layerRange.setAxis(axis);
             }
             else if (this.type == Type.SET_TO_PLAYER && this.parent.mc.player != null)

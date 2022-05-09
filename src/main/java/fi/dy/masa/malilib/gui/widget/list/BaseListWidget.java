@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
@@ -297,7 +297,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         this.headerWidgetPositioner = positioner;
     }
 
-    public BaseListWidget setParentScreen(GuiScreen parent)
+    public BaseListWidget setParentScreen(Screen parent)
     {
         if (parent instanceof BaseScreen)
         {

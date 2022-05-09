@@ -3,8 +3,12 @@ package fi.dy.masa.malilib.render;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -22,7 +26,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -38,7 +42,7 @@ import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class RenderUtils
 {
-    public static final ResourceLocation TEXTURE_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
+    public static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
     //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
     //private static final Vec3d LIGHT1_POS = (new Vec3d(-0.2D, 1.0D,  0.7D)).normalize();
 
@@ -54,7 +58,7 @@ public class RenderUtils
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void bindTexture(ResourceLocation texture)
+    public static void bindTexture(Identifier texture)
     {
         GameUtils.getClient().getTextureManager().bindTexture(texture);
     }
@@ -535,7 +539,7 @@ public class RenderUtils
         }
     }
 
-    public static void renderModelInGui(int x, int y, float zLevel, IBakedModel model, IBlockState state)
+    public static void renderModelInGui(int x, int y, float zLevel, BakedModel model, BlockState state)
     {
         if (state.getBlock() == Blocks.AIR)
         {

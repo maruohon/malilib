@@ -25,7 +25,7 @@ public class FileUtils
 
     public static File getMinecraftDirectory()
     {
-        return GameUtils.getClient().gameDir;
+        return GameUtils.getClient().runDirectory;
     }
 
     public static File getRootDirectory()

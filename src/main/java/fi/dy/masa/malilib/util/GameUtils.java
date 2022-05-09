@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.Util;
 import net.minecraft.util.hit.HitResult;
 
 public class GameUtils
@@ -56,28 +57,19 @@ public class GameUtils
 
     public static void scheduleToClientThread(Runnable task)
     {
-        MinecraftClient mc = getClient();
-
-        if (mc.isCallingFromMinecraftThread())
-        {
-            task.run();
-        }
-        else
-        {
-            mc.addScheduledTask(task);
-        }
+        getClient().execute(task);
     }
 
     public static void openFile(File file)
     {
-        OpenGlHelper.openFile(file);
+        Util.getOperatingSystem().open(file);
     }
 
     public static class Options
     {
         public static boolean hideGui()
         {
-            return getClient().options.hideGUI;
+            return getClient().options.hudHidden;
         }
     }
 }

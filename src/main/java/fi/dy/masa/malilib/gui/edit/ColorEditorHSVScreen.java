@@ -4,13 +4,7 @@ import java.awt.Color;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import javax.annotation.Nullable;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
@@ -57,7 +51,7 @@ public class ColorEditorHSVScreen extends BaseScreen
     protected float relB;
     protected float relA;
 
-    public ColorEditorHSVScreen(int initialValue, IntConsumer valueConsumer, @Nullable GuiScreen parent)
+    public ColorEditorHSVScreen(int initialValue, IntConsumer valueConsumer, @Nullable Screen parent)
     {
         this.initialValue = initialValue;
         this.valueConsumer = valueConsumer;
@@ -475,6 +469,7 @@ public class ColorEditorHSVScreen extends BaseScreen
         ShapeRenderUtils.renderOutline(cx - 1, cy - 1, z, cw + 2, ch + 2, 1, 0xC0FFFFFF); // current color indicator
         ShapeRenderUtils.renderOutline(this.xHFullSV, y - 1, z, this.widthHFullSV, this.sizeHS + 2, 1, 0xC0FFFFFF); // Hue vertical/full value
 
+        /* TODO 1.13+ port
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
@@ -593,8 +588,10 @@ public class ColorEditorHSVScreen extends BaseScreen
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();
+        */
     }
 
+    /* TODO 1.13+ port
     public static void renderGradientColorBar(int x, int y, float z, int width, int height, int colorStart, int colorEnd, BufferBuilder buffer)
     {
         int a1 = ((colorStart >>> 24) & 0xFF);
@@ -736,6 +733,7 @@ public class ColorEditorHSVScreen extends BaseScreen
         buffer.pos(x - s, y    , z).color(c, c, c, c).endVertex();
         buffer.pos(x + s, y + s, z).color(c, c, c, c).endVertex();
     }
+    */
 
     @Nullable
     protected Element getHoveredElement(int mouseX, int mouseY)

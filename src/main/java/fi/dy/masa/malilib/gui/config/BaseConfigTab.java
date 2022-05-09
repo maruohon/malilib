@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
@@ -19,13 +19,13 @@ public class BaseConfigTab extends BaseScreenTab implements ConfigTab
     protected final int configWidth;
 
     public BaseConfigTab(ModInfo modInfo, String name, int configWidth,
-                         List<? extends ConfigInfo> configs, Function<GuiScreen, BaseScreen> screenFactory)
+                         List<? extends ConfigInfo> configs, Function<Screen, BaseScreen> screenFactory)
     {
         this(modInfo, name, modInfo.getModId() + ".config.tab." + name, configWidth, configs, screenFactory);
     }
 
     public BaseConfigTab(ModInfo modInfo, String name, String translationKey, int configWidth,
-                         List<? extends ConfigInfo> configs, Function<GuiScreen, BaseScreen> screenFactory)
+                         List<? extends ConfigInfo> configs, Function<Screen, BaseScreen> screenFactory)
     {
         // The current screen is also a config screen, so a simple tab switch is enough
         this(modInfo, name, translationKey, configWidth, configs,
@@ -33,8 +33,8 @@ public class BaseConfigTab extends BaseScreenTab implements ConfigTab
     }
 
     public BaseConfigTab(ModInfo modInfo, String name, String translationKey, int configWidth,
-                         List<? extends ConfigInfo> configs, Predicate<GuiScreen> screenChecker,
-                         Function<GuiScreen, BaseScreen> screenFactory)
+                         List<? extends ConfigInfo> configs, Predicate<Screen> screenChecker,
+                         Function<Screen, BaseScreen> screenFactory)
     {
         super(name, translationKey, screenChecker, screenFactory);
 

@@ -2,17 +2,17 @@ package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class BlockModelWidget extends BaseModelWidget
 {
-    @Nullable protected IBlockState state;
-    @Nullable protected IBakedModel model;
+    @Nullable protected BlockState state;
+    @Nullable protected BakedModel model;
 
-    public BlockModelWidget(@Nullable IBlockState state)
+    public BlockModelWidget(@Nullable BlockState state)
     {
         this(16, state);
     }
@@ -27,20 +27,20 @@ public class BlockModelWidget extends BaseModelWidget
         this(dimensions, block != null ? block.getDefaultState() : null);
     }
 
-    public BlockModelWidget(int dimensions, @Nullable IBlockState state)
+    public BlockModelWidget(int dimensions, @Nullable BlockState state)
     {
         super(dimensions);
 
         this.setState(state);
     }
 
-    public BlockModelWidget setState(@Nullable IBlockState state)
+    public BlockModelWidget setState(@Nullable BlockState state)
     {
         this.state = state;
 
         if (state != null)
         {
-            this.model = this.mc.getBlockRendererDispatcher().getModelForState(state);
+            this.model = this.mc.getBlockRenderManager().getModel(state);
         }
         else
         {

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.edit;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.MaLiLibConfigScreen;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.action.ActionContext;
@@ -83,7 +83,7 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
         return ActionResult.SUCCESS;
     }
 
-    public static BaseScreen openCustomIconListScreen(@Nullable GuiScreen currentScreen)
+    public static BaseScreen openCustomIconListScreen(@Nullable Screen currentScreen)
     {
         return new CustomIconListScreen();
     }

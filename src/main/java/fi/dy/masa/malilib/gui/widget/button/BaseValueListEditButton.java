@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BaseValueListEditScreen;
@@ -69,7 +69,7 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         super.updateWidgetState();
     }
 
-    protected BaseScreen createScreen(@Nullable GuiScreen currentScreen)
+    protected BaseScreen createScreen(@Nullable Screen currentScreen)
     {
         return new BaseValueListEditScreen<>(this.screenTitle, this.config, this.saveListener,
                                              this.newEntryFactory, this.widgetFactory, currentScreen);

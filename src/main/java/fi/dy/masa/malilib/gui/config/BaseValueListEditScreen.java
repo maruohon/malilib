@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseListScreen;
@@ -29,7 +29,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
                                    @Nullable EventListener saveListener,
                                    Supplier<TYPE> newEntrySupplier,
                                    ValueListEditEntryWidgetFactory<TYPE> widgetFactory,
-                                   GuiScreen parent)
+                                   Screen parent)
     {
         super(8, 20, 14, 25);
 

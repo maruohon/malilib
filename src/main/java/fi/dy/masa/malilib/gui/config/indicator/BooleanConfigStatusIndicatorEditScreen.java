@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.config.indicator;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BooleanConfigStatusWidget;
@@ -14,7 +14,7 @@ extends BaseConfigStatusIndicatorEditScreen<WIDGET>
     protected final DropDownListWidget<BooleanConfigStatusWidget.EnabledCondition> conditionDropdown;
     protected final DropDownListWidget<BooleanConfigStatusWidget.Style> typeDropdown;
 
-    public BooleanConfigStatusIndicatorEditScreen(WIDGET widget, @Nullable GuiScreen parent)
+    public BooleanConfigStatusIndicatorEditScreen(WIDGET widget, @Nullable Screen parent)
     {
         super(widget, parent);
 

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -18,7 +18,7 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     @Nullable protected KeybindEditingScreen keyBindEditingScreen;
     protected int elementsWidth = 200;
 
-    public BaseConfigGroupEditScreen(ModInfo modInfo, @Nullable EventListener saveListener, @Nullable GuiScreen parent)
+    public BaseConfigGroupEditScreen(ModInfo modInfo, @Nullable EventListener saveListener, @Nullable Screen parent)
     {
         super(8, 30, 14, 36);
 

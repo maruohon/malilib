@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.tab;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.BaseTabbedScreen;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
@@ -37,7 +37,7 @@ public interface ScreenTab extends NameIdentifiable
      * @param currentScreen
      * @return true if no screen switch is needed
      */
-    boolean canUseCurrentScreen(@Nullable GuiScreen currentScreen);
+    boolean canUseCurrentScreen(@Nullable Screen currentScreen);
 
     /**
      * Creates a new screen for this tab.<br>
@@ -45,15 +45,15 @@ public interface ScreenTab extends NameIdentifiable
      * screen is not suitable for this tab.
      * @return
      */
-    GuiScreen createScreen(@Nullable GuiScreen currentScreen);
+    Screen createScreen(@Nullable Screen currentScreen);
 
     /**
      * Opens the screen for this tab
      * @param currentScreen
      */
-    default void createAndOpenScreen(@Nullable GuiScreen currentScreen)
+    default void createAndOpenScreen(@Nullable Screen currentScreen)
     {
-        GuiScreen screen = this.createScreen(currentScreen);
+        Screen screen = this.createScreen(currentScreen);
 
         if (screen instanceof BaseTabbedScreen)
         {

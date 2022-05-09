@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.io.File;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.widget.RadioButtonWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
@@ -28,7 +28,7 @@ public class SettingsExportImportScreen extends TextInputScreen
     public SettingsExportImportScreen(String titleKey,
                                       String exportString,
                                       ResultingStringConsumer overwriteStringConsumer,
-                                      @Nullable GuiScreen parent)
+                                      @Nullable Screen parent)
     {
         this(titleKey, exportString, overwriteStringConsumer);
 

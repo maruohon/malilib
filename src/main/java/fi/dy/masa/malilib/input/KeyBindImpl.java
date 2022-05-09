@@ -506,10 +506,12 @@ public class KeyBindImpl implements KeyBind
         return obj;
     }
 
+    /* TODO 1.13+ port
     public static boolean hotkeyMatchesKeyBind(Hotkey hotkey, KeyBinding keybind)
     {
         return hotkey.getKeyBind().matches(keybind.getKeyCode());
     }
+    */
 
     public static KeyBindImpl fromStorageString(String storageString, KeyBindSettings settings)
     {

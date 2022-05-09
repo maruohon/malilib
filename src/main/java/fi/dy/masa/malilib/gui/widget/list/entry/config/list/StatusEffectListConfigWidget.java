@@ -3,8 +3,9 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config.list;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.Potions;
+import net.minecraft.util.registry.Registry;
 import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
@@ -29,7 +30,7 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
         return new BaseValueListEditButton<>(width, height,
                                              config,
                                              this::updateWidgetState,
-                                             () -> MobEffects.REGENERATION,
+                                             () -> Potions.REGENERATION,
                                              StatusEffectListConfigWidget::getSortedEffectList,
                                              StatusEffectListConfig::getRegistryName,
                                              null,
@@ -40,7 +41,7 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
     {
         List<Potion> effects = new ArrayList<>();
 
-        for (Potion effect : Potion.REGISTRY)
+        for (Potion effect : Registry.POTION)
         {
             effects.add(effect);
         }

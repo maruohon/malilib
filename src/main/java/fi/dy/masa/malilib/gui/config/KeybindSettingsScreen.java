@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.option.BaseConfigOption;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
@@ -23,7 +23,7 @@ public class KeybindSettingsScreen extends BaseScreen
     protected int labelWidth;
     protected int configWidth;
 
-    public KeybindSettingsScreen(KeyBind keybind, String name, GuiScreen parent)
+    public KeybindSettingsScreen(KeyBind keybind, String name, Screen parent)
     {
         this.keybind = keybind;
         this.keybindName = name;

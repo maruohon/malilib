@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui;
 
 import java.util.function.BiFunction;
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
@@ -35,7 +35,7 @@ public class DualTextInputScreen extends BaseTextInputScreen
                                String defaultText1,
                                String defaultText2,
                                BiFunction<String, String, Boolean> stringConsumer,
-                               @Nullable GuiScreen parent)
+                               @Nullable Screen parent)
     {
         this(titleKey, defaultText1, defaultText2, stringConsumer);
 

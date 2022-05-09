@@ -2,16 +2,18 @@ package fi.dy.masa.malilib.render.text;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
+import javax.imageio.ImageIO;
 import com.google.common.collect.ImmutableList;
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.IResource;
+import org.apache.commons.io.IOUtils;
+import net.minecraft.resource.Resource;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Identifier;
@@ -52,9 +54,11 @@ public class TextRendererUtils
 
     public static void readGlyphSizes(byte[] glyphWidth)
     {
-        try (IResource resource = GameUtils.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin")))
+        Resource resource = GameUtils.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin")).orElse(null);
+        
+        try
         {
-            if (resource.getInputStream().read(glyphWidth) <= 0)
+            if (resource != null && resource.getInputStream().read(glyphWidth) <= 0)
             {
                 MaLiLib.LOGGER.warn("Failed to read glyph sizes from 'font/glyph_sizes.bin'");
             }
@@ -68,16 +72,28 @@ public class TextRendererUtils
     public static void readCharacterWidthsFromFontTexture(Identifier texture, int[] charWidthArray,
                                                           IntConsumer glyphWidthListener, IntConsumer glyphHeightListener)
     {
-        BufferedImage bufferedImage;
+        Resource resource = GameUtils.getClient().getResourceManager().getResource(texture).orElse(null);
 
-        try (IResource resource = GameUtils.getClient().getResourceManager().getResource(texture))
+        if (resource == null)
         {
-            bufferedImage = TextureUtil.readBufferedImage(resource.getInputStream());
+            return;
+        }
+
+        BufferedImage bufferedImage;
+        InputStream stream = null;
+
+        try
+        {
+            stream = resource.getInputStream();
+            bufferedImage = ImageIO.read(stream);
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            IOUtils.closeQuietly(stream);
+            return;
         }
+
+        IOUtils.closeQuietly(stream);
 
         int imageWidth = bufferedImage.getWidth();
         int imageHeight = bufferedImage.getHeight();

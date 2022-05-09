@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.config.indicator;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.overlay.widget.sub.HotkeyedBooleanConfigStatusWidget;
@@ -14,7 +14,7 @@ extends BooleanConfigStatusIndicatorEditScreen<HotkeyedBooleanConfigStatusWidget
     protected final OnOffButton booleanEnabledButton;
     protected final OnOffButton hotkeyEnabledButton;
 
-    public HotkeyedBooleanConfigStatusIndicatorEditScreen(HotkeyedBooleanConfigStatusWidget widget, @Nullable GuiScreen parent)
+    public HotkeyedBooleanConfigStatusIndicatorEditScreen(HotkeyedBooleanConfigStatusWidget widget, @Nullable Screen parent)
     {
         super(widget, parent);
 

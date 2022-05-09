@@ -1,11 +1,8 @@
 package fi.dy.masa.malilib.util.inventory;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Slot;
-import fi.dy.masa.malilib.mixin.IMixinGuiContainer;
-
 public class InventoryScreenUtils
 {
+    /* TODO 1.13+ port
     public static int getGuiPosX(GuiContainer gui)
     {
         return ((IMixinGuiContainer) gui).getGuiPosX();
@@ -30,4 +27,5 @@ public class InventoryScreenUtils
     {
         return ((IMixinGuiContainer) gui).getHoveredSlot();
     }
+    */
 }

@@ -8,13 +8,13 @@ import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
-import org.lwjgl.input.Mouse;
-import net.minecraft.client.gui.GuiConfirmOpenLink;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConfirmChatLinkScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.Window;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.player.PlayerEntity;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -28,48 +28,52 @@ public class GuiUtils
 
     public static int getScaledWindowWidth()
     {
-        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
-        return sr.getScaledWidth();
+        return GameUtils.getClient().getWindow().getScaledWidth();
     }
 
     public static int getScaledWindowHeight()
     {
-        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
-        return sr.getScaledHeight();
+        return GameUtils.getClient().getWindow().getScaledHeight();
     }
 
     public static int getDisplayWidth()
     {
-        return GameUtils.getClient().displayWidth;
+        return GameUtils.getClient().getWindow().getWidth();
     }
 
     public static int getDisplayHeight()
     {
-        return GameUtils.getClient().displayHeight;
-    }
-
-    public static int getMouseScreenX()
-    {
-        return getMouseScreenX(getCurrentScreen().width);
+        return GameUtils.getClient().getWindow().getHeight();
     }
 
     public static int getMouseScreenX(int screenWidth)
     {
-        return Mouse.getEventX() * screenWidth / getDisplayWidth();
-    }
-
-    public static int getMouseScreenY()
-    {
-        return getMouseScreenY(getCurrentScreen().height);
+        // TODO 1.13+ port
+        return getMouseScreenX();
     }
 
     public static int getMouseScreenY(int screenHeight)
     {
-        return screenHeight - Mouse.getEventY() * screenHeight / getDisplayHeight() - 1;
+        // TODO 1.13+ port
+        return getMouseScreenY();
+    }
+
+    public static int getMouseScreenX()
+    {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        Window window = mc.getWindow();
+        return (int) (mc.mouse.getX() * (double) window.getScaledWidth() / (double) window.getWidth());
+    }
+
+    public static int getMouseScreenY()
+    {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        Window window = mc.getWindow();
+        return (int) (mc.mouse.getY() * (double) window.getScaledHeight() / (double) window.getHeight());
     }
 
     @Nullable
-    public static GuiScreen getCurrentScreen()
+    public static Screen getCurrentScreen()
     {
         return GameUtils.getClient().currentScreen;
     }
@@ -77,7 +81,7 @@ public class GuiUtils
     @Nullable
     public static <T> T getCurrentScreenIfMatches(Class<T> clazz)
     {
-        GuiScreen screen = getCurrentScreen();
+        Screen screen = getCurrentScreen();
 
         if (clazz.isAssignableFrom(screen.getClass()))
         {
@@ -89,11 +93,12 @@ public class GuiUtils
 
     public static void reInitCurrentScreen()
     {
-        GuiScreen screen = getCurrentScreen();
+        Screen screen = getCurrentScreen();
 
         if (screen != null)
         {
-            screen.initGui();
+            // TODO 1.13+ port
+            //screen.initGui();
         }
     }
 
@@ -102,7 +107,7 @@ public class GuiUtils
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
+    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, PlayerEntity player)
     {
         if (alignment == HudAlignment.TOP_RIGHT)
         {
@@ -112,18 +117,18 @@ public class GuiUtils
                 return 0;
             }
 
-            Collection<PotionEffect> effects = player.getActivePotionEffects();
+            Collection<StatusEffectInstance> effects = player.getStatusEffects();
 
             if (effects.isEmpty() == false)
             {
                 int y1 = 0;
                 int y2 = 0;
 
-                for (PotionEffect effect : effects)
+                for (StatusEffectInstance effect : effects)
                 {
-                    Potion potion = effect.getPotion();
+                    StatusEffect potion = effect.getEffectType();
 
-                    if (effect.doesShowParticles() && potion.hasStatusIcon())
+                    if (effect.shouldShowParticles() && effect.shouldShowIcon())
                     {
                         if (potion.isBeneficial())
                         {
@@ -239,17 +244,17 @@ public class GuiUtils
                 throw new URISyntaxException(urlString, "Unsupported protocol: " + s.toLowerCase(Locale.ROOT));
             }
 
-            final GuiScreen currentScreen = getCurrentScreen();
+            final Screen currentScreen = getCurrentScreen();
 
-            if (GameUtils.getClient().gameSettings.chatLinksPrompt)
+            if (GameUtils.getClient().options.getChatLinksPrompt().getValue())
             {
                 //BaseScreen.openGui(new ConfirmActionScreen(320, "", () -> openWebLink(uri), getCurrentScreen(), ""));
-                BaseScreen.openScreen(new GuiConfirmOpenLink((result, id) -> {
-                    if (result && id == 31102009)
+                BaseScreen.openScreen(new ConfirmChatLinkScreen((result) -> {
+                    if (result)
                         openWebLink(uri);
                     else
                         BaseScreen.openScreen(currentScreen);
-                    }, urlString, 31102009, false));
+                    }, urlString, false));
             }
             else
             {

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.config.indicator;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
@@ -22,7 +22,7 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
     protected final ColorIndicatorAndEditWidget nameColorWidget;
     protected final ColorIndicatorAndEditWidget valueColorWidget;
 
-    public BaseConfigStatusIndicatorEditScreen(WIDGET widget, @Nullable GuiScreen parent)
+    public BaseConfigStatusIndicatorEditScreen(WIDGET widget, @Nullable Screen parent)
     {
         this.widget = widget;
 

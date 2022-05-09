@@ -3,7 +3,7 @@ package fi.dy.masa.malilib;
 import java.util.ArrayList;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -64,24 +64,24 @@ public class MaLiLibConfigScreen
         return new BaseConfigScreen(MOD_INFO, null, ALL_TABS, GENERIC, "malilib.title.screen.configs", MaLiLibReference.MOD_VERSION);
     }
 
-    public static BaseConfigScreen create(@Nullable GuiScreen currentScreen)
+    public static BaseConfigScreen create(@Nullable Screen currentScreen)
     {
         // The parent screen should not be set here, to prevent infinite recursion via
         // the call to the parent's setWorldAndResolution -> initScreen -> switch tab -> etc.
         return new BaseConfigScreen(MOD_INFO, null, ALL_TABS, GENERIC, "malilib.title.screen.configs", MaLiLibReference.MOD_VERSION);
     }
 
-    public static BaseTabbedScreen createConfigStatusIndicatorListScreen(@Nullable GuiScreen currentScreen)
+    public static BaseTabbedScreen createConfigStatusIndicatorListScreen(@Nullable Screen currentScreen)
     {
         return new ConfigStatusIndicatorWidgetListScreen();
     }
 
-    public static BaseTabbedScreen createInfoRendererWidgetsListScreen(@Nullable GuiScreen currentScreen)
+    public static BaseTabbedScreen createInfoRendererWidgetsListScreen(@Nullable Screen currentScreen)
     {
         return new AllInfoWidgetsListScreen();
     }
 
-    public static BaseTabbedScreen createCustomHotkeysEditScreen(@Nullable GuiScreen currentScreen)
+    public static BaseTabbedScreen createCustomHotkeysEditScreen(@Nullable Screen currentScreen)
     {
         return new CustomHotkeysListScreen();
     }

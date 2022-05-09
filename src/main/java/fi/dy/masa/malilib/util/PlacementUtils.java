@@ -2,10 +2,6 @@ package fi.dy.masa.malilib.util;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import fi.dy.masa.malilib.util.position.HitPosition;
 
 public class PlacementUtils
 {
@@ -36,6 +32,7 @@ public class PlacementUtils
      * the block's replaceability is checked, and it's enough for the position to be offset.
      * @param checkMaterial whether or not to check the replaceability of the material too, or only the block
      */
+    /* TODO 1.13+ port
     public static HitPosition getPlacementPositionForClickPosition(ItemPlacementContext ctx, HitPosition originalPos, boolean checkMaterial)
     {
         BlockPos origBlockPos = originalPos.getBlockPos();
@@ -54,4 +51,5 @@ public class PlacementUtils
 
         return originalPos;
     }
+    */
 }
