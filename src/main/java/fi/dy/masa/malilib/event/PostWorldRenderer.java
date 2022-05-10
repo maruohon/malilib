@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.event;
 
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Matrix4f;
 import fi.dy.masa.malilib.util.ProfilerSectionSupplierSupplier;
 
 public interface PostWorldRenderer extends ProfilerSectionSupplierSupplier
@@ -13,5 +15,5 @@ public interface PostWorldRenderer extends ProfilerSectionSupplierSupplier
      * Note: The client world and the client player are checked
      * to not be null before this method is called.
      */
-    void onPostWorldRender(float tickDelta);
+    void onPostWorldRender(MatrixStack matrices, Matrix4f projMatrix, float tickDelta);
 }

@@ -2,8 +2,9 @@ package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.math.Matrix4f;
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
 import fi.dy.masa.malilib.event.PostScreenRenderer;
@@ -57,7 +58,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost()
+    public void onRenderGameOverlayPost(MatrixStack matrices)
     {
         if (this.overlayRenderers.isEmpty() == false)
         {
@@ -66,7 +67,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostGameOverlayRenderer renderer : this.overlayRenderers)
             {
                 GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
-                renderer.onPostGameOverlayRender();
+                renderer.onPostGameOverlayRender(matrices);
                 GameUtils.profilerPop();
             }
 
@@ -77,7 +78,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderScreenPost(float tickDelta)
+    public void onRenderScreenPost(MatrixStack matrices, float tickDelta)
     {
         if (this.screenPostRenderers.isEmpty() == false)
         {
@@ -86,7 +87,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostScreenRenderer renderer : this.screenPostRenderers)
             {
                 GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
-                renderer.onPostScreenRender(tickDelta);
+                renderer.onPostScreenRender(matrices, tickDelta);
                 GameUtils.profilerPop();
             }
 
@@ -97,7 +98,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderTooltipPost(ItemStack stack, int x, int y)
+    public void onRenderTooltipPost(ItemStack stack, int x, int y, MatrixStack matrices)
     {
         if (this.tooltipLastRenderers.isEmpty() == false)
         {
@@ -106,7 +107,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostItemTooltipRenderer renderer : this.tooltipLastRenderers)
             {
                 GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
-                renderer.onPostRenderItemTooltip(stack, x, y);
+                renderer.onPostRenderItemTooltip(stack, x, y, matrices);
                 GameUtils.profilerPop();
             }
 
@@ -117,7 +118,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(float tickDelta)
+    public void onRenderWorldLast(MatrixStack matrices, Matrix4f projMatrix, float tickDelta)
     {
         GameUtils.profilerPush("malilib_world_post");
 
@@ -131,7 +132,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostWorldRenderer renderer : this.worldLastRenderers)
             {
                 GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
-                renderer.onPostWorldRender(tickDelta);
+                renderer.onPostWorldRender(matrices, projMatrix, tickDelta);
                 GameUtils.profilerPop();
             }
 

@@ -3,9 +3,8 @@ package fi.dy.masa.malilib.render.text;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexFormats;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
@@ -283,7 +282,7 @@ public class StringListRenderer extends BaseWidget
 
         if (renderBackground)
         {
-            buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
+            buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_COLOR, false);
         }
 
         TextRenderer.INSTANCE.startBuffers();
@@ -337,7 +336,6 @@ public class StringListRenderer extends BaseWidget
         if (renderBackground)
         {
             RenderUtils.drawBuffer();
-            GlStateManager.enableTexture2D();
         }
 
         TextRenderer.INSTANCE.renderBuffers();
