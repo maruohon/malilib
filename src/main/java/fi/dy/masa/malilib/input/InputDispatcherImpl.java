@@ -3,26 +3,15 @@ package fi.dy.masa.malilib.input;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import net.minecraft.client.MinecraftClient;
 import fi.dy.masa.malilib.registry.Registry;
 
 public class InputDispatcherImpl implements InputDispatcher
 {
-    protected final IntOpenHashSet modifierKeys = new IntOpenHashSet();
     protected final List<KeyboardInputHandler> keyboardHandlers = new ArrayList<>();
     protected final List<MouseInputHandler> mouseHandlers = new ArrayList<>();
-
-    public InputDispatcherImpl()
-    {
-        this.modifierKeys.add(Keys.KEY_LEFT_SHIFT);
-        this.modifierKeys.add(Keys.KEY_RIGHT_SHIFT);
-        this.modifierKeys.add(Keys.KEY_LEFT_CONTROL);
-        this.modifierKeys.add(Keys.KEY_RIGHT_CONTROL);
-        this.modifierKeys.add(Keys.KEY_LEFT_ALT);
-        this.modifierKeys.add(Keys.KEY_RIGHT_ALT);
-    }
+    protected final MinecraftClient mc = MinecraftClient.getInstance();
+    protected double mouseWheelDeltaSum;
 
     @Override
     public void registerKeyboardInputHandler(KeyboardInputHandler handler)
@@ -59,98 +48,122 @@ public class InputDispatcherImpl implements InputDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean onKeyInput()
+    public boolean onKeyInput(int keyCode, int scanCode, int modifiers, boolean eventKeyState)
     {
-        int eventKey = Keyboard.getEventKey();
-        boolean eventKeyState = Keyboard.getEventKeyState();
-        char eventChar = Keyboard.getEventCharacter();
-        boolean isChar = eventKey == 0 && eventChar >= ' ';
-
-        if (isChar)
-        {
-            eventKey = (int) eventChar + 256;
-        }
-
         // Update the cached pressed keys status
-        KeyBindImpl.onKeyInputPre(eventKey, 0, 0, eventChar, eventKeyState);
+        KeyBindImpl.onKeyInputPre(keyCode, scanCode, modifiers, ' ', eventKeyState);
 
-        boolean cancel = ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(eventKey);
-
-        // Since char-only keys can't be properly held down (there is no properly detectable release event,
-        // the char value in the release event is not set), clear them immediately.
-        if (isChar)
-        {
-            KeyBindImpl.onKeyInputPre(eventKey, 0, 0, eventChar, false);
-            ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(eventKey);
-        }
+        boolean cancel = ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(keyCode);
 
         if (this.keyboardHandlers.isEmpty() == false)
         {
             for (KeyboardInputHandler handler : this.keyboardHandlers)
             {
-                if (handler.onKeyInput(eventKey, 0, 0, eventKeyState))
+                if (handler.onKeyInput(keyCode, scanCode, modifiers, eventKeyState))
                 {
                     return true;
                 }
             }
         }
 
-        return this.isModifierKey(eventKey) == false && cancel;
+        return cancel;
     }
 
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean onMouseInput()
+    public boolean onMouseClick(int eventButton, boolean keyState)
     {
-        final int eventButton = Mouse.getEventButton();
-        final int dWheel = Mouse.getEventDWheel();
-        final boolean eventButtonState = Mouse.getEventButtonState();
         boolean cancel = false;
 
-        if (eventButton != -1 || dWheel != 0)
+        if (eventButton != -1)
         {
             // Support mouse scrolls in the keybind system
-            int keyCode = eventButton != -1 ? eventButton - 100 : (dWheel < 0 ? -201 : -199);
-            boolean isScroll = dWheel != 0 && eventButton == -1;
-            boolean keyState = isScroll || eventButtonState;
+            int keyCode = eventButton != -1 ? eventButton - 100 : Keys.KEY_NONE;
 
             // Update the cached pressed keys status
             KeyBindImpl.onKeyInputPre(keyCode, 0, 0, (char) 0, keyState);
 
             cancel = ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(keyCode);
 
-            // Since scroll "keys" can't be held down, clear them immediately
-            if (isScroll)
-            {
-                KeyBindImpl.onKeyInputPre(keyCode, 0, 0, (char) 0, false);
-                ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(keyCode);
-            }
-
             if (this.mouseHandlers.isEmpty() == false)
             {
                 for (MouseInputHandler handler : this.mouseHandlers)
                 {
-                    if (handler.onMouseInput(eventButton, dWheel, eventButtonState))
+                    // FIXME 1.13+ port dWheel/scrolling needs a separate handler?
+                    if (handler.onMouseInput(eventButton, 0, keyState))
                     {
                         return true;
                     }
                 }
             }
         }
-        else if (this.mouseHandlers.isEmpty() == false)
+
+        return cancel;
+    }
+
+    public boolean onMouseScroll(final double xOffset, final double yOffset)
+    {
+        boolean discrete = this.mc.options.getDiscreteMouseScroll().getValue();
+        double sensitivity = this.mc.options.getMouseWheelSensitivity().getValue();
+        double amount = (discrete ? Math.signum(yOffset) : yOffset) * sensitivity;
+        boolean cancel = false;
+
+        // FIXME 1.13+ port dWheel/scrolling needs a separate handler?
+        /*
+        if (MaLiLibConfigs.Debug.MOUSE_SCROLL_DEBUG.getBooleanValue())
         {
-            for (MouseInputHandler handler : this.mouseHandlers)
+            int time = (int) (System.currentTimeMillis() & 0xFFFF);
+            int tick = this.mc.world != null ? (int) (this.mc.world.getTime() & 0xFFFF) : 0;
+            String timeStr = String.format("time: %04X, tick: %04X", time, tick);
+            MaLiLib.LOGGER.info("{} - xOffset: {}, yOffset: {}, discrete: {}, sensitivity: {}, amount: {}",
+                                timeStr, xOffset, yOffset, discrete, sensitivity, amount);
+        }
+        */
+
+        if (amount != 0 && this.mouseHandlers.isEmpty() == false)
+        {
+            if (this.mouseWheelDeltaSum != 0.0 && Math.signum(amount) != Math.signum(this.mouseWheelDeltaSum))
             {
-                handler.onMouseMoved();
+                this.mouseWheelDeltaSum = 0.0;
+            }
+
+            this.mouseWheelDeltaSum += amount;
+            amount = (int) this.mouseWheelDeltaSum;
+
+            if (amount != 0.0)
+            {
+                this.mouseWheelDeltaSum -= amount;
+
+                int keyCode = amount < 0 ? -201 : -199;
+                cancel = ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(keyCode);
+
+                // Since scroll "keys" can't be held down, clear them immediately
+                KeyBindImpl.onKeyInputPre(keyCode, 0, 0, (char) 0, false);
+                ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(keyCode);
+
+                for (MouseInputHandler handler : this.mouseHandlers)
+                {
+                    // FIXME 1.13+ port dWheel/scrolling needs a separate handler?
+                    if (handler.onMouseInput(Keys.KEY_NONE, (int) amount, false))
+                    {
+                        return true;
+                    }
+                }
             }
         }
 
         return cancel;
     }
 
-    protected boolean isModifierKey(int eventKey)
+    public void onMouseMove()
     {
-        return this.modifierKeys.contains(eventKey);
+        if (this.mouseHandlers.isEmpty() == false)
+        {
+            for (MouseInputHandler handler : this.mouseHandlers)
+            {
+                handler.onMouseMoved();
+            }
+        }
     }
 }

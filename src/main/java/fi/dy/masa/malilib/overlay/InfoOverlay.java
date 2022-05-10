@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.value.ScreenLocation;
 import fi.dy.masa.malilib.event.ClientTickHandler;
@@ -37,18 +38,18 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     }
 
     @Override
-    public void onPostGameOverlayRender()
+    public void onPostGameOverlayRender(MatrixStack matrices)
     {
         if (GameUtils.Options.hideGui() == false)
         {
-            this.renderInGame();
+            this.renderInGame(matrices);
         }
     }
 
     @Override
-    public void onPostScreenRender(MinecraftClient mc, float partialTicks)
+    public void onPostScreenRender(MatrixStack matrices, MinecraftClient mc, float partialTicks)
     {
-        this.renderScreen();
+        this.renderScreen(matrices);
     }
 
     @Override
@@ -143,13 +144,13 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      * Don't call this unless you have your own instance of the InfoOverlay,
      * ie. don't call this on InfoOverlay.INSTANCE
      */
-    public void renderInGame()
+    public void renderInGame(MatrixStack matrices)
     {
         if (GameUtils.Options.hideGui() == false)
         {
             boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
             boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
-            ScreenContext ctx = new ScreenContext(0, 0, -1, true);
+            ScreenContext ctx = new ScreenContext(0, 0, -1, true, matrices);
 
             if (debug)
             {
@@ -179,11 +180,11 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      * Don't call this unless you have your own instance of the InfoOverlay,
      * ie. don't call this on InfoOverlay.INSTANCE
      */
-    public void renderScreen()
+    public void renderScreen(MatrixStack matrices)
     {
         boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
         boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
-        ScreenContext ctx = new ScreenContext(0, 0, -1, true);
+        ScreenContext ctx = new ScreenContext(0, 0, -1, true, matrices);
         RenderUtils.disableItemLighting();
 
         if (debug)

@@ -3,7 +3,9 @@ package fi.dy.masa.malilib.event.dispatch;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.profiler.Profiler;
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
@@ -57,7 +59,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost(MinecraftClient mc)
+    public void onRenderGameOverlayPost(MatrixStack matrices, MinecraftClient mc)
     {
         if (this.overlayRenderers.isEmpty() == false)
         {
@@ -67,7 +69,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostGameOverlayRenderer renderer : this.overlayRenderers)
             {
                 profiler.push(renderer.getProfilerSectionSupplier());
-                renderer.onPostGameOverlayRender();
+                renderer.onPostGameOverlayRender(matrices);
                 profiler.pop();
             }
 
@@ -78,7 +80,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderScreenPost(MinecraftClient mc, float partialTicks)
+    public void onRenderScreenPost(MatrixStack matrices, MinecraftClient mc, float partialTicks)
     {
         if (this.screenPostRenderers.isEmpty() == false)
         {
@@ -88,7 +90,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostScreenRenderer renderer : this.screenPostRenderers)
             {
                 profiler.push(renderer.getProfilerSectionSupplier());
-                renderer.onPostScreenRender(mc, partialTicks);
+                renderer.onPostScreenRender(matrices, mc, partialTicks);
                 profiler.pop();
             }
 
@@ -99,7 +101,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderTooltipPost(ItemStack stack, int x, int y, MinecraftClient mc)
+    public void onRenderTooltipPost(MatrixStack matrices, ItemStack stack, int x, int y, MinecraftClient mc)
     {
         if (this.tooltipLastRenderers.isEmpty() == false)
         {
@@ -120,7 +122,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(MinecraftClient mc, float partialTicks)
+    public void onRenderWorldLast(MatrixStack matrices, Matrix4f projMatrix, MinecraftClient mc, float partialTicks)
     {
         Profiler profiler = mc.getProfiler();
         profiler.push("malilib_world_last");

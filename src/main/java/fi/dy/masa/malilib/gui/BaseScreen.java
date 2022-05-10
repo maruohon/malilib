@@ -1,17 +1,15 @@
 package fi.dy.masa.malilib.gui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -70,6 +68,8 @@ public abstract class BaseScreen extends Screen
 
     public BaseScreen()
     {
+        super(Text.of(""));
+
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
         this.useCustomScreenScaling = customScale != this.getVanillaGuiScale() && customScale > 0;
         this.closeButton = GenericButton.create(DefaultIcons.CLOSE_BUTTON_9, this::closeScreenOrShowParent);
@@ -78,35 +78,37 @@ public abstract class BaseScreen extends Screen
     }
 
     @Override
-    public void initGui()
+    public void init()
     {
-        super.initGui();
+        super.init();
         this.initScreen();
     }
 
     @Override
-    public void onGuiClosed()
+    public void removed()
     {
+        super.removed();
         this.onScreenClosed();
     }
 
+    // TODO 1.13+ port - does this init hierarchy work?
     @Override
-    public void setWorldAndResolution(MinecraftClient mc, int width, int height)
+    protected void clearAndInit()
     {
-        if (this.getParent() != null)
-        {
-            this.getParent().setWorldAndResolution(mc, width, height);
-        }
-
-        this.onScreenResolutionSet(width, height);
+        this.onScreenResolutionSet(this.width, this.height);
 
         if (this.useCustomScreenScaling)
         {
-            width = this.getTotalWidth();
-            height = this.getTotalHeight();
+            this.width = this.getTotalWidth();
+            this.height = this.getTotalHeight();
         }
 
-        super.setWorldAndResolution(mc, width, height);
+        if (this.getParent() != null)
+        {
+            this.getParent().init(this.mc, this.width, this.height);
+        }
+
+        super.clearAndInit();
     }
 
     @Override
@@ -119,12 +121,12 @@ public abstract class BaseScreen extends Screen
     {
         this.reAddActiveWidgets();
         this.updateWidgetPositions();
-        Keyboard.enableRepeatEvents(true);
+        this.mc.keyboard.setRepeatEvents(true);
     }
 
     protected void onScreenClosed()
     {
-        Keyboard.enableRepeatEvents(false);
+        this.mc.keyboard.setRepeatEvents(false);
 
         if (this.screenCloseListener != null)
         {
@@ -186,8 +188,8 @@ public abstract class BaseScreen extends Screen
 
     protected void setWidthAndHeightForScale(double scaleFactor)
     {
-        int width = (int) Math.ceil((double) this.mc.displayWidth / scaleFactor);
-        int height = (int) Math.ceil((double) this.mc.displayHeight / scaleFactor);
+        int width = (int) Math.ceil((double) GuiUtils.getDisplayWidth() / scaleFactor);
+        int height = (int) Math.ceil((double) GuiUtils.getDisplayHeight() / scaleFactor);
 
         if (this.getTotalWidth() != width || this.getTotalHeight() != height)
         {
@@ -331,6 +333,12 @@ public abstract class BaseScreen extends Screen
         }
     }
 
+    @Override
+    public Text getTitle()
+    {
+        return Text.of(this.getTitleString());
+    }
+
     @Nullable
     public Screen getParent()
     {
@@ -429,7 +437,7 @@ public abstract class BaseScreen extends Screen
         this.hoveredWidget = isActiveScreen ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
     }
 
-    public ScreenContext getContext()
+    public ScreenContext getContext(MatrixStack matrices)
     {
         int mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
         int mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
@@ -439,20 +447,20 @@ public abstract class BaseScreen extends Screen
         if (this.context == null ||
             this.context.matches(mouseX, mouseY, isActiveScreen, hoveredWidgetId) == false)
         {
-            this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveScreen);
+            this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveScreen, matrices);
         }
 
         return this.context;
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks)
     {
         this.runTasks();
 
         if (this.shouldRenderParent && this.getParent() != null)
         {
-            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
+            this.getParent().render(matrices, mouseX, mouseY, partialTicks);
         }
 
         RenderUtils.color(1f, 1f, 1f, 1f);
@@ -467,7 +475,12 @@ public abstract class BaseScreen extends Screen
             RenderUtils.setupScaledScreenRendering(this.customScreenScale);
         }
 
-        ScreenContext ctx = this.getContext();
+        ScreenContext ctx = this.getContext(matrices);
+
+        // Update again after the input is handled
+        // TODO 1.13+ port is this enough here? It was before and after "raw mouse input handling" in 1.12.2
+        boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
+        this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
 
         this.renderScreenBackground(ctx);
         this.renderScreenTitle(ctx);
@@ -495,34 +508,7 @@ public abstract class BaseScreen extends Screen
     }
 
     @Override
-    public void handleMouseInput() throws IOException
-    {
-        int mouseX = GuiUtils.getMouseScreenX();
-        int mouseY = GuiUtils.getMouseScreenY();
-        int mouseWheelDelta = Mouse.getEventDWheel();
-
-        boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
-        this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
-
-        if (mouseX != this.lastMouseX || mouseY != this.lastMouseY)
-        {
-            this.onMouseMoved(mouseX, mouseY);
-            this.lastMouseX = mouseX;
-            this.lastMouseY = mouseY;
-        }
-
-        if (mouseWheelDelta == 0 || this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta) == false)
-        {
-            super.handleMouseInput();
-        }
-
-        // Update again after the input is handled
-        isActiveGui = GuiUtils.getCurrentScreen() == this;
-        this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
         if (this.useCustomScreenScaling)
         {
@@ -530,14 +516,16 @@ public abstract class BaseScreen extends Screen
             mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
         }
 
-        if (this.onMouseClicked(mouseX, mouseY, mouseButton) == false)
+        if (this.onMouseClicked((int) mouseX, (int) mouseY, mouseButton))
         {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            return true;
         }
+
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseReleased(double mouseX, double mouseY, int mouseButton)
     {
         this.dragging = false;
 
@@ -547,41 +535,67 @@ public abstract class BaseScreen extends Screen
             mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
         }
 
-        if (this.onMouseReleased(mouseX, mouseY, mouseButton) == false)
+        if (this.onMouseReleased((int) mouseX, (int) mouseY, mouseButton))
         {
-            super.mouseReleased(mouseX, mouseY, mouseButton);
+            return true;
         }
+
+        return super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public void handleKeyboardInput() throws IOException
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount)
     {
-        if (Keyboard.getEventKeyState() == false &&
-            this.onKeyReleased(Keyboard.getEventKey(), 0, 0))
+        if (this.onMouseScrolled((int) mouseX, (int) mouseY, amount))
         {
-            return;
+            return true;
         }
 
-        super.handleKeyboardInput();
+        return super.mouseScrolled(mouseX, mouseY, amount);
     }
 
     @Override
-    protected void keyTyped(char charIn, int keyCode) throws IOException
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY)
     {
-        if (keyCode == 0 && charIn >= ' ')
+        if (this.onMouseMoved((int) mouseX, (int) mouseY))
         {
-            keyCode = (int) charIn + 256;
+            return true;
         }
 
-        if (this.onKeyTyped(keyCode, 0, 0) == false)
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+    {
+        if (this.onKeyTyped(keyCode, scanCode, modifiers))
         {
-            super.keyTyped(charIn, keyCode);
+            return true;
         }
 
-        if (charIn >= ' ')
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char chr, int modifiers)
+    {
+        if (this.onCharTyped(chr, modifiers))
         {
-            this.onCharTyped(charIn, 0);
+            return true;
         }
+
+        return super.charTyped(chr, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers)
+    {
+        if (this.onKeyReleased(keyCode, scanCode, modifiers))
+        {
+            return true;
+        }
+
+        return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -954,33 +968,53 @@ public abstract class BaseScreen extends Screen
         if (screen instanceof BaseScreen)
         {
             ((BaseScreen) screen).updateCustomScreenScale();
-            screen.initGui();
+            ((BaseScreen) screen).initScreen();
         }
     }
 
     public static boolean isShiftDown()
     {
-        return isShiftKeyDown();
+        return hasShiftDown();
     }
 
     public static boolean isCtrlDown()
     {
-        return isCtrlKeyDown();
+        return hasControlDown();
     }
 
     public static boolean isAltDown()
     {
-        return isAltKeyDown();
+        return hasAltDown();
+    }
+
+    public static boolean isKeyComboCtrlA(int keyCode)
+    {
+        return isSelectAll(keyCode);
+    }
+
+    public static boolean isKeyComboCtrlC(int keyCode)
+    {
+        return isCopy(keyCode);
+    }
+
+    public static boolean isKeyComboCtrlX(int keyCode)
+    {
+        return isCut(keyCode);
+    }
+
+    public static boolean isKeyComboCtrlV(int keyCode)
+    {
+        return isPaste(keyCode);
     }
 
     public static void setStringToClipboard(String str)
     {
-        setClipboardString(str);
+        MinecraftClient.getInstance().keyboard.setClipboard(str);
     }
 
     public static String getStringFromClipboard()
     {
-        return getClipboardString();
+        return MinecraftClient.getInstance().keyboard.getClipboard();
     }
 
     public void renderDebug(ScreenContext ctx)

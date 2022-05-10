@@ -182,7 +182,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
                 if (BaseScreen.isShiftDown()) { change *= 2; }
                 if (BaseScreen.isCtrlDown())  { change *= 4; }
                 layerRange.setPlayerFollowOffset(layerRange.getPlayerFollowOffset() + change);
-                this.initGui();
+                this.initScreen();
                 return true;
             });
 
@@ -246,7 +246,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
                 this.layerRange.setSingleBoundaryToPosition(EntityUtils.getCameraEntity());
             }
 
-            this.parent.initGui();
+            this.parent.initScreen();
 
             return true;
         }
