@@ -105,6 +105,12 @@ public abstract class BaseTripleNumberEditWidget<T, W extends BaseNumberEditWidg
         this.posConsumer.accept(pos);
     }
 
+    public void setPosNoUpdate(T pos)
+    {
+        this.pos = pos;
+        this.updateWidgetState();
+    }
+
     public void setPosAndUpdate(T pos)
     {
         this.setPos(pos);
