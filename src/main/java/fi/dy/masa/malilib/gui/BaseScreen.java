@@ -846,6 +846,14 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
+    public void updateWidgetStates()
+    {
+        for (InteractableWidget widget : this.widgets)
+        {
+            widget.updateWidgetState();
+        }
+    }
+
     protected void renderScreenBackground(ScreenContext ctx)
     {
         if (this.renderBorder)
