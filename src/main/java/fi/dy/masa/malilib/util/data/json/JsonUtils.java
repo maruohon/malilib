@@ -606,8 +606,7 @@ public class JsonUtils
     {
         try
         {
-            JsonParser parser = new JsonParser();
-            return parser.parse(str);
+            return JsonParser.parseString(str);
         }
         catch (Exception ignore) {}
 
@@ -623,10 +622,7 @@ public class JsonUtils
 
             try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))
             {
-                JsonParser parser = new JsonParser();
-                JsonElement element = parser.parse(reader);
-
-                return element;
+                return JsonParser.parseReader(reader);
             }
             catch (Exception e)
             {
