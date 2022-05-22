@@ -28,13 +28,13 @@ public class EquipmentInventoryView implements InventoryView
     }
 
     @Override
-    public int getSlots()
+    public int getSize()
     {
         return 6;
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot)
+    public ItemStack getStack(int slot)
     {
         return slot >= 0 && slot < 6 ? SLOT_FETCHERS.get(slot).apply(this.entity) : ItemStack.EMPTY;
     }

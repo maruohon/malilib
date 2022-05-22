@@ -12,18 +12,18 @@ public class SlicedInventoryView implements InventoryView
     {
         this.baseInventory = baseInventory;
         this.startSlot = startSlot;
-        this.slotCount = Math.max(Math.min(slotCount, baseInventory.getSlots() - startSlot), 0);
+        this.slotCount = Math.max(Math.min(slotCount, baseInventory.getSize() - startSlot), 0);
     }
 
     @Override
-    public int getSlots()
+    public int getSize()
     {
         return this.slotCount;
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot)
+    public ItemStack getStack(int slot)
     {
-        return this.baseInventory.getStackInSlot(slot + this.startSlot);
+        return this.baseInventory.getStack(slot + this.startSlot);
     }
 }

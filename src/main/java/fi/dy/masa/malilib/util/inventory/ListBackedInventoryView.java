@@ -25,13 +25,13 @@ public class ListBackedInventoryView implements InventoryView
     }
 
     @Override
-    public int getSlots()
+    public int getSize()
     {
         return this.items.size();
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot)
+    public ItemStack getStack(int slot)
     {
         return slot >= 0 && slot < this.items.size() ? this.items.get(slot) : ItemStack.EMPTY;
     }

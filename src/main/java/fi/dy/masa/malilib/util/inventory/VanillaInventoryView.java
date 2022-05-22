@@ -13,13 +13,13 @@ public class VanillaInventoryView implements InventoryView
     }
 
     @Override
-    public int getSlots()
+    public int getSize()
     {
         return this.inv.getSizeInventory();
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot)
+    public ItemStack getStack(int slot)
     {
         return this.inv.getStackInSlot(slot);
     }

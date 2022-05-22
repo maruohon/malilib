@@ -7,11 +7,11 @@ public interface InventoryView
     /**
      * @return the total number of slots in this inventory
      */
-    int getSlots();
+    int getSize();
 
     /**
      * @param slot the slot number
      * @return the ItemStack from the requested slot number
      */
-    ItemStack getStackInSlot(int slot);
+    ItemStack getStack(int slot);
 }

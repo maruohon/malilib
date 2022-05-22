@@ -73,7 +73,7 @@ public class InventoryRenderUtils
     public static void renderCustomPositionedSlots(int x, int y, float z, InventoryView inv,
                                                    Int2ObjectOpenHashMap<Vec2i> customSlotPositions)
     {
-        final int invSize = inv.getSlots();
+        final int invSize = inv.getSize();
 
         RenderUtils.enableGuiItemLighting();
         GlStateManager.enableDepth();
@@ -83,7 +83,7 @@ public class InventoryRenderUtils
         {
             if (slot >= 0 && slot < invSize)
             {
-                ItemStack stack = inv.getStackInSlot(slot);
+                ItemStack stack = inv.getStack(slot);
                 Vec2i pos = customSlotPositions.get(slot);
 
                 if (ItemUtils.notEmpty(stack) && pos != null)
@@ -103,13 +103,13 @@ public class InventoryRenderUtils
     {
         for (InventoryRange range : inventoryRanges)
         {
-            int slotsPerRow = range.slotsPerRowFunction.applyAsInt(inv.getSlots());
+            int slotsPerRow = range.slotsPerRowFunction.applyAsInt(inv.getSize());
             int slotCount = range.slotCount;
             Vec2i startPos = range.startPos;
 
             if (slotCount < 0)
             {
-                slotCount = inv.getSlots() - range.startSlot;
+                slotCount = inv.getSize() - range.startSlot;
             }
 
             if (range.renderSlotBackgrounds && slotsPerRow > 0 && slotCount > 0)
@@ -258,14 +258,14 @@ public class InventoryRenderUtils
     public static void renderEmptySlotBackgrounds(int x, int y, float z, int backgroundTintColor, InventoryView inv,
                                                   Int2ObjectOpenHashMap<PositionedIcon> emptySlotTextures)
     {
-        final int invSize = inv.getSlots();
+        final int invSize = inv.getSize();
 
         for (Map.Entry<Integer, PositionedIcon> entry : emptySlotTextures.int2ObjectEntrySet())
         {
             int slotNum = entry.getKey();
 
             if (slotNum >= 0 && slotNum < invSize &&
-                ItemUtils.isEmpty(inv.getStackInSlot(slotNum)))
+                ItemUtils.isEmpty(inv.getStack(slotNum)))
             {
                 PositionedIcon posIcon = entry.getValue();
                 Vec2i position = posIcon.pos;
@@ -301,7 +301,7 @@ public class InventoryRenderUtils
     public static void renderGenericInventoryItems(int x, int y, float z, int startSlot, int maxSlotCount,
                                                    int slotsPerRow, Vec2i slotOffset, InventoryView inv)
     {
-        final int invSize = inv.getSlots();
+        final int invSize = inv.getSize();
 
         if (maxSlotCount < 0)
         {
@@ -328,7 +328,7 @@ public class InventoryRenderUtils
 
         for (int slotOnRow = 0; slot < endSlot; ++slot)
         {
-            ItemStack stack = inv.getStackInSlot(slot);
+            ItemStack stack = inv.getStack(slot);
 
             if (ItemUtils.notEmpty(stack))
             {
@@ -363,7 +363,7 @@ public class InventoryRenderUtils
 
             InventoryView inv = InventoryUtils.getExactStoredItemsView(stack);
 
-            if (inv == null || inv.getSlots()  <= 0)
+            if (inv == null || inv.getSize()  <= 0)
             {
                 return;
             }

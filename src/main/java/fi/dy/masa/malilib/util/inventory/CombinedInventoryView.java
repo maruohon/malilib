@@ -14,21 +14,21 @@ public class CombinedInventoryView implements InventoryView
     }
 
     @Override
-    public int getSlots()
+    public int getSize()
     {
-        return this.inventory1.getSlots() + this.inventory2.getSlots();
+        return this.inventory1.getSize() + this.inventory2.getSize();
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot)
+    public ItemStack getStack(int slot)
     {
-        final int firstInvSize = this.inventory1.getSlots();
+        final int firstInvSize = this.inventory1.getSize();
 
         if (slot < firstInvSize)
         {
-            return this.inventory1.getStackInSlot(slot);
+            return this.inventory1.getStack(slot);
         }
 
-        return this.inventory2.getStackInSlot(slot - firstInvSize);
+        return this.inventory2.getStack(slot - firstInvSize);
     }
 }

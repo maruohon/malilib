@@ -50,12 +50,12 @@ public class InventoryRenderDefinition
 
     public int getRenderWidth(InventoryView inv)
     {
-        return this.renderWidthFunction.applyAsInt(inv.getSlots());
+        return this.renderWidthFunction.applyAsInt(inv.getSize());
     }
 
     public int getRenderHeight(InventoryView inv)
     {
-        return this.renderHeightFunction.applyAsInt(inv.getSlots());
+        return this.renderHeightFunction.applyAsInt(inv.getSize());
     }
 
     public void renderInventory(int x, int y, float z, int backgroundTintColor, InventoryView inv)
@@ -85,7 +85,7 @@ public class InventoryRenderDefinition
 
         if (this.hasCustomSlotPositions == false && this.hasInventoryRanges == false)
         {
-            int slotsPerRow = this.slotsPerRowFunction.applyAsInt(inv.getSlots());
+            int slotsPerRow = this.slotsPerRowFunction.applyAsInt(inv.getSize());
             InventoryRenderUtils.renderGenericInventoryItems(x, y, 100f, 0, -1, slotsPerRow, this.slotOffset, inv);
         }
 
@@ -102,8 +102,8 @@ public class InventoryRenderDefinition
         }
         else
         {
-            int slotsPerRow = this.slotsPerRowFunction.applyAsInt(inv.getSlots());
-            int slotCount = inv.getSlots();
+            int slotsPerRow = this.slotsPerRowFunction.applyAsInt(inv.getSize());
+            int slotCount = inv.getSize();
             InventoryRenderUtils.renderDynamicInventoryBackground(x, y, z, backgroundTintColor, slotsPerRow, slotCount);
         }
     }
