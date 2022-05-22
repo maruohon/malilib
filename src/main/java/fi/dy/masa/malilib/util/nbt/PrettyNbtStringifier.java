@@ -79,7 +79,7 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
 
         if (this.printTagType)
         {
-            String tagType = NBTBase.getTypeName(tag.getId());
+            String tagType = NbtUtils.getCommandFeedbackName(tag);
             this.addIndentedLine(String.format("[%s] %s: %s", tagType, name, value));
         }
         else if (StringUtils.isBlank(name) == false)
@@ -95,14 +95,14 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     @Override
     protected void appendCompound(String tagName, NBTTagCompound compound)
     {
-        List<String> keys = Lists.newArrayList(compound.getKeySet());
+        List<String> keys = Lists.newArrayList(NbtUtils.getKeys(compound));
         Collections.sort(keys);
 
         String name = this.getFormattedTagName(tagName);
 
         if (this.printTagType)
         {
-            String tagType = NBTBase.getTypeName(compound.getId());
+            String tagType = "TAG_Compound";
             this.addIndentedLine(String.format("[%s (%d values)] %s", tagType, keys.size(), name));
         }
         else
@@ -115,8 +115,7 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
 
         for (String key : keys)
         {
-            NBTBase tag = compound.getTag(key);
-            this.appendTag(key, tag);
+            this.appendTag(key, NbtUtils.getTag(compound, key));
         }
 
         this.setIndentationLevel(this.indentationLevel - 1);
@@ -126,15 +125,13 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     @Override
     protected void appendList(String tagName, NBTTagList list)
     {
-        final int size = list.tagCount();
-
-        int containedId = list.getTagType();
-        String containedTypeName = containedId > 0 ? NBTBase.getTypeName(containedId) : "?";
+        final int size = NbtUtils.getListSize(list);
+        String containedTypeName = size > 0 ? NbtUtils.getCommandFeedbackName(list.get(0)) : "?";
         String name = this.getFormattedTagName(tagName);
 
         if (this.printTagType)
         {
-            String tagType = NBTBase.getTypeName(list.getId());
+            String tagType = "TAG_List";
             this.addIndentedLine(String.format("[%s (%d values of type %s)] %s", tagType, size, containedTypeName, name));
         }
         else
@@ -147,21 +144,19 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
 
         for (int i = 0; i < size; ++i)
         {
-            NBTBase tag = list.get(i);
-            this.appendTag("", tag);
+            this.appendTag("", list.get(i));
         }
 
         this.setIndentationLevel(this.indentationLevel - 1);
         this.addIndentedLine("]");
     }
 
-    protected void appendNumericArrayStart(String tagName, int tagId, int arraySize)
+    protected void appendNumericArrayStart(String tagName, String tagType, int arraySize)
     {
         String name = this.getFormattedTagName(tagName);
 
         if (this.printTagType)
         {
-            String tagType = NBTBase.getTypeName(tagId);
             this.addIndentedLine(String.format("[%s (%d entries)] %s", tagType, arraySize, name));
         }
         else
@@ -179,8 +174,9 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
         String valueColorStr = this.colored ? this.getPrimitiveColorCode(tagId) : null;
         String numberSuffixStr = this.useNumberSuffix ? this.getNumberSuffix(tagId) : null;
         final int size = arr.length;
+        String tagType = "TAG_Byte_Array";
 
-        this.appendNumericArrayStart(tagName, tagId, size);
+        this.appendNumericArrayStart(tagName, tagType, size);
         this.setIndentationLevel(this.indentationLevel + 1);
 
         // For short arrays, print one value per line, it is easier to read
@@ -232,8 +228,9 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
         String valueColorStr = this.colored ? this.getPrimitiveColorCode(tagId) : null;
         String numberSuffixStr = this.useNumberSuffix ? this.getNumberSuffix(tagId) : null;
         final int size = arr.length;
+        String tagType = "TAG_Int_Array";
 
-        this.appendNumericArrayStart(tagName, tagId, size);
+        this.appendNumericArrayStart(tagName, tagType, size);
         this.setIndentationLevel(this.indentationLevel + 1);
 
         // For short arrays, print one value per line, it is easier to read
@@ -285,8 +282,9 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
         String valueColorStr = this.colored ? this.getPrimitiveColorCode(tagId) : null;
         String numberSuffixStr = this.useNumberSuffix ? this.getNumberSuffix(tagId) : null;
         final int size = arr.length;
+        String tagType = "TAG_Long_Array";
 
-        this.appendNumericArrayStart(tagName, tagId, size);
+        this.appendNumericArrayStart(tagName, tagType, size);
         this.setIndentationLevel(this.indentationLevel + 1);
 
         // For short arrays, print one value per line, it is easier to read

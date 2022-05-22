@@ -12,6 +12,7 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
@@ -509,13 +510,14 @@ public class StringUtils
 
     public static String getStackString(ItemStack stack)
     {
-        if (stack.isEmpty() == false)
+        if (ItemUtils.notEmpty(stack))
         {
             ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
+            NBTTagCompound tag = ItemUtils.getTag(stack);
 
             return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
                     rl != null ? rl.toString() : "null", stack.getMetadata(), stack.getDisplayName(),
-                    stack.getTagCompound() != null ? stack.getTagCompound().toString() : "<no NBT>", stack);
+                    tag != null ? tag.toString() : "<no NBT>", stack);
         }
 
         return "<empty>";

@@ -34,7 +34,7 @@ public class ItemStackWidget extends BaseModelWidget
     @Override
     protected void renderModel(int x, int y, float z, float scale, ScreenContext ctx)
     {
-        if (this.stack.isEmpty() == false)
+        if (ItemUtils.notEmpty(this.stack))
         {
             ItemRenderUtils.renderStackAt(this.stack, x, y, z, this.scale, this.mc);
         }

@@ -30,6 +30,7 @@ import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
@@ -300,9 +301,9 @@ public class RenderUtils
         EnumFacing playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
 
-        double dx = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
-        double dy = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
-        double dz = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+        double dx = entity.lastTickPosX + (EntityUtils.getX(entity) - entity.lastTickPosX) * partialTicks;
+        double dy = entity.lastTickPosY + (EntityUtils.getY(entity) - entity.lastTickPosY) * partialTicks;
+        double dz = entity.lastTickPosZ + (EntityUtils.getZ(entity) - entity.lastTickPosZ) * partialTicks;
 
         double x = pos.getX() + 0.5d - dx;
         double y = pos.getY() + 0.5d - dy;
@@ -402,9 +403,9 @@ public class RenderUtils
     {
         EnumFacing playerFacing = entity.getHorizontalFacing();
 
-        double dx = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
-        double dy = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
-        double dz = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+        double dx = entity.lastTickPosX + (EntityUtils.getX(entity) - entity.lastTickPosX) * partialTicks;
+        double dy = entity.lastTickPosY + (EntityUtils.getY(entity) - entity.lastTickPosY) * partialTicks;
+        double dz = entity.lastTickPosZ + (EntityUtils.getZ(entity) - entity.lastTickPosZ) * partialTicks;
 
         double x = pos.getX() + 0.5d - dx;
         double y = pos.getY() + 0.5d - dy;

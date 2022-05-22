@@ -196,29 +196,34 @@ public class PositionUtils
      */
     public static BlockPos getPositionInfrontOfEntity(Entity entity, float verticalThreshold)
     {
-        BlockPos pos = new BlockPos(entity.posX, entity.posY, entity.posZ);
+        double x = EntityUtils.getX(entity);
+        double y = EntityUtils.getY(entity);
+        double z = EntityUtils.getZ(entity);
+        float pitch = entity.rotationPitch;
+        BlockPos pos = new BlockPos(x, y, z);
 
-        if (entity.rotationPitch >= verticalThreshold)
+        if (pitch >= verticalThreshold)
         {
             return pos.down();
         }
-        else if (entity.rotationPitch <= -verticalThreshold)
+        else if (pitch <= -verticalThreshold)
         {
-            return new BlockPos(entity.posX, Math.ceil(entity.getEntityBoundingBox().maxY), entity.posZ);
+            return new BlockPos(x, Math.ceil(entity.getEntityBoundingBox().maxY), z);
         }
 
-        double y = Math.floor(entity.posY + entity.getEyeHeight());
+        y = Math.floor(y + entity.getEyeHeight());
+        double width = entity.width;
 
         switch (entity.getHorizontalFacing())
         {
             case EAST:
-                return new BlockPos((int) Math.ceil( entity.posX + entity.width / 2),     (int) y, (int) Math.floor(entity.posZ));
+                return new BlockPos((int) Math.ceil( x + width / 2),     (int) y, (int) Math.floor(z));
             case WEST:
-                return new BlockPos((int) Math.floor(entity.posX - entity.width / 2) - 1, (int) y, (int) Math.floor(entity.posZ));
+                return new BlockPos((int) Math.floor(x - width / 2) - 1, (int) y, (int) Math.floor(z));
             case SOUTH:
-                return new BlockPos((int) Math.floor(entity.posX), (int) y, (int) Math.ceil( entity.posZ + entity.width / 2)    );
+                return new BlockPos((int) Math.floor(x), (int) y, (int) Math.ceil( z + width / 2)    );
             case NORTH:
-                return new BlockPos((int) Math.floor(entity.posX), (int) y, (int) Math.floor(entity.posZ - entity.width / 2) - 1);
+                return new BlockPos((int) Math.floor(x), (int) y, (int) Math.floor(z - width / 2) - 1);
             default:
         }
 

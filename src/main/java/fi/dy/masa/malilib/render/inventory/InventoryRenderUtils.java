@@ -53,6 +53,7 @@ import fi.dy.masa.malilib.render.ItemRenderUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.ItemUtils;
 import fi.dy.masa.malilib.util.RayTraceUtils;
 import fi.dy.masa.malilib.util.WorldUtils;
 import fi.dy.masa.malilib.util.inventory.ColoredVanillaInventoryView;
@@ -85,7 +86,7 @@ public class InventoryRenderUtils
                 ItemStack stack = inv.getStackInSlot(slot);
                 Vec2i pos = customSlotPositions.get(slot);
 
-                if (stack.isEmpty() == false && pos != null)
+                if (ItemUtils.notEmpty(stack) && pos != null)
                 {
                     ItemRenderUtils.renderStackAt(stack, x + pos.x, y + pos.y, z, 1f, GameUtils.getClient());
                 }
@@ -263,7 +264,8 @@ public class InventoryRenderUtils
         {
             int slotNum = entry.getKey();
 
-            if (slotNum >= 0 && slotNum < invSize && inv.getStackInSlot(slotNum).isEmpty())
+            if (slotNum >= 0 && slotNum < invSize &&
+                ItemUtils.isEmpty(inv.getStackInSlot(slotNum)))
             {
                 PositionedIcon posIcon = entry.getValue();
                 Vec2i position = posIcon.pos;
@@ -328,7 +330,7 @@ public class InventoryRenderUtils
         {
             ItemStack stack = inv.getStackInSlot(slot);
 
-            if (stack.isEmpty() == false)
+            if (ItemUtils.notEmpty(stack))
             {
                 ItemRenderUtils.renderStackAt(stack, x, y, z, 1f, GameUtils.getClient());
             }

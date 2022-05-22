@@ -74,7 +74,7 @@ public abstract class BaseNbtStringifier
     @Nullable
     protected String getPrimitiveValue(NBTBase tag)
     {
-        switch (tag.getId())
+        switch (NbtUtils.getTypeId(tag))
         {
             case Constants.NBT.TAG_BYTE:    return String.valueOf(((NBTTagByte) tag).getByte());
             case Constants.NBT.TAG_SHORT:   return String.valueOf(((NBTTagShort) tag).getShort());
@@ -125,10 +125,11 @@ public abstract class BaseNbtStringifier
 
     protected String getFormattedPrimitiveString(NBTBase tag)
     {
+        int typeId = NbtUtils.getTypeId(tag);
         String valueStr = this.getPrimitiveValue(tag);
-        String valueColorStr = this.colored ? this.getPrimitiveColorCode(tag.getId()) : null;
-        String numberSuffixStr = this.useNumberSuffix ? this.getNumberSuffix(tag.getId()) : null;
-        boolean useQuotes = tag.getId() == Constants.NBT.TAG_STRING;
+        String valueColorStr = this.colored ? this.getPrimitiveColorCode(typeId) : null;
+        String numberSuffixStr = this.useNumberSuffix ? this.getNumberSuffix(typeId) : null;
+        boolean useQuotes = typeId == Constants.NBT.TAG_STRING;
 
         return this.getFormattedPrimitiveString(valueStr, useQuotes, valueColorStr, numberSuffixStr);
     }
@@ -179,7 +180,7 @@ public abstract class BaseNbtStringifier
 
     protected void appendTag(String tagName, NBTBase tag)
     {
-        switch (tag.getId())
+        switch (NbtUtils.getTypeId(tag))
         {
             case Constants.NBT.TAG_COMPOUND:
                 this.appendCompound(tagName, (NBTTagCompound) tag);

@@ -17,9 +17,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import fi.dy.masa.malilib.util.GameUtils;
-import fi.dy.masa.malilib.util.data.Constants;
+import fi.dy.masa.malilib.util.ItemUtils;
 import fi.dy.masa.malilib.util.data.IntRange;
 import fi.dy.masa.malilib.util.data.ItemType;
+import fi.dy.masa.malilib.util.nbt.NbtUtils;
 
 public class InventoryUtils
 {
@@ -93,7 +94,7 @@ public class InventoryUtils
             ItemStack stackSlot = slot.getStack();
 
             // Inventory crafting, armor and offhand slots are not valid
-            if (stackSlot.isEmpty() && isRegularInventorySlot(slot.slotNumber, allowOffhand))
+            if (ItemUtils.isEmpty(stackSlot) && isRegularInventorySlot(slot.slotNumber, allowOffhand))
             {
                 return slot.slotNumber;
             }
@@ -251,9 +252,9 @@ public class InventoryUtils
         final int count = stackHand.getCount();
         final int max = stackHand.getMaxStackSize();
 
-        if (stackHand.isEmpty() == false &&
+        if (ItemUtils.notEmpty(stackHand) &&
             player.openContainer == player.inventoryContainer &&
-            player.inventory.getItemStack().isEmpty() &&
+            ItemUtils.isEmpty(player.inventory.getItemStack()) &&
             (count <= threshold && count < max))
         {
             Minecraft mc = GameUtils.getClient();
@@ -294,16 +295,16 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stack)
     {
-        NBTTagCompound nbt = stack.getTagCompound();
+        NBTTagCompound nbt = ItemUtils.getTag(stack);
 
-        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && NbtUtils.containsCompound(nbt, "BlockEntityTag"))
         {
-            NBTTagCompound tag = nbt.getCompoundTag("BlockEntityTag");
+            NBTTagCompound tag = NbtUtils.getCompound(nbt, "BlockEntityTag");
 
-            if (tag.hasKey("Items", Constants.NBT.TAG_LIST))
+            if (NbtUtils.containsList(tag, "Items"))
             {
-                NBTTagList tagList = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-                return tagList.tagCount() > 0;
+                NBTTagList tagList = NbtUtils.getListOfCompounds(tag, "Items");
+                return NbtUtils.getListSize(tagList) > 0;
             }
         }
 
@@ -317,23 +318,23 @@ public class InventoryUtils
      */
     public static NonNullList<ItemStack> getStoredItemsNonEmpty(ItemStack stackIn)
     {
-        NBTTagCompound nbt = stackIn.getTagCompound();
+        NBTTagCompound nbt = ItemUtils.getTag(stackIn);
 
-        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && NbtUtils.containsCompound(nbt, "BlockEntityTag"))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompoundTag("BlockEntityTag");
+            NBTTagCompound tagBlockEntity = NbtUtils.getCompound(nbt, "BlockEntityTag");
 
-            if (tagBlockEntity.hasKey("Items", Constants.NBT.TAG_LIST))
+            if (NbtUtils.containsList(tagBlockEntity, "Items"))
             {
                 NonNullList<ItemStack> items = NonNullList.create();
-                NBTTagList tagList = tagBlockEntity.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-                final int count = tagList.tagCount();
+                NBTTagList tagList = NbtUtils.getListOfCompounds(tagBlockEntity, "Items");
+                final int count = NbtUtils.getListSize(tagList);
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = new ItemStack(tagList.getCompoundTagAt(i));
+                    ItemStack stack = ItemUtils.fromTag(NbtUtils.getCompoundAt(tagList, i));
 
-                    if (stack.isEmpty() == false)
+                    if (ItemUtils.notEmpty(stack))
                     {
                         items.add(stack);
                     }
@@ -368,24 +369,24 @@ public class InventoryUtils
 
     public static void readStoredItems(ItemStack containerStack, Consumer<Pair<Integer, ItemStack>> consumer)
     {
-        NBTTagCompound nbt = containerStack.getTagCompound();
+        NBTTagCompound nbt = ItemUtils.getTag(containerStack);
 
-        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && NbtUtils.containsCompound(nbt, "BlockEntityTag"))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompoundTag("BlockEntityTag");
+            NBTTagCompound tagBlockEntity = NbtUtils.getCompound(nbt, "BlockEntityTag");
 
-            if (tagBlockEntity.hasKey("Items", Constants.NBT.TAG_LIST))
+            if (NbtUtils.containsList(tagBlockEntity, "Items"))
             {
-                NBTTagList tagList = tagBlockEntity.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-                final int count = tagList.tagCount();
+                NBTTagList tagList = NbtUtils.getListOfCompounds(tagBlockEntity, "Items");
+                final int count = NbtUtils.getListSize(tagList);
 
                 for (int i = 0; i < count; ++i)
                 {
-                    NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                    ItemStack stack = new ItemStack(tag);
-                    int slot = tag.getByte("Slot");
+                    NBTTagCompound tag = NbtUtils.getCompoundAt(tagList, i);
+                    ItemStack stack = ItemUtils.fromTag(tag);
+                    int slot = NbtUtils.getByte(tag, "Slot");
 
-                    if (slot >= 0 && stack.isEmpty() == false)
+                    if (slot >= 0 && ItemUtils.notEmpty(stack))
                     {
                         consumer.accept(Pair.of(slot, stack));
                     }
@@ -414,7 +415,7 @@ public class InventoryUtils
 
         for (ItemStack stack : items)
         {
-            if (stack.isEmpty() == false)
+            if (ItemUtils.notEmpty(stack))
             {
                 map.addTo(new ItemType(stack, false, true), stack.getCount());
             }
@@ -437,7 +438,7 @@ public class InventoryUtils
         {
             ItemStack stack = inv.getStackInSlot(slot);
 
-            if (stack.isEmpty() == false)
+            if (ItemUtils.notEmpty(stack))
             {
                 map.addTo(new ItemType(stack, false, true), stack.getCount());
 

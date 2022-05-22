@@ -61,9 +61,9 @@ public class OverlayRendererContainer
 
     protected Vec3d getCameraPos(Entity cameraEntity, float partialTicks)
     {
-        double x = cameraEntity.lastTickPosX + (cameraEntity.posX - cameraEntity.lastTickPosX) * partialTicks;
-        double y = cameraEntity.lastTickPosY + (cameraEntity.posY - cameraEntity.lastTickPosY) * partialTicks;
-        double z = cameraEntity.lastTickPosZ + (cameraEntity.posZ - cameraEntity.lastTickPosZ) * partialTicks;
+        double x = cameraEntity.lastTickPosX + (EntityUtils.getX(cameraEntity) - cameraEntity.lastTickPosX) * partialTicks;
+        double y = cameraEntity.lastTickPosY + (EntityUtils.getY(cameraEntity) - cameraEntity.lastTickPosY) * partialTicks;
+        double z = cameraEntity.lastTickPosZ + (EntityUtils.getZ(cameraEntity) - cameraEntity.lastTickPosZ) * partialTicks;
 
         return new Vec3d(x, y, z);
     }
@@ -104,7 +104,9 @@ public class OverlayRendererContainer
             // otherwise some of the renderers mess up.
             // The magic 8.5, 65, 8.5 comes from the ClientWorld constructor
             if (System.nanoTime() - this.loginTime >= 5000000000L ||
-                cameraEntity.posX != 8.5 || cameraEntity.posY != 65 || cameraEntity.posZ != 8.5)
+                EntityUtils.getX(cameraEntity) != 8.5 ||
+                EntityUtils.getY(cameraEntity) != 65 ||
+                EntityUtils.getZ(cameraEntity) != 8.5)
             {
                 this.canRender = true;
             }

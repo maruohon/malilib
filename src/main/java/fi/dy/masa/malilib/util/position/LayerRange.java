@@ -278,9 +278,9 @@ public class LayerRange
     {
         switch (this.axis)
         {
-            case X: return MathHelper.floor(entity.posX);
-            case Y: return MathHelper.floor(entity.posY);
-            case Z: return MathHelper.floor(entity.posZ);
+            case X: return MathHelper.floor(EntityUtils.getX(entity));
+            case Y: return MathHelper.floor(EntityUtils.getY(entity));
+            case Z: return MathHelper.floor(EntityUtils.getZ(entity));
         }
 
         return 0;
@@ -492,7 +492,10 @@ public class LayerRange
 
     protected boolean layerRangeIsMinClosest(Entity entity)
     {
-        double playerPos = this.axis == Axis.Y ? entity.posY : (this.axis == Axis.X ? entity.posX : entity.posZ);
+        double x = EntityUtils.getX(entity);
+        double y = EntityUtils.getY(entity);
+        double z = EntityUtils.getZ(entity);
+        double playerPos = this.axis == Axis.Y ? y : (this.axis == Axis.X ? x : z);
         double min = this.layerRangeMin + 0.5D;
         double max = this.layerRangeMax + 0.5D;
 

@@ -45,7 +45,7 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
     @Override
     protected void appendCompound(String tagName, NBTTagCompound tag)
     {
-        List<String> keys = Lists.newArrayList(tag.getKeySet());
+        List<String> keys = Lists.newArrayList(NbtUtils.getKeys(tag));
         Collections.sort(keys);
         boolean first = true;
 
@@ -60,7 +60,7 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
 
             this.stringBuilder.append(this.getFormattedTagName(key));
             this.stringBuilder.append(':');
-            this.appendTag(key, tag.getTag(key));
+            this.appendTag(key, NbtUtils.getTag(tag, key));
             first = false;
         }
 
@@ -70,7 +70,7 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
     @Override
     protected void appendList(String tagName, NBTTagList list)
     {
-        final int size = list.tagCount();
+        final int size = NbtUtils.getListSize(list);
 
         this.stringBuilder.append('[');
 

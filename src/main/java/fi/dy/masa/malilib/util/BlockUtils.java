@@ -23,7 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.data.Constants;
+import fi.dy.masa.malilib.util.nbt.NbtUtils;
 
 public class BlockUtils
 {
@@ -161,7 +161,7 @@ public class BlockUtils
         String blockName = index != -1 ? stateString.substring(0, index) : stateString;
         NBTTagCompound tag = new NBTTagCompound();
 
-        tag.setString("Name", blockName);
+        NbtUtils.putString(tag, "Name", blockName);
 
         if (index != -1 && stateString.length() > (index + 4) && stateString.charAt(stateString.length() - 1) == ']')
         {
@@ -186,10 +186,10 @@ public class BlockUtils
 
                 String valStr = valIter.next();
 
-                propsTag.setString(propName, valStr);
+                NbtUtils.putString(propsTag, propName, valStr);
             }
 
-            tag.setTag("Properties", propsTag);
+            NbtUtils.putTag(tag, "Properties", propsTag);
         }
 
         return tag;
@@ -203,19 +203,19 @@ public class BlockUtils
      */
     public static String getBlockStateStringFromTag(NBTTagCompound stateTag)
     {
-        String name = stateTag.getString("Name");
+        String name = NbtUtils.getString(stateTag, "Name");
 
-        if (stateTag.hasKey("Properties", Constants.NBT.TAG_COMPOUND) == false)
+        if (NbtUtils.containsCompound(stateTag, "Properties") == false)
         {
             return name;
         }
 
-        NBTTagCompound propTag = stateTag.getCompoundTag("Properties");
+        NBTTagCompound propTag = NbtUtils.getCompound(stateTag, "Properties");
         ArrayList<Pair<String, String>> props = new ArrayList<>();
 
-        for (String key : propTag.getKeySet())
+        for (String key : NbtUtils.getKeys(propTag))
         {
-            props.add(Pair.of(key, propTag.getString(key)));
+            props.add(Pair.of(key, NbtUtils.getString(propTag, key)));
         }
 
         final int size = props.size();
