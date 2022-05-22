@@ -13,6 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class UtilityActions
 {
@@ -32,7 +33,7 @@ public class UtilityActions
         {
             try
             {
-                ctx.getPlayer().rotationYaw = MathHelper.wrapDegrees(Float.parseFloat(arg));
+                EntityWrap.setYaw(ctx.getPlayer(), MathHelper.wrapDegrees(Float.parseFloat(arg)));
                 return ActionResult.SUCCESS;
             }
             catch (Exception ignore) {}
@@ -50,7 +51,7 @@ public class UtilityActions
 
                 if (pitch >= -90.0f && pitch <= 90.0f)
                 {
-                    ctx.getPlayer().rotationPitch = pitch;
+                    EntityWrap.setPitch(ctx.getPlayer(), pitch);
                     return ActionResult.SUCCESS;
                 }
             }

@@ -20,7 +20,7 @@ import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.ItemUtils;
 import fi.dy.masa.malilib.util.data.IntRange;
 import fi.dy.masa.malilib.util.data.ItemType;
-import fi.dy.masa.malilib.util.nbt.NbtUtils;
+import fi.dy.masa.malilib.util.wrap.NbtWrap;
 
 public class InventoryUtils
 {
@@ -297,14 +297,14 @@ public class InventoryUtils
     {
         NBTTagCompound nbt = ItemUtils.getTag(stack);
 
-        if (nbt != null && NbtUtils.containsCompound(nbt, "BlockEntityTag"))
+        if (nbt != null && NbtWrap.containsCompound(nbt, "BlockEntityTag"))
         {
-            NBTTagCompound tag = NbtUtils.getCompound(nbt, "BlockEntityTag");
+            NBTTagCompound tag = NbtWrap.getCompound(nbt, "BlockEntityTag");
 
-            if (NbtUtils.containsList(tag, "Items"))
+            if (NbtWrap.containsList(tag, "Items"))
             {
-                NBTTagList tagList = NbtUtils.getListOfCompounds(tag, "Items");
-                return NbtUtils.getListSize(tagList) > 0;
+                NBTTagList tagList = NbtWrap.getListOfCompounds(tag, "Items");
+                return NbtWrap.getListSize(tagList) > 0;
             }
         }
 
@@ -320,19 +320,19 @@ public class InventoryUtils
     {
         NBTTagCompound nbt = ItemUtils.getTag(stackIn);
 
-        if (nbt != null && NbtUtils.containsCompound(nbt, "BlockEntityTag"))
+        if (nbt != null && NbtWrap.containsCompound(nbt, "BlockEntityTag"))
         {
-            NBTTagCompound tagBlockEntity = NbtUtils.getCompound(nbt, "BlockEntityTag");
+            NBTTagCompound tagBlockEntity = NbtWrap.getCompound(nbt, "BlockEntityTag");
 
-            if (NbtUtils.containsList(tagBlockEntity, "Items"))
+            if (NbtWrap.containsList(tagBlockEntity, "Items"))
             {
                 NonNullList<ItemStack> items = NonNullList.create();
-                NBTTagList tagList = NbtUtils.getListOfCompounds(tagBlockEntity, "Items");
-                final int count = NbtUtils.getListSize(tagList);
+                NBTTagList tagList = NbtWrap.getListOfCompounds(tagBlockEntity, "Items");
+                final int count = NbtWrap.getListSize(tagList);
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = ItemUtils.fromTag(NbtUtils.getCompoundAt(tagList, i));
+                    ItemStack stack = ItemUtils.fromTag(NbtWrap.getCompoundAt(tagList, i));
 
                     if (ItemUtils.notEmpty(stack))
                     {
@@ -371,20 +371,20 @@ public class InventoryUtils
     {
         NBTTagCompound nbt = ItemUtils.getTag(containerStack);
 
-        if (nbt != null && NbtUtils.containsCompound(nbt, "BlockEntityTag"))
+        if (nbt != null && NbtWrap.containsCompound(nbt, "BlockEntityTag"))
         {
-            NBTTagCompound tagBlockEntity = NbtUtils.getCompound(nbt, "BlockEntityTag");
+            NBTTagCompound tagBlockEntity = NbtWrap.getCompound(nbt, "BlockEntityTag");
 
-            if (NbtUtils.containsList(tagBlockEntity, "Items"))
+            if (NbtWrap.containsList(tagBlockEntity, "Items"))
             {
-                NBTTagList tagList = NbtUtils.getListOfCompounds(tagBlockEntity, "Items");
-                final int count = NbtUtils.getListSize(tagList);
+                NBTTagList tagList = NbtWrap.getListOfCompounds(tagBlockEntity, "Items");
+                final int count = NbtWrap.getListSize(tagList);
 
                 for (int i = 0; i < count; ++i)
                 {
-                    NBTTagCompound tag = NbtUtils.getCompoundAt(tagList, i);
+                    NBTTagCompound tag = NbtWrap.getCompoundAt(tagList, i);
                     ItemStack stack = ItemUtils.fromTag(tag);
-                    int slot = NbtUtils.getByte(tag, "Slot");
+                    int slot = NbtWrap.getByte(tag, "Slot");
 
                     if (slot >= 0 && ItemUtils.notEmpty(stack))
                     {

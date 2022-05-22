@@ -16,9 +16,9 @@ import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
-import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.position.Vec2i;
+import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class TextRenderUtils
 {
@@ -328,11 +328,11 @@ public class TextRenderUtils
      */
     public static void renderTextPlate(List<String> text, double x, double y, double z, float scale)
     {
-        Entity entity = EntityUtils.getCameraEntity();
+        Entity entity = GameUtils.getCameraEntity();
 
         if (entity != null)
         {
-            renderTextPlate(text, x, y, z, entity.rotationYaw, entity.rotationPitch, scale, 0xFFFFFFFF, 0x40000000, true);
+            renderTextPlate(text, x, y, z, EntityWrap.getYaw(entity), EntityWrap.getPitch(entity), scale, 0xFFFFFFFF, 0x40000000, true);
         }
     }
 

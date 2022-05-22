@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagString;
 import fi.dy.masa.malilib.mixin.IMixinNBTTagLongArray;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Constants;
+import fi.dy.masa.malilib.util.wrap.NbtWrap;
 
 public abstract class BaseNbtStringifier
 {
@@ -74,7 +75,7 @@ public abstract class BaseNbtStringifier
     @Nullable
     protected String getPrimitiveValue(NBTBase tag)
     {
-        switch (NbtUtils.getTypeId(tag))
+        switch (NbtWrap.getTypeId(tag))
         {
             case Constants.NBT.TAG_BYTE:    return String.valueOf(((NBTTagByte) tag).getByte());
             case Constants.NBT.TAG_SHORT:   return String.valueOf(((NBTTagShort) tag).getShort());
@@ -125,7 +126,7 @@ public abstract class BaseNbtStringifier
 
     protected String getFormattedPrimitiveString(NBTBase tag)
     {
-        int typeId = NbtUtils.getTypeId(tag);
+        int typeId = NbtWrap.getTypeId(tag);
         String valueStr = this.getPrimitiveValue(tag);
         String valueColorStr = this.colored ? this.getPrimitiveColorCode(typeId) : null;
         String numberSuffixStr = this.useNumberSuffix ? this.getNumberSuffix(typeId) : null;
@@ -180,7 +181,7 @@ public abstract class BaseNbtStringifier
 
     protected void appendTag(String tagName, NBTBase tag)
     {
-        switch (NbtUtils.getTypeId(tag))
+        switch (NbtWrap.getTypeId(tag))
         {
             case Constants.NBT.TAG_COMPOUND:
                 this.appendCompound(tagName, (NBTTagCompound) tag);

@@ -23,7 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.nbt.NbtUtils;
+import fi.dy.masa.malilib.util.wrap.NbtWrap;
 
 public class BlockUtils
 {
@@ -161,7 +161,7 @@ public class BlockUtils
         String blockName = index != -1 ? stateString.substring(0, index) : stateString;
         NBTTagCompound tag = new NBTTagCompound();
 
-        NbtUtils.putString(tag, "Name", blockName);
+        NbtWrap.putString(tag, "Name", blockName);
 
         if (index != -1 && stateString.length() > (index + 4) && stateString.charAt(stateString.length() - 1) == ']')
         {
@@ -186,10 +186,10 @@ public class BlockUtils
 
                 String valStr = valIter.next();
 
-                NbtUtils.putString(propsTag, propName, valStr);
+                NbtWrap.putString(propsTag, propName, valStr);
             }
 
-            NbtUtils.putTag(tag, "Properties", propsTag);
+            NbtWrap.putTag(tag, "Properties", propsTag);
         }
 
         return tag;
@@ -203,19 +203,19 @@ public class BlockUtils
      */
     public static String getBlockStateStringFromTag(NBTTagCompound stateTag)
     {
-        String name = NbtUtils.getString(stateTag, "Name");
+        String name = NbtWrap.getString(stateTag, "Name");
 
-        if (NbtUtils.containsCompound(stateTag, "Properties") == false)
+        if (NbtWrap.containsCompound(stateTag, "Properties") == false)
         {
             return name;
         }
 
-        NBTTagCompound propTag = NbtUtils.getCompound(stateTag, "Properties");
+        NBTTagCompound propTag = NbtWrap.getCompound(stateTag, "Properties");
         ArrayList<Pair<String, String>> props = new ArrayList<>();
 
-        for (String key : NbtUtils.getKeys(propTag))
+        for (String key : NbtWrap.getKeys(propTag))
         {
-            props.add(Pair.of(key, NbtUtils.getString(propTag, key)));
+            props.add(Pair.of(key, NbtWrap.getString(propTag, key)));
         }
 
         final int size = props.size();

@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.function.Consumer;
 import net.minecraft.util.math.Vec3i;
-import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.position.Coordinate;
+import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class Vec3iEditWidget extends BaseTripleNumberEditWidget<Vec3i, IntegerEditWidget>
 {
@@ -40,7 +40,7 @@ public class Vec3iEditWidget extends BaseTripleNumberEditWidget<Vec3i, IntegerEd
     @Override
     protected Vec3i getPositionFromPlayer()
     {
-        return EntityUtils.getCameraEntityBlockPos();
+        return EntityWrap.getCameraEntityBlockPos();
     }
 
     protected void setPos(int newVal, Coordinate coordinate)

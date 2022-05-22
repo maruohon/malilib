@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class PositionUtils
 {
@@ -150,11 +151,13 @@ public class PositionUtils
      */
     public static EnumFacing getClosestLookingDirection(Entity entity, float verticalThreshold)
     {
-        if (entity.rotationPitch >= verticalThreshold)
+        float pitch = EntityWrap.getPitch(entity);
+
+        if (pitch >= verticalThreshold)
         {
             return EnumFacing.DOWN;
         }
-        else if (entity.rotationPitch <= -verticalThreshold)
+        else if (pitch <= -verticalThreshold)
         {
             return EnumFacing.UP;
         }
@@ -168,7 +171,7 @@ public class PositionUtils
     public static EnumFacing getClosestSideDirection(Entity entity)
     {
         EnumFacing forwardDirection = entity.getHorizontalFacing();
-        float entityYaw = ((entity.rotationYaw % 360.0F) + 360.0F) % 360.0F;
+        float entityYaw = ((EntityWrap.getYaw(entity) % 360.0F) + 360.0F) % 360.0F;
         float forwardYaw = forwardDirection.getHorizontalAngle();
 
         if (entityYaw < forwardYaw || (forwardYaw == 0.0F && entityYaw > 270.0F))
@@ -196,10 +199,10 @@ public class PositionUtils
      */
     public static BlockPos getPositionInfrontOfEntity(Entity entity, float verticalThreshold)
     {
-        double x = EntityUtils.getX(entity);
-        double y = EntityUtils.getY(entity);
-        double z = EntityUtils.getZ(entity);
-        float pitch = entity.rotationPitch;
+        double x = EntityWrap.getX(entity);
+        double y = EntityWrap.getY(entity);
+        double z = EntityWrap.getZ(entity);
+        float pitch = EntityWrap.getPitch(entity);
         BlockPos pos = new BlockPos(x, y, z);
 
         if (pitch >= verticalThreshold)

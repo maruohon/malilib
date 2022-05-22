@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.function.Consumer;
 import net.minecraft.util.math.BlockPos;
-import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.position.Coordinate;
+import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class BlockPosEditWidget extends BaseTripleNumberEditWidget<BlockPos, IntegerEditWidget>
 {
@@ -40,7 +40,7 @@ public class BlockPosEditWidget extends BaseTripleNumberEditWidget<BlockPos, Int
     @Override
     protected BlockPos getPositionFromPlayer()
     {
-        return EntityUtils.getCameraEntityBlockPos();
+        return EntityWrap.getCameraEntityBlockPos();
     }
 
     protected void setPos(int newVal, Coordinate coordinate)

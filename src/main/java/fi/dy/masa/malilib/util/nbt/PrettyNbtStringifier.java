@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import fi.dy.masa.malilib.util.data.Constants;
+import fi.dy.masa.malilib.util.wrap.NbtWrap;
 
 public class PrettyNbtStringifier extends BaseNbtStringifier
 {
@@ -79,7 +80,7 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
 
         if (this.printTagType)
         {
-            String tagType = NbtUtils.getCommandFeedbackName(tag);
+            String tagType = NbtWrap.getCommandFeedbackName(tag);
             this.addIndentedLine(String.format("[%s] %s: %s", tagType, name, value));
         }
         else if (StringUtils.isBlank(name) == false)
@@ -95,7 +96,7 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     @Override
     protected void appendCompound(String tagName, NBTTagCompound compound)
     {
-        List<String> keys = Lists.newArrayList(NbtUtils.getKeys(compound));
+        List<String> keys = Lists.newArrayList(NbtWrap.getKeys(compound));
         Collections.sort(keys);
 
         String name = this.getFormattedTagName(tagName);
@@ -115,7 +116,7 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
 
         for (String key : keys)
         {
-            this.appendTag(key, NbtUtils.getTag(compound, key));
+            this.appendTag(key, NbtWrap.getTag(compound, key));
         }
 
         this.setIndentationLevel(this.indentationLevel - 1);
@@ -125,8 +126,8 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     @Override
     protected void appendList(String tagName, NBTTagList list)
     {
-        final int size = NbtUtils.getListSize(list);
-        String containedTypeName = size > 0 ? NbtUtils.getCommandFeedbackName(list.get(0)) : "?";
+        final int size = NbtWrap.getListSize(list);
+        String containedTypeName = size > 0 ? NbtWrap.getCommandFeedbackName(list.get(0)) : "?";
         String name = this.getFormattedTagName(tagName);
 
         if (this.printTagType)

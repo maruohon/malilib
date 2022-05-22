@@ -12,9 +12,10 @@ import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.LayerMode;
 import fi.dy.masa.malilib.listener.LayerRangeChangeListener;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
-import fi.dy.masa.malilib.util.EntityUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
+import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class LayerRange
 {
@@ -278,9 +279,9 @@ public class LayerRange
     {
         switch (this.axis)
         {
-            case X: return MathHelper.floor(EntityUtils.getX(entity));
-            case Y: return MathHelper.floor(EntityUtils.getY(entity));
-            case Z: return MathHelper.floor(EntityUtils.getZ(entity));
+            case X: return MathHelper.floor(EntityWrap.getX(entity));
+            case Y: return MathHelper.floor(EntityWrap.getY(entity));
+            case Z: return MathHelper.floor(EntityWrap.getZ(entity));
         }
 
         return 0;
@@ -425,7 +426,7 @@ public class LayerRange
             }
             case LAYER_RANGE:
             {
-                Entity entity = EntityUtils.getCameraEntity();
+                Entity entity = GameUtils.getCameraEntity();
 
                 if (entity != null)
                 {
@@ -492,9 +493,9 @@ public class LayerRange
 
     protected boolean layerRangeIsMinClosest(Entity entity)
     {
-        double x = EntityUtils.getX(entity);
-        double y = EntityUtils.getY(entity);
-        double z = EntityUtils.getZ(entity);
+        double x = EntityWrap.getX(entity);
+        double y = EntityWrap.getY(entity);
+        double z = EntityWrap.getZ(entity);
         double playerPos = this.axis == Axis.Y ? y : (this.axis == Axis.X ? x : z);
         double min = this.layerRangeMin + 0.5D;
         double max = this.layerRangeMax + 0.5D;

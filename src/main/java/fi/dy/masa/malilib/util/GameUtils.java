@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.RayTraceResult;
 
 public class GameUtils
@@ -13,12 +14,6 @@ public class GameUtils
     public static Minecraft getClient()
     {
         return Minecraft.getMinecraft();
-    }
-
-    public static String getPlayerName()
-    {
-        EntityPlayerSP player = getClientPlayer();
-        return player != null ? player.getName() : "?";
     }
 
     @Nullable
@@ -31,6 +26,23 @@ public class GameUtils
     public static EntityPlayerSP getClientPlayer()
     {
         return getClient().player;
+    }
+
+    /**
+     * @return The camera entity, if it's not null, otherwise returns the client player entity.
+     */
+    @Nullable
+    public static Entity getCameraEntity()
+    {
+        Minecraft mc = getClient();
+        Entity entity = mc.getRenderViewEntity();
+        return entity != null ? entity : mc.player;
+    }
+
+    public static String getPlayerName()
+    {
+        Entity player = getClientPlayer();
+        return player != null ? player.getName() : "?";
     }
 
     @Nullable
@@ -57,7 +69,7 @@ public class GameUtils
 
     public static void scheduleToClientThread(Runnable task)
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = getClient();
 
         if (mc.isCallingFromMinecraftThread())
         {

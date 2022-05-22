@@ -12,11 +12,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.util.BackupUtils;
-import fi.dy.masa.malilib.util.EntityUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
+import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class OverlayRendererContainer
 {
@@ -61,9 +61,9 @@ public class OverlayRendererContainer
 
     protected Vec3d getCameraPos(Entity cameraEntity, float partialTicks)
     {
-        double x = cameraEntity.lastTickPosX + (EntityUtils.getX(cameraEntity) - cameraEntity.lastTickPosX) * partialTicks;
-        double y = cameraEntity.lastTickPosY + (EntityUtils.getY(cameraEntity) - cameraEntity.lastTickPosY) * partialTicks;
-        double z = cameraEntity.lastTickPosZ + (EntityUtils.getZ(cameraEntity) - cameraEntity.lastTickPosZ) * partialTicks;
+        double x = EntityWrap.lerpX(cameraEntity, partialTicks);
+        double y = EntityWrap.lerpY(cameraEntity, partialTicks);
+        double z = EntityWrap.lerpZ(cameraEntity, partialTicks);
 
         return new Vec3d(x, y, z);
     }
@@ -91,7 +91,7 @@ public class OverlayRendererContainer
 
     public void render(Minecraft mc, float partialTicks)
     {
-        Entity cameraEntity = EntityUtils.getCameraEntity();
+        Entity cameraEntity = GameUtils.getCameraEntity();
 
         if (cameraEntity == null)
         {
@@ -104,9 +104,9 @@ public class OverlayRendererContainer
             // otherwise some of the renderers mess up.
             // The magic 8.5, 65, 8.5 comes from the ClientWorld constructor
             if (System.nanoTime() - this.loginTime >= 5000000000L ||
-                EntityUtils.getX(cameraEntity) != 8.5 ||
-                EntityUtils.getY(cameraEntity) != 65 ||
-                EntityUtils.getZ(cameraEntity) != 8.5)
+                EntityWrap.getX(cameraEntity) != 8.5 ||
+                EntityWrap.getY(cameraEntity) != 65 ||
+                EntityWrap.getZ(cameraEntity) != 8.5)
             {
                 this.canRender = true;
             }
@@ -145,7 +145,7 @@ public class OverlayRendererContainer
             {
                 if (renderer.needsUpdate(entity, mc))
                 {
-                    renderer.setLastUpdatePos(new BlockPos(entity));
+                    renderer.setLastUpdatePos(EntityWrap.getEntityBlockPos(entity));
                     renderer.setUpdatePosition(cameraPos);
                     renderer.update(cameraPos, entity, mc);
                 }

@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import fi.dy.masa.malilib.util.data.Constants;
+import fi.dy.masa.malilib.util.wrap.NbtWrap;
 
 public class SimpleNbtStringifier extends BaseNbtStringifier
 {
@@ -45,7 +46,7 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
     @Override
     protected void appendCompound(String tagName, NBTTagCompound tag)
     {
-        List<String> keys = Lists.newArrayList(NbtUtils.getKeys(tag));
+        List<String> keys = Lists.newArrayList(NbtWrap.getKeys(tag));
         Collections.sort(keys);
         boolean first = true;
 
@@ -60,7 +61,7 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
 
             this.stringBuilder.append(this.getFormattedTagName(key));
             this.stringBuilder.append(':');
-            this.appendTag(key, NbtUtils.getTag(tag, key));
+            this.appendTag(key, NbtWrap.getTag(tag, key));
             first = false;
         }
 
@@ -70,7 +71,7 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
     @Override
     protected void appendList(String tagName, NBTTagList list)
     {
-        final int size = NbtUtils.getListSize(list);
+        final int size = NbtWrap.getListSize(list);
 
         this.stringBuilder.append('[');
 

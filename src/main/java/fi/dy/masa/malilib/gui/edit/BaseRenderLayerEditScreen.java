@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
-import fi.dy.masa.malilib.util.EntityUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
@@ -243,7 +243,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
             }
             else if (this.type == Type.SET_TO_PLAYER && this.parent.mc.player != null)
             {
-                this.layerRange.setSingleBoundaryToPosition(EntityUtils.getCameraEntity());
+                this.layerRange.setSingleBoundaryToPosition(GameUtils.getCameraEntity());
             }
 
             this.parent.initGui();

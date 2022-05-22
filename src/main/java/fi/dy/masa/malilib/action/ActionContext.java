@@ -6,7 +6,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
-import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.GameUtils;
 
 public class ActionContext
@@ -50,6 +49,6 @@ public class ActionContext
     @Nullable
     public Entity getCameraEntity()
     {
-        return EntityUtils.getCameraEntity();
+        return GameUtils.getCameraEntity();
     }
 }
