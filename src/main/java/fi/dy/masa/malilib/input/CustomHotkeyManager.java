@@ -50,7 +50,7 @@ public class CustomHotkeyManager implements HotkeyProvider
     {
         String name = StringUtils.translate("malilib.screen.tab.custom_hotkeys");
         return new BaseConfigTab(MaLiLibReference.MOD_INFO, name, name, 200,
-                                 this.getAllCustomHotkeys(), scr -> MaLiLibConfigScreen.create());
+                                 this.getAllCustomHotkeys(), MaLiLibConfigScreen::create);
     }
 
     public void addCustomHotkey(CustomHotkeyDefinition hotkey)

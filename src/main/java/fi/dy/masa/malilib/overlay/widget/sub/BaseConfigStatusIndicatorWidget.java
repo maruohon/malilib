@@ -230,7 +230,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
             }
             else
             {
-                ConfigTab dummyTab = new BaseConfigTab(MaLiLibReference.MOD_INFO, "?", -1, ImmutableList.of(PlaceholderConfigStatusIndicatorWidget.DUMMY_CONFIG), (g) -> null);
+                ConfigTab dummyTab = new BaseConfigTab(MaLiLibReference.MOD_INFO, "?", -1, ImmutableList.of(PlaceholderConfigStatusIndicatorWidget.DUMMY_CONFIG), () -> null);
                 configOnTab = new ConfigOnTab(dummyTab, PlaceholderConfigStatusIndicatorWidget.DUMMY_CONFIG);
                 BaseConfigStatusIndicatorWidget<?> widget = new PlaceholderConfigStatusIndicatorWidget(configOnTab.getConfig(), configOnTab);
                 widget.fromJson(obj);

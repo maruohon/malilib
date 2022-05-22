@@ -45,15 +45,14 @@ public interface ScreenTab extends NameIdentifiable
      * screen is not suitable for this tab.
      * @return
      */
-    GuiScreen createScreen(@Nullable GuiScreen currentScreen);
+    GuiScreen createScreen();
 
     /**
      * Opens the screen for this tab
-     * @param currentScreen
      */
-    default void createAndOpenScreen(@Nullable GuiScreen currentScreen)
+    default void createAndOpenScreen()
     {
-        GuiScreen screen = this.createScreen(currentScreen);
+        GuiScreen screen = this.createScreen();
 
         if (screen instanceof BaseTabbedScreen)
         {

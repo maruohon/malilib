@@ -47,7 +47,7 @@ public abstract class BaseTabbedScreen extends BaseScreen
 
         if (tab != null && tab.canUseCurrentScreen(this) == false)
         {
-            tab.createAndOpenScreen(this);
+            tab.createAndOpenScreen();
             return;
         }
 

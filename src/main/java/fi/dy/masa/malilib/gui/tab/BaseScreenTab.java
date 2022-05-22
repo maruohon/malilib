@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.tab;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -14,19 +15,19 @@ public class BaseScreenTab implements ScreenTab
 {
     protected final String name;
     protected final String translationKey;
-    protected final Function<GuiScreen, BaseScreen> screenFactory;
+    protected final Supplier<BaseScreen> screenFactory;
     protected final Function<BaseTabbedScreen, ButtonActionListener> listenerFactory;
     protected final Predicate<GuiScreen> screenChecker;
     @Nullable protected String hoverTextTranslationKey;
 
     public BaseScreenTab(ModInfo modInfo, String name, Predicate<GuiScreen> screenChecker,
-                         Function<GuiScreen, BaseScreen> screenFactory)
+                         Supplier<BaseScreen> screenFactory)
     {
         this(name, modInfo.getModId() + ".screen.tab." + name, screenChecker, screenFactory);
     }
 
     public BaseScreenTab(String name, String translationKey, Predicate<GuiScreen> screenChecker,
-                         Function<GuiScreen, BaseScreen> screenFactory)
+                         Supplier<BaseScreen> screenFactory)
     {
         this.name = name;
         this.translationKey = translationKey;
@@ -36,7 +37,7 @@ public class BaseScreenTab implements ScreenTab
     }
 
     public BaseScreenTab(String name, String translationKey, Predicate<GuiScreen> screenChecker,
-                         Function<GuiScreen, BaseScreen> screenFactory,
+                         Supplier<BaseScreen> screenFactory,
                          Function<BaseTabbedScreen, ButtonActionListener> listenerFactory)
     {
         this.name = name;
@@ -78,9 +79,9 @@ public class BaseScreenTab implements ScreenTab
     }
 
     @Override
-    public BaseScreen createScreen(GuiScreen currentScreen)
+    public BaseScreen createScreen()
     {
-        return this.screenFactory.apply(currentScreen);
+        return this.screenFactory.get();
     }
 
     @Override
@@ -101,7 +102,7 @@ public class BaseScreenTab implements ScreenTab
         }
         else
         {
-            this.createAndOpenScreen(currentScreen);
+            this.createAndOpenScreen();
         }
 
         return true;

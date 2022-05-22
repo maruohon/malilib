@@ -1,9 +1,7 @@
 package fi.dy.masa.malilib.gui.action;
 
 import java.util.Set;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.MaLiLibConfigScreen;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.action.ActionGroup;
@@ -145,7 +143,7 @@ public class ActionListScreen extends BaseActionListScreen
         return false;
     }
 
-    public static BaseTabbedScreen createActionListScreen(@Nullable GuiScreen currentScreen)
+    public static BaseTabbedScreen createActionListScreen()
     {
         return new ActionListScreen();
     }

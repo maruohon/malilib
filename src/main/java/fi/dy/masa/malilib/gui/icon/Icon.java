@@ -199,9 +199,9 @@ public interface Icon
         }
 
         JsonObject obj = el.getAsJsonObject();
-        Identifier texture = new Identifier(JsonUtils.getStringOrDefault(obj, "texture", ""));
+        String textureName = JsonUtils.getStringOrDefault(obj, "texture", null);
 
-        if (texture == null)
+        if (textureName == null)
         {
             return null;
         }
@@ -217,6 +217,8 @@ public interface Icon
 
         if (w > 0 && h > 0 && tw > 0 && th > 0)
         {
+            Identifier texture = new Identifier(textureName);
+
             if (vu != 0 || vv != 0)
             {
                 return new BaseMultiIcon(u, v, w, h, vu, vv, tw, th, texture);

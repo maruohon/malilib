@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
@@ -26,7 +25,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
     protected int configElementsWidth = 120;
 
-    public BaseConfigScreen(ModInfo modInfo, @Nullable GuiScreen parent,
+    public BaseConfigScreen(ModInfo modInfo,
                             List<? extends ScreenTab> configTabs,
                             @Nullable ConfigTab defaultTab,
                             String titleKey, Object... args)
@@ -38,7 +37,6 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
         this.createSwitchModConfigScreenDropDown(modInfo);
         this.setTitle(titleKey, args);
-        this.setParent(parent);
     }
 
     @Override
