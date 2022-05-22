@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util;
 
 import java.io.File;
+import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -8,11 +9,14 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
@@ -20,6 +24,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.util.data.Identifier;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -461,6 +466,26 @@ public class StringUtils
         }
         else
         {
+            Minecraft mc = GameUtils.getClient();
+
+            if (mc.isConnectedToRealms())
+            {
+                if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
+                {
+                    return "realms";
+                }
+                else
+                {
+                    NetHandlerPlayClient handler = mc.getConnection();
+                    NetworkManager connection = handler != null ? handler.getNetworkManager() : null;
+
+                    if (connection != null)
+                    {
+                        return "realms_" + stringifyAddress(connection.getRemoteAddress());
+                    }
+                }
+            }
+
             ServerData server = GameUtils.getClient().getCurrentServerData();
 
             if (server != null)
@@ -506,6 +531,18 @@ public class StringUtils
         }
 
         return FileNameUtils.generateSimpleSafeFileName(name) + suffix;
+    }
+
+    public static String stringifyAddress(SocketAddress address)
+    {
+        String str = address.toString();
+
+        if (str.contains("/"))
+        {
+            str = str.substring(str.indexOf('/') + 1);
+        }
+
+        return str.replace(':', '_');
     }
 
     public static String getStackString(ItemStack stack)
