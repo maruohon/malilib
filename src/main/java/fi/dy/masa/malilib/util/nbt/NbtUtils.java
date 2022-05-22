@@ -1,10 +1,16 @@
 package fi.dy.masa.malilib.util.nbt;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.zip.GZIPOutputStream;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -14,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.mixin.access.NBTBaseMixin;
 import fi.dy.masa.malilib.util.data.Constants;
 import fi.dy.masa.malilib.util.wrap.NbtWrap;
 
@@ -238,5 +245,28 @@ public class NbtUtils
         }
 
         return null;
+    }
+
+    /**
+     * Write the compound tag, gzipped, to the output stream.
+     */
+    public static void writeCompressed(NBTTagCompound tag, String tagName, OutputStream outputStream) throws IOException
+    {
+        try (DataOutputStream dataoutputstream = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(outputStream))))
+        {
+            writeTag(tag, tagName, dataoutputstream);
+        }
+    }
+
+    private static void writeTag(NBTBase tag, String tagName, DataOutput output) throws IOException
+    {
+        int typeId = NbtWrap.getTypeId(tag);
+        output.writeByte(typeId);
+
+        if (typeId != 0)
+        {
+            output.writeUTF(tagName);
+            ((NBTBaseMixin) tag).invokeWrite(output);
+        }
     }
 }
