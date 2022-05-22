@@ -48,7 +48,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.mixin.IMixinAbstractHorse;
+import fi.dy.masa.malilib.mixin.access.AbstractHorseMixin;
 import fi.dy.masa.malilib.render.ItemRenderUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -571,7 +571,7 @@ public class InventoryRenderUtils
         }
         else if (entity instanceof AbstractHorse)
         {
-            IInventory inv = ((IMixinAbstractHorse) entity).malilib_getHorseChest();
+            IInventory inv = ((AbstractHorseMixin) entity).malilib_getHorseChest();
             InventoryView equipmentInv = new EquipmentInventoryView((AbstractHorse) entity);
             InventoryView mainInventory = new VanillaInventoryView(inv);
             InventoryRenderDefinition def = (entity instanceof EntityLlama) ?

@@ -2,32 +2,32 @@ package fi.dy.masa.malilib.util.inventory;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
-import fi.dy.masa.malilib.mixin.IMixinGuiContainer;
+import fi.dy.masa.malilib.mixin.access.GuiContainerMixin;
 
 public class InventoryScreenUtils
 {
     public static int getGuiPosX(GuiContainer gui)
     {
-        return ((IMixinGuiContainer) gui).getGuiPosX();
+        return ((GuiContainerMixin) gui).getGuiPosX();
     }
 
     public static int getGuiPosY(GuiContainer gui)
     {
-        return ((IMixinGuiContainer) gui).getGuiPosY();
+        return ((GuiContainerMixin) gui).getGuiPosY();
     }
 
     public static int getGuiSizeX(GuiContainer gui)
     {
-        return ((IMixinGuiContainer) gui).getGuiSizeX();
+        return ((GuiContainerMixin) gui).getGuiSizeX();
     }
 
     public static int getGuiSizeY(GuiContainer gui)
     {
-        return ((IMixinGuiContainer) gui).getGuiSizeY();
+        return ((GuiContainerMixin) gui).getGuiSizeY();
     }
 
     public static Slot getSlotUnderMouse(GuiContainer gui)
     {
-        return ((IMixinGuiContainer) gui).getHoveredSlot();
+        return ((GuiContainerMixin) gui).getHoveredSlot();
     }
 }

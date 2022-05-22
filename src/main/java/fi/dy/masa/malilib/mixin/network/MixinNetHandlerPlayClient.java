@@ -1,19 +1,21 @@
-package fi.dy.masa.malilib.mixin;
+package fi.dy.masa.malilib.mixin.network;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.network.play.server.SPacketCustomPayload;
 import fi.dy.masa.malilib.network.ClientPacketChannelHandlerImpl;
 import fi.dy.masa.malilib.registry.Registry;
 
-@Mixin(net.minecraft.client.network.NetHandlerPlayClient.class)
+@Mixin(NetHandlerPlayClient.class)
 public abstract class MixinNetHandlerPlayClient
 {
     @Inject(method = "handleCustomPayload", at = @At("RETURN"))
-    private void onCustomPayload(net.minecraft.network.play.server.SPacketCustomPayload packet, CallbackInfo ci)
+    private void onCustomPayload(SPacketCustomPayload packet, CallbackInfo ci)
     {
-        net.minecraft.client.network.NetHandlerPlayClient handler = (net.minecraft.client.network.NetHandlerPlayClient) (Object) this;
+        NetHandlerPlayClient handler = (NetHandlerPlayClient) (Object) this;
         ((ClientPacketChannelHandlerImpl) Registry.CLIENT_PACKET_CHANNEL_HANDLER).processPacketFromServer(packet, handler);
     }
 }

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.mixin;
+package fi.dy.masa.malilib.mixin.command;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -8,10 +8,11 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.util.TabCompleter;
+import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.registry.Registry;
 
 @Mixin(TabCompleter.class)
-public abstract class MixinTabCompleter
+public abstract class TabCompleterMixin
 {
     @Inject(method = "requestCompletions(Ljava/lang/String;)V", at = @At(
             value = "INVOKE",
@@ -43,12 +44,12 @@ public abstract class MixinTabCompleter
 
             for (String str : complete)
             {
-                result[i++] = net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes(str);
+                result[i++] = TextFormatting.getTextWithoutFormattingCodes(str);
             }
 
             for (String str : newCompl)
             {
-                result[i++] = net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes(str);
+                result[i++] = TextFormatting.getTextWithoutFormattingCodes(str);
             }
 
             return result;
@@ -63,6 +64,6 @@ public abstract class MixinTabCompleter
             ))
     private String removeFormattingCodes2(String text)
     {
-        return net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes(text);
+        return TextFormatting.getTextWithoutFormattingCodes(text);
     }
 }

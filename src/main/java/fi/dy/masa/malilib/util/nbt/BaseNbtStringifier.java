@@ -13,7 +13,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
-import fi.dy.masa.malilib.mixin.IMixinNBTTagLongArray;
+import fi.dy.masa.malilib.mixin.access.NBTTagLongArrayMixin;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Constants;
 import fi.dy.masa.malilib.util.wrap.NbtWrap;
@@ -200,7 +200,7 @@ public abstract class BaseNbtStringifier
                 break;
 
             case Constants.NBT.TAG_LONG_ARRAY:
-                this.appendLongArray(tagName, ((IMixinNBTTagLongArray) tag).getArray());
+                this.appendLongArray(tagName, ((NBTTagLongArrayMixin) tag).getArray());
                 break;
 
             default:

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.mixin;
+package fi.dy.masa.malilib.mixin.render;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +13,7 @@ import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcherImpl;
 import fi.dy.masa.malilib.registry.Registry;
 
 @Mixin(EntityRenderer.class)
-public abstract class MixinEntityRenderer
+public abstract class EntityRendererMixin
 {
     @Shadow @Final private Minecraft mc;
 
