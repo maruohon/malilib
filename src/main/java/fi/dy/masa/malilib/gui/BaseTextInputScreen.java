@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
@@ -47,13 +46,6 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
         this.textField = new BaseTextFieldWidget(240, 20, this.originalText);
         this.textField.setFocused(true);
-    }
-
-    public BaseTextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent)
-    {
-        this(titleKey, defaultText);
-
-        this.setParent(parent);
     }
 
     @Override

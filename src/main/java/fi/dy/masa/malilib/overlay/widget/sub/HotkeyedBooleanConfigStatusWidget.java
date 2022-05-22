@@ -65,8 +65,8 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
     @Override
     public void openEditScreen()
     {
-        HotkeyedBooleanConfigStatusIndicatorEditScreen screen
-                = new HotkeyedBooleanConfigStatusIndicatorEditScreen(this, GuiUtils.getCurrentScreen());
+        HotkeyedBooleanConfigStatusIndicatorEditScreen screen = new HotkeyedBooleanConfigStatusIndicatorEditScreen(this);
+        screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }
 

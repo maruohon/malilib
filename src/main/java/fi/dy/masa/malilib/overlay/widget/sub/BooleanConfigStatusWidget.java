@@ -71,7 +71,8 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     @Override
     public void openEditScreen()
     {
-        BooleanConfigStatusIndicatorEditScreen<?> screen = new BooleanConfigStatusIndicatorEditScreen<>(this, GuiUtils.getCurrentScreen());
+        BooleanConfigStatusIndicatorEditScreen<?> screen = new BooleanConfigStatusIndicatorEditScreen<>(this);
+        screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }
 

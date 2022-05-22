@@ -46,9 +46,9 @@ public class ColorIndicatorWidget extends InteractableWidget
         if (this.config == null || this.config.isLocked() == false)
         {
             int originalColor = this.valueSupplier.getAsInt();
-            ColorEditorHSVScreen gui = new ColorEditorHSVScreen(originalColor, this.valueConsumer,
-                                                                GuiUtils.getCurrentScreen());
-            BaseScreen.openPopupScreen(gui);
+            ColorEditorHSVScreen screen = new ColorEditorHSVScreen(originalColor, this.valueConsumer);
+            screen.setParent(GuiUtils.getCurrentScreen());
+            BaseScreen.openPopupScreen(screen);
         }
     }
 

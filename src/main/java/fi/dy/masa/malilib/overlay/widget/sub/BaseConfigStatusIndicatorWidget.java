@@ -127,7 +127,8 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
 
     public void openEditScreen()
     {
-        BaseConfigStatusIndicatorEditScreen<?> screen = new BaseConfigStatusIndicatorEditScreen<>(this, GuiUtils.getCurrentScreen());
+        BaseConfigStatusIndicatorEditScreen<?> screen = new BaseConfigStatusIndicatorEditScreen<>(this);
+        screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }
 

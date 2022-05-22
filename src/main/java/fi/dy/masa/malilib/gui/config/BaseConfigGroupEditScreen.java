@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -18,7 +17,7 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     @Nullable protected KeybindEditingScreen keyBindEditingScreen;
     protected int elementsWidth = 200;
 
-    public BaseConfigGroupEditScreen(ModInfo modInfo, @Nullable EventListener saveListener, @Nullable GuiScreen parent)
+    public BaseConfigGroupEditScreen(ModInfo modInfo, @Nullable EventListener saveListener)
     {
         super(8, 30, 14, 36);
 
@@ -31,8 +30,6 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
         this.backgroundColor = 0xFF000000;
         this.screenWidth = Math.min(350, GuiUtils.getScaledWindowWidth() - 40);
         this.screenHeight = GuiUtils.getScaledWindowHeight() - 90;
-
-        this.setParent(parent);
     }
 
     public void setSaveListener(@Nullable EventListener saveListener)

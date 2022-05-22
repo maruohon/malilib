@@ -120,10 +120,11 @@ public class ActionListScreen extends BaseActionListScreen
     protected void openMacroNameInput()
     {
         String title = StringUtils.translate("malilib.title.screen.create_macro");
-        TextInputScreen screen = new TextInputScreen(title, "", this::openMacroEditScreen, this);
+        TextInputScreen screen = new TextInputScreen(title, "", this::openMacroEditScreen);
         screen.setCloseScreenWhenApplied(false);
         screen.setLabelText("malilib.label.misc.name.colon");
         screen.setInfoText("malilib.info.action.action_name_immutable");
+        screen.setParent(this);
         BaseScreen.openPopupScreen(screen);
     }
 

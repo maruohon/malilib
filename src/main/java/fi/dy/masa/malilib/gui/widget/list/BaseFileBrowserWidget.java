@@ -582,15 +582,14 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         boolean isDir = file.isDirectory();
         String titleKey = isDir ? "malilib.title.screen.rename_directory" :
                                   "malilib.title.screen.rename_file";
-        TextInputScreen screen = new TextInputScreen(titleKey,
-                                                     name, (n) -> this.renameFile(file, n),
-                                                     GuiUtils.getCurrentScreen());
         String infoKey = isDir ? "malilib.label.file_browser.rename.info.directory" :
                                  "malilib.label.file_browser.rename.info.file";
+        TextInputScreen screen = new TextInputScreen(titleKey, name, (n) -> this.renameFile(file, n));
         screen.setInfoText(StyledText.translate(infoKey, originalFileName));
         screen.setLabelText(StyledText.translate("malilib.label.file_browser.rename.new_name"));
         screen.setConfirmListener(task::advance);
         screen.setCancelListener(task::cancel);
+        screen.setParent(GuiUtils.getCurrentScreen());
 
         BaseScreen.openPopupScreen(screen);
     }
@@ -755,9 +754,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         else if (keyCode == Keys.KEY_N && BaseScreen.isCtrlDown() && BaseScreen.isShiftDown())
         {
             DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this);
-            TextInputScreen gui = new TextInputScreen("malilib.title.screen.create_directory", "",
-                                                      creator, GuiUtils.getCurrentScreen());
-            BaseScreen.openPopupScreen(gui);
+            TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_directory", "", creator);
+            screen.setParent(GuiUtils.getCurrentScreen());
+            BaseScreen.openPopupScreen(screen);
             return true;
         }
 

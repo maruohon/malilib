@@ -155,8 +155,8 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
 
     protected void openAddAliasScreen()
     {
-        TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_alias_action", "",
-                                                     this::addAlias, GuiUtils.getCurrentScreen());
+        TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_alias_action", "", this::addAlias);
+        screen.setParent(GuiUtils.getCurrentScreen());
         screen.setLabelText("malilib.label.actions.create_alias.alias_name");
         BaseScreen.openPopupScreen(screen);
     }

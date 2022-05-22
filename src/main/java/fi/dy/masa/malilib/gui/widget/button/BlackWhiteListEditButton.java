@@ -29,8 +29,9 @@ public class BlackWhiteListEditButton extends GenericButton
 
     protected void openEditScreen()
     {
-        BaseScreen.openPopupScreen(new BlackWhiteListEditScreen<>(this.config, this.saveListener,
-                                                                  GuiUtils.getCurrentScreen()));
+        BlackWhiteListEditScreen<?> screen = new BlackWhiteListEditScreen<>(this.config, this.saveListener);
+        screen.setParent(GuiUtils.getCurrentScreen());
+        BaseScreen.openPopupScreen(screen);
     }
 
     protected String getCurrentDisplayString()

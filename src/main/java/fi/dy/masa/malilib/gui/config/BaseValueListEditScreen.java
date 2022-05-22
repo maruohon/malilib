@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseListScreen;
@@ -28,8 +27,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
                                    ValueListConfig<TYPE> config,
                                    @Nullable EventListener saveListener,
                                    Supplier<TYPE> newEntrySupplier,
-                                   ValueListEditEntryWidgetFactory<TYPE> widgetFactory,
-                                   GuiScreen parent)
+                                   ValueListEditEntryWidgetFactory<TYPE> widgetFactory)
     {
         super(8, 20, 14, 25);
 
@@ -46,7 +44,6 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         this.screenHeight = GuiUtils.getScaledWindowHeight() - 60;
 
         this.setTitle(title);
-        this.setParent(parent);
     }
 
     @Override

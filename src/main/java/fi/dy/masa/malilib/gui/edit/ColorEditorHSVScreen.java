@@ -6,7 +6,6 @@ import java.util.function.IntConsumer;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -57,7 +56,7 @@ public class ColorEditorHSVScreen extends BaseScreen
     protected float relB;
     protected float relA;
 
-    public ColorEditorHSVScreen(int initialValue, IntConsumer valueConsumer, @Nullable GuiScreen parent)
+    public ColorEditorHSVScreen(int initialValue, IntConsumer valueConsumer)
     {
         this.initialValue = initialValue;
         this.valueConsumer = valueConsumer;
@@ -67,7 +66,6 @@ public class ColorEditorHSVScreen extends BaseScreen
         this.useTitleHierarchy = false;
 
         this.setTitle("malilib.title.screen.color_editor");
-        this.setParent(parent);
         this.setScreenWidthAndHeight(300, 180);
         this.centerOnScreen();
     }

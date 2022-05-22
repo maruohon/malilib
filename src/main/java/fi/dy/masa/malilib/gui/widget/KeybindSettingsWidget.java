@@ -38,8 +38,9 @@ public class KeybindSettingsWidget extends InteractableWidget
     {
         if (mouseButton == 0)
         {
-            BaseScreen.openPopupScreen(new KeybindSettingsScreen(this.keyBind, this.keyBindName,
-                                                                 GuiUtils.getCurrentScreen()));
+            KeybindSettingsScreen screen = new KeybindSettingsScreen(this.keyBind, this.keyBindName);
+            screen.setParent(GuiUtils.getCurrentScreen());
+            BaseScreen.openPopupScreen(screen);
 
             return true;
         }

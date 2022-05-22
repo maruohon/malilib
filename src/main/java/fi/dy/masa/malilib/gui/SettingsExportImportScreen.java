@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui;
 import java.io.File;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.widget.RadioButtonWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
@@ -24,16 +23,6 @@ public class SettingsExportImportScreen extends TextInputScreen
     protected String copyToClipboardMessage = "malilib.message.info.setting_string_copied_to_clipboard";
     protected String pasteFromClipboardMessage = "malilib.message.info.setting_string_pasted_from_clipboard";
     protected int messageDisplayTime = 2000;
-
-    public SettingsExportImportScreen(String titleKey,
-                                      String exportString,
-                                      ResultingStringConsumer overwriteStringConsumer,
-                                      @Nullable GuiScreen parent)
-    {
-        this(titleKey, exportString, overwriteStringConsumer);
-
-        this.setParent(parent);
-    }
 
     public SettingsExportImportScreen(String titleKey,
                                       String exportString,

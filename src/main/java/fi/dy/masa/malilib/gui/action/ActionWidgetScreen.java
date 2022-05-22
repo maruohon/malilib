@@ -558,7 +558,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         {
             String str = this.getSettingsExportString();
             TextInputScreen screen = new TextInputScreen("malilib.title.screen.action_screen.export_settings",
-                                                         str, (s) -> true, this);
+                                                         str, (s) -> true);
+            screen.setParent(this);
             openPopupScreen(screen);
         }
 
@@ -574,7 +575,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         else if (mouseButton == 0)
         {
             TextInputScreen screen = new TextInputScreen("malilib.title.screen.action_screen.import_settings",
-                                                         "", this::applySettingsFromImportString, this);
+                                                         "", this::applySettingsFromImportString);
+            screen.setParent(this);
             openPopupScreen(screen);
         }
 
@@ -640,10 +642,10 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     public static void openCreateActionWidgetScreen()
     {
         TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_action_widget_screen", "",
-                                                     ActionExecutionWidgetManager::createActionWidgetScreen,
-                                                     GuiUtils.getCurrentScreen());
+                                                     ActionExecutionWidgetManager::createActionWidgetScreen);
         screen.setInfoText(StyledText.translate("malilib.info.action.create_action_widget_screen.name_is_final"));
         screen.setLabelText(StyledText.translate("malilib.label.misc.name.colon"));
+        screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openPopupScreen(screen);
     }
 
