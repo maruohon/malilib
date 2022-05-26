@@ -4,6 +4,7 @@ import java.io.File;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -26,6 +27,11 @@ public class GameUtils
     public static EntityPlayerSP getClientPlayer()
     {
         return getClient().player;
+    }
+
+    public static PlayerControllerMP getInteractionManager()
+    {
+        return getClient().playerController;
     }
 
     /**

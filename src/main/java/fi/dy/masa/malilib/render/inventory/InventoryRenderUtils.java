@@ -59,8 +59,8 @@ import fi.dy.masa.malilib.util.WorldUtils;
 import fi.dy.masa.malilib.util.inventory.ColoredVanillaInventoryView;
 import fi.dy.masa.malilib.util.inventory.CombinedInventoryView;
 import fi.dy.masa.malilib.util.inventory.EquipmentInventoryView;
-import fi.dy.masa.malilib.util.inventory.InventoryUtils;
 import fi.dy.masa.malilib.util.inventory.InventoryView;
+import fi.dy.masa.malilib.util.inventory.StorageItemInventoryUtils;
 import fi.dy.masa.malilib.util.inventory.VanillaInventoryView;
 import fi.dy.masa.malilib.util.position.Vec2i;
 
@@ -361,7 +361,7 @@ public class InventoryRenderUtils
                 bgTintColor = getShulkerBoxBackgroundTintColor(block);
             }
 
-            InventoryView inv = InventoryUtils.getExactStoredItemsView(stack);
+            InventoryView inv = StorageItemInventoryUtils.getExactStoredItemsView(stack);
 
             if (inv == null || inv.getSize()  <= 0)
             {
