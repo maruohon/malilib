@@ -17,14 +17,16 @@ public class OptionListConfig<T extends OptionListConfigValue> extends BaseGener
         this(name, defaultValue, allValues, name);
     }
 
-    public OptionListConfig(String name, T defaultValue, ImmutableList<T> allValues, String comment)
+    public OptionListConfig(String name, T defaultValue, ImmutableList<T> allValues,
+                            String commentTranslationKey, Object... commentArgs)
     {
-        this(name, defaultValue, allValues, name, comment);
+        this(name, defaultValue, allValues, name, commentTranslationKey, commentArgs);
     }
 
-    public OptionListConfig(String name, T defaultValue, ImmutableList<T> allValues, String prettyName, String comment)
+    public OptionListConfig(String name, T defaultValue, ImmutableList<T> allValues, String prettyName,
+                            String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValue, name, prettyName, comment);
+        super(name, defaultValue, name, prettyName, commentTranslationKey, commentArgs);
 
         this.allValues = allValues;
         this.allowedValues = ImmutableSet.copyOf(allValues);

@@ -9,14 +9,19 @@ import fi.dy.masa.malilib.util.game.BlockUtils;
 
 public class BlockListConfig extends ValueListConfig<Block>
 {
-    public BlockListConfig(String name, ImmutableList<Block> defaultValues, Function<Block, String> toStringConverter, Function<String, Block> fromStringConverter)
+    public BlockListConfig(String name, ImmutableList<Block> defaultValues,
+                           Function<Block, String> toStringConverter,
+                           Function<String, Block> fromStringConverter)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter);
     }
 
-    public BlockListConfig(String name, ImmutableList<Block> defaultValues, String comment, Function<Block, String> toStringConverter, Function<String, Block> fromStringConverter)
+    public BlockListConfig(String name, ImmutableList<Block> defaultValues,
+                           Function<Block, String> toStringConverter,
+                           Function<String, Block> fromStringConverter,
+                           String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValues, comment, toStringConverter, fromStringConverter);
+        super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
     }
 
     @Override

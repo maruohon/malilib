@@ -9,9 +9,10 @@ public class ColorConfig extends BaseGenericConfig<Color4f>
         this(name, defaultValue, name);
     }
 
-    public ColorConfig(String name, String defaultValue, String comment)
+    public ColorConfig(String name, String defaultValue,
+                       String commentTranslationKey, Object... commentArgs)
     {
-        super(name, Color4f.fromString(defaultValue), comment);
+        super(name, Color4f.fromString(defaultValue), commentTranslationKey, commentArgs);
     }
 
     public Color4f getColor()

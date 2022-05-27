@@ -9,14 +9,19 @@ import net.minecraft.util.ResourceLocation;
 
 public class IdentifierListConfig extends ValueListConfig<ResourceLocation>
 {
-    public IdentifierListConfig(String name, ImmutableList<ResourceLocation> defaultValues, Function<ResourceLocation, String> toStringConverter, Function<String, ResourceLocation> fromStringConverter)
+    public IdentifierListConfig(String name, ImmutableList<ResourceLocation> defaultValues,
+                                Function<ResourceLocation, String> toStringConverter,
+                                Function<String, ResourceLocation> fromStringConverter)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter);
     }
 
-    public IdentifierListConfig(String name, ImmutableList<ResourceLocation> defaultValues, String comment, Function<ResourceLocation, String> toStringConverter, Function<String, ResourceLocation> fromStringConverter)
+    public IdentifierListConfig(String name, ImmutableList<ResourceLocation> defaultValues,
+                                Function<ResourceLocation, String> toStringConverter,
+                                Function<String, ResourceLocation> fromStringConverter,
+                                String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValues, comment, toStringConverter, fromStringConverter);
+        super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
     }
 
     @Override

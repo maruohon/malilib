@@ -12,6 +12,12 @@ public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> impl
         super(name, new BooleanAndFile(defaultBooleanValue, defaultDirectory));
     }
 
+    public BooleanAndFileConfig(String name, boolean defaultBooleanValue, File defaultDirectory,
+                                String commentTranslationKey, Object... commentArgs)
+    {
+        super(name, new BooleanAndFile(defaultBooleanValue, defaultDirectory), commentTranslationKey, commentArgs);
+    }
+
     @Override
     public boolean getBooleanValue()
     {

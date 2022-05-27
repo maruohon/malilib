@@ -10,14 +10,19 @@ import net.minecraft.util.ResourceLocation;
 
 public class StatusEffectListConfig extends ValueListConfig<Potion>
 {
-    public StatusEffectListConfig(String name, ImmutableList<Potion> defaultValues, Function<Potion, String> toStringConverter, Function<String, Potion> fromStringConverter)
+    public StatusEffectListConfig(String name, ImmutableList<Potion> defaultValues,
+                                  Function<Potion, String> toStringConverter,
+                                  Function<String, Potion> fromStringConverter)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter);
     }
 
-    public StatusEffectListConfig(String name, ImmutableList<Potion> defaultValues, String comment, Function<Potion, String> toStringConverter, Function<String, Potion> fromStringConverter)
+    public StatusEffectListConfig(String name, ImmutableList<Potion> defaultValues,
+                                  Function<Potion, String> toStringConverter,
+                                  Function<String, Potion> fromStringConverter,
+                                  String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValues, comment, toStringConverter, fromStringConverter);
+        super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
     }
 
     @Override

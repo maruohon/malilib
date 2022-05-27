@@ -11,14 +11,15 @@ public abstract class BaseSliderConfig<T> extends BaseGenericConfig<T> implement
     protected boolean sliderActive;
     protected boolean allowSlider = true;
 
-    public BaseSliderConfig(String name, T defaultValue, String comment)
+    public BaseSliderConfig(String name, T defaultValue, String commentTranslationKey)
     {
-        this(name, defaultValue, comment, false);
+        this(name, defaultValue, false, commentTranslationKey);
     }
 
-    public BaseSliderConfig(String name, T defaultValue, String comment, boolean sliderActive)
+    public BaseSliderConfig(String name, T defaultValue, boolean sliderActive,
+                            String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValue, comment);
+        super(name, defaultValue, commentTranslationKey, commentArgs);
 
         this.sliderActive = sliderActive;
     }
@@ -33,6 +34,11 @@ public abstract class BaseSliderConfig<T> extends BaseGenericConfig<T> implement
     public void toggleSliderActive()
     {
         this.sliderActive = ! this.sliderActive;
+    }
+
+    public void setSliderActive(boolean sliderActive)
+    {
+        this.sliderActive = sliderActive;
     }
 
     @Override

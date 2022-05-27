@@ -13,9 +13,11 @@ public class DualColorConfig extends BaseGenericConfig<Pair<Color4f, Color4f>>
         this(name, defaultValue1, defaultValue2, name);
     }
 
-    public DualColorConfig(String name, String defaultValue1, String defaultValue2, String comment)
+    public DualColorConfig(String name, String defaultValue1, String defaultValue2,
+                           String commentTranslationKey, Object... commentArgs)
     {
-        super(name, Pair.of(Color4f.fromString(defaultValue1), Color4f.fromString(defaultValue2)), comment);
+        super(name, Pair.of(Color4f.fromString(defaultValue1), Color4f.fromString(defaultValue2)),
+              commentTranslationKey, commentArgs);
     }
 
     public Color4f getFirstColor()

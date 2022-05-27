@@ -16,15 +16,18 @@ public class ValueListConfig<TYPE> extends BaseGenericConfig<ImmutableList<TYPE>
     @Nullable ImmutableSet<TYPE> validValues;
 
     public ValueListConfig(String name, ImmutableList<TYPE> defaultValues,
-                           Function<TYPE, String> toStringConverter, Function<String, TYPE> fromStringConverter)
+                           Function<TYPE, String> toStringConverter,
+                           Function<String, TYPE> fromStringConverter)
     {
-        this(name, defaultValues, name, toStringConverter, fromStringConverter);
+        this(name, defaultValues, toStringConverter, fromStringConverter, name);
     }
 
-    public ValueListConfig(String name, ImmutableList<TYPE> defaultValues, String comment,
-                           Function<TYPE, String> toStringConverter, Function<String, TYPE> fromStringConverter)
+    public ValueListConfig(String name, ImmutableList<TYPE> defaultValues,
+                           Function<TYPE, String> toStringConverter,
+                           Function<String, TYPE> fromStringConverter,
+                           String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValues, comment);
+        super(name, defaultValues, commentTranslationKey, commentArgs);
 
         this.toStringConverter = toStringConverter;
         this.fromStringConverter = fromStringConverter;

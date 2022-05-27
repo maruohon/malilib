@@ -7,8 +7,9 @@ public class StringConfig extends BaseGenericConfig<String>
         this(name, defaultValue, name);
     }
 
-    public StringConfig(String name, String defaultValue, String comment)
+    public StringConfig(String name, String defaultValue,
+                        String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValue, comment);
+        super(name, defaultValue, commentTranslationKey, commentArgs);
     }
 }

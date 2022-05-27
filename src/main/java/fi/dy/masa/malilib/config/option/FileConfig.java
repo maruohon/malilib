@@ -9,9 +9,9 @@ public class FileConfig extends BaseGenericConfig<File>
         this(name, defaultValue, name);
     }
 
-    public FileConfig(String name, File defaultValue, String comment)
+    public FileConfig(String name, File defaultValue, String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValue, comment);
+        super(name, defaultValue, commentTranslationKey, commentArgs);
     }
 
     public String getStringValue()

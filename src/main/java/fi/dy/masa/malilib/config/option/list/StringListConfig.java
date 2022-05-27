@@ -9,9 +9,10 @@ public class StringListConfig extends ValueListConfig<String>
         this(name, defaultValue, name);
     }
 
-    public StringListConfig(String name, ImmutableList<String> defaultValue, String comment)
+    public StringListConfig(String name, ImmutableList<String> defaultValue,
+                            String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValue, comment, (v) -> v, (s) -> s);
+        super(name, defaultValue, (v) -> v, (s) -> s, commentTranslationKey, commentArgs);
     }
 
     @Override

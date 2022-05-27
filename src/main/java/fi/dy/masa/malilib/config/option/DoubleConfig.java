@@ -16,25 +16,30 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
         this(name, defaultValue, name);
     }
 
-    public DoubleConfig(String name, double defaultValue, String comment)
+    public DoubleConfig(String name, double defaultValue,
+                        String commentTranslationKey, Object... commentArgs)
     {
-        this(name, defaultValue, -10000, 10000, comment);
+        this(name, defaultValue, -10000, 10000, commentTranslationKey, commentArgs);
     }
 
-    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue)
+    public DoubleConfig(String name, double defaultValue,
+                        double minValue, double maxValue)
     {
         this(name, defaultValue, minValue, maxValue, name);
     }
 
-    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue, String comment)
+    public DoubleConfig(String name, double defaultValue,
+                        double minValue, double maxValue,
+                        String commentTranslationKey, Object... commentArgs)
     {
-        this(name, defaultValue, minValue, maxValue, false, comment);
+        this(name, defaultValue, minValue, maxValue, false, commentTranslationKey, commentArgs);
     }
 
-    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue,
-                        boolean sliderActive, String comment)
+    public DoubleConfig(String name, double defaultValue,
+                        double minValue, double maxValue, boolean sliderActive,
+                        String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValue, comment, sliderActive);
+        super(name, defaultValue, sliderActive, commentTranslationKey, commentArgs);
 
         this.minValue = minValue;
         this.maxValue = maxValue;

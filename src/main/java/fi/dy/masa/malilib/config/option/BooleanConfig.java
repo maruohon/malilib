@@ -14,14 +14,16 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
         this(name, defaultValue, name);
     }
 
-    public BooleanConfig(String name, boolean defaultValue, String comment)
+    public BooleanConfig(String name, boolean defaultValue,
+                         String commentTranslationKey, Object... commentArgs)
     {
-        this(name, defaultValue, name, comment);
+        this(name, defaultValue, name, commentTranslationKey, commentArgs);
     }
 
-    public BooleanConfig(String name, boolean defaultValue, String prettyNameTranslationKey, String comment)
+    public BooleanConfig(String name, boolean defaultValue, String prettyNameTranslationKey,
+                         String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValue, name, prettyNameTranslationKey, comment);
+        super(name, defaultValue, name, prettyNameTranslationKey, commentTranslationKey, commentArgs);
 
         this.updateEffectiveValue();
     }

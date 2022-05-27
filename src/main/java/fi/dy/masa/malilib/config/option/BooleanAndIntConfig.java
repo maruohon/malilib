@@ -27,15 +27,17 @@ public class BooleanAndIntConfig extends BaseBooleanAndNumberConfig<BooleanAndIn
     }
 
     public BooleanAndIntConfig(String name, boolean defaultBoolean, int defaultInt,
-                               int minValue, int maxValue, String comment)
+                               int minValue, int maxValue,
+                               String commentTranslationKey, Object... commentArgs)
     {
-        this(name, defaultBoolean, defaultInt, minValue, maxValue, false, comment);
+        this(name, defaultBoolean, defaultInt, minValue, maxValue, false, commentTranslationKey, commentArgs);
     }
 
     public BooleanAndIntConfig(String name, boolean defaultBoolean, int defaultInt,
-                               int minValue, int maxValue, boolean sliderActive, String comment)
+                               int minValue, int maxValue, boolean sliderActive,
+                               String commentTranslationKey, Object... commentArgs)
     {
-        super(name, new BooleanAndInt(defaultBoolean, defaultInt), comment, sliderActive);
+        super(name, new BooleanAndInt(defaultBoolean, defaultInt), sliderActive, commentTranslationKey, commentArgs);
 
         this.minValue = minValue;
         this.maxValue = maxValue;

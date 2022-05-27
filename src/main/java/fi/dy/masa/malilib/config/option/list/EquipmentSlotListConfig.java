@@ -15,15 +15,18 @@ public class EquipmentSlotListConfig extends ValueListConfig<EntityEquipmentSlot
     }
 
     public EquipmentSlotListConfig(String name, ImmutableList<EntityEquipmentSlot> defaultValues,
-                                   Function<EntityEquipmentSlot, String> toStringConverter, Function<String, EntityEquipmentSlot> fromStringConverter)
+                                   Function<EntityEquipmentSlot, String> toStringConverter,
+                                   Function<String, EntityEquipmentSlot> fromStringConverter)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter);
     }
 
-    public EquipmentSlotListConfig(String name, ImmutableList<EntityEquipmentSlot> defaultValues, String comment,
-                                   Function<EntityEquipmentSlot, String> toStringConverter, Function<String, EntityEquipmentSlot> fromStringConverter)
+    public EquipmentSlotListConfig(String name, ImmutableList<EntityEquipmentSlot> defaultValues,
+                                   Function<EntityEquipmentSlot, String> toStringConverter,
+                                   Function<String, EntityEquipmentSlot> fromStringConverter,
+                                   String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValues, comment, toStringConverter, fromStringConverter);
+        super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
     }
 
     @Override

@@ -16,9 +16,9 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
         this(name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, name);
     }
 
-    public IntegerConfig(String name, int defaultValue, String comment)
+    public IntegerConfig(String name, int defaultValue, String commentTranslationKey)
     {
-        this(name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, comment);
+        this(name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, commentTranslationKey);
     }
 
     public IntegerConfig(String name, int defaultValue, int minValue, int maxValue)
@@ -26,14 +26,17 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
         this(name, defaultValue, minValue, maxValue, name);
     }
 
-    public IntegerConfig(String name, int defaultValue, int minValue, int maxValue, String comment)
+    public IntegerConfig(String name, int defaultValue, int minValue, int maxValue,
+                         String commentTranslationKey, Object... commentArgs)
     {
-        this(name, defaultValue, minValue, maxValue, false, comment);
+        this(name, defaultValue, minValue, maxValue, false, commentTranslationKey, commentArgs);
     }
 
-    public IntegerConfig(String name, int defaultValue, int minValue, int maxValue, boolean sliderActive, String comment)
+    public IntegerConfig(String name, int defaultValue,
+                         int minValue, int maxValue, boolean sliderActive,
+                         String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValue, comment, sliderActive);
+        super(name, defaultValue, sliderActive, commentTranslationKey, commentArgs);
 
         this.minValue = minValue;
         this.maxValue = maxValue;

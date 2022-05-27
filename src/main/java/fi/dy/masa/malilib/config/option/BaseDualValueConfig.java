@@ -13,9 +13,9 @@ public class BaseDualValueConfig<T> extends BaseGenericConfig<T>
         this(name, defaultValue, name);
     }
 
-    public BaseDualValueConfig(String name, T defaultValue, String comment)
+    public BaseDualValueConfig(String name, T defaultValue, String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValue, comment);
+        super(name, defaultValue, commentTranslationKey, commentArgs);
     }
 
     @Nullable

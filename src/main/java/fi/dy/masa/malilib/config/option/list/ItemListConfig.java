@@ -14,14 +14,19 @@ public class ItemListConfig extends ValueListConfig<Item>
         this(name, defaultValues, ItemUtils::getItemRegistryName, ItemUtils::getItemByRegistryName);
     }
 
-    public ItemListConfig(String name, ImmutableList<Item> defaultValues, Function<Item, String> toStringConverter, Function<String, Item> fromStringConverter)
+    public ItemListConfig(String name, ImmutableList<Item> defaultValues,
+                          Function<Item, String> toStringConverter,
+                          Function<String, Item> fromStringConverter)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter);
     }
 
-    public ItemListConfig(String name, ImmutableList<Item> defaultValues, String comment, Function<Item, String> toStringConverter, Function<String, Item> fromStringConverter)
+    public ItemListConfig(String name, ImmutableList<Item> defaultValues,
+                          Function<Item, String> toStringConverter,
+                          Function<String, Item> fromStringConverter,
+                          String commentTranslationKey, Object... commentArgs)
     {
-        super(name, defaultValues, comment, toStringConverter, fromStringConverter);
+        super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
     }
 
     @Override
