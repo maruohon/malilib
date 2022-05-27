@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.Pair;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public class OrderedStringListFactory
 {

@@ -13,8 +13,8 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.render.text.StyledTextUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.StyledTextUtils;
 import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
 import fi.dy.masa.malilib.util.data.LeftRight;
 

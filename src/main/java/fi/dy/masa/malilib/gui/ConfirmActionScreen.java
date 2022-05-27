@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.StyledTextUtils;
+import fi.dy.masa.malilib.render.text.StyledTextUtils;
 
 public class ConfirmActionScreen extends BaseScreen
 {

@@ -1,13 +1,9 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.render.text;
 
 import java.util.List;
 import java.util.function.Consumer;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.render.text.Glyph;
-import fi.dy.masa.malilib.render.text.StyledText;
-import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.render.text.StyledTextSegment;
-import fi.dy.masa.malilib.render.text.TextRenderer;
+import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StyledTextUtils

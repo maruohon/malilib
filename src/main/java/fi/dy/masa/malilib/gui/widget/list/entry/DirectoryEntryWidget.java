@@ -18,9 +18,9 @@ import fi.dy.masa.malilib.gui.widget.list.ListEntryWidgetInitializer;
 import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.render.text.StyledTextUtils;
 import fi.dy.masa.malilib.util.FileNameUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.StyledTextUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry>

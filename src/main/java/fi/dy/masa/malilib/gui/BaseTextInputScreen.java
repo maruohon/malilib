@@ -8,8 +8,8 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledText;
+import fi.dy.masa.malilib.render.text.StyledTextUtils;
 import fi.dy.masa.malilib.render.text.TextRenderer;
-import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public abstract class BaseTextInputScreen extends BaseScreen
 {

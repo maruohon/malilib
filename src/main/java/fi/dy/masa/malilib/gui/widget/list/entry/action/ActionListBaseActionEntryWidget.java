@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.StyledTextUtils;
+import fi.dy.masa.malilib.render.text.StyledTextUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryWidget<NamedAction>

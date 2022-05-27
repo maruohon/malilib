@@ -7,7 +7,6 @@ import fi.dy.masa.malilib.gui.util.BorderRenderer;
 import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
-import fi.dy.masa.malilib.util.StyledTextUtils;
 import fi.dy.masa.malilib.util.data.EdgeInt;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
