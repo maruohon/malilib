@@ -24,9 +24,9 @@ import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
-import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class DirectoryNavigationWidget extends SearchBarWidget
 {

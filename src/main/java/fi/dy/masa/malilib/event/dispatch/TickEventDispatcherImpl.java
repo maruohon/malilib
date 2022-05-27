@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import fi.dy.masa.malilib.event.ClientTickHandler;
-import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class TickEventDispatcherImpl implements TickEventDispatcher
 {

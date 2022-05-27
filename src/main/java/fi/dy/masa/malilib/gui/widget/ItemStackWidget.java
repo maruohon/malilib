@@ -4,7 +4,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ItemRenderUtils;
-import fi.dy.masa.malilib.util.ItemUtils;
+import fi.dy.masa.malilib.util.game.ItemUtils;
+import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
 public class ItemStackWidget extends BaseModelWidget
 {
@@ -34,7 +35,7 @@ public class ItemStackWidget extends BaseModelWidget
     @Override
     protected void renderModel(int x, int y, float z, float scale, ScreenContext ctx)
     {
-        if (ItemUtils.notEmpty(this.stack))
+        if (ItemWrap.notEmpty(this.stack))
         {
             ItemRenderUtils.renderStackAt(this.stack, x, y, z, this.scale, this.mc);
         }

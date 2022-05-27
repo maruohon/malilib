@@ -8,8 +8,8 @@ import fi.dy.masa.malilib.gui.widget.ItemStackWidget;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
-import fi.dy.masa.malilib.util.ItemUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.game.ItemUtils;
 
 public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemListConfig>
 {

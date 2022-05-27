@@ -4,7 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.util.ItemUtils;
+import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
 /**
  * A wrapper around ItemStack, that implements hashCode() and equals().
@@ -30,7 +30,7 @@ public class ItemType
 
     public ItemType(ItemStack stack, boolean copy, boolean ignoreDamage, boolean checkNbt)
     {
-        this.stack = ItemUtils.isEmpty(stack) ? ItemStack.EMPTY : (copy ? stack.copy() : stack);
+        this.stack = ItemWrap.isEmpty(stack) ? ItemStack.EMPTY : (copy ? stack.copy() : stack);
         this.ignoreDamage = ignoreDamage;
         this.checkNbt = checkNbt;
         this.hashCode = this.calculateHashCode();
@@ -70,7 +70,7 @@ public class ItemType
 
         if (this.checkNbt())
         {
-            NBTTagCompound tag = ItemUtils.getTag(this.stack);
+            NBTTagCompound tag = ItemWrap.getTag(this.stack);
             result = prime * result + (tag != null ? tag.hashCode() : 0);
         }
 
@@ -89,9 +89,9 @@ public class ItemType
 
         ItemType other = (ItemType) obj;
 
-        if (ItemUtils.isEmpty(this.stack) || ItemUtils.isEmpty(other.stack))
+        if (ItemWrap.isEmpty(this.stack) || ItemWrap.isEmpty(other.stack))
         {
-            return ItemUtils.isEmpty(this.stack) == ItemUtils.isEmpty(other.stack);
+            return ItemWrap.isEmpty(this.stack) == ItemWrap.isEmpty(other.stack);
         }
         else
         {
@@ -116,7 +116,7 @@ public class ItemType
         if (this.checkNbt())
         {
             ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
-            return rl.toString() + "@" + this.stack.getMetadata() + ItemUtils.getTag(this.stack);
+            return rl.toString() + "@" + this.stack.getMetadata() + ItemWrap.getTag(this.stack);
         }
         else
         {

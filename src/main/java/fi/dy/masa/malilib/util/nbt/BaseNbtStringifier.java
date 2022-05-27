@@ -16,7 +16,7 @@ import net.minecraft.nbt.NBTTagString;
 import fi.dy.masa.malilib.mixin.access.NBTTagLongArrayMixin;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Constants;
-import fi.dy.masa.malilib.util.wrap.NbtWrap;
+import fi.dy.masa.malilib.util.game.wrap.NbtWrap;
 
 public abstract class BaseNbtStringifier
 {

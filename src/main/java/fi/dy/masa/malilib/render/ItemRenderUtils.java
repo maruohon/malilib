@@ -6,14 +6,14 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import fi.dy.masa.malilib.util.ItemUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
 public class ItemRenderUtils
 {
     public static void renderStackAt(ItemStack stack, int x, int y, float z, float scale, Minecraft mc)
     {
-        if (stack == null || ItemUtils.isEmpty(stack))
+        if (stack == null || ItemWrap.isEmpty(stack))
         {
             return;
         }
@@ -50,7 +50,7 @@ public class ItemRenderUtils
 
     public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack, Minecraft mc)
     {
-        if (stack == null || ItemUtils.isEmpty(stack))
+        if (stack == null || ItemWrap.isEmpty(stack))
         {
             return;
         }

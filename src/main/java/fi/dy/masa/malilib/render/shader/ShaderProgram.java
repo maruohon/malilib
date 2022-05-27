@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL20;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 /**
  * This class has been directly taken from Schematica by Lunatrius & contributors

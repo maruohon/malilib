@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.util.game;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +23,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.wrap.NbtWrap;
+import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.game.wrap.NbtWrap;
 
 public class BlockUtils
 {

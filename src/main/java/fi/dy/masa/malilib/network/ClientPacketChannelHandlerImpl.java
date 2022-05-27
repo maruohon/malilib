@@ -15,7 +15,7 @@ import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandler
 {

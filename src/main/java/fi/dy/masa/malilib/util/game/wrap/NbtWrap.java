@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.util.wrap;
+package fi.dy.masa.malilib.util.game.wrap;
 
 import java.util.Set;
 import net.minecraft.nbt.NBTBase;

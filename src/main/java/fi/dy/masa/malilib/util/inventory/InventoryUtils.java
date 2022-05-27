@@ -13,10 +13,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import fi.dy.masa.malilib.util.GameUtils;
-import fi.dy.masa.malilib.util.ItemUtils;
 import fi.dy.masa.malilib.util.data.IntRange;
 import fi.dy.masa.malilib.util.data.ItemType;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
+import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
 public class InventoryUtils
 {
@@ -123,7 +123,7 @@ public class InventoryUtils
     {
         // Inventory crafting, armor and offhand slots are not valid
         Predicate<Slot> slotTest = (slot) -> isRegularInventorySlot(slot, allowOffhand) &&
-                                             ItemUtils.isEmpty(slot.getStack());
+                                             ItemWrap.isEmpty(slot.getStack());
 
         return getSlotNumberOrDefault(findSlot(containerPlayer, slotTest, reverseIteration), -1);
     }
@@ -315,9 +315,9 @@ public class InventoryUtils
         Container container = getPlayerInventoryContainer();
         InventoryPlayer inventory = getPlayerInventory();
 
-        if (ItemUtils.notEmpty(stackHand) &&
+        if (ItemWrap.notEmpty(stackHand) &&
             player.openContainer == container &&
-            ItemUtils.isEmpty(inventory.getItemStack()) &&
+            ItemWrap.isEmpty(inventory.getItemStack()) &&
             (count <= threshold && count < max))
         {
             int endSlot = allowHotbar ? 44 : 35;
@@ -389,7 +389,7 @@ public class InventoryUtils
         {
             ItemStack stack = inv.getStack(slot);
 
-            if (ItemUtils.notEmpty(stack))
+            if (ItemWrap.notEmpty(stack))
             {
                 map.addTo(new ItemType(stack, false, true), stack.getCount());
 

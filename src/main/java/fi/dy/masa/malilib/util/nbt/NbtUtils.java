@@ -22,7 +22,7 @@ import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.mixin.access.NBTBaseMixin;
 import fi.dy.masa.malilib.util.data.Constants;
-import fi.dy.masa.malilib.util.wrap.NbtWrap;
+import fi.dy.masa.malilib.util.game.wrap.NbtWrap;
 
 public class NbtUtils
 {

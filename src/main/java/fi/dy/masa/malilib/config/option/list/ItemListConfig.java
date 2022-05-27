@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.item.Item;
-import fi.dy.masa.malilib.util.ItemUtils;
+import fi.dy.masa.malilib.util.game.ItemUtils;
 
 public class ItemListConfig extends ValueListConfig<Item>
 {

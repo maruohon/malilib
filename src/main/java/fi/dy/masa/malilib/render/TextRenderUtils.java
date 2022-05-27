@@ -16,9 +16,9 @@ import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
-import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.game.wrap.EntityWrap;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 import fi.dy.masa.malilib.util.position.Vec2i;
-import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class TextRenderUtils
 {

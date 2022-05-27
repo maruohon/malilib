@@ -20,10 +20,10 @@ import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.render.text.TextStyle;
-import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.data.EdgeInt;
 import fi.dy.masa.malilib.util.data.Identifier;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class BaseWidget
 {

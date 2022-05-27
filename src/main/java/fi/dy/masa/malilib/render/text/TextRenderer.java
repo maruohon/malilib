@@ -23,10 +23,10 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
-import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.data.FloatUnaryOperator;
 import fi.dy.masa.malilib.util.data.Identifier;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class TextRenderer implements IResourceManagerReloadListener
 {

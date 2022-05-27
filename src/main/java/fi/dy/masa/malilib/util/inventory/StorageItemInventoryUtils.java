@@ -6,10 +6,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import fi.dy.masa.malilib.util.ItemUtils;
 import fi.dy.masa.malilib.util.data.ItemType;
-import fi.dy.masa.malilib.util.wrap.DefaultedList;
-import fi.dy.masa.malilib.util.wrap.NbtWrap;
+import fi.dy.masa.malilib.util.game.wrap.DefaultedList;
+import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
+import fi.dy.masa.malilib.util.game.wrap.NbtWrap;
 
 public class StorageItemInventoryUtils
 {
@@ -19,7 +19,7 @@ public class StorageItemInventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stack)
     {
-        NBTTagCompound nbt = ItemUtils.getTag(stack);
+        NBTTagCompound nbt = ItemWrap.getTag(stack);
 
         if (nbt != null && NbtWrap.containsCompound(nbt, "BlockEntityTag"))
         {
@@ -42,7 +42,7 @@ public class StorageItemInventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItemsNonEmpty(ItemStack stackIn)
     {
-        NBTTagCompound nbt = ItemUtils.getTag(stackIn);
+        NBTTagCompound nbt = ItemWrap.getTag(stackIn);
 
         if (nbt != null && NbtWrap.containsCompound(nbt, "BlockEntityTag"))
         {
@@ -56,9 +56,9 @@ public class StorageItemInventoryUtils
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = ItemUtils.fromTag(NbtWrap.getCompoundAt(tagList, i));
+                    ItemStack stack = ItemWrap.fromTag(NbtWrap.getCompoundAt(tagList, i));
 
-                    if (ItemUtils.notEmpty(stack))
+                    if (ItemWrap.notEmpty(stack))
                     {
                         items.add(stack);
                     }
@@ -73,7 +73,7 @@ public class StorageItemInventoryUtils
 
     public static void readStoredItems(ItemStack containerStack, Consumer<Pair<Integer, ItemStack>> consumer)
     {
-        NBTTagCompound nbt = ItemUtils.getTag(containerStack);
+        NBTTagCompound nbt = ItemWrap.getTag(containerStack);
 
         if (nbt != null && NbtWrap.containsCompound(nbt, "BlockEntityTag"))
         {
@@ -87,10 +87,10 @@ public class StorageItemInventoryUtils
                 for (int i = 0; i < count; ++i)
                 {
                     NBTTagCompound tag = NbtWrap.getCompoundAt(tagList, i);
-                    ItemStack stack = ItemUtils.fromTag(tag);
+                    ItemStack stack = ItemWrap.fromTag(tag);
                     int slot = NbtWrap.getByte(tag, "Slot");
 
-                    if (slot >= 0 && ItemUtils.notEmpty(stack))
+                    if (slot >= 0 && ItemWrap.notEmpty(stack))
                     {
                         consumer.accept(Pair.of(slot, stack));
                     }

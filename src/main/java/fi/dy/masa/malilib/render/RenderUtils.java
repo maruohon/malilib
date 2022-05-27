@@ -30,12 +30,12 @@ import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.util.GameUtils;
-import fi.dy.masa.malilib.util.PositionUtils;
-import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import fi.dy.masa.malilib.util.data.Color4f;
+import fi.dy.masa.malilib.util.game.wrap.EntityWrap;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
+import fi.dy.masa.malilib.util.position.PositionUtils;
+import fi.dy.masa.malilib.util.position.PositionUtils.HitPart;
 import fi.dy.masa.malilib.util.position.Vec2i;
-import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class RenderUtils
 {

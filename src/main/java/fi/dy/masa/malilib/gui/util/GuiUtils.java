@@ -20,7 +20,7 @@ import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class GuiUtils
 {

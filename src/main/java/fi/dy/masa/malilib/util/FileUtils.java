@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class FileUtils
 {

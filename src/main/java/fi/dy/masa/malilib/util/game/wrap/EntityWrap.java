@@ -1,10 +1,9 @@
-package fi.dy.masa.malilib.util.wrap;
+package fi.dy.masa.malilib.util.game.wrap;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import fi.dy.masa.malilib.util.GameUtils;
 
 public class EntityWrap
 {

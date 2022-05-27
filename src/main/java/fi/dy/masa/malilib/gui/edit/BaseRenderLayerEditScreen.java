@@ -16,10 +16,10 @@ import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
-import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 import fi.dy.masa.malilib.util.position.LayerRange;
 
 public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen

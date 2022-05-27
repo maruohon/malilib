@@ -27,6 +27,9 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.util.data.Identifier;
 import fi.dy.masa.malilib.util.data.LeftRight;
+import fi.dy.masa.malilib.util.game.WorldUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
+import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
 public class StringUtils
 {
@@ -547,10 +550,10 @@ public class StringUtils
 
     public static String getStackString(ItemStack stack)
     {
-        if (ItemUtils.notEmpty(stack))
+        if (ItemWrap.notEmpty(stack))
         {
             ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
-            NBTTagCompound tag = ItemUtils.getTag(stack);
+            NBTTagCompound tag = ItemWrap.getTag(stack);
 
             return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
                     rl != null ? rl.toString() : "null", stack.getMetadata(), stack.getDisplayName(),

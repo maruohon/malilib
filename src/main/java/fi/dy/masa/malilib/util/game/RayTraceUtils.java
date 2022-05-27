@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.util.game;
 
 import java.util.List;
 import java.util.function.Predicate;

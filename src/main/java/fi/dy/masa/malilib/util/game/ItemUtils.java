@@ -1,12 +1,10 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.util.game;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class ItemUtils
@@ -48,31 +46,5 @@ public class ItemUtils
         items.sort(Comparator.comparing(ItemUtils::getItemRegistryName));
 
         return items;
-    }
-
-    @Nullable
-    public static NBTTagCompound getTag(ItemStack stack)
-    {
-        return stack.getTagCompound();
-    }
-
-    public static void setTag(ItemStack stack, @Nullable NBTTagCompound tag)
-    {
-        stack.setTagCompound(tag);
-    }
-
-    public static ItemStack fromTag(NBTTagCompound tag)
-    {
-        return new ItemStack(tag);
-    }
-
-    public static boolean isEmpty(ItemStack stack)
-    {
-        return stack.isEmpty();
-    }
-
-    public static boolean notEmpty(ItemStack stack)
-    {
-        return stack.isEmpty() == false;
     }
 }

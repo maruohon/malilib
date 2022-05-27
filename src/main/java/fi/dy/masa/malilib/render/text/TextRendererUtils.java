@@ -13,8 +13,8 @@ import com.ibm.icu.text.Bidi;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Identifier;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class TextRendererUtils
 {

@@ -12,8 +12,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import fi.dy.masa.malilib.input.ActionResult;
-import fi.dy.masa.malilib.util.GameUtils;
-import fi.dy.masa.malilib.util.wrap.EntityWrap;
+import fi.dy.masa.malilib.util.game.wrap.EntityWrap;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class UtilityActions
 {

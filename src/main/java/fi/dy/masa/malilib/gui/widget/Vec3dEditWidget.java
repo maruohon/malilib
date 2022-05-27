@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.function.Consumer;
 import net.minecraft.util.math.Vec3d;
+import fi.dy.masa.malilib.util.game.wrap.EntityWrap;
 import fi.dy.masa.malilib.util.position.Coordinate;
-import fi.dy.masa.malilib.util.wrap.EntityWrap;
 
 public class Vec3dEditWidget extends BaseTripleNumberEditWidget<Vec3d, DoubleEditWidget>
 {

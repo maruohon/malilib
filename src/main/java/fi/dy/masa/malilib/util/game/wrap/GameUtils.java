@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.util.game.wrap;
 
 import java.io.File;
 import java.util.function.Supplier;
@@ -53,7 +53,7 @@ public class GameUtils
     }
 
     @Nullable
-    public static RayTraceResult getRayTrace()
+    public static RayTraceResult getHitResult()
     {
         return getClient().objectMouseOver;
     }

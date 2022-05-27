@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.util.game;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;

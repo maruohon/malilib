@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
-import fi.dy.masa.malilib.util.BlockUtils;
+import fi.dy.masa.malilib.util.game.BlockUtils;
 
 public class BlockListConfig extends ValueListConfig<Block>
 {

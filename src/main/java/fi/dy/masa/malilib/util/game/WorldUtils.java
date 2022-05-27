@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.util.game;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;

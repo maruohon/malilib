@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
-import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class DefaultMessageDispatchers
 {

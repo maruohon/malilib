@@ -41,9 +41,9 @@ import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.FileUtils;
-import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.BooleanStorageWithDefault;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class ConfigOverrideUtils
 {

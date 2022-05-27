@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
 import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.event.PostWorldRenderer;
 import fi.dy.masa.malilib.render.overlay.OverlayRendererContainer;
-import fi.dy.masa.malilib.util.GameUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class RenderEventDispatcherImpl implements RenderEventDispatcher
 {

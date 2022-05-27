@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import fi.dy.masa.malilib.util.data.Constants;
-import fi.dy.masa.malilib.util.wrap.NbtWrap;
+import fi.dy.masa.malilib.util.game.wrap.NbtWrap;
 
 public class SimpleNbtStringifier extends BaseNbtStringifier
 {
