@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.event;
 
-public interface InitializationHandler
+public interface InitializationHandler extends PrioritizedEventHandler
 {
     /**
      * This method will be called for any registered {@link InitializationHandler}

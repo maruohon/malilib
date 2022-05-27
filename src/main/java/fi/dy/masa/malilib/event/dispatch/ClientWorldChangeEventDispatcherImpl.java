@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -23,6 +24,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         if (this.worldChangeHandlers.contains(listener) == false)
         {
             this.worldChangeHandlers.add(listener);
+            this.worldChangeHandlers.sort(Comparator.comparing(ClientWorldChangeHandler::getPriority));
         }
     }
 

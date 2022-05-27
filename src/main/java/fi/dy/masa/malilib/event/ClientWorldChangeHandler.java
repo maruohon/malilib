@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.event;
 import javax.annotation.Nullable;
 import net.minecraft.client.multiplayer.WorldClient;
 
-public interface ClientWorldChangeHandler
+public interface ClientWorldChangeHandler extends PrioritizedEventHandler
 {
     /**
      * Called when the client world is going to be changed,

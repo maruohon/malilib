@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import fi.dy.masa.malilib.MaLiLibInitHandler;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
@@ -20,6 +21,7 @@ public class InitializationDispatcherImpl implements InitializationDispatcher
         if (this.handlers.contains(handler) == false)
         {
             this.handlers.add(handler);
+            this.handlers.sort(Comparator.comparing(InitializationHandler::getPriority));
         }
     }
 

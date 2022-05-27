@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.event.ClientTickHandler;
@@ -19,6 +20,7 @@ public class TickEventDispatcherImpl implements TickEventDispatcher
         if (this.clientTickHandlers.contains(handler) == false)
         {
             this.clientTickHandlers.add(handler);
+            this.clientTickHandlers.sort(Comparator.comparing(ClientTickHandler::getPriority));
         }
     }
 

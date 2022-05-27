@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.event;
 
 import fi.dy.masa.malilib.util.ProfilerSectionSupplierSupplier;
 
-public interface ClientTickHandler extends ProfilerSectionSupplierSupplier
+public interface ClientTickHandler extends ProfilerSectionSupplierSupplier, PrioritizedEventHandler
 {
     /**
      * Called from the end of the client tick code (for world ticks, not the main game loop/rendering).
