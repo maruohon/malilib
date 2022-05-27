@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.value.ScreenLocation;
 import fi.dy.masa.malilib.event.ClientTickHandler;
@@ -46,7 +45,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     }
 
     @Override
-    public void onPostScreenRender(Minecraft mc, float partialTicks)
+    public void onPostScreenRender(float tickDelta)
     {
         this.renderScreen();
     }

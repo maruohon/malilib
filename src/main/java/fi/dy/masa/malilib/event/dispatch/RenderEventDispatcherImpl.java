@@ -76,7 +76,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderScreenPost(Minecraft mc, float partialTicks)
+    public void onRenderScreenPost(Minecraft mc, float tickDelta)
     {
         if (this.screenPostRenderers.isEmpty() == false)
         {
@@ -85,7 +85,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostScreenRenderer renderer : this.screenPostRenderers)
             {
                 mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
-                renderer.onPostScreenRender(mc, partialTicks);
+                renderer.onPostScreenRender(tickDelta);
                 mc.profiler.endSection();
             }
 
@@ -105,7 +105,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostItemTooltipRenderer renderer : this.tooltipLastRenderers)
             {
                 mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
-                renderer.onPostRenderItemTooltip(stack, x, y, mc);
+                renderer.onPostRenderItemTooltip(stack, x, y);
                 mc.profiler.endSection();
             }
 
@@ -116,12 +116,12 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(Minecraft mc, float partialTicks)
+    public void onRenderWorldLast(Minecraft mc, float tickDelta)
     {
         mc.profiler.startSection("malilib_world_last");
 
         mc.profiler.startSection("overlays");
-        OverlayRendererContainer.INSTANCE.render(mc, partialTicks);
+        OverlayRendererContainer.INSTANCE.render(mc, tickDelta);
         mc.profiler.endSection();
 
         if (this.worldLastRenderers.isEmpty() == false)
@@ -130,7 +130,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostWorldRenderer renderer : this.worldLastRenderers)
             {
                 mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
-                renderer.onPostWorldRender(mc, partialTicks);
+                renderer.onPostWorldRender(tickDelta);
                 mc.profiler.endSection();
             }
 
