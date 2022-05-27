@@ -26,7 +26,7 @@ public abstract class MinecraftMixin
     {
         if (this.world != null && this.player != null)
         {
-            ((TickEventDispatcherImpl) Registry.TICK_EVENT_DISPATCHER).onClientTick((Minecraft) (Object) this);
+            ((TickEventDispatcherImpl) Registry.TICK_EVENT_DISPATCHER).onClientTick();
         }
     }
 

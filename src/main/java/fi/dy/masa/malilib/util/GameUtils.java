@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util;
 
 import java.io.File;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -85,6 +86,31 @@ public class GameUtils
         {
             mc.addScheduledTask(task);
         }
+    }
+
+    public static void profilerPush(String name)
+    {
+        getClient().profiler.startSection(name);
+    }
+
+    public static void profilerPush(Supplier<String> nameSupplier)
+    {
+        getClient().profiler.func_194340_a(nameSupplier);
+    }
+
+    public static void profilerSwap(String name)
+    {
+        getClient().profiler.endStartSection(name);
+    }
+
+    public static void profilerSwap(Supplier<String> nameSupplier)
+    {
+        getClient().profiler.func_194339_b(nameSupplier);
+    }
+
+    public static void profilerPop()
+    {
+        getClient().profiler.endSection();
     }
 
     public static void openFile(File file)

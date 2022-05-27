@@ -21,11 +21,11 @@ public abstract class EntityRendererMixin
             value = "FIELD",
             target = "Lnet/minecraft/client/renderer/EntityRenderer;renderHand:Z"
         ))
-    private void onRenderWorldLast(int pass, float partialTicks, long finishTimeNano, CallbackInfo ci)
+    private void onRenderWorldLast(int pass, float tickDelta, long finishTimeNano, CallbackInfo ci)
     {
         if (this.mc.world != null && this.mc.player != null)
         {
-            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderWorldLast(this.mc, partialTicks);
+            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderWorldLast(tickDelta);
         }
     }
 
@@ -33,11 +33,11 @@ public abstract class EntityRendererMixin
             value = "INVOKE",
             target = "Lnet/minecraft/client/gui/GuiIngame;renderGameOverlay(F)V",
             shift = Shift.AFTER))
-    private void onRenderGameOverlayPost(float partialTicks, long nanoTime, CallbackInfo ci)
+    private void onRenderGameOverlayPost(float tickDelta, long nanoTime, CallbackInfo ci)
     {
         if (this.mc.world != null && this.mc.player != null)
         {
-            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderGameOverlayPost(this.mc);
+            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderGameOverlayPost();
         }
     }
 
@@ -45,11 +45,11 @@ public abstract class EntityRendererMixin
             value = "INVOKE",
             target = "Lnet/minecraft/client/gui/GuiScreen;drawScreen(IIF)V",
             shift = Shift.AFTER))
-    private void onRenderScreenPost(float partialTicks, long nanoTime, CallbackInfo ci)
+    private void onRenderScreenPost(float tickDelta, long nanoTime, CallbackInfo ci)
     {
         if (this.mc.world != null && this.mc.player != null)
         {
-            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderScreenPost(this.mc, partialTicks);
+            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderScreenPost(tickDelta);
         }
     }
 }

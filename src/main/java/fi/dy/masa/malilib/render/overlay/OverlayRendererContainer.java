@@ -89,7 +89,7 @@ public class OverlayRendererContainer
         this.enabledRenderersNeedUpdate = false;
     }
 
-    public void render(Minecraft mc, float partialTicks)
+    public void render(float tickDelta)
     {
         Entity cameraEntity = GameUtils.getCameraEntity();
 
@@ -116,18 +116,18 @@ public class OverlayRendererContainer
             }
         }
 
-        Vec3d cameraPos = this.getCameraPos(cameraEntity, partialTicks);
+        Vec3d cameraPos = this.getCameraPos(cameraEntity, tickDelta);
 
-        mc.profiler.startSection("update");
-        this.update(cameraPos, cameraEntity, mc);
-        mc.profiler.endSection();
+        GameUtils.profilerPush("update");
+        this.update(cameraPos, cameraEntity);
+        GameUtils.profilerPop();
 
-        mc.profiler.startSection("draw");
-        this.draw(cameraPos, mc);
-        mc.profiler.endSection();
+        GameUtils.profilerPush("draw");
+        this.draw(cameraPos);
+        GameUtils.profilerPop();
     }
 
-    protected void update(Vec3d cameraPos, Entity entity, Minecraft mc)
+    protected void update(Vec3d cameraPos, Entity entity)
     {
         if (this.enabledRenderersNeedUpdate)
         {
@@ -137,9 +137,11 @@ public class OverlayRendererContainer
         this.checkVideoSettings();
         this.countActive = 0;
 
+        Minecraft mc = GameUtils.getClient();
+
         for (BaseOverlayRenderer renderer : this.enabledRenderers)
         {
-            mc.profiler.func_194340_a(() -> renderer.getClass().getName());
+            GameUtils.profilerPush(() -> renderer.getClass().getName());
 
             if (renderer.shouldRender(mc))
             {
@@ -153,11 +155,11 @@ public class OverlayRendererContainer
                 ++this.countActive;
             }
 
-            mc.profiler.endSection();
+            GameUtils.profilerPop();
         }
     }
 
-    protected void draw(Vec3d cameraPos, Minecraft mc)
+    protected void draw(Vec3d cameraPos)
     {
         if (this.resourcesAllocated && this.countActive > 0)
         {
@@ -183,10 +185,11 @@ public class OverlayRendererContainer
             double cx = cameraPos.x;
             double cy = cameraPos.y;
             double cz = cameraPos.z;
+            Minecraft mc = GameUtils.getClient();
 
             for (BaseOverlayRenderer renderer : this.enabledRenderers)
             {
-                mc.profiler.func_194340_a(() -> renderer.getClass().getName());
+                GameUtils.profilerPush(() -> renderer.getClass().getName());
 
                 if (renderer.shouldRender(mc))
                 {
@@ -199,7 +202,7 @@ public class OverlayRendererContainer
                     GlStateManager.popMatrix();
                 }
 
-                mc.profiler.endSection();
+                GameUtils.profilerPop();
             }
 
             if (OpenGlHelper.useVbo())

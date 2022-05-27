@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.event.dispatch;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.event.ClientTickHandler;
+import fi.dy.masa.malilib.util.GameUtils;
 
 public class TickEventDispatcherImpl implements TickEventDispatcher
 {
@@ -27,20 +27,20 @@ public class TickEventDispatcherImpl implements TickEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onClientTick(Minecraft mc)
+    public void onClientTick()
     {
         if (this.clientTickHandlers.isEmpty() == false)
         {
-            mc.profiler.startSection("malilib_client_tick");
+            GameUtils.profilerPush("malilib_client_tick");
 
             for (ClientTickHandler handler : this.clientTickHandlers)
             {
-                mc.profiler.func_194340_a(handler.getProfilerSectionSupplier());
+                GameUtils.profilerPush(handler.getProfilerSectionSupplier());
                 handler.onClientTick();
-                mc.profiler.endSection();
+                GameUtils.profilerPop();
             }
 
-            mc.profiler.endSection();
+            GameUtils.profilerPop();
         }
     }
 }
