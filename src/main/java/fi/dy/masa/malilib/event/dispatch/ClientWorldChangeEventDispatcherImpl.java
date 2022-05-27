@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.event.dispatch;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import fi.dy.masa.malilib.config.util.ConfigOverrideUtils;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
@@ -36,7 +35,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onWorldLoadPre(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc)
+    public void onWorldLoadPre(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter)
     {
         if (worldBefore != null && worldAfter != null)
         {
@@ -47,7 +46,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         {
             for (ClientWorldChangeHandler listener : this.worldChangeHandlers)
             {
-                listener.onPreClientWorldChange(worldBefore, worldAfter, mc);
+                listener.onPreClientWorldChange(worldBefore, worldAfter);
             }
         }
     }
@@ -55,7 +54,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onWorldLoadPost(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc)
+    public void onWorldLoadPost(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter)
     {
         // Save all the configs when exiting a world
         if (worldBefore != null && worldAfter == null)
@@ -76,7 +75,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         {
             for (ClientWorldChangeHandler listener : this.worldChangeHandlers)
             {
-                listener.onPostClientWorldChange(worldBefore, worldAfter, mc);
+                listener.onPostClientWorldChange(worldBefore, worldAfter);
             }
         }
     }
