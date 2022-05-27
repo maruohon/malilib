@@ -9,6 +9,8 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import com.mumfrey.liteloader.LiteMod;
+import com.mumfrey.liteloader.core.LiteLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -59,6 +61,22 @@ public class StringUtils
             MaLiLib.LOGGER.error("Exception while trying to create a ResourceLocation: {}", e.getMessage());
             return null;
         }
+    }
+
+    public static String getModVersionString(String modId)
+    {
+        try
+        {
+            LiteMod mod = LiteLoader.getInstance().getMod(modId);
+
+            if (mod != null)
+            {
+                return mod.getVersion();
+            }
+        }
+        catch (Exception ignore) {}
+
+        return "?";
     }
 
     /**
