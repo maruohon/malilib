@@ -16,16 +16,35 @@ public interface InputDispatcher
     void unregisterKeyboardInputHandler(KeyboardInputHandler handler);
 
     /**
-     * Registers a mouse input handler, which will receive
-     * the raw mouse key presses and mouse wheel changes, as
-     * well as mouse move notifications.
-     * @param handler
+     * Registers a mouse click input handler, which will receive
+     * all mouse key presses.
      */
-    void registerMouseInputHandler(MouseInputHandler handler);
+    void registerMouseClickHandler(MouseClickHandler handler);
 
     /**
-     * Un-registers a previously registered mouse input handler
-     * @param handler
+     * Registers a mouse scroll input handler, which will receive
+     * all mouse wheel events.
      */
-    void unregisterMouseInputHandler(MouseInputHandler handler);
+    void registerMouseScrollHandler(MouseScrollHandler handler);
+
+    /**
+     * Registers a mouse move input handler, which will receive
+     * mouse move notifications.
+     */
+    void registerMouseMoveHandler(MouseMoveHandler handler);
+
+    /**
+     * Un-registers a previously registered mouse click input handler
+     */
+    void unregisterMouseClickHandler(MouseClickHandler handler);
+
+    /**
+     * Un-registers a previously registered mouse click input handler
+     */
+    void unregisterMouseScrollHandler(MouseScrollHandler handler);
+
+    /**
+     * Un-registers a previously registered mouse click input handler
+     */
+    void unregisterMouseMoveHandler(MouseMoveHandler handler);
 }

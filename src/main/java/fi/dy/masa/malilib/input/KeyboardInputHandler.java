@@ -9,8 +9,8 @@ public interface KeyboardInputHandler extends PrioritizedEventHandler
      * @param keyCode
      * @param scanCode
      * @param modifiers
-     * @param eventKeyState
+     * @param keyState
      * @return true if further processing of this key event should be cancelled
      */
-    boolean onKeyInput(int keyCode, int scanCode, int modifiers, boolean eventKeyState);
+    boolean onKeyInput(int keyCode, int scanCode, int modifiers, boolean keyState);
 }
