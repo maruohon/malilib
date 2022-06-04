@@ -7,19 +7,16 @@ import java.util.List;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.texture.TextureManager;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -128,7 +125,7 @@ public class TextRenderer implements IResourceManagerReloadListener
         MinecraftClient mc = GameUtils.getClient();
         this.unicode = mc.isUnicode();
 
-        if (mc.gameSettings.anaglyph != this.anaglyph)
+        if (mc.options.anaglyph != this.anaglyph)
         {
             this.anaglyph = mc.gameSettings.anaglyph;
             this.setColorCodes(this.anaglyph);
@@ -290,13 +287,13 @@ public class TextRenderer implements IResourceManagerReloadListener
 
         if (this.buildingTextBuffer == false)
         {
-            this.textBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            this.textBuffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
             this.buildingTextBuffer = true;
         }
 
         if (this.buildingStyleBuffer == false)
         {
-            this.styleBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+            this.styleBuffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
             this.buildingStyleBuffer = true;
         }
     }
@@ -307,11 +304,11 @@ public class TextRenderer implements IResourceManagerReloadListener
 
         if (this.buildingStyleBuffer)
         {
-            GlStateManager.disableTexture2D();
-            this.styleBuffer.finishDrawing();
+            RenderSystem.disableTexture();
+            this.styleBuffer.end(); // TODO 1.13+ port this was finishDrawing()
             this.vboUploader.draw(this.styleBuffer);
             this.buildingStyleBuffer = false;
-            GlStateManager.enableTexture2D();
+            RenderSystem.enableTexture();
         }
     }
 
@@ -319,14 +316,14 @@ public class TextRenderer implements IResourceManagerReloadListener
     {
         if (this.buildingTextBuffer)
         {
-            this.textBuffer.finishDrawing();
+            this.textBuffer.end();
 
             if (this.currentFontTexture != null)
             {
-                GlStateManager.enableTexture2D();
+                RenderSystem.enableTexture();
                 this.textureManager.bindTexture(this.currentFontTexture);
                 this.vboUploader.draw(this.textBuffer);
-                GlStateManager.disableTexture2D();
+                RenderSystem.disableTexture();
             }
 
             this.currentFontTexture = null;
@@ -503,20 +500,20 @@ public class TextRenderer implements IResourceManagerReloadListener
             v2 -= 0.00102F;
         }
 
-        buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x + w - slant, y + h, z).tex(u2, v2).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x + w + slant, y    , z).tex(u2, v1).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(x     + slant, y    , z).texture(u1, v1).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(x     - slant, y + h, z).texture(u1, v2).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(x + w - slant, y + h, z).texture(u2, v2).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(x + w + slant, y    , z).texture(u2, v1).color(color.r, color.g, color.b, color.a).next();
 
         if (style.bold)
         {
             x += this.unicode ? 0.5F : 1.0F;
             renderWidth += 1;
 
-            buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
-            buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();
-            buffer.pos(x + w - slant, y + h, z).tex(u2, v2).color(color.r, color.g, color.b, color.a).endVertex();
-            buffer.pos(x + w + slant, y    , z).tex(u2, v1).color(color.r, color.g, color.b, color.a).endVertex();
+            buffer.vertex(x     + slant, y    , z).texture(u1, v1).color(color.r, color.g, color.b, color.a).next();
+            buffer.vertex(x     - slant, y + h, z).texture(u1, v2).color(color.r, color.g, color.b, color.a).next();
+            buffer.vertex(x + w - slant, y + h, z).texture(u2, v2).color(color.r, color.g, color.b, color.a).next();
+            buffer.vertex(x + w + slant, y    , z).texture(u2, v1).color(color.r, color.g, color.b, color.a).next();
         }
 
         return renderWidth;
