@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.overlay;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,9 +131,9 @@ public class InfoWidgetManager
 
     public boolean saveToFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("info_widgets.json").toFile();
-        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("info_widgets.json");
+        Path backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID);
 
         if (BackupUtils.createRegularBackup(saveFile, backupDir) &&
             JsonUtils.writeJsonToFile(this.toJson(), saveFile))
@@ -148,8 +147,8 @@ public class InfoWidgetManager
 
     public void loadFromFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("info_widgets.json").toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("info_widgets.json");
         JsonUtils.loadFromFile(saveFile, this::fromJson);
     }
 }

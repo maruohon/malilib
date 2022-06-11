@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.config.util;
 
-import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -28,26 +27,43 @@ import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.overlay.OverlayRendererContainer;
+import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ConfigUtils
 {
-    public static File getConfigDirectory()
+    public static Path getConfigDirectory()
     {
-        return LiteLoader.getCommonConfigFolder();
+        return LiteLoader.getCommonConfigFolder().toPath();
     }
 
-    public static Path getConfigDirectoryPath()
+    /**
+     * Returns a Path to a directory by the given name inside the main config directory.
+     * Usually the given name would be the modId of the mod calling this.
+     */
+    public static Path getConfigDirectory(String directoryName)
     {
-        return getConfigDirectory().toPath();
+        return getConfigDirectory().resolve(directoryName);
+    }
+
+    /**
+     * Returns a Path to a directory by the given name inside the main config directory.
+     * Usually the given name would be the modId of the mod calling this.
+     * Tries to create the directory and any missing parent directories, if it doesn't exist yet.
+     */
+    public static Path createAndGetConfigDirectory(String directoryName)
+    {
+        Path dir = getConfigDirectory(directoryName);
+        FileUtils.createDirectoriesIfMissing(dir);
+        return dir;
     }
 
     /**
      * @return The currently active config directory. This takes into account a possible active config profile.
      */
-    public static File getActiveConfigDirectory()
+    public static Path getActiveConfigDirectory()
     {
         String profile = MaLiLibConfigs.Internal.ACTIVE_CONFIG_PROFILE.getValue();
         return getActiveConfigDirectory(profile);
@@ -56,37 +72,9 @@ public class ConfigUtils
     /**
      * @return The currently active config directory for the given config profile.
      */
-    public static File getActiveConfigDirectory(String profile)
+    public static Path getActiveConfigDirectory(String profile)
     {
-        Path baseConfigDir = getConfigDirectoryPath();
-
-        if (StringUtils.isBlank(profile) == false)
-        {
-            try
-            {
-                return baseConfigDir.resolve("config_profiles").resolve(profile).toFile();
-            }
-            catch (InvalidPathException ignore) {}
-        }
-
-        return baseConfigDir.toFile();
-    }
-
-    /**
-     * @return The currently active config directory. This takes into account a possible active config profile.
-     */
-    public static Path getActiveConfigDirectoryPath()
-    {
-        String profile = MaLiLibConfigs.Internal.ACTIVE_CONFIG_PROFILE.getValue();
-        return getActiveConfigDirectoryPath(profile);
-    }
-
-    /**
-     * @return The currently active config directory for the given config profile.
-     */
-    public static Path getActiveConfigDirectoryPath(String profile)
-    {
-        Path baseConfigDir = getConfigDirectoryPath();
+        Path baseConfigDir = getConfigDirectory();
 
         if (StringUtils.isBlank(profile) == false)
         {
@@ -247,9 +235,9 @@ public class ConfigUtils
     {
         if (StringUtils.isBlank(profile) == false)
         {
-            File dir = getActiveConfigDirectory();
+            Path dir = getActiveConfigDirectory();
 
-            if (dir.exists() == false && dir.mkdirs())
+            if (FileUtils.createDirectoriesIfMissing(dir))
             {
                 Registry.ICON.saveToFile();
                 ((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveAllConfigs();

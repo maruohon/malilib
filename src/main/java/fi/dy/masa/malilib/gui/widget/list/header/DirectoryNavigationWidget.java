@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.header;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,15 +36,15 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     protected final GenericButton buttonUp;
     protected final GenericButton buttonCreateDir;
     protected final InfoIconWidget infoWidget;
-    protected final File rootDir;
+    protected final Path rootDir;
     protected final List<PathPart> pathParts = new ArrayList<>();
     @Nullable protected final Supplier<String> rootDirDisplayNameSupplier;
-    protected File currentDir;
+    protected Path currentDir;
     protected int pathStartX;
 
     public DirectoryNavigationWidget(int width, int height,
-                                     File currentDir,
-                                     File rootDir,
+                                     Path currentDir,
+                                     Path rootDir,
                                      DirectoryNavigator navigator,
                                      FileBrowserIconProvider iconProvider,
                                      EventListener searchInputChangeListener,
@@ -55,8 +55,8 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     }
 
     public DirectoryNavigationWidget(int width, int height,
-                                     File currentDir,
-                                     File rootDir,
+                                     Path currentDir,
+                                     Path rootDir,
                                      DirectoryNavigator navigator,
                                      FileBrowserIconProvider iconProvider,
                                      EventListener searchInputChangeListener,
@@ -150,12 +150,12 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.reAddSubWidgets();
     }
 
-    public File getCurrentDirectory()
+    public Path getCurrentDirectory()
     {
         return this.currentDir;
     }
 
-    public void setCurrentDirectory(File dir)
+    public void setCurrentDirectory(Path dir)
     {
         this.currentDir = dir;
         this.generatePathParts(dir);
@@ -177,7 +177,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         return this.getWidth() - (this.pathStartX - this.getX()) - 28;
     }
 
-    protected String getDisplayNameForDirectory(File dir)
+    protected String getDisplayNameForDirectory(Path dir)
     {
         String name;
 
@@ -187,10 +187,11 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         }
         else
         {
-            name = dir.getName();
+            name = dir.getFileName().toString();
         }
 
         // The partition root on Windows returns an empty string... ('C:\' -> '')
+        // FIXME File to Path refactor, how does this behave on Windows now?
         if (name == null || name.length() == 0)
         {
             name = dir.toString();
@@ -263,13 +264,13 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         }
     }
 
-    protected void generatePathParts(File currentDirectory)
+    protected void generatePathParts(Path currentDirectory)
     {
         this.pathParts.clear();
 
-        final File root = this.rootDir;
+        final Path root = this.rootDir;
         final int extraWidth = this.getNavBarIconSubDirectories(false).getWidth() + 6;
-        File dir = currentDirectory;
+        Path dir = currentDirectory;
         int widthSum = 0;
 
         while (dir != null)
@@ -286,7 +287,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                 break;
             }
 
-            dir = dir.getParentFile();
+            dir = dir.getParent();
         }
 
         Collections.reverse(this.pathParts);
@@ -294,8 +295,8 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
     protected void addRootPathElements(PathPart part, int x, int y)
     {
-        List<File> dirs = FileUtils.getDirsForRootPath(part.dir, this.rootDir);
-        final DropDownListWidget<File> dropdown = new DropDownListWidget<>(12, 10, dirs, this::getDisplayNameForDirectory);
+        List<Path> dirs = FileUtils.getDirsForRootPath(part.dir, this.rootDir);
+        final DropDownListWidget<Path> dropdown = new DropDownListWidget<>(12, 10, dirs, this::getDisplayNameForDirectory);
         dropdown.setPosition(x, y + 16);
         dropdown.setNoEntryBar(x, y + 3, () -> this.getNavBarIconRoot(dropdown.isOpen()));
         dropdown.setSelectionListener(this.navigator::switchToDirectory);
@@ -307,18 +308,18 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.addPathPartElements(x, y, buttonHeight, part.dir, part.displayName, part.nameWidth, part.totalWidth);
     }
 
-    protected void addPathPartElements(int x, int y, int buttonHeight, File dir, String displayName, int nameWidth, int totalWidth)
+    protected void addPathPartElements(int x, int y, int buttonHeight, Path dir, String displayName, int nameWidth, int totalWidth)
     {
         GenericButton button = this.createPathPartButton(dir, displayName, nameWidth + 6, buttonHeight);
         button.setPosition(x, y);
 
         this.addWidget(button);
 
-        List<File> dirs = FileUtils.getSubDirectories(dir);
+        List<Path> dirs = FileUtils.getSubDirectories(dir);
 
         if (dirs.isEmpty() == false)
         {
-            DropDownListWidget<File> dropdown = new DropDownListWidget<>(12, 10, dirs, this::getDisplayNameForDirectory);
+            DropDownListWidget<Path> dropdown = new DropDownListWidget<>(12, 10, dirs, this::getDisplayNameForDirectory);
             dropdown.setX(x + totalWidth - 9);
             dropdown.setY(y + 16);
             dropdown.clampToScreen();
@@ -336,7 +337,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.addPathPartElements(x, y, buttonHeight, part.dir, name, nameWidth, nameWidth + adjDirsIconWidth + 4);
     }
 
-    protected GenericButton createPathPartButton(final File dir, String displayName, int width, int height)
+    protected GenericButton createPathPartButton(final Path dir, String displayName, int width, int height)
     {
         GenericButton button = GenericButton.create(width, height, displayName);
 
@@ -351,7 +352,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         return button;
     }
 
-    protected void onDirectoryButtonClicked(File dir)
+    protected void onDirectoryButtonClicked(Path dir)
     {
         if (BaseScreen.isShiftDown())
         {
@@ -378,13 +379,13 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
     public static class PathPart
     {
-        public final File dir;
+        public final Path dir;
         public final String displayName;
         public final int nameWidth;
         public final int totalWidth;
         public final int widthSumUntil;
 
-        public PathPart(File dir, String displayName, int nameWidth, int totalWidth, int widthSumUntil)
+        public PathPart(Path dir, String displayName, int nameWidth, int totalWidth, int widthSumUntil)
         {
             this.dir = dir;
             this.displayName = displayName;

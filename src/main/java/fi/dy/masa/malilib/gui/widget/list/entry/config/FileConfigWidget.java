@@ -1,13 +1,13 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import java.io.File;
+import java.nio.file.Path;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.FileSelectorScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
-public class FileConfigWidget extends BaseFileConfigWidget<File, FileConfig>
+public class FileConfigWidget extends BaseFileConfigWidget<Path, FileConfig>
 {
     public FileConfigWidget(FileConfig config,
                             DataListEntryWidgetData constructData,
@@ -17,19 +17,19 @@ public class FileConfigWidget extends BaseFileConfigWidget<File, FileConfig>
     }
 
     @Override
-    protected File getFileFromConfig()
+    protected Path getFileFromConfig()
     {
         return this.config.getValue();
     }
 
     @Override
-    protected void setFileToConfig(File file)
+    protected void setFileToConfig(Path file)
     {
         this.config.setValue(file);
     }
 
     @Override
-    protected BaseScreen createScreen(File currentDir, File rootDir)
+    protected BaseScreen createScreen(Path currentDir, Path rootDir)
     {
         return new FileSelectorScreen(currentDir, rootDir, this::onPathSelected);
     }

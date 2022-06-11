@@ -1,11 +1,13 @@
 package fi.dy.masa.malilib.config;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
+import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ModConfig
@@ -42,7 +44,7 @@ public interface ModConfig
      * Reads all the configs from the provided config file.
      * @param configFile the file to load the configs from
      */
-    void loadFromFile(File configFile);
+    void loadFromFile(Path configFile);
 
     /**
      * Saves all the configs to the provided config file
@@ -50,20 +52,15 @@ public interface ModConfig
      * @param configFile the file to save the configs to
      * @return true on success, false on failure
      */
-    boolean saveToFile(File configDirectory, File configFile);
+    boolean saveToFile(Path configDirectory, Path configFile);
 
     /**
      * Returns the directory where the configs should be saved
      */
-    default File getConfigDirectory()
+    default Path getConfigDirectory()
     {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-
-        if (dir.exists() == false && dir.mkdirs() == false)
-        {
-            MaLiLib.LOGGER.warn("Failed to create config directory '{}'", dir.getAbsolutePath());
-        }
-
+        Path dir = ConfigUtils.getActiveConfigDirectory();
+        FileUtils.createDirectoriesIfMissing(dir);
         return dir;
     }
 
@@ -100,18 +97,22 @@ public interface ModConfig
      */
     default void loadFromFile()
     {
-        File configFile = new File(this.getConfigDirectory(), this.getConfigFileName());
+        Path configFile = this.getConfigDirectory().resolve(this.getConfigFileName());
 
-        if (configFile.exists() && configFile.isFile() && configFile.canRead())
+        if (Files.isReadable(configFile))
         {
             this.loadFromFile(configFile);
+        }
+        else
+        {
+            MaLiLib.LOGGER.warn("ModConfig#loadFromFile(): File '{}' is not readable", configFile.toAbsolutePath());
         }
 
         this.onPostLoad();
     }
 
     /**
-     * Called after the {@link #loadFromFile(File)} method has loaded the configs, to allow
+     * Called after the {@link #loadFromFile(Path)} method has loaded the configs, to allow
      * mods to do some custom setup with the new config options.
      */
     default void onPostLoad()
@@ -123,16 +124,15 @@ public interface ModConfig
      */
     default boolean saveToFile()
     {
-        File dir = this.getConfigDirectory();
+        Path dir = this.getConfigDirectory();
 
-        if (dir.exists() == false && dir.mkdirs() == false)
+        if (Files.isDirectory(dir))
         {
-            MaLiLib.LOGGER.error("Failed to create config directory '{}'", dir.getName());
+            return this.saveToFile(dir, dir.resolve(this.getConfigFileName()));
         }
-
-        if (dir.exists() && dir.isDirectory())
+        else
         {
-            return this.saveToFile(dir, new File(dir, this.getConfigFileName()));
+            MaLiLib.LOGGER.warn("ModConfig#saveToFile(): '{}' is not a valid directory", dir.toAbsolutePath());
         }
 
         return false;

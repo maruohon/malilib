@@ -1,11 +1,10 @@
 package fi.dy.masa.malilib.util.data.json;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.data.BooleanConsumer;
 import fi.dy.masa.malilib.util.data.FloatConsumer;
 
@@ -615,13 +615,11 @@ public class JsonUtils
     }
 
     @Nullable
-    public static JsonElement parseJsonFile(File file)
+    public static JsonElement parseJsonFile(Path file)
     {
-        if (file != null && file.exists() && file.isFile() && file.canRead())
+        if (Files.isRegularFile(file) && Files.isReadable(file))
         {
-            String fileName = file.getAbsolutePath();
-
-            try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))
+            try (BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8))
             {
                 JsonParser parser = new JsonParser();
                 JsonElement element = parser.parse(reader);
@@ -630,7 +628,7 @@ public class JsonUtils
             }
             catch (Exception e)
             {
-                MaLiLib.LOGGER.error("Failed to parse the JSON file '{}'", fileName, e);
+                MaLiLib.LOGGER.error("Failed to parse the JSON file '{}'", file.toAbsolutePath(), e);
             }
         }
 
@@ -648,71 +646,59 @@ public class JsonUtils
         return gson.toJson(element);
     }
 
-    public static boolean writeJsonToFile(JsonElement root, File file)
+    public static boolean writeJsonToFile(JsonElement root, Path file)
     {
         return writeJsonToFile(GSON, root, file);
     }
 
-    public static boolean writeJsonToFile(Gson gson, JsonElement root, File file)
+    public static boolean writeJsonToFile(Gson gson, JsonElement root, Path file)
     {
-        File dir = file.getParentFile();
+        Path dir = file.getParent();
 
-        if (dir.exists() == false && dir.mkdirs() == false)
+        if (FileUtils.createDirectoriesIfMissing(dir) == false)
         {
-            MaLiLib.LOGGER.error("Failed to create directory '{}'", dir.getName());
+            MaLiLib.LOGGER.error("Failed to create directory '{}'", dir.getFileName());
             return false;
         }
 
-        File fileTmp = new File(dir, file.getName() + ".tmp");
+        Path fileTmp = dir.resolve(file.getFileName() + ".tmp");
 
-        if (fileTmp.exists())
+        if (Files.exists(fileTmp))
         {
-            fileTmp = new File(file.getParentFile(), UUID.randomUUID() + ".tmp");
+            fileTmp = file.getParent().resolve(UUID.randomUUID() + ".tmp");
         }
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileTmp), StandardCharsets.UTF_8))
+        try
         {
+            BufferedWriter writer = Files.newBufferedWriter(fileTmp, StandardCharsets.UTF_8);
             writer.write(gson.toJson(root));
             writer.close();
 
-            if (file.exists() && file.isFile() && file.delete() == false)
-            {
-                MaLiLib.LOGGER.warn("Failed to delete file '{}'", file.getAbsolutePath());
-            }
+            FileUtils.delete(file);
 
-            if (fileTmp.renameTo(file) == false)
-            {
-                MaLiLib.LOGGER.warn("Failed to rename file '{}' to '{}'",
-                                    fileTmp.getAbsolutePath(), file.getAbsolutePath());
-                return false;
-            }
-
-            return true;
+            return FileUtils.move(fileTmp, file);
         }
         catch (Exception e)
         {
-            MaLiLib.LOGGER.warn("Failed to write JSON data to file '{}'", fileTmp.getAbsolutePath(), e);
+            MaLiLib.LOGGER.warn("Failed to write JSON data to file '{}'", fileTmp.toAbsolutePath(), e);
         }
 
         return false;
     }
 
-    public static void loadFromFile(File dir, String fileName, Consumer<JsonElement> dataConsumer)
+    public static void loadFromFile(Path dir, String fileName, Consumer<JsonElement> dataConsumer)
     {
-        File file = new File(dir, fileName);
+        Path file = dir.resolve(fileName);
         loadFromFile(file, dataConsumer);
     }
 
-    public static void loadFromFile(File file, Consumer<JsonElement> dataConsumer)
+    public static void loadFromFile(Path file, Consumer<JsonElement> dataConsumer)
     {
-        if (file.exists() && file.isFile() && file.canRead())
-        {
-            JsonElement element = parseJsonFile(file);
+        JsonElement element = parseJsonFile(file);
 
-            if (element != null)
-            {
-                dataConsumer.accept(element);
-            }
+        if (element != null)
+        {
+            dataConsumer.accept(element);
         }
     }
 }

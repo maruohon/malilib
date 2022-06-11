@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +21,10 @@ public class BackupUtils
      * come from the malilib configs.
      * @return true on success, false on failure
      */
-    public static boolean createRegularBackup(File fileIn)
+    public static boolean createRegularBackup(Path fileIn)
     {
-        File configDir = ConfigUtils.getActiveConfigDirectory();
-        File backupDir = configDir.toPath().resolve("backups").toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path backupDir = configDir.resolve("backups");
 
         return createRegularBackup(fileIn, backupDir);
     }
@@ -34,7 +35,7 @@ public class BackupUtils
      * come from the malilib configs.
      * @return true on success, false on failure
      */
-    public static boolean createRegularBackup(File fileIn, File backupDir)
+    public static boolean createRegularBackup(Path fileIn, Path backupDir)
     {
         int backupCount = MaLiLibConfigs.Generic.CONFIG_BACKUP_COUNT.getIntegerValue();
 
@@ -63,7 +64,7 @@ public class BackupUtils
      * @param antiDuplicate if true, the old backups are checked for an existing identical copy first
      * @return true if the file was successfully copied in a backup file
      */
-    public static boolean createRollingBackup(File fileIn, File backupDirectory, String suffix,
+    public static boolean createRollingBackup(Path fileIn, Path backupDirectory, String suffix,
                                               int maxBackups, boolean antiDuplicate)
     {
         if (maxBackups <= 0)
@@ -71,27 +72,27 @@ public class BackupUtils
             return true;
         }
 
-        if (backupDirectory.isDirectory() == false && backupDirectory.mkdirs() == false)
+        if (FileUtils.createDirectoriesIfMissing(backupDirectory) == false)
         {
-            MaLiLib.LOGGER.error("Failed to create the config backup directory '{}'", backupDirectory.getAbsolutePath());
+            MaLiLib.LOGGER.error("Failed to create the config backup directory '{}'", backupDirectory.toAbsolutePath());
             return false;
         }
 
         final int numberLength = (int) Math.ceil(Math.log10(maxBackups));
         final String formatString = "%s%0" + numberLength + "d";
-        final String name = fileIn.getName();
+        final String name = fileIn.getFileName().toString();
         final String nameAndSuffix = name + suffix;
-        final File backupFile = new File(backupDirectory, String.format(formatString, nameAndSuffix, 1));
-        @Nullable File existingIdenticalBackup = null;
+        final Path backupFile = backupDirectory.resolve(String.format(formatString, nameAndSuffix, 1));
+        @Nullable Path existingIdenticalBackup = null;
         boolean foundExistingBackup = false;
 
         if (antiDuplicate)
         {
-            List<File> identicalBackups = findIdenticalBackupFiles(backupDirectory, fileIn, maxBackups, suffix);
+            List<Path> identicalBackups = findIdenticalBackupFiles(backupDirectory, fileIn, maxBackups, suffix);
 
             if (identicalBackups.isEmpty() == false)
             {
-                File tmpFile = identicalBackups.get(0);
+                Path tmpFile = identicalBackups.get(0);
 
                 // If the existing identical backup was already the first/latest backup file,
                 // then there is nothing more to do
@@ -101,12 +102,13 @@ public class BackupUtils
                 }
 
                 String tmpName = name + UUID.randomUUID();
-                existingIdenticalBackup = new File(backupDirectory, tmpName);
+                existingIdenticalBackup = backupDirectory.resolve(tmpName);
 
                 // Move the existing identical backup to a temporary name.
                 // Then rotate the files from 1 up to that existing name,
                 // and finally move that existing backup as the latest backup file.
-                if (existingIdenticalBackup.exists() == false && tmpFile.renameTo(existingIdenticalBackup))
+                if (Files.exists(existingIdenticalBackup) == false &&
+                    FileUtils.move(tmpFile, existingIdenticalBackup))
                 {
                     foundExistingBackup = true;
                 }
@@ -114,23 +116,24 @@ public class BackupUtils
         }
 
         // Only rotate the backups if the first name is in use
-        if (backupFile.exists() && rotateNumberedFiles(backupDirectory, nameAndSuffix, formatString, maxBackups) == false)
+        if (Files.exists(backupFile) &&
+            rotateNumberedFiles(backupDirectory, nameAndSuffix, formatString, maxBackups) == false)
         {
             return false;
         }
 
         if (foundExistingBackup)
         {
-            if (existingIdenticalBackup.renameTo(backupFile))
+            if (FileUtils.move(existingIdenticalBackup, backupFile))
             {
                 return true;
             }
 
             MaLiLib.LOGGER.error("Failed to rename backup file '{}' to '{}'",
-                                 existingIdenticalBackup.getAbsolutePath(), backupFile.getAbsolutePath());
+                                 existingIdenticalBackup.toAbsolutePath(), backupFile.toAbsolutePath());
         }
 
-        return FileUtils.copyFile(fileIn, backupFile, MaLiLib.LOGGER::error);
+        return FileUtils.copy(fileIn, backupFile, false, MaLiLib.LOGGER::error);
     }
 
     /**
@@ -149,41 +152,31 @@ public class BackupUtils
      *                 file 1 up to the first possible empty name.
      * @return true if the operation was fully successful
      */
-    public static boolean rotateNumberedFiles(File dir, String baseFileName, String nameFormatString, int maxCount)
+    public static boolean rotateNumberedFiles(Path dir, String baseFileName, String nameFormatString, int maxCount)
     {
         // If there are unused backup file names, only rotate the backups up to the first empty slot
         int firstEmptySlot = maxCount;
 
         for (int i = 1; i <= maxCount; ++i)
         {
-            File tmp = new File(dir, String.format(nameFormatString, baseFileName, i));
+            Path tmp = dir.resolve(String.format(nameFormatString, baseFileName, i));
 
-            if (tmp.exists() == false)
+            if (Files.exists(tmp) == false)
             {
                 firstEmptySlot = i;
                 break;
             }
         }
 
-        File tmp1 = new File(dir, String.format(nameFormatString, baseFileName, firstEmptySlot));
+        Path tmp1 = dir.resolve(String.format(nameFormatString, baseFileName, firstEmptySlot));
 
         for (int i = firstEmptySlot; i > 1; --i)
         {
-            File tmp2 = tmp1;
-            tmp1 = new File(dir, String.format(nameFormatString, baseFileName, i - 1));
+            Path tmp2 = tmp1;
+            tmp1 = dir.resolve(String.format(nameFormatString, baseFileName, i - 1));
 
-            if (tmp2.exists() && tmp2.isFile())
+            if (Files.isRegularFile(tmp1) && FileUtils.move(tmp1, tmp2) == false)
             {
-                if (tmp2.delete() == false)
-                {
-                    MaLiLib.LOGGER.warn("Failed to delete file '{}'", tmp2.getAbsolutePath());
-                }
-            }
-
-            if (tmp1.exists() && tmp1.renameTo(tmp2) == false)
-            {
-                MaLiLib.LOGGER.error("Failed to rename file '{}' to '{}'",
-                                     tmp1.getAbsolutePath(), tmp2.getAbsolutePath());
                 return false;
             }
         }
@@ -191,15 +184,15 @@ public class BackupUtils
         return true;
     }
 
-    public static boolean createBackupFileForVersion(File fileIn, File backupDirectory, int configVersion)
+    public static boolean createBackupFileForVersion(Path file, Path backupDirectory, int configVersion)
     {
-        if (backupDirectory.isDirectory() == false && backupDirectory.mkdirs() == false)
+        if (FileUtils.createDirectoriesIfMissing(backupDirectory) == false)
         {
-            MaLiLib.LOGGER.error("Failed to create the config backup directory '{}'", backupDirectory.getAbsolutePath());
+            MaLiLib.LOGGER.error("Failed to create the config backup directory '{}'", backupDirectory.toAbsolutePath());
             return false;
         }
 
-        String fullName = fileIn.getName();
+        String fullName = file.getFileName().toString();
         String name = FileNameUtils.getFileNameWithoutExtension(fullName);
         String dateStr = FileNameUtils.getDateTimeString();
         String extension = FileNameUtils.getFileNameExtension(fullName);
@@ -210,29 +203,29 @@ public class BackupUtils
             backupFileName += "." + extension;
         }
 
-        return FileUtils.copyFile(fileIn, new File(backupDirectory, backupFileName), MaLiLib.LOGGER::error);
+        return FileUtils.copy(file, backupDirectory.resolve(backupFileName), false, MaLiLib.LOGGER::error);
     }
 
-    public static List<File> findIdenticalBackupFiles(File backupDirectory, File fileIn, int maxBackups, String suffix)
+    public static List<Path> findIdenticalBackupFiles(Path backupDirectory, Path file, int maxBackups, String suffix)
     {
-        final List<File> files = new ArrayList<>();
-        final long fileSize = fileIn.length();
+        final List<Path> files = new ArrayList<>();
+        final long fileSize = FileUtils.size(file);
         final int numberLength = (int) Math.ceil(Math.log10(maxBackups));
         final String formatString = "%s%0" + numberLength + "d";
-        final String nameAndSuffix = fileIn.getName() + suffix;
+        final String nameAndSuffix = file.getFileName().toString() + suffix;
         final MessageDigest digest = DigestUtils.getSha1Digest();
         @Nullable String currentHash = null;
 
         for (int i = 1; i <= maxBackups; ++i)
         {
-            File tmp = new File(backupDirectory, String.format(formatString, nameAndSuffix, i));
+            Path tmp = backupDirectory.resolve(String.format(formatString, nameAndSuffix, i));
 
-            if (tmp.exists() && tmp.isFile() && tmp.length() == fileSize)
+            if (Files.isRegularFile(tmp) && FileUtils.size(tmp) == fileSize)
             {
                 // lazy initialization, only calculate the current file's hash if it's needed
                 if (currentHash == null)
                 {
-                    currentHash = HashUtils.getHashAsHexString(fileIn, digest);
+                    currentHash = HashUtils.getHashAsHexString(file, digest);
                 }
 
                 if (HashUtils.getHashAsHexString(tmp, digest).equals(currentHash))

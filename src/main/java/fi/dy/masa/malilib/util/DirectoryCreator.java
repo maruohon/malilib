@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
@@ -8,10 +9,10 @@ import fi.dy.masa.malilib.util.data.ResultingStringConsumer;
 
 public class DirectoryCreator implements ResultingStringConsumer
 {
-    protected final File dir;
+    protected final Path dir;
     @Nullable protected final DirectoryNavigator navigator;
 
-    public DirectoryCreator(File dir, @Nullable DirectoryNavigator navigator)
+    public DirectoryCreator(Path dir, @Nullable DirectoryNavigator navigator)
     {
         this.dir = dir;
         this.navigator = navigator;
@@ -26,17 +27,19 @@ public class DirectoryCreator implements ResultingStringConsumer
             return false;
         }
 
-        File file = new File(this.dir, string);
+        Path file = this.dir.resolve(string);
 
-        if (file.exists())
+        if (Files.exists(file))
         {
-            MessageDispatcher.error("malilib.message.error.file_or_directory_already_exists", file.getAbsolutePath());
+            MessageDispatcher.error("malilib.message.error.file_or_directory_already_exists",
+                                    file.toAbsolutePath().toString());
             return false;
         }
 
-        if (file.mkdirs() == false)
+        if (FileUtils.createDirectoriesIfMissing(file) == false)
         {
-            MessageDispatcher.error("malilib.message.error.failed_to_create_directory", file.getAbsolutePath());
+            MessageDispatcher.error("malilib.message.error.failed_to_create_directory",
+                                    file.toAbsolutePath().toString());
             return false;
         }
 

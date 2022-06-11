@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.action;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -261,9 +260,9 @@ public class ActionRegistry
 
     public boolean saveToFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("actions.json").toFile();
-        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("actions.json");
+        Path backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID);
 
         if (BackupUtils.createRegularBackup(saveFile, backupDir) &&
             JsonUtils.writeJsonToFile(this.toJson(), saveFile))
@@ -277,8 +276,8 @@ public class ActionRegistry
 
     public void loadFromFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("actions.json").toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("actions.json");
         JsonUtils.loadFromFile(saveFile, this::fromJson);
     }
 

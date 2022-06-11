@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.action;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,9 +73,9 @@ public class ActionExecutionWidgetManager
     protected boolean saveDataToFile(String name, ActionWidgetScreenData data)
     {
         name = FileNameUtils.generateSimpleSafeFileName(name);
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("action_screens").resolve(name + ".json").toFile();
-        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).resolve("action_screens").toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("action_screens").resolve(name + ".json");
+        Path backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).resolve("action_screens");
 
         if (BackupUtils.createRegularBackup(saveFile, backupDir))
         {
@@ -89,8 +88,8 @@ public class ActionExecutionWidgetManager
     protected void loadFromFile(String name)
     {
         final String safeName = FileNameUtils.generateSimpleSafeFileName(name);
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("action_screens").resolve(name + ".json").toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("action_screens").resolve(name + ".json");
         JsonUtils.loadFromFile(saveFile, (el) -> this.loadDataFromJson(safeName, el));
     }
 

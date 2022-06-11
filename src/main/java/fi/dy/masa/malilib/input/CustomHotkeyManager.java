@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.input;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,9 +146,9 @@ public class CustomHotkeyManager implements HotkeyProvider
 
     public boolean saveToFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_hotkeys.json").toFile();
-        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_hotkeys.json");
+        Path backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID);
 
         if (BackupUtils.createRegularBackup(saveFile, backupDir) &&
             JsonUtils.writeJsonToFile(this.toJson(), saveFile))
@@ -163,8 +162,8 @@ public class CustomHotkeyManager implements HotkeyProvider
 
     public void loadFromFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_hotkeys.json").toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_hotkeys.json");
         JsonUtils.loadFromFile(saveFile, this::fromJson);
     }
 }

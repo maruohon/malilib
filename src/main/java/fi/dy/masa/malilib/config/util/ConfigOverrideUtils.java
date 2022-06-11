@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.config.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -127,8 +126,8 @@ public class ConfigOverrideUtils
 
     protected static void tryApplyOverridesFromLocalConfig()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File file = configDir.resolve(MaLiLibReference.MOD_ID).resolve("config_overrides.json").toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path file = configDir.resolve(MaLiLibReference.MOD_ID).resolve("config_overrides.json");
         String str = FileUtils.readFileAsString(file, -1);
 
         if (str != null)

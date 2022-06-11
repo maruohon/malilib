@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.util;
 
-import java.io.File;
 import java.net.SocketAddress;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -148,10 +148,10 @@ public class StringUtils
         return true;
     }
 
-    public static void sendOpenFileChatMessage(ICommandSender sender, String messageKey, File file)
+    public static void sendOpenFileChatMessage(ICommandSender sender, String messageKey, Path file)
     {
-        TextComponentString name = new TextComponentString(file.getName());
-        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+        TextComponentString name = new TextComponentString(file.getFileName().toString());
+        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString()));
         name.getStyle().setUnderlined(Boolean.TRUE);
         sender.sendMessage(new TextComponentTranslation(messageKey, name));
     }

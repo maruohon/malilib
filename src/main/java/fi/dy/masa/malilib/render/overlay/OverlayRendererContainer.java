@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.render.overlay;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
@@ -266,14 +267,14 @@ public class OverlayRendererContainer
         }
     }
 
-    protected ArrayListMultimap<File, BaseOverlayRenderer> getModGroupedRenderersForSerialization(boolean isDimensionChangeOnly)
+    protected ArrayListMultimap<Path, BaseOverlayRenderer> getModGroupedRenderersForSerialization(boolean isDimensionChangeOnly)
     {
-        ArrayListMultimap<File, BaseOverlayRenderer> map = ArrayListMultimap.create();
+        ArrayListMultimap<Path, BaseOverlayRenderer> map = ArrayListMultimap.create();
 
         for (BaseOverlayRenderer renderer : this.renderers)
         {
             String id = renderer.getSaveId();
-            File file = renderer.getSaveFile(isDimensionChangeOnly);
+            Path file = renderer.getSaveFile(isDimensionChangeOnly);
 
             if (file != null && StringUtils.isBlank(id) == false)
             {
@@ -286,11 +287,10 @@ public class OverlayRendererContainer
 
     public void saveToFile(boolean isDimensionChangeOnly)
     {
-        ArrayListMultimap<File, BaseOverlayRenderer> map = this.getModGroupedRenderersForSerialization(isDimensionChangeOnly);
+        ArrayListMultimap<Path, BaseOverlayRenderer> map = this.getModGroupedRenderersForSerialization(isDimensionChangeOnly);
 
-        for (File file : map.keySet())
+        for (Path file : map.keySet())
         {
-            File dir = file.getParentFile();
             JsonObject obj = new JsonObject();
 
             for (BaseOverlayRenderer renderer : map.get(file))
@@ -298,7 +298,7 @@ public class OverlayRendererContainer
                 obj.add(renderer.getSaveId(), renderer.toJson());
             }
 
-            if (BackupUtils.createRegularBackup(file, new File(dir, "backups")))
+            if (BackupUtils.createRegularBackup(file, file.getParent().resolve("backups")))
             {
                 JsonUtils.writeJsonToFile(obj, file);
             }
@@ -307,11 +307,11 @@ public class OverlayRendererContainer
 
     public void loadFromFile(boolean isDimensionChangeOnly)
     {
-        ArrayListMultimap<File, BaseOverlayRenderer> map = this.getModGroupedRenderersForSerialization(isDimensionChangeOnly);
+        ArrayListMultimap<Path, BaseOverlayRenderer> map = this.getModGroupedRenderersForSerialization(isDimensionChangeOnly);
 
-        for (File file : map.keySet())
+        for (Path file : map.keySet())
         {
-            if (file.isFile() == false || file.canRead() == false)
+            if (Files.isRegularFile(file) == false || Files.isReadable(file) == false)
             {
                 continue;
             }

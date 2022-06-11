@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config.util;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.function.BiConsumer;
 import com.google.gson.JsonElement;
@@ -18,7 +18,7 @@ import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
 public class JsonConfigUtils
 {
-    public static void loadFromFile(File configFile, List<ConfigOptionCategory> categories,
+    public static void loadFromFile(Path configFile, List<ConfigOptionCategory> categories,
                                     BiConsumer<Integer, JsonObject> configVersionUpdater)
     {
         JsonElement element = JsonUtils.parseJsonFile(configFile);
@@ -110,7 +110,7 @@ public class JsonConfigUtils
         config.onValueLoaded(config.getValue());
     }
 
-    public static boolean saveToFile(File configFile, List<ConfigOptionCategory> categories, int configVersion)
+    public static boolean saveToFile(Path configFile, List<ConfigOptionCategory> categories, int configVersion)
     {
         JsonObject root = new JsonObject();
         root.add("config_version", new JsonPrimitive(configVersion));

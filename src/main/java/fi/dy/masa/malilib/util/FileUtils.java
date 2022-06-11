@@ -1,85 +1,290 @@
 package fi.dy.masa.malilib.util;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.BufferedWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class FileUtils
 {
-    public static final FileFilter DIRECTORY_FILTER = (file) -> file.isDirectory() && file.getName().equals(".") == false && file.getName().equals("..") == false;
-    public static final FileFilter ALWAYS_FALSE_FILEFILTER = (file) -> false;
-    public static final FileFilter ANY_FILE_FILEFILTER = File::isFile;
-    public static final FileFilter JSON_FILEFILTER = (f) -> f.isFile() && f.getName().endsWith(".json");
+    public static final Predicate<Path> DIRECTORY_FILTER = FileUtils::isRegularDirectory;
+    public static final Predicate<Path> ALWAYS_FALSE_FILEFILTER = p -> false;
+    public static final Predicate<Path> ANY_FILE_FILEFILTER = Files::isRegularFile;
+    public static final Predicate<Path> JSON_FILEFILTER = (f) -> Files.isRegularFile(f) && f.getFileName().toString().endsWith(".json");
 
-    public static File getMinecraftDirectory()
+    public static Path getMinecraftDirectory()
     {
-        return GameUtils.getClient().gameDir;
+        return GameUtils.getClient().gameDir.toPath();
     }
 
-    public static File getRootDirectory()
+    public static Path getRootDirectory()
     {
-        return new File("/");
+        return Paths.get("/");
+    }
+
+    public static long size(Path file)
+    {
+        try
+        {
+            return Files.size(file);
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+
+    public static long getMTime(Path file)
+    {
+        try
+        {
+            return Files.getLastModifiedTime(file).toMillis();
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+
+    public static boolean createDirectoriesIfMissing(Path dir)
+    {
+        return createDirectoriesIfMissing(dir, MaLiLib.LOGGER::warn);
+    }
+
+    public static boolean createDirectoriesIfMissing(Path dir,
+                                                     Consumer<String> messageConsumer)
+    {
+        return createDirectoriesIfMissing(dir, messageConsumer, "Failed to create the directory '%s'");
+    }
+
+    public static boolean createDirectoriesIfMissing(Path dir,
+                                                     Consumer<String> messageConsumer,
+                                                     @Nullable String message)
+    {
+        try
+        {
+            if (Files.isDirectory(dir) == false)
+            {
+                Files.createDirectories(dir);
+            }
+        }
+        catch (Exception e)
+        {
+            if (message != null)
+            {
+                messageConsumer.accept(String.format(message, dir.toAbsolutePath()));
+            }
+
+            return false;
+        }
+
+        return Files.isDirectory(dir);
+    }
+
+    public static boolean createFile(Path file)
+    {
+        return createFile(file, MaLiLib.LOGGER::warn);
+    }
+
+    public static boolean createFile(Path file, Consumer<String> messageConsumer)
+    {
+        return createDirectoriesIfMissing(file, messageConsumer, "Failed to create the file '%s'");
+    }
+
+    public static boolean createFile(Path file, Consumer<String> messageConsumer, @Nullable String message)
+    {
+        try
+        {
+            Files.createFile(file);
+            return true;
+        }
+        catch (Exception e)
+        {
+            if (message != null)
+            {
+                messageConsumer.accept(String.format(message, file.toAbsolutePath()));
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean copy(Path srcFile, Path dstFile)
+    {
+        return copy(srcFile, dstFile, true);
+    }
+
+    public static boolean copy(Path srcFile, Path dstFile, boolean overwrite)
+    {
+        return copy(srcFile, dstFile, overwrite, MaLiLib.LOGGER::warn);
+    }
+
+    public static boolean copy(Path srcFile, Path dstFile, boolean overwrite, Consumer<String> messageConsumer)
+    {
+        try
+        {
+            if (overwrite)
+            {
+                Files.copy(srcFile, dstFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+            else
+            {
+                Files.copy(srcFile, dstFile);
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            messageConsumer.accept(String.format("Failed to copy file '%s' to '%s'",
+                                                 srcFile.toAbsolutePath(), dstFile.toAbsolutePath()));
+            return false;
+        }
+    }
+
+    public static boolean move(Path srcFile, Path dstFile)
+    {
+        return move(srcFile, dstFile, true);
+    }
+
+    public static boolean move(Path srcFile, Path dstFile, boolean overwrite)
+    {
+        return move(srcFile, dstFile, overwrite, MaLiLib.LOGGER::warn);
+    }
+
+    public static boolean move(Path srcFile, Path dstFile, boolean overwrite, Consumer<String> messageConsumer)
+    {
+        try
+        {
+            if (overwrite)
+            {
+                Files.move(srcFile, dstFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+            else
+            {
+                Files.move(srcFile, dstFile);
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            messageConsumer.accept(String.format("Failed to move file '%s' to '%s'",
+                                                 srcFile.toAbsolutePath(), dstFile.toAbsolutePath()));
+            return false;
+        }
+    }
+
+    public static boolean delete(Path file)
+    {
+        return delete(file, MaLiLib.LOGGER::warn);
+    }
+
+    public static boolean delete(Path file, Consumer<String> messageConsumer)
+    {
+        try
+        {
+            Files.delete(file);
+            return true;
+        }
+        catch (Exception e)
+        {
+            messageConsumer.accept(String.format("Failed to delete file '%s'", file.toAbsolutePath()));
+            return false;
+        }
     }
 
     /**
      * Checks that the target directory exists, and the file either doesn't exist,
      * or the canOverwrite argument is true and the file is writable
      */
-    public static boolean canWriteToFile(File dir, String fileName, boolean canOverwrite)
+    public static boolean canWriteToFile(Path dir, String fileName, boolean canOverwrite)
     {
-        if (dir.exists() && dir.isDirectory())
+        if (Files.isDirectory(dir))
         {
-            File file = new File(dir, fileName);
-            return file.exists() == false || (canOverwrite && file.isFile() && file.canWrite());
+            Path file = dir.resolve(fileName);
+            return Files.exists(file) == false ||
+                   (canOverwrite && Files.isRegularFile(file) && Files.isWritable(file));
         }
 
         return false;
     }
 
-    public static File getCanonicalFileIfPossible(File file)
+    public static boolean isRegularDirectory(Path file)
     {
-        try
-        {
-            File fileCan = file.getCanonicalFile();
-
-            if (fileCan != null)
-            {
-                file = fileCan;
-            }
-        }
-        catch (IOException ignore)
-        {
-        }
-
-        return file;
+        String name = file.getFileName().toString();
+        return Files.isDirectory(file) && name.equals(".") == false && name.equals("..") == false;
     }
 
-    public static List<File> getSubDirectories(File dir)
+    public static boolean isCurrentOrParentDirectory(Path file)
     {
-        List<File> list = new ArrayList<>(Arrays.asList(dir.listFiles(DIRECTORY_FILTER)));
-        list.sort(Comparator.comparing(File::getName));
+        String name = file.getFileName().toString();
+        return Files.isDirectory(file) && (name.equals(".") || name.equals(".."));
+    }
+
+    public static List<Path> getDirectoryContents(Path dir, Predicate<Path> filter, boolean sortByName)
+    {
+        List<Path> list = new ArrayList<>();
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir))
+        {
+            for (Path file : stream)
+            {
+                if (filter.test(file))
+                {
+                    list.add(file);
+                }
+            }
+
+            if (sortByName)
+            {
+                list.sort(Comparator.comparing(Path::getFileName));
+            }
+        }
+        catch (Exception ignore) {}
+
         return list;
     }
 
-    public static List<File> getDirsForRootPath(File dir, File root)
+    public static List<Path> getSubDirectories(Path dir)
     {
-        List<File> dirs = new ArrayList<>();
-        int rootPathStrLen = root.getAbsolutePath().length();
+        return getDirectoryContents(dir, FileUtils::isRegularDirectory, true);
+    }
 
-        while (dir != null && dir.getAbsolutePath().length() >= rootPathStrLen)
+    public static boolean isDirectoryEmpty(Path dir)
+    {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir))
+        {
+            for (Path file : stream)
+            {
+                if (isCurrentOrParentDirectory(file) == false)
+                {
+                    return false;
+                }
+            }
+        }
+        catch (Exception ignore) {}
+
+        return true;
+    }
+
+    public static List<Path> getDirsForRootPath(Path dir, Path root)
+    {
+        List<Path> dirs = new ArrayList<>();
+
+        while (dir != null && dir.startsWith(root))
         {
             dirs.add(dir);
 
@@ -88,33 +293,33 @@ public class FileUtils
                 break;
             }
 
-            dir = dir.getParentFile();
+            dir = dir.getParent();
         }
 
         return dirs;
     }
 
-    public static List<File> getSiblingDirs(File dir)
+    public static List<Path> getSiblingDirs(Path dir)
     {
-        List<File> dirs = new ArrayList<>();
-        File parent = dir.getParentFile();
+        List<Path> dirs = new ArrayList<>();
+        Path parent = dir.getParent();
 
         if (parent != null)
         {
             dirs.addAll(getSubDirectories(parent));
-            dirs.sort(Comparator.comparing(File::getName));
+            dirs.sort(Comparator.comparing(Path::getFileName));
         }
 
         return dirs;
     }
 
-    public static boolean copyFilesToDirectory(Collection<File> files,
-                                               File destinationDir,
+    public static boolean copyFilesToDirectory(Collection<Path> files,
+                                               Path destinationDir,
                                                Consumer<String> messageConsumer)
     {
         boolean success = true;
 
-        for (File file : files)
+        for (Path file : files)
         {
             if (copyFileToDirectory(file, destinationDir, messageConsumer) == false)
             {
@@ -125,33 +330,35 @@ public class FileUtils
         return success;
     }
 
-    public static boolean copyFileToDirectory(File sourceFile, File destinationDir, Consumer<String> messageConsumer)
+    public static boolean copyFileToDirectory(Path sourceFile, Path destinationDir, Consumer<String> messageConsumer)
     {
-        File destinationFile = new File(destinationDir, sourceFile.getName());
+        Path destinationFile = destinationDir.resolve(sourceFile.getFileName());
         return copyFile(sourceFile, destinationFile, messageConsumer);
     }
 
-    public static boolean copyFile(File sourceFile, File destinationFile, Consumer<String> messageConsumer)
+    public static boolean copyFile(Path sourceFile, Path destinationFile, Consumer<String> messageConsumer)
     {
-        if (sourceFile.exists())
+        if (Files.exists(sourceFile))
         {
-            if (destinationFile.exists())
+            if (Files.exists(destinationFile))
             {
                 String msg = StringUtils.translate("malilib.message.error.failed_to_copy_file.destination_exists",
-                                                   sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                                                   sourceFile.toAbsolutePath().toString(),
+                                                   destinationFile.toAbsolutePath().toString());
                 messageConsumer.accept(msg);
                 return false;
             }
 
             try
             {
-                org.apache.commons.io.FileUtils.copyFile(sourceFile, destinationFile);
+                Files.copy(sourceFile, destinationFile);
                 return true;
             }
             catch (Exception e)
             {
                 String msg = StringUtils.translate("malilib.message.error.failed_to_copy_file",
-                                                   sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                                                   sourceFile.toAbsolutePath().toString(),
+                                                   destinationFile.toAbsolutePath().toString());
                 messageConsumer.accept(msg);
                 messageConsumer.accept(e.getMessage());
             }
@@ -160,13 +367,13 @@ public class FileUtils
         return false;
     }
 
-    public static boolean moveFilesToDirectory(Collection<File> files,
-                                               File destinationDir,
+    public static boolean moveFilesToDirectory(Collection<Path> files,
+                                               Path destinationDir,
                                                Consumer<String> messageConsumer)
     {
         boolean success = true;
 
-        for (File file : files)
+        for (Path file : files)
         {
             if (moveFileToDirectory(file, destinationDir, messageConsumer) == false)
             {
@@ -177,33 +384,35 @@ public class FileUtils
         return success;
     }
 
-    public static boolean moveFileToDirectory(File sourceFile, File destinationDir, Consumer<String> messageConsumer)
+    public static boolean moveFileToDirectory(Path sourceFile, Path destinationDir, Consumer<String> messageConsumer)
     {
-        File destinationFile = new File(destinationDir, sourceFile.getName());
+        Path destinationFile = destinationDir.resolve(sourceFile.getFileName());
         return moveFile(sourceFile, destinationFile, messageConsumer);
     }
 
-    public static boolean moveFile(File sourceFile, File destinationFile, Consumer<String> messageConsumer)
+    public static boolean moveFile(Path sourceFile, Path destinationFile, Consumer<String> messageConsumer)
     {
-        if (sourceFile.exists())
+        if (Files.exists(sourceFile))
         {
-            if (destinationFile.exists())
+            if (Files.exists(destinationFile))
             {
                 String msg = StringUtils.translate("malilib.message.error.failed_to_move_file.destination_exists",
-                                                   sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                                                   sourceFile.toAbsolutePath().toString(),
+                                                   destinationFile.toAbsolutePath().toString());
                 messageConsumer.accept(msg);
                 return false;
             }
 
             try
             {
-                org.apache.commons.io.FileUtils.moveFile(sourceFile, destinationFile);
+                Files.move(sourceFile, destinationFile);
                 return true;
             }
             catch (Exception e)
             {
                 String msg = StringUtils.translate("malilib.message.error.failed_to_move_file",
-                                                   sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                                                   sourceFile.toAbsolutePath().toString(),
+                                                   destinationFile.toAbsolutePath().toString());
                 messageConsumer.accept(msg);
                 messageConsumer.accept(e.getMessage());
             }
@@ -212,25 +421,27 @@ public class FileUtils
         return false;
     }
 
-    public static boolean renameFile(File sourceFile, File destinationFile, Consumer<String> messageConsumer)
+    public static boolean renameFile(Path sourceFile, Path destinationFile, Consumer<String> messageConsumer)
     {
-        if (sourceFile.exists())
+        if (Files.exists(sourceFile))
         {
-            if (destinationFile.exists())
+            if (Files.exists(destinationFile))
             {
                 messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file.exists",
-                                                             sourceFile.getName(), destinationFile.getName()));
+                                                             sourceFile.toAbsolutePath().toString(),
+                                                             destinationFile.toAbsolutePath().toString()));
                 return false;
             }
 
             try
             {
-                return sourceFile.renameTo(destinationFile);
+                return move(sourceFile, destinationFile);
             }
             catch (Exception e)
             {
                 messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file.exception",
-                                                             sourceFile.getName(), destinationFile.getName(),
+                                                             sourceFile.toAbsolutePath().toString(),
+                                                             destinationFile.toAbsolutePath().toString(),
                                                              e.getMessage()));
             }
         }
@@ -238,16 +449,16 @@ public class FileUtils
         return false;
     }
 
-    public static boolean renameFileToName(File oldFile, String newName, Consumer<String> messageConsumer)
+    public static boolean renameFileToName(Path oldFile, String newName, Consumer<String> messageConsumer)
     {
         if (FileNameUtils.doesFileNameContainIllegalCharacters(newName))
         {
-            messageConsumer.accept(StringUtils.translate("malilib.message.error.illegal_characters_in_file_name",
-                                                         newName));
+            String key = "malilib.message.error.illegal_characters_in_file_name";
+            messageConsumer.accept(StringUtils.translate(key, newName));
             return false;
         }
 
-        String oldName = oldFile.getName();
+        String oldName = oldFile.getFileName().toString();
         int indexExt = oldName.lastIndexOf('.');
         String ext = indexExt > 0 ? oldName.substring(indexExt) : null;
 
@@ -256,56 +467,56 @@ public class FileUtils
             newName = newName + ext;
         }
 
-        File newFile = new File(oldFile.getParentFile(), newName);
+        Path newFile = oldFile.getParent().resolve(newName);
 
-        if (newFile.exists() == false)
+        if (Files.exists(newFile) == false)
         {
-            if (oldFile.exists() && oldFile.canRead() && oldFile.renameTo(newFile))
+            if (move(oldFile, newFile))
             {
                 return true;
             }
             else
             {
-                messageConsumer.accept(StringUtils.translate("malilib.message.error.file_rename.rename_failed",
-                                                             oldName, newName));
+                String key = "malilib.message.error.file_rename.rename_failed";
+                messageConsumer.accept(StringUtils.translate(key, oldName, newName));
             }
         }
         else
         {
-            messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file.exists",
-                                                         oldName, newName));
+            String key = "malilib.message.error.failed_to_rename_file.exists";
+            messageConsumer.accept(StringUtils.translate(key, oldName, newName));
         }
 
         return false;
     }
 
-    public static boolean deleteFiles(Collection<File> files, Consumer<String> messageConsumer)
+    public static boolean deleteFiles(Collection<Path> files, Consumer<String> messageConsumer)
     {
         boolean success = true;
 
-        for (File file : files)
+        for (Path file : files)
         {
-            if (file.isDirectory())
+            if (Files.isDirectory(file))
             {
-                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_delete_file_is_dir",
-                                                             file.getName()));
+                String key = "malilib.message.error.failed_to_delete_file_is_dir";
+                messageConsumer.accept(StringUtils.translate(key, file.getFileName().toString()));
                 success = false;
                 continue;
             }
 
             try
             {
-                if (Files.deleteIfExists(file.toPath()) == false)
+                if (Files.deleteIfExists(file) == false)
                 {
-                    messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_delete_file",
-                                                                 file.getName()));
+                    String key = "malilib.message.error.failed_to_delete_file";
+                    messageConsumer.accept(StringUtils.translate(key, file.getFileName().toString()));
                     success = false;
                 }
             }
             catch (Exception e)
             {
-                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_delete_file",
-                                                             file.getName()));
+                String key = "malilib.message.error.failed_to_delete_file";
+                messageConsumer.accept(StringUtils.translate(key, file.getFileName().toString()));
                 messageConsumer.accept(e.getMessage());
                 success = false;
             }
@@ -321,15 +532,14 @@ public class FileUtils
      * @return the file contents as a String
      */
     @Nullable
-    public static String readFileAsString(File file, int maxFileSize)
+    public static String readFileAsString(Path file, int maxFileSize)
     {
-        if (file.exists() && file.isFile() && file.canRead()&&
-            (maxFileSize == -1 || file.length() <= maxFileSize))
+        if (Files.isReadable(file) &&
+            (maxFileSize == -1 || FileUtils.size(file) <= maxFileSize))
         {
             try
             {
-                byte[] encoded = Files.readAllBytes(file.toPath());
-                return new String(encoded, StandardCharsets.UTF_8);
+                return String.join("\n", Files.readAllLines(file));
             }
             catch (Exception ignore) {}
         }
@@ -337,16 +547,16 @@ public class FileUtils
         return null;
     }
 
-    public static boolean writeStringToFile(String str, File file, boolean override)
+    public static boolean writeStringToFile(String str, Path file, boolean override)
     {
-        if (file.getParentFile().isDirectory() == false)
+        if (Files.isDirectory(file.getParent()) == false)
         {
             return false;
         }
 
-        if (file.exists() == false || (override && file.canWrite()))
+        if (Files.exists(file) == false || (override && Files.isWritable(file)))
         {
-            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))
+            try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8))
             {
                 writer.write(str);
                 writer.close();
@@ -354,7 +564,7 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                MaLiLib.LOGGER.warn("Failed to write string to file '{}'", file.getAbsolutePath(), e);
+                MaLiLib.LOGGER.warn("Failed to write string to file '{}'", file.toAbsolutePath(), e);
             }
         }
 

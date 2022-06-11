@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.util;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -96,46 +95,5 @@ public class FileNameUtils
 
         // Some weird reserved windows keywords apparently... FFS >_>
         return sb.toString().replaceAll("COM", "").replaceAll("PRN", "");
-    }
-
-    public static String getJoinedTrailingPathElements(File file, File rootPath, int maxStringLength, String separator)
-    {
-        StringBuilder path = new StringBuilder();
-
-        if (maxStringLength <= 0)
-        {
-            return "...";
-        }
-
-        while (file != null)
-        {
-            String name = file.getName();
-
-            if ((path.length() == 0) == false)
-            {
-                path.insert(0, name + separator);
-            }
-            else
-            {
-                path = new StringBuilder(name);
-            }
-
-            int len = path.length();
-
-            if (len > maxStringLength)
-            {
-                path = new StringBuilder("... " + path.substring(len - maxStringLength, len));
-                break;
-            }
-
-            if (file.equals(rootPath))
-            {
-                break;
-            }
-
-            file = file.getParentFile();
-        }
-
-        return path.toString();
     }
 }

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import java.io.File;
+import java.nio.file.Path;
 import fi.dy.masa.malilib.config.option.BooleanAndFileConfig;
 import fi.dy.masa.malilib.config.option.BooleanAndFileConfig.BooleanAndFile;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
@@ -45,13 +45,13 @@ public class BooleanAndFileConfigWidget extends BaseFileConfigWidget<BooleanAndF
     }
 
     @Override
-    protected File getFileFromConfig()
+    protected Path getFileFromConfig()
     {
         return this.config.getValue().fileValue;
     }
 
     @Override
-    protected void setFileToConfig(File file)
+    protected void setFileToConfig(Path file)
     {
         BooleanAndFile oldValue = this.config.getValue();
         BooleanAndFile newValue = new BooleanAndFile(oldValue.booleanValue, file);

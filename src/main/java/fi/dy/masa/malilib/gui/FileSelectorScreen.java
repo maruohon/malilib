@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
-import java.io.File;
-import java.io.FileFilter;
+import java.nio.file.Path;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -16,14 +16,14 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 {
     protected final GenericButton confirmButton;
     protected final BaseTextFieldWidget fileNameTextField;
-    protected final File rootDirectory;
-    protected final File currentDirectory;
-    protected final ToBooleanFunction<File> fileConsumer;
-    protected FileFilter fileFilter = FileUtils.ANY_FILE_FILEFILTER;
+    protected final Path rootDirectory;
+    protected final Path currentDirectory;
+    protected final ToBooleanFunction<Path> fileConsumer;
+    protected Predicate<Path> fileFilter = FileUtils.ANY_FILE_FILEFILTER;
     protected String fileNameExtension = "json";
     protected boolean allowCreatingFiles;
 
-    public FileSelectorScreen(File currentDirectory, File rootDirectory, ToBooleanFunction<File> fileConsumer)
+    public FileSelectorScreen(Path currentDirectory, Path rootDirectory, ToBooleanFunction<Path> fileConsumer)
     {
         super(10, 28, 20, 58);
 
@@ -70,12 +70,12 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
         }
     }
 
-    protected FileFilter getFileFilter()
+    protected Predicate<Path> getFileFilter()
     {
         return this.fileFilter;
     }
 
-    public void setFileFilter(FileFilter fileFilter)
+    public void setFileFilter(Predicate<Path> fileFilter)
     {
         this.fileFilter = fileFilter;
         //this.getListWidget().setFileFilter(fileFilter);
@@ -113,14 +113,14 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
                 return;
             }
 
-            File dir = this.getListWidget().getCurrentDirectory();
+            Path dir = this.getListWidget().getCurrentDirectory();
 
             if (name.endsWith("." + this.fileNameExtension) == false)
             {
                 name += "." + this.fileNameExtension;
             }
 
-            if (this.fileConsumer.applyAsBoolean(new File(dir, name)))
+            if (this.fileConsumer.applyAsBoolean(dir.resolve(name)))
             {
                 BaseScreen.openScreen(this.getParent());
             }

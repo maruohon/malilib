@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.icon;
 
-import java.io.File;
+import java.nio.file.Path;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryType;
@@ -32,7 +32,7 @@ public interface FileBrowserIconProvider
      * @return the icon that should be used for the given file, or null if it shouldn't have an icon
      */
     @Nullable
-    default MultiIcon getIconForFile(File file)
+    default MultiIcon getIconForFile(Path file)
     {
         return null;
     }
@@ -40,7 +40,7 @@ public interface FileBrowserIconProvider
     /**
      * @return the icon that should be used for the given directory entry.
      * Usually this would just call either {@link #getIcon(FileBrowserIconType)}
-     * or {@link #getIconForFile(File)} for directories and files respectively.
+     * or {@link #getIconForFile(Path)} for directories and files respectively.
      */
     @Nullable
     default MultiIcon getIconForEntry(DirectoryEntry entry)

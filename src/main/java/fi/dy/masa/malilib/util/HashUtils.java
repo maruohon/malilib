@@ -1,19 +1,19 @@
 package fi.dy.masa.malilib.util;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import fi.dy.masa.malilib.MaLiLib;
 
 public class HashUtils
 {
-    public static String getHashAsHexString(File file, MessageDigest digest)
+    public static String getHashAsHexString(Path file, MessageDigest digest)
     {
         StringBuilder sb = new StringBuilder(64);
         digest.reset();
 
-         try (DigestInputStream din = new DigestInputStream(new FileInputStream(file), digest))
+         try (DigestInputStream din = new DigestInputStream(Files.newInputStream(file),digest))
          {
              byte[] buf = new byte[4096];
 
@@ -30,7 +30,7 @@ public class HashUtils
          }
          catch (Exception e)
          {
-             MaLiLib.LOGGER.warn("Exception while hashing file '{}': {}", file.getAbsolutePath(), e.getMessage());
+             MaLiLib.LOGGER.warn("Exception while hashing file '{}': {}", file.toAbsolutePath(), e.getMessage());
          }
 
          return sb.toString();

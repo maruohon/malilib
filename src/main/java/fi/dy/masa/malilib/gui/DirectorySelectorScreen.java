@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.gui;
 
-import java.io.File;
+import java.nio.file.Path;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.data.ToBooleanFunction;
 
 public class DirectorySelectorScreen extends FileSelectorScreen
 {
-    public DirectorySelectorScreen(File currentDirectory, File rootDirectory, ToBooleanFunction<File> fileConsumer)
+    public DirectorySelectorScreen(Path currentDirectory, Path rootDirectory, ToBooleanFunction<Path> fileConsumer)
     {
         super(currentDirectory, rootDirectory, fileConsumer);
 

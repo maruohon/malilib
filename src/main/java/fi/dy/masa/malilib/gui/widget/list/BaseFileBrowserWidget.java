@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list;
 
-import java.io.File;
-import java.io.FileFilter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -47,18 +48,18 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    protected final Map<Pair<File, FileFilter>, List<File>> directoryContentsCache = new HashMap<>();
-    protected final Object2IntOpenHashMap<File> keyboardNavigationPositions = new Object2IntOpenHashMap<>();
-    protected final Object2IntOpenHashMap<File> scrollPositions = new Object2IntOpenHashMap<>();
-    protected final Set<File> operatedOnFiles = new HashSet<>();
+    protected final Map<Pair<Path, Predicate<Path>>, List<Path>> directoryContentsCache = new HashMap<>();
+    protected final Object2IntOpenHashMap<Path> keyboardNavigationPositions = new Object2IntOpenHashMap<>();
+    protected final Object2IntOpenHashMap<Path> scrollPositions = new Object2IntOpenHashMap<>();
+    protected final Set<Path> operatedOnFiles = new HashSet<>();
     protected final DirectoryNavigationWidget navigationWidget;
-    protected final File rootDirectory;
+    protected final Path rootDirectory;
     @Nullable protected final DirectoryCache cache;
     @Nullable protected String rootDirectoryDisplayName;
-    protected FileFilter directoryFilter = FileUtils.DIRECTORY_FILTER;
-    protected FileFilter fileFilter = FileUtils.ALWAYS_FALSE_FILEFILTER;
+    protected Predicate<Path> directoryFilter = FileUtils.DIRECTORY_FILTER;
+    protected Predicate<Path> fileFilter = FileUtils.ALWAYS_FALSE_FILEFILTER;
     protected String browserContext;
-    protected File currentDirectory;
+    protected Path currentDirectory;
     protected boolean allowFileOperations;
     protected boolean pendingOperationIsCut;
     protected boolean rememberScrollPosition;
@@ -67,16 +68,16 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected boolean showFileModificationTime;
     protected boolean showHiddenFiles;
 
-    public BaseFileBrowserWidget(File defaultDirectory,
-                                 File rootDirectory,
+    public BaseFileBrowserWidget(Path defaultDirectory,
+                                 Path rootDirectory,
                                  @Nullable DirectoryCache cache,
                                  @Nullable String browserContext)
     {
         this(defaultDirectory, rootDirectory, cache, browserContext, new DefaultFileBrowserIconProvider());
     }
 
-    public BaseFileBrowserWidget(File defaultDirectory,
-                                 File rootDirectory,
+    public BaseFileBrowserWidget(Path defaultDirectory,
+                                 Path rootDirectory,
                                  @Nullable DirectoryCache cache,
                                  @Nullable String browserContext,
                                  FileBrowserIconProvider iconProvider)
@@ -132,13 +133,13 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         return this;
     }
 
-    public BaseFileBrowserWidget setFileFilter(FileFilter filter)
+    public BaseFileBrowserWidget setFileFilter(Predicate<Path> filter)
     {
         this.fileFilter = filter;
         return this;
     }
 
-    public BaseFileBrowserWidget setDirectoryFilter(FileFilter directoryFilter)
+    public BaseFileBrowserWidget setDirectoryFilter(Predicate<Path> directoryFilter)
     {
         this.directoryFilter = directoryFilter;
         return this;
@@ -243,9 +244,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     {
         this.filteredDataList.clear();
 
-        File dir = this.currentDirectory;
+        Path dir = this.currentDirectory;
 
-        if (dir.isDirectory() && dir.canRead())
+        if (Files.isDirectory(dir) && Files.isReadable(dir))
         {
             if (this.hasFilter())
             {
@@ -258,7 +259,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
     }
 
-    protected void addNonFilteredContents(File dir)
+    protected void addNonFilteredContents(Path dir)
     {
         List<DirectoryEntry> list = new ArrayList<>();
 
@@ -273,7 +274,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.filteredDataList.addAll(list);
     }
 
-    protected void addFilteredContents(File dir)
+    protected void addFilteredContents(Path dir)
     {
         String filterText = this.getSearchBarWidget().getFilter().toLowerCase();
         List<String> searchTerms = Arrays.asList(filterText.split("\\|"));
@@ -282,7 +283,10 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.filteredDataList.addAll(list);
     }
 
-    protected void addFilteredContents(File dir, List<String> searchTerms, List<DirectoryEntry> listOut, @Nullable String prefix)
+    protected void addFilteredContents(Path dir,
+                                       List<String> searchTerms,
+                                       List<DirectoryEntry> listOut,
+                                       @Nullable String prefix)
     {
         List<DirectoryEntry> list = new ArrayList<>();
         this.addMatchingEntriesToList(dir, list, this.getDirectoryFilter(), searchTerms, prefix);
@@ -290,17 +294,17 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         listOut.addAll(list);
         list.clear();
 
-        for (File subDir : this.getContents(dir, FileUtils.DIRECTORY_FILTER))
+        for (Path subDir : this.getContents(dir, FileUtils.DIRECTORY_FILTER))
         {
             String pre;
 
             if (prefix != null)
             {
-                pre = prefix + subDir.getName() + "/";
+                pre = prefix + subDir.getFileName().toString() + "/";
             }
             else
             {
-                pre = subDir.getName() + "/";
+                pre = subDir.getFileName().toString() + "/";
             }
 
             this.addFilteredContents(subDir, searchTerms, list, pre);
@@ -314,12 +318,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         listOut.addAll(list);
     }
 
-    protected void addMatchingEntriesToList(final File dir, List<DirectoryEntry> outputList, final FileFilter filter,
+    protected void addMatchingEntriesToList(final Path dir, List<DirectoryEntry> outputList, final Predicate<Path> filter,
                                             List<String> searchTerms, @Nullable String displayNamePrefix)
     {
-        for (File file : this.getContents(dir, filter))
+        for (Path file : this.getContents(dir, filter))
         {
-            String fileName = file.getName();
+            String fileName = file.getFileName().toString();
             String entryString = FileNameUtils.getFileNameWithoutExtension(fileName.toLowerCase(Locale.ROOT));
 
             if (searchTerms.isEmpty() || this.fileNameMatchesFilter(entryString, searchTerms))
@@ -343,34 +347,34 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         return false;
     }
 
-    protected List<File> getContents(final File dir, FileFilter filter)
+    protected List<Path> getContents(final Path dir, Predicate<Path> filter)
     {
-        final FileFilter finalFilter = this.getFileFilterObeyingHiddenFiles(filter);
-        Pair<File, FileFilter> cacheKey = Pair.of(dir, finalFilter); // FIXME this won't work now...
-        return this.directoryContentsCache.computeIfAbsent(cacheKey, (k) -> Arrays.asList(dir.listFiles(finalFilter)));
+        final Predicate<Path> finalFilter = this.getFileFilterObeyingHiddenFiles(filter);
+        Pair<Path, Predicate<Path>> cacheKey = Pair.of(dir, finalFilter); // FIXME this won't work now...
+        return this.directoryContentsCache.computeIfAbsent(cacheKey, (k) -> FileUtils.getDirectoryContents(dir, finalFilter, false));
     }
 
-    protected FileFilter getFileFilterObeyingHiddenFiles(FileFilter original)
+    protected Predicate<Path> getFileFilterObeyingHiddenFiles(Predicate<Path> original)
     {
         if (this.showHiddenFiles == false)
         {
-            return f -> f.getName().startsWith(".") == false && original.accept(f);
+            return f -> f.getFileName().toString().startsWith(".") == false && original.test(f);
         }
 
         return original;
     }
 
-    protected File getRootDirectory()
+    protected Path getRootDirectory()
     {
         return this.rootDirectory;
     }
 
-    protected FileFilter getDirectoryFilter()
+    protected Predicate<Path> getDirectoryFilter()
     {
         return this.directoryFilter;
     }
 
-    protected FileFilter getFileFilter()
+    protected Predicate<Path> getFileFilter()
     {
         return this.fileFilter;
     }
@@ -392,7 +396,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         return this.currentDirectory.equals(this.getRootDirectory());
     }
 
-    protected void storeKeyboardNavigationPosition(File dir)
+    protected void storeKeyboardNavigationPosition(Path dir)
     {
         int index = this.getKeyboardNavigationIndex();
 
@@ -402,7 +406,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
     }
 
-    protected void restoreKeyboardNavigationPosition(File dir)
+    protected void restoreKeyboardNavigationPosition(Path dir)
     {
         if (this.shouldStoreKeyboardNavigationPosition &&
             this.keyboardNavigationPositions.containsKey(dir))
@@ -416,7 +420,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
     }
 
-    protected void storeCurrentScrollPosition(File dir)
+    protected void storeCurrentScrollPosition(Path dir)
     {
         if (this.rememberScrollPosition)
         {
@@ -424,7 +428,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
     }
 
-    protected void restoreScrollBarPosition(File dir)
+    protected void restoreScrollBarPosition(Path dir)
     {
         if (this.rememberScrollPosition)
         {
@@ -567,19 +571,19 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     {
         this.storeSelectionAsOperatedOnFiles();
 
-        List<File> files = new ArrayList<>(this.operatedOnFiles);
-        files.sort(Comparator.comparing(File::getName));
+        List<Path> files = new ArrayList<>(this.operatedOnFiles);
+        files.sort(Comparator.comparing(Path::getFileName));
 
-        DataIteratingTask<File> task = new DataIteratingTask<>(files, this::renameFile, this::endFileOperation);
+        DataIteratingTask<Path> task = new DataIteratingTask<>(files, this::renameFile, this::endFileOperation);
         task.advance();
     }
 
-    protected void renameFile(File file, DataIteratingTask<File> task)
+    protected void renameFile(Path file, DataIteratingTask<Path> task)
     {
-        String originalFileName = file.getName();
+        String originalFileName = file.getFileName().toString();
         String name = FileNameUtils.getFileNameWithoutExtension(originalFileName);
 
-        boolean isDir = file.isDirectory();
+        boolean isDir = Files.isDirectory(file);
         String titleKey = isDir ? "malilib.title.screen.rename_directory" :
                                   "malilib.title.screen.rename_file";
         String infoKey = isDir ? "malilib.label.file_browser.rename.info.directory" :
@@ -594,9 +598,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         BaseScreen.openPopupScreen(screen);
     }
 
-    protected boolean renameFile(File file, String newName)
+    protected boolean renameFile(Path file, String newName)
     {
-        String originalFileName = file.getName();
+        String originalFileName = file.getFileName().toString();
 
         // Same name, NO-OP
         if (newName.equals(FileNameUtils.getFileNameWithoutExtension(originalFileName)))
@@ -604,7 +608,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             return true;
         }
 
-        File dir = file.getParentFile();
+        Path dir = file.getParent();
         String extension = FileNameUtils.getFileNameExtension(originalFileName);
 
         if (extension.length() > 0)
@@ -612,7 +616,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             extension = "." + extension;
         }
 
-        return FileUtils.renameFile(file, new File(dir, newName + extension), MessageDispatcher.error()::send);
+        return FileUtils.move(file, dir.resolve(newName + extension), false, MessageDispatcher.error()::send);
     }
 
     protected void endFileOperation(List<String> messages)
@@ -650,13 +654,13 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    public File getCurrentDirectory()
+    public Path getCurrentDirectory()
     {
         return this.currentDirectory;
     }
 
     @Override
-    public void switchToDirectory(File dir)
+    public void switchToDirectory(Path dir)
     {
         boolean hadSelection = this.getLastSelectedEntry() != null;
 
@@ -664,7 +668,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.storeCurrentScrollPosition(this.currentDirectory);
         this.clearSelection();
 
-        this.currentDirectory = FileUtils.getCanonicalFileIfPossible(dir);
+        this.currentDirectory = dir.toAbsolutePath();
 
         if (this.cache != null)
         {
@@ -695,10 +699,10 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     @Override
     public void switchToParentDirectory()
     {
-        File parent = this.currentDirectory.getParentFile();
+        Path parent = this.currentDirectory.getParent();
 
         if (this.currentDirectoryIsRoot() == false && parent != null &&
-            this.currentDirectory.getAbsolutePath().contains(this.getRootDirectory().getAbsolutePath()))
+            this.currentDirectory.toAbsolutePath().startsWith(this.getRootDirectory().toAbsolutePath()))
         {
             this.switchToDirectory(parent);
         }
@@ -747,7 +751,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
             if (entry != null && entry.getType() == DirectoryEntryType.DIRECTORY)
             {
-                this.switchToDirectory(new File(entry.getDirectory(), entry.getName()));
+                this.switchToDirectory(entry.getDirectory().resolve(entry.getName()));
                 return true;
             }
         }
@@ -766,11 +770,11 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public static class DirectoryEntry implements Comparable<DirectoryEntry>
     {
         protected final DirectoryEntryType type;
-        protected final File dir;
+        protected final Path dir;
         protected final String name;
         @Nullable protected final String displayNamePrefix;
 
-        public DirectoryEntry(DirectoryEntryType type, File dir, String name, @Nullable String displayNamePrefix)
+        public DirectoryEntry(DirectoryEntryType type, Path dir, String name, @Nullable String displayNamePrefix)
         {
             this.type = type;
             this.dir = dir;
@@ -783,7 +787,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             return this.type;
         }
 
-        public File getDirectory()
+        public Path getDirectory()
         {
             return this.dir;
         }
@@ -804,9 +808,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             return this.displayNamePrefix != null ? this.displayNamePrefix + this.name : this.name;
         }
 
-        public File getFullPath()
+        public Path getFullPath()
         {
-            return new File(this.dir, this.name);
+            return this.dir.resolve(this.name).toAbsolutePath();
         }
 
         @Override
@@ -822,18 +826,18 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         DIRECTORY,
         FILE;
 
-        public static DirectoryEntryType fromFile(File file)
+        public static DirectoryEntryType fromFile(Path file)
         {
-            if (file.exists() == false)
+            if (Files.exists(file) == false)
             {
                 return INVALID;
             }
 
-            if (file.isDirectory())
+            if (Files.isDirectory(file))
             {
                 return DIRECTORY;
             }
-            else if (file.isFile())
+            else if (Files.isRegularFile(file))
             {
                 return FILE;
             }

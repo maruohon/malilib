@@ -87,7 +87,7 @@ public class DataJsonSerializers
     {
         JsonObject obj = new JsonObject();
         obj.add("enabled", new JsonPrimitive(value.booleanValue));
-        obj.add("directory", new JsonPrimitive(value.fileValue.getAbsolutePath()));
+        obj.add("directory", new JsonPrimitive(value.fileValue.toAbsolutePath().toString()));
         return obj;
     }
 

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.util.game.wrap;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
@@ -113,9 +113,9 @@ public class GameUtils
         getClient().profiler.endSection();
     }
 
-    public static void openFile(File file)
+    public static void openFile(Path file)
     {
-        OpenGlHelper.openFile(file);
+        OpenGlHelper.openFile(file.toFile());
     }
 
     public static class Options

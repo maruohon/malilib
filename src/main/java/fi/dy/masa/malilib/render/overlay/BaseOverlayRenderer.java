@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.render.overlay;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -79,7 +79,7 @@ public abstract class BaseOverlayRenderer
     public abstract ModInfo getModInfo();
 
     @Nullable
-    public abstract File getSaveFile(boolean isDimensionChangeOnly);
+    public abstract Path getSaveFile(boolean isDimensionChangeOnly);
 
     /**
      * Should this renderer draw anything at the moment, ie. is it enabled for example

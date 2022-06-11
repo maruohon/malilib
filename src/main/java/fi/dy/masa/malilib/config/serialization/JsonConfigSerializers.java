@@ -76,7 +76,7 @@ public class JsonConfigSerializers
 
     public static JsonElement serializeFileConfig(FileConfig config)
     {
-        return new JsonPrimitive(config.getValueForSerialization().getAbsolutePath());
+        return new JsonPrimitive(config.getValueForSerialization().toAbsolutePath().toString());
     }
 
     public static JsonElement serializeHotkeyConfig(HotkeyConfig config)

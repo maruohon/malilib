@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import fi.dy.masa.malilib.config.option.BaseGenericConfig;
@@ -61,9 +62,9 @@ public abstract class BaseFileConfigWidget<T, CFG extends BaseGenericConfig<T>> 
         this.openBrowserButton.getHoverInfoFactory().updateList();
     }
 
-    protected abstract File getFileFromConfig();
+    protected abstract Path getFileFromConfig();
 
-    protected abstract void setFileToConfig(File file);
+    protected abstract void setFileToConfig(Path file);
 
     protected String getButtonLabelKey()
     {
@@ -75,40 +76,40 @@ public abstract class BaseFileConfigWidget<T, CFG extends BaseGenericConfig<T>> 
         return "malilib.hover.button.config.selected_directory";
     }
 
-    protected BaseScreen createScreen(File currentDir, File rootDir)
+    protected BaseScreen createScreen(Path currentDir, Path rootDir)
     {
         return new DirectorySelectorScreen(currentDir, rootDir, this::onPathSelected);
     }
 
     protected void openScreen()
     {
-        File rootDir = FileUtils.getRootDirectory();
-        File dir = this.getDirectoryFromConfig(rootDir);
+        Path rootDir = FileUtils.getRootDirectory();
+        Path dir = this.getDirectoryFromConfig(rootDir);
 
         BaseScreen browserScreen = this.createScreen(dir, rootDir);
         browserScreen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(browserScreen);
     }
 
-    protected boolean onPathSelected(File file)
+    protected boolean onPathSelected(Path file)
     {
         this.setFileToConfig(file);
         this.reAddSubWidgets();
         return true;
     }
 
-    protected File getDirectoryFromConfig(File rootDir)
+    protected Path getDirectoryFromConfig(Path rootDir)
     {
-        File file = FileUtils.getCanonicalFileIfPossible(this.getFileFromConfig().getAbsoluteFile());
+        Path file = this.getFileFromConfig().toAbsolutePath();
 
         if (file == null)
         {
             return rootDir;
         }
 
-        if (file.isDirectory() == false)
+        if (Files.isDirectory(file) == false)
         {
-            return file.getParentFile();
+            return file.getParent();
         }
 
         return file;
@@ -116,8 +117,8 @@ public abstract class BaseFileConfigWidget<T, CFG extends BaseGenericConfig<T>> 
 
     protected List<String> getFileButtonHoverText()
     {
-        File file = FileUtils.getCanonicalFileIfPossible(this.getFileFromConfig().getAbsoluteFile());
-        String text = StringUtils.translate(this.getButtonHoverTextKey(), file.getAbsolutePath());
+        Path file = this.getFileFromConfig().toAbsolutePath();
+        String text = StringUtils.translate(this.getButtonHoverTextKey(), file.toString());
         return Collections.singletonList(text);
     }
 }

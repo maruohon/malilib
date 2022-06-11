@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.overlay.message;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -119,9 +118,9 @@ public class MessageRedirectManager
 
     public boolean saveToFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("message_redirects.json").toFile();
-        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("message_redirects.json");
+        Path backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID);
 
         if (BackupUtils.createRegularBackup(saveFile, backupDir) &&
             JsonUtils.writeJsonToFile(this.toJson(), saveFile))
@@ -135,8 +134,8 @@ public class MessageRedirectManager
 
     public void loadFromFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("message_redirects.json").toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("message_redirects.json");
         JsonUtils.loadFromFile(saveFile, this::fromJson);
     }
 }

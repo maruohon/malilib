@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.gui;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.widget.RadioButtonWidget;
@@ -165,7 +167,7 @@ public class SettingsExportImportScreen extends TextInputScreen
         MessageDispatcher.success(this.messageDisplayTime).translate(this.pasteFromClipboardMessage);
     }
 
-    protected boolean setStringFromFile(File file)
+    protected boolean setStringFromFile(Path file)
     {
         String str = FileUtils.readFileAsString(file, 1048576);
 
@@ -185,11 +187,11 @@ public class SettingsExportImportScreen extends TextInputScreen
         return false;
     }
 
-    protected boolean writeStringToFile(File file)
+    protected boolean writeStringToFile(Path file)
     {
         boolean override = BaseScreen.isShiftDown();
 
-        if (file.exists() == false || override)
+        if (Files.exists(file) == false || override)
         {
             if (FileUtils.writeStringToFile(this.textField.getText(), file, override))
             {
@@ -197,7 +199,7 @@ public class SettingsExportImportScreen extends TextInputScreen
                 return true;
             }
 
-            MessageDispatcher.error("malilib.message.error.failed_to_write_string_to_file", file.getAbsolutePath());
+            MessageDispatcher.error("malilib.message.error.failed_to_write_string_to_file", file.toAbsolutePath());
 
             return false;
         }
@@ -221,10 +223,10 @@ public class SettingsExportImportScreen extends TextInputScreen
         BaseScreen.openScreen(screen);
     }
 
-    protected FileSelectorScreen createFileSelectorScreen(ToBooleanFunction<File> consumer)
+    protected FileSelectorScreen createFileSelectorScreen(ToBooleanFunction<Path> consumer)
     {
-        File currentDir = FileUtils.getCanonicalFileIfPossible(new File("."));
-        File rootDir = FileUtils.getRootDirectory();
+        Path currentDir = Paths.get(".");
+        Path rootDir = FileUtils.getRootDirectory();
         FileSelectorScreen screen = new FileSelectorScreen(currentDir, rootDir, consumer);
         screen.setFileFilter(FileUtils.JSON_FILEFILTER);
         screen.setParent(this);

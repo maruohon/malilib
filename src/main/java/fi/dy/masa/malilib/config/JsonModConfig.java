@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
@@ -56,7 +56,7 @@ public class JsonModConfig extends BaseModConfig
     }
 
     @Override
-    public void loadFromFile(File configFile)
+    public void loadFromFile(Path configFile)
     {
         JsonConfigUtils.loadFromFile(configFile, this.getConfigOptionCategories(), this::updateConfigDataBeforeLoading);
 
@@ -68,9 +68,9 @@ public class JsonModConfig extends BaseModConfig
     }
 
     @Override
-    public boolean saveToFile(File configDirectory, File configFile)
+    public boolean saveToFile(Path configDirectory, Path configFile)
     {
-        File backupDirectory = this.getConfigBackupDirectory(configDirectory);
+        Path backupDirectory = this.getConfigBackupDirectory(configDirectory);
         int currentConfigVersion = this.getConfigVersion();
 
         if (this.savedConfigVersion != currentConfigVersion)

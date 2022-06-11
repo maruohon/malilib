@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import java.io.File;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.Date;
@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.StyledTextUtils;
 import fi.dy.masa.malilib.util.FileNameUtils;
+import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -31,11 +32,11 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 
     public static final DataColumn<DirectoryEntry> SIZE_COLUMN =
             new DataColumn<>("malilib.label.file_browser.column.file_size",
-                             Comparator.comparingLong((e) -> e.getFullPath().length()));
+                             Comparator.comparingLong((e) -> FileUtils.size(e.getFullPath())));
 
     public static final DataColumn<DirectoryEntry> TIME_COLUMN =
             new DataColumn<>("malilib.label.file_browser.column.last_modified",
-                             Comparator.comparingLong((e) -> e.getFullPath().lastModified()));
+                             Comparator.comparingLong((e) -> FileUtils.getMTime(e.getFullPath())));
 
     protected static final DecimalFormat FILE_SIZE_FORMAT = new DecimalFormat("###,###,###.#");
 
@@ -76,7 +77,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 
         this.textOffset.setXOffset(textXOffset);
 
-        String mTimeStr = BaseFileBrowserWidget.DATE_FORMAT.format(new Date(entry.getFullPath().lastModified()));
+        String mTimeStr = BaseFileBrowserWidget.DATE_FORMAT.format(new Date(FileUtils.getMTime(entry.getFullPath())));
         this.fileSizeText = StyledTextLine.of(this.getFileSizeStringFor(entry));
         this.modificationTimeText = StyledTextLine.of(mTimeStr);
     }
@@ -90,7 +91,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 
             if (this.data.getType() == DirectoryEntryType.DIRECTORY)
             {
-                this.fileBrowserWidget.switchToDirectory(new File(this.data.getDirectory(), this.data.getName()));
+                this.fileBrowserWidget.switchToDirectory(this.data.getDirectory().resolve(this.data.getName()));
                 return true;
             }
         }
@@ -160,7 +161,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 
     protected String getFileSizeStringFor(DirectoryEntry entry)
     {
-        long fileSize = entry.getFullPath().length();
+        long fileSize = FileUtils.size(entry.getFullPath());
         return FILE_SIZE_FORMAT.format((double) fileSize / 1024.0) + " KiB";
     }
 
@@ -219,7 +220,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
                 {
                     DirectoryEntryWidget widget = (DirectoryEntryWidget) w;
 
-                    widget.showSize = this.showFileSize && widget.data.getFullPath().isFile();
+                    widget.showSize = this.showFileSize && Files.isRegularFile(widget.data.getFullPath());
                     widget.showMTime = this.showFileMTime;
                     widget.mTimeColumnEndX = timeColumnRight;
                     widget.sizeColumnEndX = sizeColumnRight;

@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.gui.widget.util;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public interface DirectoryNavigator
 {
-    File getCurrentDirectory();
+    Path getCurrentDirectory();
 
-    void switchToDirectory(File dir);
+    void switchToDirectory(Path dir);
 
     void switchToParentDirectory();
 

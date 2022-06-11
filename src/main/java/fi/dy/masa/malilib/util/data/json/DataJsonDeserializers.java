@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util.data.json;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -171,7 +172,7 @@ public class DataJsonDeserializers
                     JsonUtils.hasString(obj, "directory"))
                 {
                     boolean booleanValue = JsonUtils.getBoolean(obj, "enabled");
-                    File fileValue = new File(JsonUtils.getString(obj, "directory"));
+                    Path fileValue = Paths.get(JsonUtils.getString(obj, "directory"));
 
                     return Optional.of(new BooleanAndFileConfig.BooleanAndFile(booleanValue, fileValue));
                 }

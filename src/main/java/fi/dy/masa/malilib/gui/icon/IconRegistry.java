@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.icon;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -166,9 +165,9 @@ public class IconRegistry
 
     public boolean saveToFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_icons.json").toFile();
-        File backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID).toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_icons.json");
+        Path backupDir = configDir.resolve("backups").resolve(MaLiLibReference.MOD_ID);
 
         if (BackupUtils.createRegularBackup(saveFile, backupDir) &&
             JsonUtils.writeJsonToFile(this.toJson(), saveFile))
@@ -182,8 +181,8 @@ public class IconRegistry
 
     public void loadFromFile()
     {
-        Path configDir = ConfigUtils.getActiveConfigDirectoryPath();
-        File saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_icons.json").toFile();
+        Path configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveFile = configDir.resolve(MaLiLibReference.MOD_ID).resolve("custom_icons.json");
         JsonUtils.loadFromFile(saveFile, this::loadDataFromJson);
     }
 

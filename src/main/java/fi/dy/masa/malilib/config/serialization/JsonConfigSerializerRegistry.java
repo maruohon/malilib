@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config.serialization;
 
-import java.io.File;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
@@ -101,9 +101,9 @@ public class JsonConfigSerializerRegistry
     {
         this.registerSerializers(BooleanConfig.class,   JsonConfigSerializers::serializeBooleanConfig,  (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsBoolean, d, n));
         this.registerSerializers(ColorConfig.class,     JsonConfigSerializers::serializeColorConfig,    (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadColorValueFromString, d::getAsString, d, n));
-        this.registerSerializers(DirectoryConfig.class, JsonConfigSerializers::serializeFileConfig,     (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, () -> new File(d.getAsString()), d, n));
+        this.registerSerializers(DirectoryConfig.class, JsonConfigSerializers::serializeFileConfig,     (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, () -> Paths.get(d.getAsString()), d, n));
         this.registerSerializers(DoubleConfig.class,    JsonConfigSerializers::serializeDoubleConfig,   (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsDouble, d, n));
-        this.registerSerializers(FileConfig.class,      JsonConfigSerializers::serializeFileConfig,     (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, () -> new File(d.getAsString()), d, n));
+        this.registerSerializers(FileConfig.class,      JsonConfigSerializers::serializeFileConfig,     (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, () -> Paths.get(d.getAsString()), d, n));
         this.registerSerializers(IntegerConfig.class,   JsonConfigSerializers::serializeIntegerConfig,  (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsInt, d, n));
         this.registerSerializers(StringConfig.class,    JsonConfigSerializers::serializeStringConfig,   (c, d, n) -> JsonConfigSerializers.loadPrimitiveConfig(c::loadValue, d::getAsString, d, n));
 

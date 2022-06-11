@@ -1,9 +1,10 @@
 package fi.dy.masa.malilib.util.datadump;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.FileUtils;
 
 public class DataDump
 {
@@ -304,28 +306,28 @@ public class DataDump
     }
 
     @Nullable
-    public static File dumpDataToFile(File outputDir, String fileNameBase, List<String> lines, Format format)
+    public static Path dumpDataToFile(Path outputDir, String fileNameBase, List<String> lines, Format format)
     {
         String extension = format == Format.CSV ? ".csv" : ".txt";
         return dumpDataToFile(outputDir, fileNameBase, extension, lines);
     }
 
     @Nullable
-    public static File dumpDataToFile(File outputDir, String fileNameBase, List<String> lines)
+    public static Path dumpDataToFile(Path outputDir, String fileNameBase, List<String> lines)
     {
         return dumpDataToFile(outputDir, fileNameBase, ".txt", lines);
     }
 
     @Nullable
-    public static File dumpDataToFile(File outputDir, String fileNameBase, String fileNameExtension, List<String> lines)
+    public static Path dumpDataToFile(Path outputDir, String fileNameBase, String fileNameExtension, List<String> lines)
     {
-        if (outputDir.exists() == false && outputDir.mkdirs() == false)
+        if (FileUtils.createDirectoriesIfMissing(outputDir) == false)
         {
             MaLiLib.LOGGER.error("dumpDataToFile(): Failed to create the dump output directory '{}'", outputDir);
             return null;
         }
 
-        File outFile = getAvailableTimestampedFileName(outputDir, fileNameBase, fileNameExtension);
+        Path outFile = getAvailableTimestampedFileName(outputDir, fileNameBase, fileNameExtension);
 
         if (outFile == null)
         {
@@ -334,20 +336,7 @@ public class DataDump
 
         try
         {
-            if (outFile.createNewFile() == false)
-            {
-                MaLiLib.LOGGER.error("dumpDataToFile(): Failed to create data dump file '{}'", outFile.getName());
-            }
-        }
-        catch (IOException e)
-        {
-            MaLiLib.LOGGER.error("dumpDataToFile(): Failed to create data dump file '{}'", outFile.getName(), e);
-            return null;
-        }
-
-        try
-        {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
+            BufferedWriter writer = Files.newBufferedWriter(outFile, StandardCharsets.UTF_8);
 
             for (String line : lines)
             {
@@ -359,28 +348,29 @@ public class DataDump
         }
         catch (IOException e)
         {
-            MaLiLib.LOGGER.error("dumpDataToFile(): Exception while writing data dump to file '{}'", outFile.getName(), e);
+            MaLiLib.LOGGER.error("dumpDataToFile(): Exception while writing data dump to file '{}'",
+                                 outFile.getFileName(), e);
         }
 
         return outFile;
     }
 
     @Nullable
-    public static File getAvailableTimestampedFileName(File outputDir, String fileNameBase, String fileNameExtension)
+    public static Path getAvailableTimestampedFileName(Path outputDir, String fileNameBase, String fileNameExtension)
     {
         String fileNameBaseWithDate = fileNameBase + "_" + new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date(System.currentTimeMillis()));
         String fileName = fileNameBaseWithDate + fileNameExtension;
-        File outFile = new File(outputDir, fileName);
+        Path outFile = outputDir.resolve(fileName);
         int postFix = 1;
 
-        while (outFile.exists() && postFix < 100)
+        while (Files.exists(outFile) && postFix < 100)
         {
             fileName = fileNameBaseWithDate + "_" + postFix + fileNameExtension;
-            outFile = new File(outputDir, fileName);
+            outFile = outputDir.resolve(fileName);
             postFix++;
         }
 
-        if (outFile.exists())
+        if (Files.exists(outFile))
         {
             MaLiLib.LOGGER.error("dumpDataToFile(): Failed to create data dump file '{}', one already exists", fileName);
             return null;

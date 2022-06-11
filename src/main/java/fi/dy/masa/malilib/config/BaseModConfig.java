@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
@@ -52,9 +52,9 @@ public abstract class BaseModConfig implements ModConfig
         return this.currentConfigVersion;
     }
 
-    protected File getConfigBackupDirectory(File configDirectory)
+    protected Path getConfigBackupDirectory(Path configDirectory)
     {
-        return new File(configDirectory, this.backupDirectoryName);
+        return configDirectory.resolve(this.backupDirectoryName);
     }
 
     /**

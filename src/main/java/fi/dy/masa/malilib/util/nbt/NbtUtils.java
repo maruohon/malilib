@@ -3,10 +3,11 @@ package fi.dy.masa.malilib.util.nbt;
 import java.io.BufferedOutputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Function;
@@ -228,20 +229,20 @@ public class NbtUtils
     }
 
     @Nullable
-    public static NBTTagCompound readNbtFromFile(File file)
+    public static NBTTagCompound readNbtFromFile(Path file)
     {
-        if (file.exists() == false || file.canRead() == false)
+        if (Files.isReadable(file) == false)
         {
             return null;
         }
 
-        try (FileInputStream is = new FileInputStream(file))
+        try (InputStream is = Files.newInputStream(file))
         {
             return CompressedStreamTools.readCompressed(is);
         }
         catch (Exception e)
         {
-            MaLiLib.LOGGER.warn("Failed to read NBT data from file '{}'", file.getAbsolutePath());
+            MaLiLib.LOGGER.warn("Failed to read NBT data from file '{}'", file.toAbsolutePath());
         }
 
         return null;

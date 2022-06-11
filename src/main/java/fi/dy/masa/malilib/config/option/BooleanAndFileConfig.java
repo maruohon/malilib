@@ -1,18 +1,18 @@
 package fi.dy.masa.malilib.config.option;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.StringJoiner;
 import fi.dy.masa.malilib.config.option.BooleanAndFileConfig.BooleanAndFile;
 
 public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> implements BooleanContainingConfig<BooleanAndFile>
 {
-    public BooleanAndFileConfig(String name, boolean defaultBooleanValue, File defaultDirectory)
+    public BooleanAndFileConfig(String name, boolean defaultBooleanValue, Path defaultDirectory)
     {
         super(name, new BooleanAndFile(defaultBooleanValue, defaultDirectory));
     }
 
-    public BooleanAndFileConfig(String name, boolean defaultBooleanValue, File defaultDirectory,
+    public BooleanAndFileConfig(String name, boolean defaultBooleanValue, Path defaultDirectory,
                                 String commentTranslationKey, Object... commentArgs)
     {
         super(name, new BooleanAndFile(defaultBooleanValue, defaultDirectory), commentTranslationKey, commentArgs);
@@ -47,9 +47,9 @@ public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> impl
     public static class BooleanAndFile
     {
         public final boolean booleanValue;
-        public final File fileValue;
+        public final Path fileValue;
 
-        public BooleanAndFile(boolean booleanValue, File fileValue)
+        public BooleanAndFile(boolean booleanValue, Path fileValue)
         {
             this.booleanValue = booleanValue;
             this.fileValue = fileValue;
