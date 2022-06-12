@@ -810,7 +810,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
         public Path getFullPath()
         {
-            return this.dir.resolve(this.name).toAbsolutePath();
+            return this.dir.resolve(this.name);
         }
 
         @Override

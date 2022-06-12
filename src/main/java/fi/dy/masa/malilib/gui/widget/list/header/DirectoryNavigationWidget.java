@@ -179,7 +179,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
     protected String getDisplayNameForDirectory(Path dir)
     {
-        String name;
+        String name = null;
 
         if (this.rootDirDisplayNameSupplier != null && this.rootDir.equals(dir))
         {
@@ -187,7 +187,12 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         }
         else
         {
-            name = dir.getFileName().toString();
+            Path fileName = dir.getFileName();
+
+            if (fileName != null)
+            {
+                name = fileName.toString();
+            }
         }
 
         // The partition root on Windows returns an empty string... ('C:\' -> '')

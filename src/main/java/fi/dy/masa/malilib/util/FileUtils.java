@@ -283,13 +283,13 @@ public class FileUtils
 
     public static boolean isRegularDirectory(Path file)
     {
-        String name = file.getFileName().toString();
+        String name = file.getFileName() + ""; // cheap & lazy NPE protection...
         return Files.isDirectory(file) && name.equals(".") == false && name.equals("..") == false;
     }
 
     public static boolean isCurrentOrParentDirectory(Path file)
     {
-        String name = file.getFileName().toString();
+        String name = file.getFileName() + ""; // cheap & lazy NPE protection...
         return Files.isDirectory(file) && (name.equals(".") || name.equals(".."));
     }
 

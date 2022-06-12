@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
@@ -54,15 +55,18 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
         this.outputDropdown.setY(y);
     }
 
-    protected void replaceRedirect(MessageOutput output)
+    protected void replaceRedirect(@Nullable MessageOutput output)
     {
-        this.scheduleTask(() -> {
-            String translationKey = this.data.getMessageTranslationKey();
-            MessageRedirect redirect = new MessageRedirect(translationKey, output);
-            Registry.MESSAGE_REDIRECT_MANAGER.removeRedirect(translationKey);
-            Registry.MESSAGE_REDIRECT_MANAGER.addRedirect(translationKey, redirect);
-            this.listWidget.refreshEntries();
-        });
+        if (output != null)
+        {
+            this.scheduleTask(() -> {
+                String translationKey = this.data.getMessageTranslationKey();
+                Registry.MESSAGE_REDIRECT_MANAGER.removeRedirect(translationKey);
+                MessageRedirect redirect = new MessageRedirect(translationKey, output);
+                Registry.MESSAGE_REDIRECT_MANAGER.addRedirect(translationKey, redirect);
+                this.listWidget.refreshEntries();
+            });
+        }
     }
 
     protected void removeRedirect()

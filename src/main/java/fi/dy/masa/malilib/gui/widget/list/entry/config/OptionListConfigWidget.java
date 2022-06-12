@@ -38,7 +38,11 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
                 .setTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 99);
         this.dropDownWidget.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
         this.dropDownWidget.setSelectionListener((v) -> {
-            this.config.setValue(v);
+            if (v != null)
+            {
+                this.config.setValue(v);
+            }
+
             this.dropDownWidget.updateHoverStrings();
             this.updateWidgetState();
         });
