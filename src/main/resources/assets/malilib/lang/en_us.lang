@@ -517,6 +517,7 @@ malilib.message.error.failed_to_move_file=Failed to move file\n  §e'%s'§r\nto\
 malilib.message.error.failed_to_move_file.destination_exists=Won't move file\n  §e'%s'§r\nto\n  §e'%s'§r,\nas the destination file already exists FOO
 malilib.message.error.failed_to_rename_file.exception=Failed to rename file\n  §e'%s'§r\nto\n  §e'%s'§r,\nexception: %s
 malilib.message.error.failed_to_rename_file.exists=Failed to rename the file\n  §e'%s'§r\nto\n  §e'%s'§r\nthe target file already exists
+malilib.message.error.failed_to_resolve_file=Failed to resolve the actual location of the file\n  §e'%s'§r\nfor saving data to it. Maybe a broken symlink, or a permission issue?
 malilib.message.error.failed_to_save_all_configs=At least some config options failed to save properly
 malilib.message.error.failed_to_write_string_to_file=Failed to write the string to file\n  §e'%s'§r
 malilib.message.error.file_already_exists_hold_shift_to_override=File already exists. Hold shift when clicking the save button to override the existing file.

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.util.data.json;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.Function;
@@ -648,42 +647,21 @@ public class JsonUtils
 
     public static boolean writeJsonToFile(JsonElement root, Path file)
     {
-        return writeJsonToFile(GSON, root, file);
+        return writeJsonToFile(root, file, GSON);
     }
 
-    public static boolean writeJsonToFile(Gson gson, JsonElement root, Path file)
+    public static boolean writeJsonToFile(final JsonElement root, final Path file, final Gson gson)
     {
-        Path dir = file.getParent();
-
-        if (FileUtils.createDirectoriesIfMissing(dir) == false)
-        {
-            MaLiLib.LOGGER.error("Failed to create directory '{}'", dir.getFileName());
-            return false;
-        }
-
-        Path fileTmp = dir.resolve(file.getFileName() + ".tmp");
-
-        if (Files.exists(fileTmp))
-        {
-            fileTmp = file.getParent().resolve(UUID.randomUUID() + ".tmp");
-        }
-
-        try
-        {
-            BufferedWriter writer = Files.newBufferedWriter(fileTmp, StandardCharsets.UTF_8);
-            writer.write(gson.toJson(root));
-            writer.close();
-
-            FileUtils.delete(file);
-
-            return FileUtils.move(fileTmp, file);
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to write JSON data to file '{}'", fileTmp.toAbsolutePath(), e);
-        }
-
-        return false;
+        return FileUtils.writeDataToFile(file, w -> {
+            try
+            {
+                w.write(gson.toJson(root));
+            }
+            catch (IOException e)
+            {
+                MaLiLib.LOGGER.warn("Failed to write JSON data to file '{}'", file.toAbsolutePath(), e);
+            }
+        });
     }
 
     public static void loadFromFile(Path dir, String fileName, Consumer<JsonElement> dataConsumer)

@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class FileUtils
@@ -217,6 +219,63 @@ public class FileUtils
             Path file = dir.resolve(fileName);
             return Files.exists(file) == false ||
                    (canOverwrite && Files.isRegularFile(file) && Files.isWritable(file));
+        }
+
+        return false;
+    }
+
+    public static boolean writeDataToFile(final Path file, Consumer<BufferedWriter> dataWriter)
+    {
+        Path realPath;
+
+        try
+        {
+            realPath = file.toRealPath();
+        }
+        catch (Exception e)
+        {
+            MessageDispatcher.error(8000).console().translate("malilib.message.error.failed_to_resolve_file",
+                                                              file.toAbsolutePath());
+            return false;
+        }
+
+        Path dir = realPath.getParent();
+
+        if (FileUtils.createDirectoriesIfMissing(dir) == false)
+        {
+            return false;
+        }
+
+        try
+        {
+            // Don't replace/override symbolic links, but just write to the pointed file directly
+            if (Files.isSymbolicLink(file))
+            {
+                BufferedWriter writer = Files.newBufferedWriter(realPath, StandardCharsets.UTF_8);
+                dataWriter.accept(writer);
+                writer.close();
+                return true;
+            }
+            // For non-symlinks, first write to a separate temporary file, and then rename it over the old file
+            else
+            {
+                Path fileTmp = dir.resolve(realPath.getFileName() + ".tmp");
+
+                if (Files.exists(fileTmp))
+                {
+                    fileTmp = realPath.getParent().resolve(UUID.randomUUID() + ".tmp");
+                }
+
+                BufferedWriter writer = Files.newBufferedWriter(fileTmp, StandardCharsets.UTF_8);
+                dataWriter.accept(writer);
+                writer.close();
+
+                return FileUtils.move(fileTmp, file);
+            }
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Failed to write to file '{}'", file.toAbsolutePath(), e);
         }
 
         return false;
