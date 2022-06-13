@@ -111,7 +111,7 @@ public class ShaderProgram
         try
         {
             final StringBuilder code = new StringBuilder();
-            final InputStream inputStream = this.mc.getResourceManager().getResource(resourceLocation).getInputStream();
+            final InputStream inputStream = this.mc.getResourceManager().getResource(resourceLocation).get().getInputStream();
             final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;

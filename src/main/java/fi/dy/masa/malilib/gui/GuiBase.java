@@ -8,7 +8,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -79,7 +78,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     protected GuiBase()
     {
-        super(new LiteralText(""));
+        super(Text.literal(""));
         this.openTime = System.nanoTime();
     }
 
@@ -108,7 +107,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     @Override
     public Text getTitle()
     {
-        return new LiteralText(this.getTitleString());
+        return Text.literal(this.getTitleString());
     }
 
     public void setTitle(String title)

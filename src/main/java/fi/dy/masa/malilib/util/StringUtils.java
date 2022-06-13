@@ -73,13 +73,13 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(net.minecraft.entity.Entity sender, String messageKey, File file)
     {
-        net.minecraft.text.Text name = (new net.minecraft.text.LiteralText(file.getName()))
+        net.minecraft.text.Text name = (net.minecraft.text.Text.literal(file.getName()))
             .formatted(net.minecraft.util.Formatting.UNDERLINE)
             .styled((style) -> {
                 return style.withClickEvent(new net.minecraft.text.ClickEvent(net.minecraft.text.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
             });
 
-        sender.sendSystemMessage(new net.minecraft.text.TranslatableText(messageKey, name), sender.getUuid());
+        sender.sendMessage(net.minecraft.text.Text.translatable(messageKey, name));
     }
 
     /**
