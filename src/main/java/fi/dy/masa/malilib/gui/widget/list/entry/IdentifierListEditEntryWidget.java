@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
-public class IdentifierListEditEntryWidget extends BaseStringListEditEntryWidget<ResourceLocation>
+public class IdentifierListEditEntryWidget extends BaseStringListEditEntryWidget<Identifier>
 {
-    public IdentifierListEditEntryWidget(ResourceLocation data,
+    public IdentifierListEditEntryWidget(Identifier data,
                                          DataListEntryWidgetData constructData,
-                                         ResourceLocation defaultValue)
+                                         Identifier defaultValue)
     {
-        super(data, constructData, defaultValue, ResourceLocation::toString, ResourceLocation::new);
-        this.newEntryFactory = () -> new ResourceLocation("minecraft:foo");
+        super(data, constructData, defaultValue, Identifier::toString, Identifier::new);
+        this.newEntryFactory = () -> new Identifier("minecraft:foo");
     }
 }

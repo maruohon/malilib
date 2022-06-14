@@ -9,7 +9,8 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
@@ -31,7 +32,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 import fi.dy.masa.malilib.util.position.Vec2i;
 
-public abstract class BaseScreen extends GuiScreen
+public abstract class BaseScreen extends Screen
 {
     protected final MinecraftClient mc = GameUtils.getClient();
     protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
@@ -40,7 +41,7 @@ public abstract class BaseScreen extends GuiScreen
     private String titleString = "";
     @Nullable protected EventListener screenCloseListener;
     @Nullable protected StyledTextLine titleText;
-    @Nullable private GuiScreen parent;
+    @Nullable private Screen parent;
     @Nullable protected InteractableWidget hoveredWidget;
     @Nullable protected ScreenContext context;
     protected GenericButton closeButton;
@@ -70,7 +71,7 @@ public abstract class BaseScreen extends GuiScreen
     public BaseScreen()
     {
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
-        this.useCustomScreenScaling = customScale != this.mc.gameSettings.guiScale && customScale > 0;
+        this.useCustomScreenScaling = customScale != this.getVanillaGuiScale() && customScale > 0;
         this.closeButton = GenericButton.create(DefaultIcons.CLOSE_BUTTON_9, this::closeScreenOrShowParent);
         this.closeButton.translateAndAddHoverString("malilib.hover.misc.close_screen");
         this.closeButton.setPlayClickSound(false);
@@ -109,9 +110,9 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Override
-    public boolean doesGuiPauseGame()
+    public boolean shouldPause()
     {
-        return this.getParent() != null && this.getParent().doesGuiPauseGame();
+        return this.getParent() != null && this.getParent().shouldPause();
     }
 
     protected void initScreen()
@@ -161,6 +162,11 @@ public abstract class BaseScreen extends GuiScreen
         return this.screenWidth == this.getTotalWidth() && this.screenHeight == this.getTotalHeight();
     }
 
+    protected int getVanillaGuiScale()
+    {
+        return this.mc.options.getGuiScale().getValue();
+    }
+
     protected void updateCustomScreenScale()
     {
         int currentValue = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
@@ -168,7 +174,7 @@ public abstract class BaseScreen extends GuiScreen
         if (currentValue != this.customScreenScale)
         {
             boolean oldUseCustomScale = this.useCustomScreenScaling;
-            this.useCustomScreenScaling = currentValue > 0 && currentValue != this.mc.gameSettings.guiScale;
+            this.useCustomScreenScaling = currentValue > 0 && currentValue != this.getVanillaGuiScale();
             this.customScreenScale = currentValue;
 
             if ((oldUseCustomScale || this.useCustomScreenScaling) && currentValue > 0)
@@ -231,8 +237,8 @@ public abstract class BaseScreen extends GuiScreen
     {
         int x;
         int y;
-        GuiScreen parent = this.getParent();
-        GuiScreen current = GuiUtils.getCurrentScreen();
+        Screen parent = this.getParent();
+        Screen current = GuiUtils.getCurrentScreen();
 
         if (parent instanceof BaseScreen)
         {
@@ -326,7 +332,7 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Nullable
-    public GuiScreen getParent()
+    public Screen getParent()
     {
         return this.parent;
     }
@@ -355,7 +361,7 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    public BaseScreen setParent(@Nullable GuiScreen parent)
+    public BaseScreen setParent(@Nullable Screen parent)
     {
         // Don't allow nesting the GUI with itself...
         if (parent != this)
@@ -743,7 +749,7 @@ public abstract class BaseScreen extends GuiScreen
         return textFields;
     }
 
-    public void bindTexture(ResourceLocation texture)
+    public void bindTexture(Identifier texture)
     {
         this.mc.getTextureManager().bindTexture(texture);
     }
@@ -760,7 +766,7 @@ public abstract class BaseScreen extends GuiScreen
         return this;
     }
 
-    public BaseScreen setPopupGuiZLevelBasedOn(@Nullable GuiScreen gui)
+    public BaseScreen setPopupGuiZLevelBasedOn(@Nullable Screen gui)
     {
         if (gui instanceof BaseScreen)
         {
@@ -907,20 +913,20 @@ public abstract class BaseScreen extends GuiScreen
         return StringUtils.getStringWidth(text);
     }
 
-    public static boolean openScreen(@Nullable GuiScreen screen)
+    public static boolean openScreen(@Nullable Screen screen)
     {
-        GameUtils.getClient().displayGuiScreen(screen);
+        GameUtils.getClient().setScreen(screen);
         return true;
     }
 
     public static boolean openScreenWithParent(@Nullable BaseScreen screen)
     {
         screen.setParent(GuiUtils.getCurrentScreen());
-        GameUtils.getClient().displayGuiScreen(screen);
+        GameUtils.getClient().setScreen(screen);
         return true;
     }
 
-    public static ActionResult openScreenAction(@Nullable GuiScreen screen)
+    public static ActionResult openScreenAction(@Nullable Screen screen)
     {
         openScreen(screen);
         return ActionResult.SUCCESS;
@@ -951,7 +957,7 @@ public abstract class BaseScreen extends GuiScreen
 
     public static void applyCustomScreenScaleChange()
     {
-        GuiScreen screen = GuiUtils.getCurrentScreen();
+        Screen screen = GuiUtils.getCurrentScreen();
 
         if (screen instanceof BaseScreen)
         {

@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.registry;
 
 import fi.dy.masa.malilib.action.ActionRegistry;
-import fi.dy.masa.malilib.command.ClientCommandHandler;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry;
@@ -46,7 +45,6 @@ public class Registry
     public static final JsonConfigSerializerRegistry JSON_CONFIG_SERIALIZER = new JsonConfigSerializerRegistry();
 
     // Various "managers" or "handlers"
-    public static final ClientCommandHandler CLIENT_COMMAND_HANDLER = new ClientCommandHandler();
     public static final ConfigManager CONFIG_MANAGER = new ConfigManagerImpl();
     public static final HotkeyManager HOTKEY_MANAGER = new HotkeyManagerImpl();
     public static final InfoOverlay INFO_OVERLAY = new InfoOverlay();
