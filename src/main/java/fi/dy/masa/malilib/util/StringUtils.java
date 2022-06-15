@@ -6,15 +6,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.text.ClickEvent;
@@ -65,11 +69,11 @@ public class StringUtils
     {
         try
         {
-            LiteMod mod = LiteLoader.getInstance().getMod(modId);
+            Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(modId);
 
-            if (mod != null)
+            if (container.isPresent())
             {
-                return mod.getVersion();
+                return container.get().getMetadata().getVersion().getFriendlyString();
             }
         }
         catch (Exception ignore) {}
@@ -503,8 +507,6 @@ public class StringUtils
         }
         else
         {
-            MinecraftClient mc = GameUtils.getClient();
-
             if (mc.isConnectedToRealms())
             {
                 if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
@@ -570,24 +572,12 @@ public class StringUtils
         return FileNameUtils.generateSimpleSafeFileName(name) + suffix;
     }
 
-    public static String stringifyAddress(SocketAddress address)
-    {
-        String str = address.toString();
-
-        if (str.contains("/"))
-        {
-            str = str.substring(str.indexOf('/') + 1);
-        }
-
-        return str.replace(':', '_');
-    }
-
     public static String getStackString(ItemStack stack)
     {
         if (ItemWrap.notEmpty(stack))
         {
             net.minecraft.util.Identifier rl = Registry.ITEM.getId(stack.getItem());
-            NBTTagCompound tag = ItemWrap.getTag(stack);
+            NbtCompound tag = ItemWrap.getTag(stack);
 
             return String.format("[%s - display: %s - NBT: %s] (%s)",
                     rl != null ? rl.toString() : "null", stack.getName().getString(),

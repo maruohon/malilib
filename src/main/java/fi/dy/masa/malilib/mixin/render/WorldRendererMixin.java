@@ -34,7 +34,7 @@ public abstract class WorldRendererMixin
             Matrix4f projMatrix,
             CallbackInfo ci)
     {
-        ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderWorldLast(matrices, projMatrix, this.client, this.client.getTickDelta());
+        ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderWorldLast(matrices, projMatrix, this.client.getTickDelta());
     }
 
     @Inject(method = "render",
@@ -53,6 +53,6 @@ public abstract class WorldRendererMixin
             Matrix4f projMatrix,
             CallbackInfo ci)
     {
-        ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderWorldLast(matrices, projMatrix, this.client, this.client.getTickDelta());
+        ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderWorldLast(matrices, projMatrix, this.client.getTickDelta());
     }
 }

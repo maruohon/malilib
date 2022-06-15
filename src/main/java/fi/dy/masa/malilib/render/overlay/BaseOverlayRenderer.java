@@ -3,19 +3,20 @@ package fi.dy.masa.malilib.render.overlay;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Shader;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
-import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.data.ModInfo;
 import fi.dy.masa.malilib.util.data.json.JsonUtils;
 
@@ -93,7 +94,7 @@ public abstract class BaseOverlayRenderer
 
     /**
      * Update the renderer (draw again to the buffers). This method is called
-     * when {@link BaseOverlayRenderer#needsUpdate(Entity, Minecraft)} returns true.
+     * when {@link BaseOverlayRenderer#needsUpdate(Entity, net.minecraft.client.MinecraftClient)} returns true.
      * 
      * @param cameraPos The position of the camera when the method is called.
      *                  The camera position should be subtracted from any world coordinates for the vertex positions.
@@ -106,11 +107,11 @@ public abstract class BaseOverlayRenderer
 
     protected void preRender()
     {
-        GlStateManager.glLineWidth(this.lineWidth);
+        RenderSystem.lineWidth(this.lineWidth);
 
         if (this.renderThrough)
         {
-            GlStateManager.disableDepth();
+            RenderSystem.disableDepthTest();
             //GlStateManager.depthMask(false);
         }
     }
@@ -119,7 +120,7 @@ public abstract class BaseOverlayRenderer
     {
         if (this.renderThrough)
         {
-            GlStateManager.enableDepth();
+            RenderSystem.enableDepthTest();
             //GlStateManager.depthMask(true);
         }
     }
@@ -127,13 +128,13 @@ public abstract class BaseOverlayRenderer
     /**
      * Draws all the buffers to screen
      */
-    public void draw()
+    public void draw(MatrixStack matrixStack, Matrix4f projMatrix)
     {
         this.preRender();
 
         for (BaseRenderObject obj : this.renderObjects)
         {
-            obj.draw();
+            obj.draw(matrixStack, projMatrix);
         }
 
         this.postRender();
@@ -144,8 +145,8 @@ public abstract class BaseOverlayRenderer
      */
     public void allocateGlResources()
     {
-        this.allocateBuffer(GL11.GL_QUADS);
-        this.allocateBuffer(GL11.GL_LINES);
+        this.allocateBuffer(VertexFormat.DrawMode.QUADS);
+        this.allocateBuffer(VertexFormat.DrawMode.DEBUG_LINES);
     }
 
     /**
@@ -164,30 +165,18 @@ public abstract class BaseOverlayRenderer
     /**
      * Allocates a new VBO or display list, adds it to the list, and returns it
      */
-    protected BaseRenderObject allocateBuffer(int glMode)
+    protected BaseRenderObject allocateBuffer(VertexFormat.DrawMode drawMode)
     {
-        return this.allocateBuffer(glMode, DefaultVertexFormats.POSITION_COLOR, VboRenderObject::setupArrayPointersPosColor);
+        return this.allocateBuffer(drawMode, GameRenderer::getPositionColorShader, false);
     }
 
     /**
      * Allocates a new VBO or display list, adds it to the list, and returns it
-     * @param func the function to set up the array pointers according to the used vertex format
      */
-    protected BaseRenderObject allocateBuffer(int glMode, VertexFormat vertexFormat, EventListener func)
+    protected BaseRenderObject allocateBuffer(VertexFormat.DrawMode drawMode, Supplier<Shader> shader, boolean hasTexture)
     {
-        BaseRenderObject obj;
-
-        if (OpenGlHelper.useVbo())
-        {
-            obj = new VboRenderObject(glMode, vertexFormat, func);
-        }
-        else
-        {
-            obj = new DisplayListRenderObject(glMode, vertexFormat);
-        }
-
+        BaseRenderObject obj = new VboRenderObject(drawMode, shader, hasTexture);
         this.renderObjects.add(obj);
-
         return obj;
     }
 

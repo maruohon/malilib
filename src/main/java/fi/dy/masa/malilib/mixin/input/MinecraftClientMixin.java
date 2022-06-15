@@ -16,6 +16,6 @@ public abstract class MinecraftClientMixin
     private void onPostKeyboardInput(CallbackInfo ci)
     {
         KeyBindImpl.reCheckPressedKeys();
-        ((TickEventDispatcherImpl) Registry.TICK_EVENT_DISPATCHER).onClientTick((MinecraftClient)(Object) this);
+        ((TickEventDispatcherImpl) Registry.TICK_EVENT_DISPATCHER).onClientTick();
     }
 }

@@ -11,13 +11,10 @@ import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
-import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class ColorEditorHSVScreen extends BaseScreen
 {
-    protected static final ShaderProgram SHADER_HUE = new ShaderProgram("malilib", null, "shaders/sv_selector.frag");
-
     protected final IntConsumer valueConsumer;
     protected final int initialValue;
     @Nullable protected Element clickedElement;

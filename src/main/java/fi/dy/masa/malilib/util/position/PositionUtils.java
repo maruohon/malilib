@@ -154,7 +154,7 @@ public class PositionUtils
 
         if (pitch >= verticalThreshold)
         {
-            return EnumFacing.DOWN;
+            return Direction.DOWN;
         }
         else if (pitch <= -verticalThreshold)
         {
@@ -171,7 +171,7 @@ public class PositionUtils
     {
         Direction forwardDirection = entity.getHorizontalFacing();
         float entityYaw = ((EntityWrap.getYaw(entity) % 360.0F) + 360.0F) % 360.0F;
-        float forwardYaw = forwardDirection.getHorizontalAngle();
+        float forwardYaw = forwardDirection.asRotation();
 
         if (entityYaw < forwardYaw || (forwardYaw == 0.0F && entityYaw > 270.0F))
         {
@@ -210,11 +210,11 @@ public class PositionUtils
         }
         else if (pitch <= -verticalThreshold)
         {
-            return new BlockPos(x, Math.ceil(entity.getEntityBoundingBox().maxY), z);
+            return new BlockPos(x, Math.ceil(entity.getBoundingBox().maxY), z);
         }
 
-        y = Math.floor(y + entity.getEyeHeight());
-        double width = entity.width;
+        y = Math.floor(y + entity.getEyeHeight(entity.getPose()));
+        double width = entity.getWidth();
 
         switch (entity.getHorizontalFacing())
         {

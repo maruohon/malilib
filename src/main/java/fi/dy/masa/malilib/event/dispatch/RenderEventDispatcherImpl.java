@@ -123,7 +123,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
         GameUtils.profilerPush("malilib_world_post");
 
         GameUtils.profilerPush("overlays");
-        OverlayRendererContainer.INSTANCE.render(tickDelta);
+        OverlayRendererContainer.INSTANCE.render(matrices, projMatrix, tickDelta);
         GameUtils.profilerPop();
 
         if (this.worldLastRenderers.isEmpty() == false)

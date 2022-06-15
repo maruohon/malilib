@@ -2,35 +2,28 @@ package fi.dy.masa.malilib.render;
 
 import java.util.List;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.data.client.TextureMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -207,7 +200,7 @@ public class RenderUtils
     public static void renderNineSplicedTexture(int x, int y, float z, int u, int v, int width, int height,
                                                 int texWidth, int texHeight, int edgeThickness)
     {
-        BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
+        BufferBuilder buffer = startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE, true);
 
         int e = edgeThickness;
         
@@ -299,10 +292,10 @@ public class RenderUtils
         drawBuffer();
     }
 
-    public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
+    public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
                                                    Color4f color, float partialTicks)
     {
-        EnumFacing playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
 
         double dx = EntityWrap.lerpX(entity, partialTicks);
@@ -325,7 +318,7 @@ public class RenderUtils
         float hg = color.g;
         float hb = color.b;
 
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         // White full block background
         buffer.pos(x - 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
@@ -370,9 +363,9 @@ public class RenderUtils
 
         tessellator.draw();
 
-        GlStateManager.glLineWidth(1.6f);
+        RenderSystem.lineWidth(1.6f);
 
-        buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+        buffer.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 
         // Middle small rectangle
         buffer.pos(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
@@ -381,7 +374,7 @@ public class RenderUtils
         buffer.pos(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
         tessellator.draw();
 
-        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
         // Bottom left
         buffer.pos(x - 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
         buffer.pos(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
@@ -402,10 +395,10 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
-    public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, EnumFacing side,
+    public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, Direction side,
                                                          Color4f color, float partialTicks)
     {
-        EnumFacing playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = entity.getHorizontalFacing();
 
         double dx = EntityWrap.lerpX(entity, partialTicks);
         double dy = EntityWrap.lerpY(entity, partialTicks);
@@ -427,7 +420,7 @@ public class RenderUtils
         float g = color.g;
         float b = color.b;
 
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         // Simple colored quad
         buffer.pos(x - 0.5, y - 0.5, z).color(r, g, b, a).endVertex();
@@ -437,9 +430,9 @@ public class RenderUtils
 
         tessellator.draw();
 
-        GlStateManager.glLineWidth(1.6f);
+        RenderSystem.lineWidth(1.6f);
 
-        buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+        buffer.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 
         // Middle rectangle
         buffer.pos(x - 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
@@ -453,7 +446,7 @@ public class RenderUtils
     }
 
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
-                                                          EnumFacing side, EnumFacing playerFacing)
+                                                          Direction side, Direction playerFacing)
     {
         GlStateManager.translate(x, y, z);
 
@@ -512,7 +505,7 @@ public class RenderUtils
 
             bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
 
-            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
+            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE, true);
 
             buffer.pos(x1, y2, z).tex(0.0, 1.0).endVertex();
             buffer.pos(x2, y2, z).tex(1.0, 1.0).endVertex();
@@ -590,7 +583,7 @@ public class RenderUtils
         }
     }
 
-    private static void renderModel(IBakedModel model, IBlockState state, float zLevel)
+    private static void renderModel(BakedModel model, BlockState state, float zLevel)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
@@ -598,9 +591,9 @@ public class RenderUtils
 
         if (model.isBuiltInRenderer() == false)
         {
-            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.ITEM, true);
+            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, VertexFormats.ITEM, true);
 
-            for (EnumFacing enumfacing : PositionUtils.ALL_DIRECTIONS)
+            for (Direction enumfacing : PositionUtils.ALL_DIRECTIONS)
             {
                 renderQuads(buffer, model.getQuads(state, enumfacing, 0L), state, color);
             }
@@ -613,7 +606,7 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
-    public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, IBlockState state, int color)
+    public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, BlockState state, int color)
     {
         for (BakedQuad quad : quads)
         {
@@ -621,7 +614,7 @@ public class RenderUtils
         }
     }
 
-    public static void renderQuad(BufferBuilder buffer, BakedQuad quad, IBlockState state, int color)
+    public static void renderQuad(BufferBuilder buffer, BakedQuad quad, BlockState state, int color)
     {
         buffer.addVertexData(quad.getVertexData());
         buffer.putColor4(color);
@@ -662,10 +655,10 @@ public class RenderUtils
      * Renders the given model to the given vertex consumer.
      * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
      */
-    public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, @Nullable IBlockState state,
+    public static void renderModelBrightnessColor(BakedModel model, Vec3d pos, @Nullable BlockState state,
                                                   float brightness, float r, float g, float b, BufferBuilder buffer)
     {
-        for (EnumFacing side : PositionUtils.ALL_DIRECTIONS)
+        for (Direction side : PositionUtils.ALL_DIRECTIONS)
         {
             renderQuads(model.getQuads(state, side, 0L), pos, brightness, r, g, b, buffer);
         }

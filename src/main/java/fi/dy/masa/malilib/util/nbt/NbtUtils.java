@@ -14,16 +14,14 @@ import java.util.function.Function;
 import java.util.zip.GZIPOutputStream;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtDouble;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtInt;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.mixin.access.NBTBaseMixin;
+import fi.dy.masa.malilib.mixin.access.NbtElementMixin;
 import fi.dy.masa.malilib.util.data.Constants;
 import fi.dy.masa.malilib.util.game.wrap.NbtWrap;
 
@@ -67,7 +65,7 @@ public class NbtUtils
         }
         else
         {
-            nbt = new NBTTagCompound();
+            nbt = new NbtCompound();
             NbtWrap.putTag(tagIn, tagName, nbt);
         }
 
@@ -88,10 +86,10 @@ public class NbtUtils
 
     public static NbtCompound createBlockPosTag(Vec3i pos)
     {
-        return putVec3i(new NBTTagCompound(), pos);
+        return putVec3i(new NbtCompound(), pos);
     }
 
-    public static NBTTagCompound putVec3i(NBTTagCompound tag, Vec3i pos)
+    public static NbtCompound putVec3i(NbtCompound tag, Vec3i pos)
     {
         NbtWrap.putInt(tag, "x", pos.getX());
         NbtWrap.putInt(tag, "y", pos.getY());
@@ -253,7 +251,7 @@ public class NbtUtils
     /**
      * Write the compound tag, gzipped, to the output stream.
      */
-    public static void writeCompressed(NBTTagCompound tag, String tagName, OutputStream outputStream) throws IOException
+    public static void writeCompressed(NbtCompound tag, String tagName, OutputStream outputStream) throws IOException
     {
         try (DataOutputStream dataoutputstream = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(outputStream))))
         {
@@ -261,7 +259,7 @@ public class NbtUtils
         }
     }
 
-    private static void writeTag(NBTBase tag, String tagName, DataOutput output) throws IOException
+    private static void writeTag(NbtElement tag, String tagName, DataOutput output) throws IOException
     {
         int typeId = NbtWrap.getTypeId(tag);
         output.writeByte(typeId);
@@ -269,7 +267,7 @@ public class NbtUtils
         if (typeId != 0)
         {
             output.writeUTF(tagName);
-            ((NBTBaseMixin) tag).invokeWrite(output);
+            ((NbtElementMixin) tag).invokeWrite(output);
         }
     }
 }

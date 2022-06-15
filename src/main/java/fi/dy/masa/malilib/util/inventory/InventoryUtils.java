@@ -4,21 +4,15 @@ import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.apache.commons.lang3.tuple.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.collection.DefaultedList;
-import fi.dy.masa.malilib.util.GameUtils;
-import fi.dy.masa.malilib.util.data.Constants;
 import fi.dy.masa.malilib.util.data.IntRange;
 import fi.dy.masa.malilib.util.data.ItemType;
 import fi.dy.masa.malilib.util.game.wrap.GameUtils;
@@ -94,27 +88,27 @@ public class InventoryUtils
 
     public static int getSlotId(Slot slot)
     {
-        return slot.slotNumber;
+        return slot.id;
     }
 
-    public static int getSlotCount(Container container)
+    public static int getSlotCount(ScreenHandler container)
     {
-        return container.inventorySlots.size();
+        return container.slots.size();
     }
 
-    public static List<Slot> getSlotList(Container container)
+    public static List<Slot> getSlotList(ScreenHandler container)
     {
-        return container.inventorySlots;
+        return container.slots;
     }
 
-    public static Container getPlayerInventoryContainer()
+    public static ScreenHandler getPlayerInventoryContainer()
     {
-        return GameUtils.getClientPlayer().inventoryContainer;
+        return GameUtils.getClientPlayer().playerScreenHandler;
     }
 
-    public static InventoryPlayer getPlayerInventory()
+    public static PlayerInventory getPlayerInventory()
     {
-        return GameUtils.getClientPlayer().inventory;
+        return GameUtils.getClientPlayer().getInventory();
     }
 
     /**
@@ -123,7 +117,7 @@ public class InventoryUtils
      * The <b>allowOffhand</b> argument defines whether the offhand slot is valid.
      * @return the slot number, or -1 if none were found
      */
-    public static int findEmptySlotInPlayerInventory(Container containerPlayer,
+    public static int findEmptySlotInPlayerInventory(ScreenHandler containerPlayer,
                                                      boolean allowOffhand,
                                                      boolean reverseIteration)
     {
@@ -141,7 +135,7 @@ public class InventoryUtils
      * @param reverseIteration if true, then the slots are iterated in reverse order
      * @return the slot number, or -1 if none were found
      */
-    public static int findPlayerInventorySlotWithItem(Container container,
+    public static int findPlayerInventorySlotWithItem(ScreenHandler container,
                                                       ItemStack stackReference,
                                                       boolean reverseIteration)
     {
@@ -155,7 +149,7 @@ public class InventoryUtils
      * @param reverse if true, then the slots are iterated in reverse order
      * @return the slot number, or -1 if none were found
      */
-    public static int findPlayerInventorySlotWithItem(Container container,
+    public static int findPlayerInventorySlotWithItem(ScreenHandler container,
                                                       ItemStack stackReference,
                                                       boolean ignoreNbt,
                                                       boolean reverse)
@@ -183,7 +177,7 @@ public class InventoryUtils
      * @return the first slot that passes the test, or null
      */
     @Nullable
-    public static Slot findSlot(Container container,
+    public static Slot findSlot(ScreenHandler container,
                                 Predicate<Slot> slotTest,
                                 boolean reverseIteration)
     {
@@ -209,7 +203,7 @@ public class InventoryUtils
      * Tries to find a slot with the given item for pick-blocking.
      * Prefers the hotbar to the rest of the inventory.
      */
-    public static int findSlotWithItemToPickBlock(Container container,
+    public static int findSlotWithItemToPickBlock(ScreenHandler container,
                                                   ItemStack stackReference,
                                                   boolean ignoreNbt)
     {
@@ -230,7 +224,7 @@ public class InventoryUtils
         return findSlotWithItem(container, stackReference, IntRange.of(9, 27 + 1), true, ignoreNbt);
     }
 
-    public static int findSlotWithItem(Container container,
+    public static int findSlotWithItem(ScreenHandler container,
                                        ItemStack stackReference,
                                        IntRange intRange,
                                        boolean ignoreDurability,
@@ -282,7 +276,7 @@ public class InventoryUtils
             return false;
         }
 
-        InventoryPlayer inventory = getPlayerInventory();
+        PlayerInventory inventory = getPlayerInventory();
 
         if (GameUtils.isCreativeMode())
         {
@@ -296,7 +290,7 @@ public class InventoryUtils
 
             if (slot != -1)
             {
-                int currentHotbarSlot = inventory.currentItem;
+                int currentHotbarSlot = inventory.selectedSlot;
                 clickSlot(getPlayerInventoryContainer(), slot, currentHotbarSlot, SlotActionType.SWAP);
                 return true;
             }
@@ -319,7 +313,7 @@ public class InventoryUtils
         final int count = stackHand.getCount();
         final int max = stackHand.getMaxCount();
         ScreenHandler container = getPlayerInventoryContainer();
-        InventoryPlayer inventory = getPlayerInventory();
+        PlayerInventory inventory = getPlayerInventory();
 
         if (ItemWrap.notEmpty(stackHand) &&
             player.currentScreenHandler == container &&
@@ -327,8 +321,8 @@ public class InventoryUtils
             (count <= threshold && count < max))
         {
             int endSlot = allowHotbar ? 44 : 35;
-            int currentMainHandSlot = inventory.currentItem + 36;
-            int currentSlot = hand == EnumHand.MAIN_HAND ? currentMainHandSlot : 45;
+            int currentMainHandSlot = inventory.selectedSlot + 36;
+            int currentSlot = hand == Hand.MAIN_HAND ? currentMainHandSlot : 45;
 
             for (int slotNum = 9; slotNum <= endSlot; ++slotNum)
             {
@@ -376,7 +370,7 @@ public class InventoryUtils
      * This also counts the contents of any Shulker Boxes
      * (or other storage item with the same NBT data structure).
      */
-    public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(IInventory inv)
+    public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(Inventory inv)
     {
         return getInventoryItemCounts(new VanillaInventoryView(inv));
     }
@@ -414,17 +408,17 @@ public class InventoryUtils
         return map;
     }
 
-    public static void clickSlot(Container container, Slot slot, int mouseButton, ClickType clickType)
+    public static void clickSlot(ScreenHandler container, Slot slot, int mouseButton, SlotActionType clickType)
     {
         clickSlot(container, getSlotId(slot), mouseButton, clickType);
     }
 
-    public static void clickSlot(Container container, int slotNum, int mouseButton, ClickType clickType)
+    public static void clickSlot(ScreenHandler container, int slotNum, int mouseButton, SlotActionType clickType)
     {
         if (slotNum >= 0 && slotNum < getSlotCount(container))
         {
-            GameUtils.getInteractionManager().windowClick(container.windowId, slotNum, mouseButton,
-                                                          clickType, GameUtils.getClientPlayer());
+            GameUtils.getInteractionManager().clickSlot(container.syncId, slotNum, mouseButton,
+                                                        clickType, GameUtils.getClientPlayer());
         }
     }
 }

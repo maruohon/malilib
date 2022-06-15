@@ -3,14 +3,11 @@ package fi.dy.masa.malilib.render;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.mojang.blaze3d.platform.GlStateManager;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.entity.Entity;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -120,7 +117,7 @@ public class TextRenderUtils
 
     public static Vec2i getScreenClampedHoverTextStartPosition(int x, int y, int renderWidth, int renderHeight)
     {
-        GuiScreen screen = GuiUtils.getCurrentScreen();
+        Screen screen = GuiUtils.getCurrentScreen();
         int maxWidth = screen != null ? screen.width : GuiUtils.getScaledWindowWidth();
         int maxHeight = screen != null ? screen.height : GuiUtils.getScaledWindowHeight();
         int textStartX = x;

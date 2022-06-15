@@ -36,7 +36,7 @@ public abstract class MinecraftClientMixin
         if (this.world != null)
         {
             this.worldBefore = this.world;
-            ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.world, worldClientIn, (MinecraftClient)(Object) this);
+            ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.world, worldClientIn);
         }
     }
 
@@ -45,7 +45,7 @@ public abstract class MinecraftClientMixin
     {
         if (this.worldBefore != null)
         {
-            ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, worldClientIn, (MinecraftClient)(Object) this);
+            ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, worldClientIn);
             this.worldBefore = null;
         }
     }
@@ -54,13 +54,13 @@ public abstract class MinecraftClientMixin
     private void onDisconnectPre(Screen screen, CallbackInfo ci)
     {
         this.worldBefore = this.world;
-        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.worldBefore, null, (MinecraftClient)(Object) this);
+        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.worldBefore, null);
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("RETURN"))
     private void onDisconnectPost(Screen screen, CallbackInfo ci)
     {
-        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
+        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, null);
         this.worldBefore = null;
     }
 }

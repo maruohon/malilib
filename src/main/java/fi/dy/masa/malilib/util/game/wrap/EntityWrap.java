@@ -27,54 +27,54 @@ public class EntityWrap
 
     public static Vec3d getEntityPos(Entity entity)
     {
-        return entity.getPositionVector();
+        return entity.getPos();
     }
 
     public static BlockPos getEntityBlockPos(Entity entity)
     {
-        return new BlockPos(entity);
+        return new BlockPos(entity.getPos());
     }
 
     public static double getX(Entity entity)
     {
-        return entity.posX;
+        return entity.getX();
     }
 
     public static double getY(Entity entity)
     {
-        return entity.posY;
+        return entity.getY();
     }
 
     public static double getZ(Entity entity)
     {
-        return entity.posZ;
+        return entity.getZ();
     }
 
     public static float getYaw(Entity entity)
     {
-        return entity.rotationYaw;
+        return entity.getYaw();
     }
 
     public static float getPitch(Entity entity)
     {
-        return entity.rotationPitch;
+        return entity.getPitch();
     }
 
     public static double lerpX(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosX;
+        double lastTickPos = entity.lastRenderX;
         return lastTickPos + (getX(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpY(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosY;
+        double lastTickPos = entity.lastRenderY;
         return lastTickPos + (getY(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpZ(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosZ;
+        double lastTickPos = entity.lastRenderZ;
         return lastTickPos + (getZ(entity) - lastTickPos) * tickDelta;
     }
 
@@ -95,11 +95,11 @@ public class EntityWrap
 
     public static void setYaw(Entity entity, float yaw)
     {
-        entity.rotationYaw = yaw;
+        entity.setYaw(yaw);
     }
 
     public static void setPitch(Entity entity, float pitch)
     {
-        entity.rotationPitch = pitch;
+        entity.setPitch(pitch);
     }
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.IntUnaryOperator;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -70,8 +69,9 @@ public class InventoryRenderDefinition
             InventoryRenderUtils.renderEmptySlotBackgrounds(x, y, z, backgroundTintColor, inv, this.emptySlotTextures);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, z + 1);
+        // TODO 1.13+ port
+        //GlStateManager.pushMatrix();
+        //GlStateManager.translate(0f, 0f, z + 1);
 
         if (this.hasInventoryRanges)
         {
@@ -89,7 +89,7 @@ public class InventoryRenderDefinition
             InventoryRenderUtils.renderGenericInventoryItems(x, y, 100f, 0, -1, slotsPerRow, this.slotOffset, inv);
         }
 
-        GlStateManager.popMatrix();
+        //GlStateManager.popMatrix();
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }

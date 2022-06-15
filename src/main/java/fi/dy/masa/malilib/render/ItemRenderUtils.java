@@ -1,11 +1,11 @@
 package fi.dy.masa.malilib.render;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
@@ -13,6 +13,7 @@ public class ItemRenderUtils
 {
     public static void renderStackAt(ItemStack stack, int x, int y, float z, float scale, MinecraftClient mc)
     {
+        /* TODO 1.13+ port
         if (stack == null || ItemWrap.isEmpty(stack))
         {
             return;
@@ -46,6 +47,7 @@ public class ItemRenderUtils
         //GlStateManager.disableBlend();
         RenderUtils.disableItemLighting();
         GlStateManager.popMatrix();
+        */
     }
 
     public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack, MinecraftClient mc)
@@ -55,20 +57,21 @@ public class ItemRenderUtils
             return;
         }
 
-        List<String> list = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        List<Text> list = stack.getTooltip(mc.player, mc.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+        List<String> lines = new ArrayList<>();
 
         for (int i = 0; i < list.size(); ++i)
         {
             if (i == 0)
             {
-                list.set(i, stack.getRarity().color + list.get(i));
+                lines.add(stack.getRarity().formatting + list.get(i).getString());
             }
             else
             {
-                list.set(i, StringUtils.translate("malilib.hover.item_tooltip_lines", list.get(i)));
+                lines.add(StringUtils.translate("malilib.hover.item_tooltip_lines", list.get(i).getString()));
             }
         }
 
-        TextRenderUtils.renderHoverText(x, y, zLevel, list);
+        TextRenderUtils.renderHoverText(x, y, zLevel, lines);
     }
 }

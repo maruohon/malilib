@@ -494,7 +494,7 @@ public class LayerRange
         double x = EntityWrap.getX(entity);
         double y = EntityWrap.getY(entity);
         double z = EntityWrap.getZ(entity);
-        double playerPos = this.axis == Axis.Y ? y : (this.axis == Axis.X ? x : z);
+        double playerPos = this.axis == Direction.Axis.Y ? y : (this.axis == Direction.Axis.X ? x : z);
         double min = this.layerRangeMin + 0.5D;
         double max = this.layerRangeMax + 0.5D;
 
