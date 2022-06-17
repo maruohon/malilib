@@ -116,7 +116,8 @@ public class ItemType
         if (this.checkNbt())
         {
             ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
-            return rl.toString() + "@" + this.stack.getMetadata() + ItemWrap.getTag(this.stack);
+            NBTTagCompound tag = ItemWrap.getTag(this.stack);
+            return rl.toString() + "@" + this.stack.getMetadata() + (tag != null ? tag.toString() : "");
         }
         else
         {
