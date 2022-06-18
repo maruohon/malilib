@@ -7,6 +7,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
 public class ItemRenderUtils
@@ -50,13 +51,15 @@ public class ItemRenderUtils
         */
     }
 
-    public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack, MinecraftClient mc)
+    public static void renderStackToolTip(int x, int y, float zLevel,
+                                          ItemStack stack, RenderContext ctx)
     {
         if (stack == null || ItemWrap.isEmpty(stack))
         {
             return;
         }
 
+        MinecraftClient mc = GameUtils.getClient();
         List<Text> list = stack.getTooltip(mc.player, mc.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
         List<String> lines = new ArrayList<>();
 
@@ -72,6 +75,6 @@ public class ItemRenderUtils
             }
         }
 
-        TextRenderUtils.renderHoverText(x, y, zLevel, lines);
+        TextRenderUtils.renderHoverText(x, y, zLevel, lines, ctx);
     }
 }

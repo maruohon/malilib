@@ -49,6 +49,7 @@ import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.mixin.access.AbstractHorseEntityMixin;
 import fi.dy.masa.malilib.render.ItemRenderUtils;
+import fi.dy.masa.malilib.render.RenderContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.game.RayTraceUtils;
@@ -350,7 +351,8 @@ public class InventoryRenderUtils
     }
 
     public static void renderItemInventoryPreview(ItemStack stack, int baseX, int baseY, float z,
-                                                  boolean useShulkerBackgroundColor)
+                                                  boolean useShulkerBackgroundColor,
+                                                  RenderContext ctx)
     {
         if (stack.hasNbt())
         {
@@ -373,7 +375,7 @@ public class InventoryRenderUtils
             InventoryRenderDefinition renderDefinition = InventoryRenderUtils.getInventoryType(stack);
 
             renderInventoryPreview(inv, renderDefinition, baseX, baseY, z, bgTintColor,
-                                   HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM);
+                                   HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM, ctx);
         }
     }
 
@@ -381,7 +383,8 @@ public class InventoryRenderUtils
                                               InventoryRenderDefinition renderDefinition,
                                               int baseX, int baseY, float z, int bgTintColor,
                                               HorizontalAlignment horizontalAlignment,
-                                              VerticalAlignment verticalAlignment)
+                                              VerticalAlignment verticalAlignment,
+                                              RenderContext ctx)
     {
         int screenWidth = GuiUtils.getScaledWindowWidth();
         int screenHeight = GuiUtils.getScaledWindowHeight();
@@ -398,7 +401,7 @@ public class InventoryRenderUtils
             bgTintColor = ((ColoredVanillaInventoryView) inv).getBackgroundTintColor();
         }
 
-        renderDefinition.renderInventory(x, y, z, bgTintColor, inv);
+        renderDefinition.renderInventory(x, y, z, bgTintColor, inv, ctx);
     }
 
     /**

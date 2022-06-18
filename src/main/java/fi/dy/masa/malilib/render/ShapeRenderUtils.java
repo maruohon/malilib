@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -26,7 +27,7 @@ public class ShapeRenderUtils
     public static void renderGrid(double x, double y, double z, double width, double height,
                                   double gridInterval, double lineWidth, int color)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
 
         renderGrid(x, y, z, width, height, gridInterval, lineWidth, color, buffer);
 
@@ -52,7 +53,7 @@ public class ShapeRenderUtils
 
     public static void renderOutlinedRectangle(double x, double y, double z, double width, double height, int colorBg, int colorBorder)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
 
         // Draw the background
         renderRectangle(x + 1, y + 1, z, width - 2, height - 2, colorBg, buffer);
@@ -65,7 +66,7 @@ public class ShapeRenderUtils
 
     public static void renderOutlinedRectangle(double x, double y, double z, double width, double height, int bgColor, EdgeInt borderColor)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
 
         // Draw the background
         renderRectangle(x + 1, y + 1, z, width - 2, height - 2, bgColor, buffer);
@@ -78,7 +79,7 @@ public class ShapeRenderUtils
 
     public static void renderOutline(double x, double y, double z, double width, double height, double borderWidth, int color)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
 
         renderOutline(x, y, z, width, height, borderWidth, color, buffer);
 
@@ -87,7 +88,7 @@ public class ShapeRenderUtils
 
     public static void renderOutline(double x, double y, double z, double width, double height, double borderWidth, EdgeInt color)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
 
         renderOutline(x, y, z, width, height, borderWidth, color, buffer);
 
@@ -138,7 +139,7 @@ public class ShapeRenderUtils
 
     public static void renderRectangle(double x, double y, double z, double width, double height, int color)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
 
         renderRectangle(x, y, z, width, height, color, buffer);
 
@@ -182,7 +183,7 @@ public class ShapeRenderUtils
                                                   int u, int v,
                                                   int width, int height)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE, true);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE, true);
 
         renderTexturedRectangle256(x, y, z, u, v, width, height, buffer);
 
@@ -250,7 +251,7 @@ public class ShapeRenderUtils
                                                      int textureWidth, int textureHeight,
                                                      float pixelWidth, float pixelHeight)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE, true);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE, true);
 
         renderScaledTexturedRectangle(x, y, z, u, v,
                                       renderWidth, renderHeight,
@@ -300,7 +301,7 @@ public class ShapeRenderUtils
                                                            float pixelWidth, float pixelHeight,
                                                            int backgroundTintColor)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR, true);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR, true);
 
         renderScaledTintedTexturedRectangle(x, y, z, u, v, renderWidth, renderHeight, textureWidth, textureHeight,
                                             pixelWidth, pixelHeight, backgroundTintColor, buffer);
@@ -406,7 +407,7 @@ public class ShapeRenderUtils
         double angleIncrement = arcAngle / (double) steps;
         double lastAngle = startAngle;
 
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_LINE_STRIP, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR, false);
         RenderSystem.lineWidth(lineWidth);
 
         for (int i = 0; i <= steps; ++i)
@@ -452,7 +453,8 @@ public class ShapeRenderUtils
         double angleIncrement = arcAngle / (double) steps;
         double lastAngle = startAngle;
 
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR, false);
+        // TODO 1.13+ port check this (was LINE_LOOP)
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR, false);
         RenderSystem.lineWidth(lineWidth);
 
         // First render the inner arc in the positive direction
@@ -509,7 +511,7 @@ public class ShapeRenderUtils
             arcAngle += twoPi;
         }
 
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_TRIANGLE_STRIP, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR, false);
 
         double arcLength = arcAngle * outerRadius;
         int steps = Math.max((int) Math.ceil(arcLength / 5.0), 2);

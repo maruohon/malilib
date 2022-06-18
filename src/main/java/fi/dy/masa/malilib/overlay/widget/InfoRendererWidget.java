@@ -304,9 +304,9 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
 
         if (scaled)
         {
-            ctx.matrices.push();
-            ctx.matrices.translate(x, y, z);
-            ctx.matrices.scale((float) this.scale, (float) this.scale, 1);
+            ctx.matrixStack.push();
+            ctx.matrixStack.translate(x, y, z);
+            ctx.matrixStack.scale((float) this.scale, (float) this.scale, 1);
 
             x = 0;
             y = 0;
@@ -321,7 +321,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
 
         if (scaled)
         {
-            ctx.matrices.pop();
+            ctx.matrixStack.pop();
         }
 
         if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())

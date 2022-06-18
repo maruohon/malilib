@@ -10,15 +10,17 @@ public class ScreenContext extends RenderContext
     public final int mouseY;
     public final int hoveredWidgetId;
     public final boolean isActiveScreen;
-    public final MatrixStack matrices;
 
-    public ScreenContext(int mouseX, int mouseY, int hoveredWidgetId, boolean isActiveScreen, MatrixStack matrices)
+    public ScreenContext(int mouseX, int mouseY,
+                         int hoveredWidgetId, boolean isActiveScreen,
+                         MatrixStack matrixStack)
     {
+        super (matrixStack);
+
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.hoveredWidgetId = hoveredWidgetId;
         this.isActiveScreen = isActiveScreen;
-        this.matrices = matrices;
     }
 
     public boolean getDebugRenderAll()

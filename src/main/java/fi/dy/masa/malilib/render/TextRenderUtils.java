@@ -3,12 +3,16 @@ package fi.dy.masa.malilib.render;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import com.mojang.blaze3d.platform.GlStateManager;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3f;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -19,54 +23,56 @@ import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class TextRenderUtils
 {
-    public static void renderText(int x, int y, int color, String text)
+    public static void renderText(int x, int y, int color, String text, RenderContext ctx)
     {
         String[] parts = text.split("\\\\n");
-        FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
+        net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
 
         for (String line : parts)
         {
-            textRenderer.drawString(line, x, y, color);
-            y += textRenderer.FONT_HEIGHT + 1;
+            textRenderer.draw(ctx.matrixStack, line, x, y, color);
+            y += textRenderer.fontHeight + 1;
         }
     }
 
-    public static void renderText(int x, int y, int color, List<String> lines)
+    public static void renderText(int x, int y, int color, List<String> lines, RenderContext ctx)
     {
         if (lines.isEmpty() == false)
         {
-            FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
+            net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
 
             for (String line : lines)
             {
-                textRenderer.drawString(line, x, y, color);
-                y += textRenderer.FONT_HEIGHT + 2;
+                textRenderer.draw(ctx.matrixStack, line, x, y, color);
+                y += textRenderer.fontHeight + 2;
             }
         }
     }
 
-    public static int renderText(int xOff, int yOff, int z, double scale, int textColor, int bgColor,
-                                 HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
+    public static int renderText(int xOff, int yOff, int z,
+                                 float scale, int textColor, int bgColor,
+                                 HudAlignment alignment, boolean useBackground,
+                                 boolean useShadow, List<String> lines, RenderContext ctx)
     {
-        FontRenderer fontRenderer = GameUtils.getClient().fontRenderer;
+        net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
         final int scaledWidth = GuiUtils.getScaledWindowWidth();
-        final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
+        final int lineHeight = textRenderer.fontHeight + 2;
         final int contentHeight = lines.size() * lineHeight - 2;
         int bgMargin = 2;
 
         // Only Chuck Norris can divide by zero
-        if (scale == 0d)
+        if (scale == 0.0F)
         {
             return 0;
         }
 
-        if (scale != 1d)
+        if (scale != 1.0F)
         {
             xOff = (int) (xOff * scale);
             yOff = (int) (yOff * scale);
 
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, 0);
+            ctx.matrixStack.push();
+            ctx.matrixStack.scale(scale, scale, 1);
         }
 
         double posX = xOff + bgMargin;
@@ -77,7 +83,7 @@ public class TextRenderUtils
 
         for (String line : lines)
         {
-            final int width = fontRenderer.getStringWidth(line);
+            final int width = textRenderer.getWidth(line);
 
             if (alignment == HudAlignment.TOP_RIGHT || alignment == HudAlignment.BOTTOM_RIGHT)
             {
@@ -94,22 +100,24 @@ public class TextRenderUtils
 
             if (useBackground)
             {
-                ShapeRenderUtils.renderRectangle(x - bgMargin, y - bgMargin, z, width + bgMargin, bgMargin + fontRenderer.FONT_HEIGHT, bgColor);
+                ShapeRenderUtils.renderRectangle(x - bgMargin, y - bgMargin, z,
+                                                 width + bgMargin,
+                                                 bgMargin + textRenderer.fontHeight, bgColor);
             }
 
             if (useShadow)
             {
-                fontRenderer.drawStringWithShadow(line, x, y, textColor);
+                textRenderer.drawWithShadow(ctx.matrixStack, line, x, y, textColor);
             }
             else
             {
-                fontRenderer.drawString(line, x, y, textColor);
+                textRenderer.draw(ctx.matrixStack, line, x, y, textColor);
             }
         }
 
-        if (scale != 1d)
+        if (scale != 1.0F)
         {
-            GlStateManager.popMatrix();
+            ctx.matrixStack.pop();
         }
 
         return contentHeight + bgMargin * 2;
@@ -158,23 +166,25 @@ public class TextRenderUtils
         return new Vec2i(textStartX, textStartY);
     }
 
-    public static void renderHoverText(int x, int y, float z, String text)
+    public static void renderHoverText(int x, int y, float z, String text, RenderContext ctx)
     {
-        renderHoverText(x, y, z, Collections.singletonList(text));
+        renderHoverText(x, y, z, Collections.singletonList(text), ctx);
     }
 
-    public static void renderHoverText(int x, int y, float z, List<String> textLines)
+    public static void renderHoverText(int x, int y, float z, List<String> textLines, RenderContext ctx)
     {
-        renderHoverText(x, y, z, textLines, 0xFFC0C0C0 , TextRenderUtils::renderDefaultHoverTextBackground);
+        renderHoverText(x, y, z, textLines, 0xFFC0C0C0 ,
+                        TextRenderUtils::renderDefaultHoverTextBackground, ctx);
     }
 
     public static void renderHoverText(int x, int y, float z, List<String> textLines,
-                                       int textColor, RectangleRenderer backgroundRenderer)
+                                       int textColor, RectangleRenderer backgroundRenderer,
+                                       RenderContext ctx)
     {
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
             List<String> linesNew = new ArrayList<>();
-            FontRenderer font = GameUtils.getClient().fontRenderer;
+            net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
             int maxLineLength = 0;
 
             for (String lineOrig : textLines)
@@ -183,7 +193,7 @@ public class TextRenderUtils
 
                 for (String line : lines)
                 {
-                    int length = font.getStringWidth(line);
+                    int length = textRenderer.getWidth(line);
 
                     if (length > maxLineLength)
                     {
@@ -196,7 +206,7 @@ public class TextRenderUtils
 
             textLines = linesNew;
 
-            int lineHeight = font.FONT_HEIGHT + 1;
+            int lineHeight = textRenderer.fontHeight + 1;
             int textHeight = textLines.size() * lineHeight - 2;
             int backgroundWidth = maxLineLength + 8;
             int backgroundHeight = textHeight + 8;
@@ -204,23 +214,23 @@ public class TextRenderUtils
             int textStartX = startPos.x + 4;
             int textStartY = startPos.y + 4;
 
-            GlStateManager.disableRescaleNormal();
+            //GlStateManager.disableRescaleNormal();
             RenderUtils.disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
+            //RenderSystem.disableLighting();
+            RenderSystem.disableDepthTest();
 
             backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight);
 
             for (String str : textLines)
             {
-                font.drawStringWithShadow(str, textStartX, textStartY, textColor);
+                textRenderer.drawWithShadow(ctx.matrixStack, str, textStartX, textStartY, textColor);
                 textStartY += lineHeight;
             }
 
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
+            //GlStateManager.enableLighting();
+            RenderSystem.enableDepthTest();
+            //RenderHelper.enableStandardItemLighting();
+            //GlStateManager.enableRescaleNormal();
         }
     }
 
@@ -244,10 +254,10 @@ public class TextRenderUtils
             int textStartX = startPos.x + 4;
             int textStartY = startPos.y + 4;
 
-            GlStateManager.disableRescaleNormal();
+            //GlStateManager.disableRescaleNormal();
             RenderUtils.disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
+            //GlStateManager.disableLighting();
+            RenderSystem.disableDepthTest();
 
             backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight);
             textRenderer.startBuffers();
@@ -259,10 +269,10 @@ public class TextRenderUtils
             }
 
             textRenderer.renderBuffers();
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
+            //GlStateManager.enableLighting();
+            RenderSystem.enableDepthTest();
+            //RenderHelper.enableStandardItemLighting();
+            //RenderSystem.enableRescaleNormal();
         }
     }
 
@@ -278,14 +288,14 @@ public class TextRenderUtils
     public static void renderHoverTextBackground(int x, int y, float z, int width, int height,
                                                  int fillColor, int borderColor1, int borderColor2)
     {
-        GlStateManager.disableTexture2D();
-        GlStateManager.disableAlpha();
+        RenderSystem.disableTexture();
+        //RenderSystem.disableAlpha();
         RenderUtils.setupBlend();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        //GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         int xl1 = x;
         int xl2 = xl1 + 1;
@@ -313,23 +323,25 @@ public class TextRenderUtils
 
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        //GlStateManager.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        //GlStateManager.enableAlpha();
+        RenderSystem.enableTexture();
     }
 
     /**
      * Renders a text plate/billboard, similar to the player name plate.<br>
      * The plate will face towards the camera entity.
      */
-    public static void renderTextPlate(List<String> text, double x, double y, double z, float scale)
+    public static void renderTextPlate(List<String> text, double x, double y, double z,
+                                       float scale, RenderContext ctx)
     {
         Entity entity = GameUtils.getCameraEntity();
 
         if (entity != null)
         {
-            renderTextPlate(text, x, y, z, EntityWrap.getYaw(entity), EntityWrap.getPitch(entity), scale, 0xFFFFFFFF, 0x40000000, true);
+            renderTextPlate(text, x, y, z, EntityWrap.getYaw(entity), EntityWrap.getPitch(entity),
+                            scale, 0xFFFFFFFF, 0x40000000, true, ctx);
         }
     }
 
@@ -338,25 +350,28 @@ public class TextRenderUtils
      * The plate will face towards the given angle.
      */
     public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-                                       float scale, int textColor, int bgColor, boolean disableDepth)
+                                       float scale, int textColor, int bgColor,
+                                       boolean disableDepth, RenderContext ctx)
     {
-        FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
+        net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
 
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
-        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
+        //GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        MatrixStack matrixStack = ctx.matrixStack;
+        matrixStack.push();
+        matrixStack.translate(x, y, z);
+        //GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
 
-        GlStateManager.rotate(-yaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(pitch, 1.0F, 0.0F, 0.0F);
+        Quaternion rot = Vec3f.POSITIVE_Y.getDegreesQuaternion(-yaw);
+        rot.hamiltonProduct(Vec3f.POSITIVE_X.getDegreesQuaternion(pitch));
+        matrixStack.multiply(rot);
 
-        GlStateManager.scale(-scale, -scale, scale);
-        GlStateManager.disableLighting();
-        GlStateManager.disableCull();
+        matrixStack.scale(-scale, -scale, scale);
+        //GlStateManager.disableLighting();
+        RenderSystem.disableCull();
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.setupBlend();
-        GlStateManager.disableTexture2D();
+        RenderSystem.disableTexture();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -364,11 +379,11 @@ public class TextRenderUtils
 
         for (String line : text)
         {
-            maxLineLen = Math.max(maxLineLen, textRenderer.getStringWidth(line));
+            maxLineLen = Math.max(maxLineLen, textRenderer.getWidth(line));
         }
 
         int strLenHalf = maxLineLen / 2;
-        int textHeight = textRenderer.FONT_HEIGHT * text.size() - 1;
+        int textHeight = textRenderer.fontHeight * text.size() - 1;
         float bga = ((bgColor >>> 24) & 0xFF) * 255f;
         float bgr = ((bgColor >>> 16) & 0xFF) * 255f;
         float bgg = ((bgColor >>>  8) & 0xFF) * 255f;
@@ -376,59 +391,59 @@ public class TextRenderUtils
 
         if (disableDepth)
         {
-            GlStateManager.depthMask(false);
-            GlStateManager.disableDepth();
+            RenderSystem.depthMask(false);
+            RenderSystem.disableDepthTest();
         }
 
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        buffer.vertex(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
+        buffer.vertex(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
+        buffer.vertex( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
+        buffer.vertex( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
         tessellator.draw();
 
-        GlStateManager.enableTexture2D();
+        RenderSystem.enableTexture();
         int textY = 0;
 
         // translate the text a bit infront of the background
         if (disableDepth == false)
         {
-            GlStateManager.enablePolygonOffset();
-            GlStateManager.doPolygonOffset(-0.6f, -1.2f);
+            RenderSystem.enablePolygonOffset();
+            RenderSystem.polygonOffset(-0.6f, -1.2f);
             //GlStateManager.translate(0, 0, -0.02);
 
-            GlStateManager.enableDepth();
-            GlStateManager.depthMask(true);
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthMask(true);
         }
 
         for (String line : text)
         {
             if (disableDepth)
             {
-                GlStateManager.depthMask(false);
-                GlStateManager.disableDepth();
+                RenderSystem.depthMask(false);
+                RenderSystem.disableDepthTest();
 
                 // Render the faint version that will also show through blocks
-                textRenderer.drawString(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
+                textRenderer.draw(matrixStack, line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
 
-                GlStateManager.enableDepth();
-                GlStateManager.depthMask(true);
+                RenderSystem.enableDepthTest();
+                RenderSystem.depthMask(true);
             }
 
             // Render the actual fully opaque text, that will not show through blocks
-            textRenderer.drawString(line, -strLenHalf, textY, textColor);
-            textY += textRenderer.FONT_HEIGHT;
+            textRenderer.draw(matrixStack, line, -strLenHalf, textY, textColor);
+            textY += textRenderer.fontHeight;
         }
 
         if (disableDepth == false)
         {
-            GlStateManager.doPolygonOffset(0f, 0f);
-            GlStateManager.disablePolygonOffset();
+            RenderSystem.polygonOffset(0f, 0f);
+            RenderSystem.disablePolygonOffset();
         }
 
         RenderUtils.color(1f, 1f, 1f, 1f);
-        GlStateManager.enableCull();
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        RenderSystem.enableCull();
+        RenderSystem.disableBlend();
+        matrixStack.pop();
     }
 }

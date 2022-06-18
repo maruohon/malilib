@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.function.IntUnaryOperator;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
+import fi.dy.masa.malilib.render.RenderContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.inventory.InventoryView;
 import fi.dy.masa.malilib.util.position.Vec2i;
@@ -57,7 +59,10 @@ public class InventoryRenderDefinition
         return this.renderHeightFunction.applyAsInt(inv.getSize());
     }
 
-    public void renderInventory(int x, int y, float z, int backgroundTintColor, InventoryView inv)
+    public void renderInventory(int x, int y, float z,
+                                int backgroundTintColor,
+                                InventoryView inv,
+                                RenderContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.disableItemLighting();
@@ -69,9 +74,9 @@ public class InventoryRenderDefinition
             InventoryRenderUtils.renderEmptySlotBackgrounds(x, y, z, backgroundTintColor, inv, this.emptySlotTextures);
         }
 
-        // TODO 1.13+ port
-        //GlStateManager.pushMatrix();
-        //GlStateManager.translate(0f, 0f, z + 1);
+        MatrixStack matrixStack = ctx.matrixStack;
+        matrixStack.push();
+        matrixStack.translate(0f, 0f, z + 1.0F);
 
         if (this.hasInventoryRanges)
         {
@@ -89,7 +94,7 @@ public class InventoryRenderDefinition
             InventoryRenderUtils.renderGenericInventoryItems(x, y, 100f, 0, -1, slotsPerRow, this.slotOffset, inv);
         }
 
-        //GlStateManager.popMatrix();
+        matrixStack.pop();
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }

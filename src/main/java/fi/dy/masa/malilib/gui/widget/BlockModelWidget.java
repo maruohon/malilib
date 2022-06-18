@@ -57,7 +57,7 @@ public class BlockModelWidget extends BaseModelWidget
     {
         if (this.model != null)
         {
-            RenderUtils.renderModelInGui(x, y, z, this.model, this.state);
+            RenderUtils.renderModelInGui(x, y, z, this.model, this.state, ctx);
         }
     }
 }

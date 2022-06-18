@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
@@ -13,10 +12,11 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.resource.ResourceManager;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -308,8 +308,10 @@ public class TextRenderer
         if (this.buildingStyleBuffer)
         {
             RenderSystem.disableTexture();
-            this.styleBuffer.end(); // TODO 1.13+ port this was finishDrawing()
-            this.vboUploader.draw(this.styleBuffer);
+            //this.styleBuffer.end(); // TODO 1.13+ port this was finishDrawing()
+            //this.vboUploader.draw(this.styleBuffer);
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            BufferRenderer.drawWithShader(this.styleBuffer.end());
             this.buildingStyleBuffer = false;
             RenderSystem.enableTexture();
         }
@@ -326,7 +328,9 @@ public class TextRenderer
             {
                 RenderSystem.enableTexture();
                 this.textureManager.bindTexture(this.currentFontTexture);
-                this.vboUploader.draw(this.textBuffer);
+                //this.vboUploader.draw(this.textBuffer);
+                RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+                BufferRenderer.drawWithShader(this.textBuffer.end());
                 RenderSystem.disableTexture();
             }
 
