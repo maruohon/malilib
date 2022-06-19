@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.lwjgl.opengl.GL11;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.BlockPos;
@@ -31,6 +31,7 @@ public class ShapeRenderUtils
 
         renderGrid(x, y, z, width, height, gridInterval, lineWidth, color, buffer);
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderUtils.drawBuffer();
     }
 
@@ -61,6 +62,7 @@ public class ShapeRenderUtils
         // Draw the border
         renderOutline(x, y, z, width, height, 1, colorBorder, buffer);
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderUtils.drawBuffer();
     }
 
@@ -74,6 +76,7 @@ public class ShapeRenderUtils
         // Draw the border
         renderOutline(x, y, z, width, height, 1, borderColor, buffer);
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderUtils.drawBuffer();
     }
 
@@ -83,6 +86,7 @@ public class ShapeRenderUtils
 
         renderOutline(x, y, z, width, height, borderWidth, color, buffer);
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderUtils.drawBuffer();
     }
 
@@ -92,6 +96,7 @@ public class ShapeRenderUtils
 
         renderOutline(x, y, z, width, height, borderWidth, color, buffer);
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderUtils.drawBuffer();
     }
 
@@ -143,6 +148,7 @@ public class ShapeRenderUtils
 
         renderRectangle(x, y, z, width, height, color, buffer);
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderUtils.drawBuffer();
     }
 
@@ -187,6 +193,7 @@ public class ShapeRenderUtils
 
         renderTexturedRectangle256(x, y, z, u, v, width, height, buffer);
 
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderUtils.drawBuffer();
     }
 
@@ -258,6 +265,7 @@ public class ShapeRenderUtils
                                       textureWidth, textureHeight,
                                       pixelWidth, pixelHeight, buffer);
 
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderUtils.drawBuffer();
     }
 
@@ -306,6 +314,7 @@ public class ShapeRenderUtils
         renderScaledTintedTexturedRectangle(x, y, z, u, v, renderWidth, renderHeight, textureWidth, textureHeight,
                                             pixelWidth, pixelHeight, backgroundTintColor, buffer);
 
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderUtils.drawBuffer();
     }
 
@@ -420,6 +429,7 @@ public class ShapeRenderUtils
             lastAngle += angleIncrement;
         }
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderUtils.drawBuffer();
     }
 
@@ -486,6 +496,7 @@ public class ShapeRenderUtils
             lastAngle -= angleIncrement;
         }
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderUtils.drawBuffer();
     }
 
@@ -535,6 +546,7 @@ public class ShapeRenderUtils
             lastAngle -= angleIncrement;
         }
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderUtils.drawBuffer();
     }
 

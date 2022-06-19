@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
@@ -137,6 +136,7 @@ public class RenderUtils
 
     public static int getVanillaScreenScale()
     {
+        /*
         MinecraftClient mc = GameUtils.getClient();
         int displayWidth = GuiUtils.getDisplayWidth();
         int displayHeight = GuiUtils.getDisplayHeight();
@@ -150,6 +150,8 @@ public class RenderUtils
         }
 
         return scale;
+        */
+        return (int) GameUtils.getClient().getWindow().getScaleFactor();
     }
 
     public static void setupScaledScreenRendering(double width, double height)
@@ -314,6 +316,7 @@ public class RenderUtils
             ShapeRenderUtils.renderTexturedRectangle256(x + e, y + e, z, u + e, v + e, width - 2 * e, height - 2 * e, buffer); // center
         }
 
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         drawBuffer();
     }
 
@@ -392,6 +395,7 @@ public class RenderUtils
             default:
         }
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         tessellator.draw();
 
         RenderSystem.lineWidth(1.6f);
@@ -471,6 +475,7 @@ public class RenderUtils
         buffer.vertex(x + 0.5, y + 0.5, z).color(r, g, b, a).next();
         buffer.vertex(x - 0.5, y + 0.5, z).color(r, g, b, a).next();
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         tessellator.draw();
 
         RenderSystem.lineWidth(1.6f);

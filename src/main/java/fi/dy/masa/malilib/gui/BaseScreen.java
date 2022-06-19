@@ -136,7 +136,7 @@ public abstract class BaseScreen extends Screen
 
     protected void onScreenResolutionSet(int width, int height)
     {
-        boolean initial = this.isFullScreen();
+        boolean initial = this.isFullScreen() || this.screenWidth == 0 || this.screenHeight == 0;
 
         this.updateCustomScreenScale();
 
@@ -444,8 +444,8 @@ public abstract class BaseScreen extends Screen
         boolean isActiveScreen = GuiUtils.getCurrentScreen() == this;
         int hoveredWidgetId = this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
 
-        if (this.context == null ||
-            this.context.matches(mouseX, mouseY, isActiveScreen, hoveredWidgetId) == false)
+        //if (this.context == null ||
+        //    this.context.matches(mouseX, mouseY, isActiveScreen, hoveredWidgetId) == false)
         {
             this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveScreen, matrices);
         }

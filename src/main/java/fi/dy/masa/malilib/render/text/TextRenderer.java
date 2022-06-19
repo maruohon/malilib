@@ -305,15 +305,14 @@ public class TextRenderer
     {
         this.renderTextBuffer();
 
+        // TODO 1.13+ port
         if (this.buildingStyleBuffer)
         {
             RenderSystem.disableTexture();
-            //this.styleBuffer.end(); // TODO 1.13+ port this was finishDrawing()
-            //this.vboUploader.draw(this.styleBuffer);
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             BufferRenderer.drawWithShader(this.styleBuffer.end());
-            this.buildingStyleBuffer = false;
             RenderSystem.enableTexture();
+            this.buildingStyleBuffer = false;
         }
     }
 
@@ -321,21 +320,18 @@ public class TextRenderer
     {
         if (this.buildingTextBuffer)
         {
-            this.textBuffer.end();
-
             // TODO 1.13+ port
             if (this.currentFontTexture != null)
             {
                 RenderSystem.enableTexture();
                 this.textureManager.bindTexture(this.currentFontTexture);
-                //this.vboUploader.draw(this.textBuffer);
                 RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
                 BufferRenderer.drawWithShader(this.textBuffer.end());
                 RenderSystem.disableTexture();
+                this.buildingTextBuffer = false;
             }
 
             this.currentFontTexture = null;
-            this.buildingTextBuffer = false;
         }
     }
 
