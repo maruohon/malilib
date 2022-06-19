@@ -36,7 +36,10 @@ public abstract class BaseScreen extends Screen
     protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
     protected final List<Runnable> tasks = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
+
+    private int keyInputCount;
     private String titleString = "";
+
     @Nullable protected EventListener screenCloseListener;
     @Nullable protected StyledTextLine titleText;
     @Nullable private Screen parent;
@@ -50,8 +53,6 @@ public abstract class BaseScreen extends Screen
     protected int x;
     protected int y;
     protected float z;
-    protected int lastMouseX = -1;
-    protected int lastMouseY = -1;
     protected int screenWidth;
     protected int screenHeight;
     protected int titleColor = 0xFFFFFFFF;
@@ -568,6 +569,8 @@ public abstract class BaseScreen extends Screen
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
+        this.keyInputCount++;
+
         if (this.onKeyTyped(keyCode, scanCode, modifiers))
         {
             return true;
@@ -579,6 +582,14 @@ public abstract class BaseScreen extends Screen
     @Override
     public boolean charTyped(char chr, int modifiers)
     {
+        // This is an ugly fix for the issue that the key press from the hotkey that
+        // opens a Screen would then also get into any text fields or search bars, as the
+        // charTyped() event always fires after the keyPressed() event in any case >_>
+        if (this.keyInputCount++ <= 0)
+        {
+            return true;
+        }
+
         if (this.onCharTyped(chr, modifiers))
         {
             return true;
