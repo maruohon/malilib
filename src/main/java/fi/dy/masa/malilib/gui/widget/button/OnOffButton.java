@@ -2,7 +2,9 @@ package fi.dy.masa.malilib.gui.widget.button;
 
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
@@ -62,6 +64,7 @@ public class OnOffButton extends GenericButton
         this.style = style;
 
         boolean isSlider = this.style == OnOffStyle.SLIDER_ON_OFF;
+        this.renderButtonBackgroundTexture = isSlider == false;
         this.getBorderRenderer().getNormalSettings().setBorderWidth(isSlider ? 1 : 0);
         this.getBackgroundRenderer().getNormalSettings().setEnabled(isSlider);
         this.getTextSettings().setHoveredTextColor(isSlider ? 0xFFF0F000 : 0xFFFFFFA0);
@@ -133,15 +136,14 @@ public class OnOffButton extends GenericButton
     }
 
     @Override
-    protected void renderButtonBackgroundIcon(int x, int y, float z, int width, int height,
-                                              boolean hovered, ScreenContext ctx)
+    protected void renderIcon(int x, int y, float z, int width, int height, boolean hovered, ScreenContext ctx)
     {
-        super.renderButtonBackgroundIcon(x, y, z, width, height, hovered, ctx);
+        super.renderIcon(x, y, z, width, height, hovered, ctx);
 
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
-            boolean value = this.getCurrentValue();
-            renderOnOffSlider(x, y, z + 0.125f, width, height, value, this.isEnabled(), hovered,
+            renderOnOffSlider(x, y, z + 0.125f, width, height,
+                              this.getCurrentValue(), this.isEnabled(), hovered,
                               this.iconOn, this.iconOff, ctx);
         }
     }
@@ -162,10 +164,14 @@ public class OnOffButton extends GenericButton
         int v1 = icon.getVariantV(variantIndex);
         int v2 = v1 + icon.getHeight() - iconHeight2;
 
-        RenderUtils.bindTexture(icon.getTexture());
         BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE, true);
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderUtils.bindTexture(icon.getTexture());
+        RenderSystem.enableDepthTest();
         ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1, buffer);
         ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2, buffer);
+
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderUtils.drawBuffer();
     }
 
