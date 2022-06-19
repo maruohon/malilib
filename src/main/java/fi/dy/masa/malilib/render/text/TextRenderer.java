@@ -284,7 +284,6 @@ public class TextRenderer
         if (this.unicode != mc.forcesUnicodeFont())
         {
             // TODO 1.13+ port
-            //this.onResourceManagerReload(mc.getResourceManager());
             this.onResourceManagerReload();
         }
 
@@ -324,8 +323,8 @@ public class TextRenderer
             if (this.currentFontTexture != null)
             {
                 RenderSystem.enableTexture();
-                this.textureManager.bindTexture(this.currentFontTexture);
-                RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+                RenderUtils.bindTexture(this.currentFontTexture);
+                RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
                 BufferRenderer.drawWithShader(this.textBuffer.end());
                 RenderSystem.disableTexture();
                 this.buildingTextBuffer = false;

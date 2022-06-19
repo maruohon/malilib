@@ -765,7 +765,7 @@ public abstract class BaseScreen extends Screen
 
     public void bindTexture(Identifier texture)
     {
-        this.mc.getTextureManager().bindTexture(texture);
+        RenderUtils.bindTexture(texture);
     }
 
     public BaseScreen setZ(float z)

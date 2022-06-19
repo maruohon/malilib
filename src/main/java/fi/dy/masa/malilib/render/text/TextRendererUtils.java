@@ -58,7 +58,7 @@ public class TextRendererUtils
         
         try
         {
-            if (resource != null && resource.getInputStream().read(glyphWidth) <= 0)
+            if (resource == null || resource.getInputStream().read(glyphWidth) <= 0)
             {
                 MaLiLib.LOGGER.warn("Failed to read glyph sizes from 'font/glyph_sizes.bin'");
             }
