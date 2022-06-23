@@ -72,7 +72,7 @@ public class FileUtils
     }
 
     public static boolean createDirectoriesIfMissing(Path dir,
-                                                     Consumer<String> messageConsumer,
+                                                     @Nullable Consumer<String> messageConsumer,
                                                      @Nullable String message)
     {
         try
@@ -84,7 +84,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            if (message != null)
+            if (messageConsumer != null && message != null)
             {
                 messageConsumer.accept(String.format(message, dir.toAbsolutePath()));
             }
@@ -102,10 +102,12 @@ public class FileUtils
 
     public static boolean createFile(Path file, Consumer<String> messageConsumer)
     {
-        return createDirectoriesIfMissing(file, messageConsumer, "Failed to create the file '%s'");
+        return createFile(file, messageConsumer, "Failed to create the file '%s'");
     }
 
-    public static boolean createFile(Path file, Consumer<String> messageConsumer, @Nullable String message)
+    public static boolean createFile(Path file,
+                                     @Nullable Consumer<String> messageConsumer,
+                                     @Nullable String message)
     {
         try
         {
@@ -114,7 +116,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            if (message != null)
+            if (messageConsumer != null && message != null)
             {
                 messageConsumer.accept(String.format(message, file.toAbsolutePath()));
             }
@@ -226,23 +228,26 @@ public class FileUtils
 
     public static boolean writeDataToFile(final Path file, Consumer<BufferedWriter> dataWriter)
     {
-        Path realPath;
+        Path dir = file.getParent();
+        Path realPath = file;
+
+        if (FileUtils.createDirectoriesIfMissing(dir) == false)
+        {
+            return false;
+        }
 
         try
         {
-            realPath = file.toRealPath();
+            if (Files.exists(file))
+            {
+                realPath = file.toRealPath();
+            }
         }
         catch (Exception e)
         {
             MessageDispatcher.error(8000).console().translate("malilib.message.error.failed_to_resolve_file",
                                                               file.toAbsolutePath());
-            return false;
-        }
-
-        Path dir = realPath.getParent();
-
-        if (FileUtils.createDirectoriesIfMissing(dir) == false)
-        {
+            MaLiLib.LOGGER.error("Failed to resolve '{}'", file.toAbsolutePath(), e);
             return false;
         }
 
