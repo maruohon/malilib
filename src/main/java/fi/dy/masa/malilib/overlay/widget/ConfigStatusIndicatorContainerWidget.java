@@ -75,8 +75,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         if (this.configs.contains(config) == false)
         {
-            ConfigStatusWidgetFactory<ConfigInfo> factory = Registry.CONFIG_STATUS_WIDGET
-                    .getConfigStatusWidgetFactory(config.getConfig());
+            ConfigStatusWidgetFactory<ConfigInfo> factory = Registry.CONFIG_STATUS_WIDGET.getConfigStatusWidgetFactory(config.getConfig());
 
             if (factory != null)
             {

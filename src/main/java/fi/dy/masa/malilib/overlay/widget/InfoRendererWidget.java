@@ -63,7 +63,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
     }
 
     /**
-     * Returns whether or not this widget should get saved and loaded
+     * Returns whether this widget should get saved and loaded
      * automatically. This should generally only return true for
      * widgets that are created by the user via some configuration menu,
      * and are thus handled via the InfoWidgetManager.
@@ -188,7 +188,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
     }
 
     /**
-     * Sets whether or not widgets that are visible in RenderContext.BOTH will render
+     * Sets whether widgets that are visible in {@code OverlayRenderContext.BOTH} will render
      * below or above the screen.
      */
     public void setRenderAboveScreen(boolean renderAboveScreen)
@@ -264,8 +264,8 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
      * and if it renders only in a GUI context then it's obviously not rendered when in-game.
      * <br>
      * Note that the other {@link #shouldRenderFromContext(fi.dy.masa.malilib.overlay.InfoOverlay.OverlayRenderContext, boolean)}
-     * method is used to check whether or not the widget will actually
-     * render, based on the current status of having a GUI open or not.
+     * method is used to check whether the widget will actually render,
+     * based on whether a Screen is currently open or not.
      * So basically that method will prevent a widget from actually rendering twice if
      * it's set to be visible in BOTH contexts.
      */
@@ -284,7 +284,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         // since if there is no GUI open then they would not get rendered a second time from the GUI context.
 
         // If a screen is open however, then widgets that are visible in both contexts
-        // can decide whether or not they want to render below or on top of the screen,
+        // can decide whether they want to render below or on top of the screen,
         // by setting the value of the renderAboveScreen field.
 
         return isScreenOpen == false || (this.renderAboveScreen == (context == InfoOverlay.OverlayRenderContext.GUI));
@@ -400,9 +400,9 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
 
         if (this.renderName) { obj.addProperty("render_name", this.renderName); }
         if (this.getRenderAboveScreen()) { obj.addProperty("above_screen", this.getRenderAboveScreen()); }
-        if (this.getZ() != 0.0F) { obj.addProperty("z", this.getZ()); }
-        if (this.scale != 1.0) { obj.addProperty("scale", this.scale); }
-        if (this.sortIndex != 100) { obj.addProperty("sort_index", this.getSortIndex()); }
+        JsonUtils.addIfNotEqual(obj, "z", this.getZ(), 0.0F);
+        JsonUtils.addIfNotEqual(obj, "scale", this.scale, 1.0);
+        JsonUtils.addIfNotEqual(obj, "sort_index", this.sortIndex, 100);
         this.getTextSettings().writeToJsonIfModified(obj, "text_settings");
         this.backgroundRenderer.getNormalSettings().writeToJsonIfModified(obj, "bg");
         this.borderRenderer.getNormalSettings().writeToJsonIfModified(obj, "border");

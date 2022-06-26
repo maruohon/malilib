@@ -19,7 +19,7 @@ public class StringListRendererWidget extends InfoRendererWidget
 {
     protected final OrderedStringListFactory stringListFactory = new OrderedStringListFactory();
     protected final StringListRenderer stringListRenderer = new StringListRenderer();
-    protected boolean dirty;
+    protected boolean stringListModified;
 
     public StringListRendererWidget()
     {
@@ -51,7 +51,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     public void setLines(String key, List<String> lines, int priority)
     {
         this.stringListFactory.setStringListProvider(key, () -> lines, priority);
-        this.markDirty();
+        this.notifyStringListChanged();
     }
 
     /**
@@ -63,13 +63,13 @@ public class StringListRendererWidget extends InfoRendererWidget
     public void setStringListProvider(String key, Supplier<List<String>> supplier, int priority)
     {
         this.stringListFactory.setStringListProvider(key, supplier, priority);
-        this.markDirty();
+        this.notifyStringListChanged();
     }
 
     public void removeStringListProvider(String key)
     {
         this.stringListFactory.removeTextLineProvider(key);
-        this.markDirty();
+        this.notifyStringListChanged();
     }
 
     @Override
@@ -119,10 +119,10 @@ public class StringListRendererWidget extends InfoRendererWidget
     /**
      * Call this method to indicate that the string list needs to be re-built.
      */
-    public void markDirty()
+    public void notifyStringListChanged()
     {
         //System.out.print("StringListRendererWidget#markDirty()\n");
-        this.dirty = true;
+        this.stringListModified = true;
     }
 
     protected void updateLines()
@@ -155,10 +155,10 @@ public class StringListRendererWidget extends InfoRendererWidget
     @Override
     public void updateState()
     {
-        if (this.dirty)
+        if (this.stringListModified)
         {
             this.updateLines();
-            this.dirty = false;
+            this.stringListModified = false;
         }
 
         super.updateState();
