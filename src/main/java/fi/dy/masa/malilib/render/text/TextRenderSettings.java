@@ -179,4 +179,34 @@ public class TextRenderSettings
         this.hoveredTextColor = JsonUtils.getIntegerOrDefault(obj, "hover_text_color", DEFAULT_HOVERED_TEXT_COLOR);
         this.lineHeight = JsonUtils.getIntegerOrDefault(obj, "line_height", TextRenderer.INSTANCE.getLineHeight());
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) { return true; }
+        if (o == null || this.getClass() != o.getClass()) { return false; }
+
+        TextRenderSettings that = (TextRenderSettings) o;
+
+        if (this.backgroundEnabled != that.backgroundEnabled) { return false; }
+        if (this.textShadowEnabled != that.textShadowEnabled) { return false; }
+        if (this.useHoverTextColor != that.useHoverTextColor) { return false; }
+        if (this.backgroundColor != that.backgroundColor) { return false; }
+        if (this.hoveredTextColor != that.hoveredTextColor) { return false; }
+        if (this.textColor != that.textColor) { return false; }
+        return this.lineHeight == that.lineHeight;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (this.backgroundEnabled ? 1 : 0);
+        result = 31 * result + (this.textShadowEnabled ? 1 : 0);
+        result = 31 * result + (this.useHoverTextColor ? 1 : 0);
+        result = 31 * result + this.backgroundColor;
+        result = 31 * result + this.hoveredTextColor;
+        result = 31 * result + this.textColor;
+        result = 31 * result + this.lineHeight;
+        return result;
+    }
 }

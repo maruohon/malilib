@@ -116,6 +116,30 @@ public class MultiLineTextRenderSettings extends TextRenderSettings
 
         this.oddEvenBackgroundEnabled = JsonUtils.getBooleanOrDefault(obj, "bg_odd_even", false);
         this.evenWidthBackgroundEnabled = JsonUtils.getBooleanOrDefault(obj, "bg_even_width", false);
-        this.oddRowBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color_odd", 0x70A0A0A0);
+        this.oddRowBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color_odd", DEFAULT_ODD_ROW_BG_COLOR);
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) { return true; }
+        if (o == null || this.getClass() != o.getClass()) { return false; }
+        if (! super.equals(o)) { return false; }
+
+        MultiLineTextRenderSettings that = (MultiLineTextRenderSettings) o;
+
+        if (this.oddEvenBackgroundEnabled != that.oddEvenBackgroundEnabled) { return false; }
+        if (this.evenWidthBackgroundEnabled != that.evenWidthBackgroundEnabled) { return false; }
+        return this.oddRowBackgroundColor == that.oddRowBackgroundColor;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + (this.oddEvenBackgroundEnabled ? 1 : 0);
+        result = 31 * result + (this.evenWidthBackgroundEnabled ? 1 : 0);
+        result = 31 * result + this.oddRowBackgroundColor;
+        return result;
     }
 }

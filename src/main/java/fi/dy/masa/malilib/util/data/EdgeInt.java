@@ -243,4 +243,41 @@ public class EdgeInt
 
         return false;
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) { return true; }
+        if (o == null || this.getClass() != o.getClass()) { return false; }
+
+        EdgeInt edgeInt = (EdgeInt) o;
+
+        /*
+        if (this.defaultLeft != edgeInt.defaultLeft) { return false; }
+        if (this.defaultRight != edgeInt.defaultRight) { return false; }
+        if (this.defaultTop != edgeInt.defaultTop) { return false; }
+        if (this.defaultBottom != edgeInt.defaultBottom) { return false; }
+        */
+        if (this.left != edgeInt.left) { return false; }
+        if (this.right != edgeInt.right) { return false; }
+        if (this.top != edgeInt.top) { return false; }
+        return this.bottom == edgeInt.bottom;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        /*
+        int result = this.defaultLeft;
+        result = 31 * result + this.defaultRight;
+        result = 31 * result + this.defaultTop;
+        result = 31 * result + this.defaultBottom;
+        result = 31 * result + this.left;
+        */
+        int result = this.left;
+        result = 31 * result + this.right;
+        result = 31 * result + this.top;
+        result = 31 * result + this.bottom;
+        return result;
+    }
 }

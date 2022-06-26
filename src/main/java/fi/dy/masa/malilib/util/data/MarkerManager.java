@@ -79,4 +79,21 @@ public class MarkerManager<T>
             JsonUtils.readArrayElements(arr, this::readMarkerFromJsonElement);
         }
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) { return true; }
+        if (o == null || this.getClass() != o.getClass()) { return false; }
+
+        MarkerManager<?> that = (MarkerManager<?>) o;
+
+        return this.markers.equals(that.markers);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return this.markers.hashCode();
+    }
 }

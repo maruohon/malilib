@@ -106,4 +106,24 @@ public class BackgroundSettings
         this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", this.enabled);
         this.color = JsonUtils.getIntegerOrDefault(obj, "color", this.color);
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) { return true; }
+        if (o == null || this.getClass() != o.getClass()) { return false; }
+
+        BackgroundSettings that = (BackgroundSettings) o;
+
+        if (this.enabled != that.enabled) { return false; }
+        return this.color == that.color;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (this.enabled ? 1 : 0);
+        result = 31 * result + this.color;
+        return result;
+    }
 }
