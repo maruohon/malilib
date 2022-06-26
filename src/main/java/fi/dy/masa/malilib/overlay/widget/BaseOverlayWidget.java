@@ -130,6 +130,18 @@ public abstract class BaseOverlayWidget extends BaseWidget
         obj.addProperty("type", this.getWidgetTypeId());
         obj.addProperty("enabled", this.isEnabled());
 
+        if (this.automaticWidth)
+        {
+            obj.addProperty("auto_width", true);
+        }
+
+        if (this.hasMaxWidth())
+        {
+            obj.addProperty("max_width", this.maxWidth);
+        }
+
+        obj.addProperty("width", this.getWidth());
+
         if (this.margin.isEmpty() == false)
         {
             obj.add("margin", this.margin.toJson());
@@ -146,7 +158,9 @@ public abstract class BaseOverlayWidget extends BaseWidget
     public void fromJson(JsonObject obj)
     {
         this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", true);
-
+        JsonUtils.readBooleanIfExists(obj, "auto_width", v -> this.automaticWidth = v);
+        JsonUtils.readIntegerIfExists(obj, "max_width", this::setMaxWidth);
+        JsonUtils.readIntegerIfExists(obj, "width", this::setWidth);
         JsonUtils.readArrayIfExists(obj, "padding", this.padding::fromJson);
         JsonUtils.readArrayIfExists(obj, "margin", this.margin::fromJson);
     }

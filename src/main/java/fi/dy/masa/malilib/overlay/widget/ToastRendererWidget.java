@@ -365,7 +365,6 @@ public class ToastRendererWidget extends InfoRendererWidget
         JsonObject obj = super.toJson();
 
         obj.addProperty("max_toasts", this.maxToasts);
-        obj.addProperty("max_width", this.maxWidth);
         obj.addProperty("message_gap", this.messageGap);
         obj.addProperty("toast_lifetime", this.defaultLifeTime);
         obj.addProperty("toast_fade_in", this.defaultFadeInTime);
@@ -381,7 +380,6 @@ public class ToastRendererWidget extends InfoRendererWidget
 
         this.maxToasts = JsonUtils.getIntegerOrDefault(obj, "max_toasts", this.maxToasts);
         this.messageGap = JsonUtils.getIntegerOrDefault(obj, "message_gap", this.messageGap);
-        this.setMaxWidth(JsonUtils.getIntegerOrDefault(obj, "max_width", this.maxWidth));
         this.defaultLifeTime = JsonUtils.getIntegerOrDefault(obj, "toast_lifetime", this.defaultLifeTime);
         this.defaultFadeInTime = JsonUtils.getIntegerOrDefault(obj, "toast_fade_in", this.defaultFadeInTime);
         this.defaultFadeOutTime = JsonUtils.getIntegerOrDefault(obj, "toast_fade_out", this.defaultFadeOutTime);
