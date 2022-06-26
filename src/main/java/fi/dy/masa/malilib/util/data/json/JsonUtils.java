@@ -356,6 +356,46 @@ public class JsonUtils
         return getStringOrDefault(obj, name, null);
     }
 
+    public static void addIfNotEqual(JsonObject obj, String name, int value, int excludeValue)
+    {
+        if (value != excludeValue)
+        {
+            obj.addProperty(name, value);
+        }
+    }
+
+    public static void addIfNotEqual(JsonObject obj, String name, float value, float excludeValue)
+    {
+        if (value != excludeValue)
+        {
+            obj.addProperty(name, value);
+        }
+    }
+
+    public static void addIfNotEqual(JsonObject obj, String name, double value, double excludeValue)
+    {
+        if (value != excludeValue)
+        {
+            obj.addProperty(name, value);
+        }
+    }
+
+    public static void addIfNotEqual(JsonObject obj, String name, boolean value, boolean excludeValue)
+    {
+        if (value != excludeValue)
+        {
+            obj.addProperty(name, value);
+        }
+    }
+
+    public static void addIfNotEqual(JsonObject obj, String name, String value, String excludeValue)
+    {
+        if (value.equals(excludeValue) == false)
+        {
+            obj.addProperty(name, value);
+        }
+    }
+
     public static boolean hasBlockPos(JsonObject obj, String name)
     {
         return blockPosFromJson(obj, name) != null;
