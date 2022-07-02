@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -556,7 +557,8 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected boolean entryMatchesFilter(T entry, String filterText)
     {
-        return filterText.isEmpty() || this.getDisplayString(entry).toLowerCase().contains(filterText);
+        return filterText.isEmpty() ||
+               this.getDisplayString(entry).toLowerCase(Locale.ROOT).contains(filterText.toLowerCase(Locale.ROOT));
     }
 
     protected int getRequiredWidth(List<T> entriesIn,
