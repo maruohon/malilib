@@ -79,7 +79,7 @@ public class StringUtils
             .formatted(net.minecraft.util.Formatting.UNDERLINE)
             .styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath())));
 
-        sender.sendSystemMessage(Text.translatable(messageKey, name), sender.getUuid());
+        sender.sendMessage(Text.translatable(messageKey, name));
     }
 
     /**

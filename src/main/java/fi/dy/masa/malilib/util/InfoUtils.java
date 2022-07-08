@@ -1,8 +1,13 @@
 package fi.dy.masa.malilib.util;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.message.MessageSender;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
@@ -138,12 +143,7 @@ public class InfoUtils
 
     public static void printActionbarMessage(String key, Object... args)
     {
-        MinecraftClient mc = MinecraftClient.getInstance();
-
-        if (mc.player != null)
-        {
-            mc.inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, Text.translatable(key, args), Util.NIL_UUID);
-        }
+        sendVanillaMessage(net.minecraft.network.message.MessageType.GAME_INFO, Text.translatable(key, args));
     }
 
     /**
@@ -189,17 +189,24 @@ public class InfoUtils
         IN_GAME_MESSAGES.drawMessages(x, y, matrixStack);
     }
 
+    public static void sendVanillaMessage(RegistryKey<net.minecraft.network.message.MessageType> messageTypeKey, MutableText message)
+    {
+        World world = MinecraftClient.getInstance().world;
+
+        if (world != null)
+        {
+            net.minecraft.network.message.MessageType type = world.getRegistryManager().get(Registry.MESSAGE_TYPE_KEY).get(messageTypeKey);
+            MessageSender sender = new MessageSender(Util.NIL_UUID, message);
+            MinecraftClient.getInstance().inGameHud.onChatMessage(type, message, sender);
+        }
+    }
+
     public static class InfoMessageConsumer implements IStringConsumer
     {
         @Override
         public void setString(String string)
         {
-            MinecraftClient mc = MinecraftClient.getInstance();
-
-            if (mc.player != null)
-            {
-                mc.inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, Text.translatable(string), Util.NIL_UUID);
-            }
+            sendVanillaMessage(net.minecraft.network.message.MessageType.GAME_INFO, Text.literal(string));
         }
     }
 }

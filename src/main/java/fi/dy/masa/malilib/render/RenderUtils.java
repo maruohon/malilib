@@ -43,7 +43,7 @@ import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.util.math.random.LocalRandom;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.util.Color4f;
@@ -58,7 +58,7 @@ public class RenderUtils
     public static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
     public static final Identifier TEXTURE_MAP_BACKGROUND_CHECKERBOARD = new Identifier("textures/map/map_background_checkerboard.png");
 
-    private static final AbstractRandom RAND = AbstractRandom.create();
+    private static final LocalRandom RAND = new LocalRandom(0);
     //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
     //private static final Vec3d LIGHT1_POS = (new Vec3d(-0.2D, 1.0D,  0.7D)).normalize();
 
