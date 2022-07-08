@@ -97,20 +97,21 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
                 this.activeInfoAreas.add(infoArea);
             }
         }
+
+        this.needsReFetch = false;
         //System.out.printf("InfoOverlay#fetchEnabledWidgets() - size: %d\n", this.enabledInfoWidgets.size());
     }
 
     /**
      * Calls the InfoRendererWidget#updateState() method on all the currently enabled widgets.
      * Don't call this unless you have your own instance of the InfoOverlay,
-     * ie. don't call this on InfoOverlay.INSTANCE
+     * ie. don't call this on {@code Registry.INFO_OVERLAY}
      */
     public void tick()
     {
         if (this.needsReFetch)
         {
             this.fetchEnabledWidgets();
-            this.needsReFetch = false;
         }
 
         if (GuiUtils.getCurrentScreen() != null)
@@ -140,7 +141,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     /**
      * Renders all the currently enabled widgets that are set to be rendered in the in-game context.
      * Don't call this unless you have your own instance of the InfoOverlay,
-     * ie. don't call this on InfoOverlay.INSTANCE
+     * ie. don't call this on {@code Registry.INFO_OVERLAY}
      */
     public void renderInGame()
     {
@@ -176,7 +177,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     /**
      * Renders all the currently enabled widgets that are set to be rendered in the gui context.
      * Don't call this unless you have your own instance of the InfoOverlay,
-     * ie. don't call this on InfoOverlay.INSTANCE
+     * ie. don't call this on {@code Registry.INFO_OVERLAY}
      */
     public void renderScreen()
     {
