@@ -531,9 +531,11 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
         for (String entrySearchTerm : entrySearchTerms)
         {
+            entrySearchTerm = entrySearchTerm.toLowerCase(Locale.ROOT);
+
             for (String searchTerm : searchTerms)
             {
-                if (entrySearchTerm.toLowerCase(Locale.ROOT).contains(searchTerm))
+                if (entrySearchTerm.contains(searchTerm))
                 {
                     return true;
                 }
