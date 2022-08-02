@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.overlay.message;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import net.minecraft.util.text.TextComponentString;
@@ -23,6 +25,7 @@ public class MessageDispatcher
     @Nullable protected String rendererMarker;
     @Nullable protected String messageMarker;
     @Nullable protected Consumer<String> consoleMessageConsumer;
+    @Nullable protected Throwable exception;
     protected boolean append;
     protected boolean console;
     protected int defaultTextColor;
@@ -53,6 +56,12 @@ public class MessageDispatcher
     {
         this.console = true;
         return this;
+    }
+
+    public MessageDispatcher console(Throwable exception)
+    {
+        this.exception = exception;
+        return this.console();
     }
 
     public MessageDispatcher customHotbar()
@@ -217,6 +226,7 @@ public class MessageDispatcher
         if (this.consoleMessageConsumer != null)
         {
             this.consoleMessageConsumer.accept(translatedMessage);
+            this.printExceptionToConsole();
         }
     }
 
@@ -228,6 +238,32 @@ public class MessageDispatcher
             {
                 this.consoleMessageConsumer.accept(line.displayText);
             }
+
+            this.printExceptionToConsole();
+        }
+    }
+
+    protected void printExceptionToConsole()
+    {
+        if (MaLiLibConfigs.Debug.PRINT_STACK_TRACE.getBooleanValue())
+        {
+            if (this.exception != null)
+            {
+                MaLiLib.LOGGER.error("Exception:", this.exception);
+            }
+
+            /*
+            if (this.exception != null && this.consoleMessageConsumer != null)
+            {
+                //this.exception.printStackTrace();
+
+                try (PrintWriter w = new PrintWriter(new ConsumerWriter(this.consoleMessageConsumer)))
+                {
+                    this.exception.printStackTrace(w);
+                }
+                catch (Exception ignore) {}
+            }
+            */
         }
     }
 
@@ -289,5 +325,31 @@ public class MessageDispatcher
     public static void error(String translationKey, Object... args)
     {
         error().translate(translationKey, args);
+    }
+
+    public static class ConsumerWriter extends Writer
+    {
+        protected final Consumer<String> consumer;
+
+        public ConsumerWriter(Consumer<String> consumer)
+        {
+            this.consumer = consumer;
+        }
+
+        @Override
+        public void write(char[] cbuf, int off, int len) throws IOException
+        {
+            this.consumer.accept(new String(cbuf, off, len));
+        }
+
+        @Override
+        public void flush()
+        {
+        }
+
+        @Override
+        public void close()
+        {
+        }
     }
 }

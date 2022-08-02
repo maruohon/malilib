@@ -152,8 +152,8 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            messageConsumer.accept(String.format("Failed to copy file '%s' to '%s'",
-                                                 srcFile.toAbsolutePath(), dstFile.toAbsolutePath()));
+            messageConsumer.accept(String.format("Failed to copy file '%s' to '%s'\n%s",
+                                                 srcFile.toAbsolutePath(), dstFile.toAbsolutePath(), e));
             return false;
         }
     }
@@ -245,9 +245,8 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            MessageDispatcher.error(8000).console().translate("malilib.message.error.failed_to_resolve_file",
-                                                              file.toAbsolutePath());
-            MaLiLib.LOGGER.error("Failed to resolve '{}'", file.toAbsolutePath(), e);
+            MessageDispatcher.error(8000).console(e).translate("malilib.message.error.failed_to_resolve_file",
+                                                               file.toAbsolutePath());
             return false;
         }
 

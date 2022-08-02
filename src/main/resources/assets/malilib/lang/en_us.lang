@@ -613,6 +613,7 @@ malilib.config.comment.keybinddebugactionbar=Makes the messages from §eKeyBind 
 malilib.config.comment.keybinddebugtoast=Makes the messages from §eKeyBind Debug§r also get shown as toast messages
 malilib.config.comment.messagekeytochat=When enabled, any messages that are sent using a translation/localization key will print that translation key to the game chat.\n\nThis allows copying the translation key from chat if you want to add a message redirect/override for that message.\n\nMessage Redirects can be configured via the config menu that opens by running the §aopenMessageRedirectsListScreen§r action either via the §fAction Prompt Screen§r (opened via the Hotkeys -> §eOpen Action Prompt Screen§r hotkey) or the §fActions§r config menu.
 malilib.config.comment.pressedkeystoast=Show the currently pressed/held keys as a toast message
+malilib.config.comment.printstacktrace=Enable printing the full stack trace to the console/log when certain errors happen.\n\nBy default only a shorter single line message is printed.\n\nYou may be asked to enable this while trobleshooting some bugs or issues with the mods, to get more verbose and more precise error messages.
 
 malilib.config.comment.keybind_settings.activate_on=Does the keybind activate on press, release or on both edges of triggering the key combination
 malilib.config.comment.keybind_settings.allow_empty_keybind=Is an empty keybind valid.\n\nIf this is enabled, and the keybind combination is unbound, then the keybind will always be considered to be active.\n\nNote that this is only meaningful for keys that are being checked to be held, i.e. so called "activation keys". Most hotkeys are "edge triggered" and have an associated callback that fires once when the key combination is completed. This will do nothing for such hotkeys.
@@ -669,6 +670,7 @@ malilib.config.name.keybinddebugactionbar=KeyBind Debug In Action Bar
 malilib.config.name.keybinddebugtoast=KeyBind Debug Toast
 malilib.config.name.messagekeytochat=Print Message Key To Chat
 malilib.config.name.pressedkeystoast=Pressed Keys Toast
+malilib.config.name.printstacktrace=Print Stack Trace
 
 malilib.hotkey.comment.guidebugkey=The key that has to be held to render the GUI debug things like the widget outlines and position/size information etc. when the Debug -> §eGUI Debug§r option is enabled
 malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from the malilib hotkey system.\n\nThis can be used to completely blacklist some keys from the malilib keybind system. This is meant for keys that cause issues or often get stuck for some reason. For example in my case if I use the mouse Back key while holding shift, then the mouse Forward key triggers and gets stuck on (as far as Minecraft and the LWJGL library see it).
