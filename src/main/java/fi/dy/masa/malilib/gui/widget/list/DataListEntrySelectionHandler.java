@@ -1,13 +1,14 @@
 package fi.dy.masa.malilib.gui.widget.list;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import fi.dy.masa.malilib.gui.BaseScreen;
 
 public class DataListEntrySelectionHandler<DATATYPE>
@@ -139,15 +140,44 @@ public class DataListEntrySelectionHandler<DATATYPE>
 
     public void setSelectedEntry(int listIndex)
     {
-        this.setSelectedEntries(Collections.singletonList(listIndex));
+        IntArrayList list = new IntArrayList();
+        list.add(listIndex);
+        this.setSelectedEntriesByIndices(list);
     }
 
-    public void setSelectedEntries(Collection<Integer> indices)
+    /**
+     * Set the selected entries by finding their indices from the list.
+     * Note that this will only select the first occurrence of each entry.
+     * If the backing list contains multiple identical entries, and you want to select
+     * more than one of them, then you need to use the
+     * {@link #setSelectedEntriesByIndices(it.unimi.dsi.fastutil.ints.IntArrayList)} method instead.
+     */
+    public void setSelectedEntries(Collection<DATATYPE> entries)
     {
         this.clearSelection();
 
-        List<DATATYPE> dataList = this.dataListSupplier.get();
-        int listSize = dataList.size();
+        List<DATATYPE> list = this.dataListSupplier.get();
+        ObjectOpenHashSet<DATATYPE> set = new ObjectOpenHashSet<>(list);
+
+        for (DATATYPE e : entries)
+        {
+            if (set.contains(e))
+            {
+                int index = list.indexOf(e);
+
+                if (index >= 0)
+                {
+                    this.selectedEntryIndices.add(index);
+                }
+            }
+        }
+    }
+
+    public void setSelectedEntriesByIndices(IntArrayList indices)
+    {
+        this.clearSelection();
+
+        int listSize = this.dataListSupplier.get().size();
 
         for (int index : indices)
         {
