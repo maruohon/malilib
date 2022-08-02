@@ -78,6 +78,12 @@ public class BackupUtils
             return false;
         }
 
+        // Don't fail if the file doesn't even exist (yet)
+        if (Files.exists(fileIn) == false)
+        {
+            return true;
+        }
+
         final int numberLength = (int) Math.ceil(Math.log10(maxBackups));
         final String formatString = "%s%0" + numberLength + "d";
         final String name = fileIn.getFileName().toString();
@@ -190,6 +196,12 @@ public class BackupUtils
         {
             MaLiLib.LOGGER.error("Failed to create the config backup directory '{}'", backupDirectory.toAbsolutePath());
             return false;
+        }
+
+        // Don't fail if the file doesn't even exist (yet)
+        if (Files.exists(file) == false)
+        {
+            return true;
         }
 
         String fullName = file.getFileName().toString();
