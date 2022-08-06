@@ -10,14 +10,10 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 public class HotkeyManagerImpl implements HotkeyManager
 {
-    protected final Int2ObjectOpenHashMap<ArrayList<KeyBind>> hotkeyMap = new Int2ObjectOpenHashMap<>();
     protected final List<HotkeyCategory> keyBindCategories = new ArrayList<>();
     protected final List<HotkeyProvider> keyBindProviders = new ArrayList<>();
+    protected Int2ObjectOpenHashMap<ArrayList<KeyBind>> hotkeyMap = new Int2ObjectOpenHashMap<>();
     @Nullable protected ImmutableList<HotkeyCategory> immutableKeyBindCategories;
-
-    public HotkeyManagerImpl()
-    {
-    }
 
     @Override
     public void registerHotkeyProvider(HotkeyProvider provider)
@@ -53,20 +49,23 @@ public class HotkeyManagerImpl implements HotkeyManager
     @Override
     public void updateUsedKeys()
     {
-        this.hotkeyMap.clear();
+        // Create a new map to avoid a CME in checkKeyBindsForChanges(),
+        // if the update is triggered from a keybind callback
+        Int2ObjectOpenHashMap<ArrayList<KeyBind>> hotkeyMap = new Int2ObjectOpenHashMap<>();
 
         for (HotkeyProvider handler : this.keyBindProviders)
         {
             for (Hotkey hotkey : handler.getAllHotkeys())
             {
-                this.addKeyBindToMap(hotkey.getKeyBind());
+                this.addKeyBindToMap(hotkey.getKeyBind(), hotkeyMap);
             }
         }
 
-        this.hotkeyMap.values().forEach((list) -> list.sort(Comparator.comparingInt((v) -> v.getSettings().getPriority())));
+        hotkeyMap.values().forEach((list) -> list.sort(Comparator.comparingInt((v) -> v.getSettings().getPriority())));
+        this.hotkeyMap = hotkeyMap;
     }
 
-    protected void addKeyBindToMap(KeyBind keybind)
+    protected void addKeyBindToMap(KeyBind keybind, Int2ObjectOpenHashMap<ArrayList<KeyBind>> hotkeyMap)
     {
         IntArrayList keys = new IntArrayList();
         keybind.getKeysToList(keys);
@@ -75,7 +74,7 @@ public class HotkeyManagerImpl implements HotkeyManager
         for (int i = 0; i < size; ++i)
         {
             int key = keys.getInt(i);
-            this.hotkeyMap.computeIfAbsent(key, (k) -> new ArrayList<>()).add(keybind);
+            hotkeyMap.computeIfAbsent(key, (k) -> new ArrayList<>()).add(keybind);
         }
     }
 
@@ -98,9 +97,6 @@ public class HotkeyManagerImpl implements HotkeyManager
 
         if (keyBinds != null && keyBinds.isEmpty() == false)
         {
-            // FIXME is there a better way to avoid CMEs when switching config screens?
-            keyBinds = new ArrayList<>(keyBinds);
-
             for (KeyBind keyBind : keyBinds)
             {
                 // Note: updateIsPressed() has to be called for key releases too, to reset the state
