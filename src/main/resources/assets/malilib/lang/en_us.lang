@@ -504,6 +504,8 @@ malilib.title.screen.string_list_edit=Edit String List §e%s§r
 malilib.title.screen.string_list_renderer_configuration=String List Renderer Configuration
 malilib.title.screen.toast_renderer_configuration=MaLiLib - Toast Renderer Configuration
 
+malilib.message.debug.input_handling_cancel_by_handler=Input event handling cancellation requested by the handler §e%s§r
+
 malilib.message.error.action.action_name_exists=An action already exist by the name §e%s§r
 malilib.message.error.action.macro_add_actions_loop_detected=Error: Can't add the selected action(s), as they either directly or indirectly contain this macro itself! That would create an infinite loop when trying to save or execute the macro.
 malilib.message.error.action_screen_already_exists_by_name=Error: Action screen already exists by the name §e%s§r
@@ -608,6 +610,7 @@ malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their ou
 malilib.config.comment.guidebugall=Makes all widgets render their debug outline, instead of only the hovered widget.\n\nThis is only a sub-option for the behavior when the §eGUI Debug§r option is enabled.
 malilib.config.comment.guidebuginfoalways=Makes the debug position and dimensions text always render, even when not hovering the widget.\n\n§eNote: This usually looks very messy§r and generally isn't that useful.
 malilib.config.comment.infooverlaydebug=Makes the Info Overlay widgets and InfoAreas render their debug outlines
+malilib.config.comment.inputcanceldebug=Prints a debug message that includes the class name of the input handler that requested the cancellation of the input event
 malilib.config.comment.keybinddebug=Enables printing all key presses and held keys to the game console\n\nIf the §eKeyBind Debug In Action Bar§r and/or the §eKeyBind Debug Toast§r options are enabled, then the message also appears in those renderers.
 malilib.config.comment.keybinddebugactionbar=Makes the messages from §eKeyBind Debug§r also get sent to the "action bar" renderer
 malilib.config.comment.keybinddebugtoast=Makes the messages from §eKeyBind Debug§r also get shown as toast messages
@@ -665,6 +668,7 @@ malilib.config.name.guidebug=GUI Debug
 malilib.config.name.guidebugall=GUI Debug All
 malilib.config.name.guidebuginfoalways=GUI Debug Info Always
 malilib.config.name.infooverlaydebug=Info Overlay Debug
+malilib.config.name.inputcanceldebug=Input Cancel Debug
 malilib.config.name.keybinddebug=KeyBind Debug
 malilib.config.name.keybinddebugactionbar=KeyBind Debug In Action Bar
 malilib.config.name.keybinddebugtoast=KeyBind Debug Toast

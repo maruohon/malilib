@@ -6,7 +6,10 @@ import java.util.List;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.registry.Registry;
 
 public class InputDispatcherImpl implements InputDispatcher
@@ -91,6 +94,16 @@ public class InputDispatcherImpl implements InputDispatcher
         this.mouseMoveHandlers.remove(handler);
     }
 
+    protected void printInputCancellationDebugMessage(Object handler)
+    {
+        if (MaLiLibConfigs.Debug.INPUT_CANCEL_DEBUG.getBooleanValue())
+        {
+            String key = "malilib.message.debug.input_handling_cancel_by_handler";
+            MessageDispatcher.generic().console().type(MessageOutput.CUSTOM_HOTBAR)
+                    .translate(key, handler.getClass().getName());
+        }
+    }
+
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
@@ -125,6 +138,7 @@ public class InputDispatcherImpl implements InputDispatcher
             {
                 if (handler.onKeyInput(keyCode, 0, 0, keyState))
                 {
+                    this.printInputCancellationDebugMessage(handler);
                     return true;
                 }
             }
@@ -169,6 +183,7 @@ public class InputDispatcherImpl implements InputDispatcher
                 {
                     if (handler.onMouseScroll(mouseX, mouseY, 0, dWheel))
                     {
+                        this.printInputCancellationDebugMessage(handler);
                         return true;
                     }
                 }
@@ -194,6 +209,7 @@ public class InputDispatcherImpl implements InputDispatcher
                 {
                     if (handler.onMouseClick(mouseX, mouseY, eventButton, eventButtonState))
                     {
+                        this.printInputCancellationDebugMessage(handler);
                         return true;
                     }
                 }
