@@ -36,6 +36,7 @@ public class MaLiLibActions
         register("cycleGameMode", UtilityActions::cycleGameMode);
         register("dropHeldStack", UtilityActions::dropHeldStack);
         register("runCommand", UtilityActions::runVanillaCommand);
+        register("sendChatMessage", UtilityActions::sendChatMessage);
         register("setPlayerPitch", UtilityActions::setPlayerPitch);
         register("setPlayerYaw", UtilityActions::setPlayerYaw);
         register("setSelectedHotbarSlot", UtilityActions::setSelectedHotbarSlot);

@@ -19,6 +19,21 @@ public class UtilityActions
 {
     public static ActionResult runVanillaCommand(ActionContext ctx, String arg)
     {
+        if (arg.length() > 0 && arg.charAt(0) != '/')
+        {
+            arg = '/' + arg;
+        }
+
+        if (ctx.getPlayer() != null)
+        {
+            ctx.getPlayer().sendChatMessage(arg);
+            return ActionResult.SUCCESS;
+        }
+        return ActionResult.FAIL;
+    }
+
+    public static ActionResult sendChatMessage(ActionContext ctx, String arg)
+    {
         if (ctx.getPlayer() != null)
         {
             ctx.getPlayer().sendChatMessage(arg);
