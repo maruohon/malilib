@@ -346,6 +346,7 @@ public class KeyBindImpl implements KeyBind
         }
 
         this.addToastMessage(action, this.callback != null, cancel);
+        this.addCancellationDebugMessage(this.callback, cancel);
 
         return new KeyUpdateResult(cancel, true);
     }
@@ -384,6 +385,31 @@ public class KeyBindImpl implements KeyBind
             StyledText text = StyledText.ofStrings(lines);
             MessageDispatcher.generic(displayTimeMs).type(MessageOutput.TOAST)
                              .messageMarker("keybind_display").append(true).send(text);
+        }
+    }
+
+    protected void addCancellationDebugMessage(HotkeyCallback callback, boolean cancelled)
+    {
+        if (MaLiLibConfigs.Debug.INPUT_CANCEL_DEBUG.getBooleanValue() && cancelled)
+        {
+            String nameKey = this.nameTranslationKey;
+            String mod = this.modInfo != null ? this.modInfo.getModName() : "-";
+            String name = org.apache.commons.lang3.StringUtils.isBlank(nameKey) ? "-" : StringUtils.translate(nameKey);
+            String keysStr = this.getKeysDisplayString();
+
+            if (callback != null)
+            {
+                String key = "malilib.message.debug.input_handling_cancel_by_hotkey_callback";
+                String className = callback.getClass().getName();
+                MessageDispatcher.generic().console().type(MessageOutput.MESSAGE_OVERLAY)
+                        .translate(key, mod, name, keysStr, className);
+            }
+            else
+            {
+                String key = "malilib.message.debug.input_handling_cancel_by_hotkey_without_callback";
+                MessageDispatcher.generic().console().type(MessageOutput.MESSAGE_OVERLAY)
+                        .translate(key, mod, name, keysStr);
+            }
         }
     }
 

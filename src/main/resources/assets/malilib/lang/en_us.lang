@@ -505,6 +505,8 @@ malilib.title.screen.string_list_renderer_configuration=String List Renderer Con
 malilib.title.screen.toast_renderer_configuration=MaLiLib - Toast Renderer Configuration
 
 malilib.message.debug.input_handling_cancel_by_handler=Input event handling cancellation requested by the handler §e%s§r
+malilib.message.debug.input_handling_cancel_by_hotkey_callback=Input event cancelled by hotkey §a%s§r -> §e%s§r [ §6%s§r ] (callback: §e%s§r)
+malilib.message.debug.input_handling_cancel_by_hotkey_without_callback=Input event cancelled by hotkey §a%s§r -> §e%s§r [ §6%s§r ] (§dno callback§r)
 
 malilib.message.error.action.action_name_exists=An action already exist by the name §e%s§r
 malilib.message.error.action.macro_add_actions_loop_detected=Error: Can't add the selected action(s), as they either directly or indirectly contain this macro itself! That would create an infinite loop when trying to save or execute the macro.
