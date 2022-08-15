@@ -76,6 +76,7 @@ public abstract class CommonDescription implements BaseInfo
         return this.commentTranslationKey;
     }
 
+    @Override
     public void setModInfo(@Nullable ModInfo modInfo)
     {
         this.modInfo = modInfo;

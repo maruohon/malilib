@@ -48,6 +48,7 @@ public abstract class BaseConfigGroup extends CommonDescription implements Confi
             builder.addAll(config.getSearchStrings());
         }
 
+        builder.add(this.getDisplayName());
         this.searchStrings = builder.build();
         this.configs = ImmutableList.copyOf(configs);
 

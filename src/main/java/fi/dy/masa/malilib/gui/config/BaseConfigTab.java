@@ -42,6 +42,8 @@ public class BaseConfigTab extends BaseScreenTab implements ConfigTab
         this.modInfo = modInfo;
         this.configWidth = configWidth;
         this.configs = configs;
+
+        this.setModInfoToConfigsIfNotSet();
     }
 
     @Override
@@ -67,5 +69,16 @@ public class BaseConfigTab extends BaseScreenTab implements ConfigTab
         }
 
         return ConfigUtils.getExtendedList(this.configs);
+    }
+
+    protected void setModInfoToConfigsIfNotSet()
+    {
+        for (ConfigInfo cfg : this.configs)
+        {
+            if (cfg.getModInfo() == null)
+            {
+                cfg.setModInfo(this.modInfo);
+            }
+        }
     }
 }

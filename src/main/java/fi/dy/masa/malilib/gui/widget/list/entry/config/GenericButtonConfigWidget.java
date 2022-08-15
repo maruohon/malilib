@@ -15,7 +15,7 @@ public class GenericButtonConfigWidget extends BaseConfigWidget<GenericButtonCon
     {
         super(config, constructData, ctx);
 
-        this.button = GenericButton.create(config.getButtonText());
+        this.button = GenericButton.create(config.getButtonTextTranslationKey());
         this.button.setActionListener(config.getButtonActionListener());
     }
 

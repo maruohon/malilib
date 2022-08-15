@@ -5,32 +5,32 @@ import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
 
 public class GenericButtonConfig extends BaseConfig 
 {
-    protected final String buttonText;
+    protected final String buttonTextTranslationKey;
     protected final Int2BooleanFunction buttonListener;
 
-    public GenericButtonConfig(String name, String buttonText, Int2BooleanFunction buttonListener)
+    public GenericButtonConfig(String name, String buttonTextTranslationKey, Int2BooleanFunction buttonListener)
     {
         super(name);
 
-        this.buttonText = buttonText;
+        this.buttonTextTranslationKey = buttonTextTranslationKey;
         this.buttonListener = buttonListener;
     }
 
-    public GenericButtonConfig(String name, String buttonText, Int2BooleanFunction buttonListener,
+    public GenericButtonConfig(String name, String buttonTextTranslationKey, Int2BooleanFunction buttonListener,
                                String commentTranslationKey, Object... commentArgs)
     {
         super(name, commentTranslationKey, commentArgs);
 
-        this.buttonText = buttonText;
+        this.buttonTextTranslationKey = buttonTextTranslationKey;
         this.buttonListener = buttonListener;
     }
 
-    public GenericButtonConfig(String name, String buttonText, Int2BooleanFunction buttonListener,
+    public GenericButtonConfig(String name, String buttonTextTranslationKey, Int2BooleanFunction buttonListener,
                                String nameTranslationKey, @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, nameTranslationKey, commentTranslationKey, commentArgs);
 
-        this.buttonText = buttonText;
+        this.buttonTextTranslationKey = buttonTextTranslationKey;
         this.buttonListener = buttonListener;
     }
 
@@ -46,9 +46,9 @@ public class GenericButtonConfig extends BaseConfig
         // NO-OP
     }
 
-    public String getButtonText()
+    public String getButtonTextTranslationKey()
     {
-        return this.buttonText;
+        return this.buttonTextTranslationKey;
     }
 
     public Int2BooleanFunction getButtonActionListener()

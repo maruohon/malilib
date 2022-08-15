@@ -6,18 +6,9 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.ValueLoadCallback;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ConfigOption<T> extends ConfigInfo
 {
-    /**
-     * Sets the ModInfo owning this config.
-     * This is automatically called in {@link fi.dy.masa.malilib.config.ConfigManager#registerConfigHandler(fi.dy.masa.malilib.config.ModConfig)}
-     * using the ModInfo from {@link fi.dy.masa.malilib.config.ModConfig#getModInfo()}.
-     * @param modInfo
-     */
-    void setModInfo(ModInfo modInfo);
-
     /**
      * 
      * Returns the "pretty name" for this config.
