@@ -2,10 +2,16 @@ package fi.dy.masa.malilib;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.fabricmc.api.ModInitializer;
 
-public class MaLiLib
+public class MaLiLib implements ModInitializer
 {
     public static final Logger LOGGER = LogManager.getLogger(MaLiLibReference.MOD_ID);
+
+    @Override
+    public void onInitialize()
+    {
+    }
 
     public static boolean canShowCoordinates()
     {
