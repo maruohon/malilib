@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.value.ScreenLocation;
@@ -184,11 +184,11 @@ public class MessageDispatcher
     {
         if (MaLiLibConfigs.Debug.MESSAGE_KEY_TO_CHAT.getBooleanValue())
         {
-            TextComponentString message = new TextComponentString(translationKey);
-            TextComponentTranslation hoverMessage = new TextComponentTranslation("malilib.label.message_debug.add_key_to_chat");
-            message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
-            message.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
-            GameUtils.getClient().ingameGUI.getChatGUI().printChatMessage(message);
+            MutableText message = Text.literal(translationKey);
+            MutableText hoverMessage = Text.translatable("malilib.label.message_debug.add_key_to_chat");
+            message.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
+            message.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
+            GameUtils.getClient().inGameHud.getChatHud().addMessage(message);
         }
 
         MessageOutput output = Registry.MESSAGE_REDIRECT_MANAGER.getRedirectedMessageOutput(translationKey, this.type);

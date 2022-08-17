@@ -28,44 +28,48 @@ public class GuiUtils
 
     public static int getScaledWindowWidth()
     {
-        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
-        return sr.getScaledWidth();
+        return GameUtils.getClient().getWindow().getScaledWidth();
     }
 
     public static int getScaledWindowHeight()
     {
-        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
-        return sr.getScaledHeight();
+        return GameUtils.getClient().getWindow().getScaledHeight();
     }
 
     public static int getDisplayWidth()
     {
-        return GameUtils.getClient().displayWidth;
+        return GameUtils.getClient().getWindow().getWidth();
     }
 
     public static int getDisplayHeight()
     {
-        return GameUtils.getClient().displayHeight;
-    }
-
-    public static int getMouseScreenX()
-    {
-        return getMouseScreenX(getCurrentScreen().width);
+        return GameUtils.getClient().getWindow().getHeight();
     }
 
     public static int getMouseScreenX(int screenWidth)
     {
-        return Mouse.getEventX() * screenWidth / getDisplayWidth();
-    }
-
-    public static int getMouseScreenY()
-    {
-        return getMouseScreenY(getCurrentScreen().height);
+        // TODO 1.13+ port
+        return getMouseScreenX();
     }
 
     public static int getMouseScreenY(int screenHeight)
     {
-        return screenHeight - Mouse.getEventY() * screenHeight / getDisplayHeight() - 1;
+        // TODO 1.13+ port
+        return getMouseScreenY();
+    }
+
+    public static int getMouseScreenX()
+    {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        Window window = mc.getWindow();
+        return (int) (mc.mouse.getX() * (double) window.getScaledWidth() / (double) window.getWidth());
+    }
+
+    public static int getMouseScreenY()
+    {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        Window window = mc.getWindow();
+        return (int) (mc.mouse.getY() * (double) window.getScaledHeight() / (double) window.getHeight());
     }
 
     @Nullable
@@ -241,7 +245,7 @@ public class GuiUtils
 
             final Screen currentScreen = getCurrentScreen();
 
-            if (GameUtils.getClient().gameSettings.chatLinksPrompt)
+            if (GameUtils.getClient().options.getChatLinksPrompt().getValue())
             {
                 //BaseScreen.openGui(new ConfirmActionScreen(320, "", () -> openWebLink(uri), getCurrentScreen(), ""));
                 BaseScreen.openScreen(new GuiConfirmOpenLink((result, id) -> {

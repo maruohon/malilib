@@ -213,8 +213,8 @@ public class PositionUtils
             return new BlockPos(x, Math.ceil(entity.getBoundingBox().maxY), z);
         }
 
-        y = Math.floor(y + entity.getEyeHeight());
-        double width = entity.width;
+        y = Math.floor(y + entity.getEyeHeight(entity.getPose()));
+        double width = entity.getWidth();
 
         switch (entity.getHorizontalFacing())
         {
@@ -421,12 +421,13 @@ public class PositionUtils
 
         if (side == Direction.DOWN)
         {
-            y -= entity.height;
+            y -= entity.getHeight();
         }
         else if (side.getAxis().isHorizontal())
         {
-            x += side.getXOffset() * (entity.width / 2 + 1.0E-4D);
-            z += side.getZOffset() * (entity.width / 2 + 1.0E-4D);
+            float width = entity.getWidth();
+            x += side.getOffsetX() * (width / 2 + 1.0E-4D);
+            z += side.getOffsetZ() * (width / 2 + 1.0E-4D);
         }
 
         return new Vec3d(x, y, z);

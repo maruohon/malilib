@@ -76,7 +76,7 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
      */
     public boolean processPacketFromServer(CustomPayloadS2CPacket packet, ClientPlayNetworkHandler netHandler)
     {
-        ResourceLocation channel = new ResourceLocation(packet.getChannelName());
+        Identifier channel = packet.getChannel();
         List<PluginChannelHandler> handlers = this.handlers.get(channel);
 
         if (handlers.isEmpty() == false)
@@ -112,8 +112,8 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     {
         String joinedChannels = channels.stream().map(Identifier::toString).collect(Collectors.joining("\0"));
         ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
-        NetHandlerPlayClient handler = GameUtils.getClient().getConnection();
-        CPacketCustomPayload packet = new CPacketCustomPayload(type.toString(), new PacketBuffer(payload));
+        ClientPlayNetworkHandler handler = GameUtils.getClient().getNetworkHandler();
+        CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(type, new PacketByteBuf(payload));
 
         if (handler != null)
         {

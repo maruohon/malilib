@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class ItemUtils
 {
@@ -13,7 +14,7 @@ public class ItemUtils
     {
         try
         {
-            return Item.REGISTRY.getNameForObject(item).toString();
+            return Registry.ITEM.getId(item).toString();
         }
         catch (Exception e)
         {
@@ -26,7 +27,7 @@ public class ItemUtils
     {
         try
         {
-            return Item.REGISTRY.getObject(new ResourceLocation(name));
+            return Registry.ITEM.get(new Identifier(name));
         }
         catch (Exception e)
         {
@@ -38,7 +39,7 @@ public class ItemUtils
     {
         List<Item> items = new ArrayList<>();
 
-        for (Item item : Item.REGISTRY)
+        for (Item item : Registry.ITEM)
         {
             items.add(item);
         }

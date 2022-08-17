@@ -6,25 +6,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import com.mumfrey.liteloader.LiteMod;
-import com.mumfrey.liteloader.core.LiteLoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -68,11 +69,11 @@ public class StringUtils
     {
         try
         {
-            LiteMod mod = LiteLoader.getInstance().getMod(modId);
+            Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(modId);
 
-            if (mod != null)
+            if (container.isPresent())
             {
-                return mod.getVersion();
+                return container.get().getMetadata().getVersion().getFriendlyString();
             }
         }
         catch (Exception ignore) {}
@@ -149,12 +150,13 @@ public class StringUtils
         return true;
     }
 
-    public static void sendOpenFileChatMessage(ICommandSender sender, String messageKey, Path file)
+    public static void sendOpenFileChatMessage(Entity sender, String messageKey, Path file)
     {
-        TextComponentString name = new TextComponentString(file.getFileName().toString());
-        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString()));
-        name.getStyle().setUnderlined(Boolean.TRUE);
-        sender.sendMessage(new TextComponentTranslation(messageKey, name));
+        MutableText name = (Text.literal(file.getFileName().toString()))
+                .formatted(Formatting.UNDERLINE)
+                .styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString())));
+
+        sender.sendMessage(Text.translatable(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -474,22 +476,37 @@ public class StringUtils
         return name != null ? name : defaultStr;
     }
 
+    public static String stringifyAddress(SocketAddress address)
+    {
+        String str = address.toString();
+
+        if (str.contains("/"))
+        {
+            str = str.substring(str.indexOf('/') + 1);
+        }
+
+        return str.replace(':', '_');
+    }
+
     @Nullable
     public static String getWorldOrServerName()
     {
-        if (GameUtils.isSinglePlayer())
+        MinecraftClient mc = GameUtils.getClient();
+
+        if (mc.isIntegratedServerRunning())
         {
-            IntegratedServer server = GameUtils.getClient().getIntegratedServer();
+            IntegratedServer server = mc.getServer();
 
             if (server != null)
             {
-                return FileNameUtils.generateSimpleSafeFileName(server.getFolderName());
+                // This used to be just MinecraftServer::getLevelName().
+                // Getting the name would now require an @Accessor for MinecraftServer.field_23784
+                String name = server.getSaveProperties().getLevelName();
+                return FileNameUtils.generateSimpleSafeFileName(name);
             }
         }
         else
         {
-            Minecraft mc = GameUtils.getClient();
-
             if (mc.isConnectedToRealms())
             {
                 if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
@@ -508,7 +525,7 @@ public class StringUtils
                 }
             }
 
-            ServerData server = GameUtils.getClient().getCurrentServerData();
+            ServerInfo server = mc.getCurrentServerEntry();
 
             if (server != null)
             {
@@ -555,27 +572,15 @@ public class StringUtils
         return FileNameUtils.generateSimpleSafeFileName(name) + suffix;
     }
 
-    public static String stringifyAddress(SocketAddress address)
-    {
-        String str = address.toString();
-
-        if (str.contains("/"))
-        {
-            str = str.substring(str.indexOf('/') + 1);
-        }
-
-        return str.replace(':', '_');
-    }
-
     public static String getStackString(ItemStack stack)
     {
         if (ItemWrap.notEmpty(stack))
         {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
-            NBTTagCompound tag = ItemWrap.getTag(stack);
+            net.minecraft.util.Identifier rl = Registry.ITEM.getId(stack.getItem());
+            NbtCompound tag = ItemWrap.getTag(stack);
 
-            return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
-                    rl != null ? rl.toString() : "null", stack.getMetadata(), stack.getDisplayName(),
+            return String.format("[%s - display: %s - NBT: %s] (%s)",
+                    rl != null ? rl.toString() : "null", stack.getName().getString(),
                     tag != null ? tag.toString() : "<no NBT>", stack);
         }
 

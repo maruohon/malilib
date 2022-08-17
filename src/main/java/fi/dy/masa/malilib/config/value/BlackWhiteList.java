@@ -8,8 +8,9 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.DefaultedRegistry;
+import net.minecraft.util.registry.Registry;
 import fi.dy.masa.malilib.config.option.list.BlockListConfig;
 import fi.dy.masa.malilib.config.option.list.ItemListConfig;
 import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
@@ -30,7 +31,7 @@ public class BlackWhiteList<TYPE>
     }
 
     public BlackWhiteList(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList,
-                          RegistryNamespaced<ResourceLocation, TYPE> registry)
+                          DefaultedRegistry<TYPE> registry)
     {
         this.type = type;
         this.blackList = blackList;
@@ -124,7 +125,10 @@ public class BlackWhiteList<TYPE>
         return new BlackWhiteList<>(type, blackList, whiteList);
     }
 
-    public static <TYPE> BlackWhiteList<TYPE> of(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList, RegistryNamespaced<ResourceLocation, TYPE> registry)
+    public static <TYPE> BlackWhiteList<TYPE> of(ListType type,
+                                                 ValueListConfig<TYPE> blackList,
+                                                 ValueListConfig<TYPE> whiteList,
+                                                 DefaultedRegistry<TYPE> registry)
     {
         return new BlackWhiteList<>(type, blackList, whiteList, registry);
     }
@@ -155,7 +159,7 @@ public class BlackWhiteList<TYPE>
         return BlackWhiteList.of(type,
                                  StatusEffectListConfig.create("malilib.label.list_type.blacklist", blackList),
                                  StatusEffectListConfig.create("malilib.label.list_type.whitelist", whiteList),
-                                 Potion.REGISTRY);
+                                 Registry.POTION);
     }
 
     @Override
@@ -181,7 +185,7 @@ public class BlackWhiteList<TYPE>
         return result;
     }
 
-    public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(RegistryNamespaced<ResourceLocation, TYPE> registry)
+    public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(DefaultedRegistry<TYPE> registry)
     {
         return (t) -> {
             Identifier id = registry.getId(t);
@@ -189,7 +193,7 @@ public class BlackWhiteList<TYPE>
         };
     }
 
-    public static <TYPE> Function<String, TYPE> getRegistryBasedFromStringConverter(RegistryNamespaced<ResourceLocation, TYPE> registry)
+    public static <TYPE> Function<String, TYPE> getRegistryBasedFromStringConverter(DefaultedRegistry<TYPE> registry)
     {
         return (str) -> {
             try

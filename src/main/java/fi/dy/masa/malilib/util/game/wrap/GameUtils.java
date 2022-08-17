@@ -49,7 +49,7 @@ public class GameUtils
     public static String getPlayerName()
     {
         Entity player = getClientPlayer();
-        return player != null ? player.getName() : "?";
+        return player != null ? player.getName().getString() : "?";
     }
 
     @Nullable
@@ -60,13 +60,13 @@ public class GameUtils
 
     public static boolean isCreativeMode()
     {
-        EntityPlayerSP player = getClientPlayer();
-        return player != null && player.capabilities.isCreativeMode;
+        ClientPlayerEntity player = getClientPlayer();
+        return player != null && player.getAbilities().creativeMode;
     }
 
     public static int getRenderDistanceChunks()
     {
-        return getClient().gameSettings.renderDistanceChunks;
+        return getClient().options.getViewDistance().getValue();
     }
 
     public static boolean isSinglePlayer()
@@ -76,46 +76,37 @@ public class GameUtils
 
     public static void scheduleToClientThread(Runnable task)
     {
-        Minecraft mc = getClient();
-
-        if (mc.isCallingFromMinecraftThread())
-        {
-            task.run();
-        }
-        else
-        {
-            mc.addScheduledTask(task);
-        }
+        getClient().execute(task);
     }
 
     public static void profilerPush(String name)
     {
-        getClient().profiler.startSection(name);
+        getClient().getProfiler().push(name);
     }
 
     public static void profilerPush(Supplier<String> nameSupplier)
     {
-        getClient().profiler.func_194340_a(nameSupplier);
+        getClient().getProfiler().push(nameSupplier);
     }
 
     public static void profilerSwap(String name)
     {
-        getClient().profiler.endStartSection(name);
+        getClient().getProfiler().swap(name);
     }
 
     public static void profilerSwap(Supplier<String> nameSupplier)
     {
-        getClient().profiler.func_194339_b(nameSupplier);
+        getClient().getProfiler().swap(nameSupplier);
     }
 
     public static void profilerPop()
     {
-        getClient().profiler.endSection();
+        getClient().getProfiler().pop();
     }
 
     public static void openFile(Path file)
     {
-        OpenGlHelper.openFile(file.toFile());
+        Util.getOperatingSystem().open(file.toFile());
     }
 
     public static class Options

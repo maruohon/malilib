@@ -280,8 +280,8 @@ public class InventoryUtils
 
         if (GameUtils.isCreativeMode())
         {
-            inventory.setPickedItemStack(stackReference.copy());
-            GameUtils.getInteractionManager().sendSlotPacket(stackReference.copy(), 36 + inventory.currentItem);
+            player.getInventory().addPickBlock(stackReference.copy());
+            GameUtils.getInteractionManager().clickCreativeStack(stackReference.copy(), 36 + player.getInventory().selectedSlot);
             return true;
         }
         else
@@ -316,8 +316,8 @@ public class InventoryUtils
         PlayerInventory inventory = getPlayerInventory();
 
         if (ItemWrap.notEmpty(stackHand) &&
-            player.openContainer == container &&
-            ItemWrap.isEmpty(inventory.getItemStack()) &&
+            player.currentScreenHandler == container &&
+            ItemWrap.isEmpty(container.getCursorStack()) &&
             (count <= threshold && count < max))
         {
             int endSlot = allowHotbar ? 44 : 35;

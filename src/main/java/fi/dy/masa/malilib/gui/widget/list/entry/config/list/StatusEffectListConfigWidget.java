@@ -41,7 +41,7 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
     {
         List<Potion> effects = new ArrayList<>();
 
-        for (Potion effect : Potion.REGISTRY)
+        for (Potion effect : Registry.POTION)
         {
             effects.add(effect);
         }

@@ -197,7 +197,7 @@ public class NbtWrap
 
     public static String getCommandFeedbackName(NbtElement tag)
     {
-        return NBTBase.getTypeName(getTypeId(tag));
+        return tag.getNbtType().getCommandFeedbackName();
     }
 
     public static int getTypeId(NbtElement tag)
@@ -207,37 +207,37 @@ public class NbtWrap
 
     public static NbtByte asByteTag(byte value)
     {
-        return new NBTTagByte(value);
+        return NbtByte.of(value);
     }
 
     public static NbtShort asShortTag(short value)
     {
-        return new NBTTagShort(value);
+        return NbtShort.of(value);
     }
 
     public static NbtInt asIntTag(int value)
     {
-        return new NBTTagInt(value);
+        return NbtInt.of(value);
     }
 
     public static NbtLong asLongTag(long value)
     {
-        return new NBTTagLong(value);
+        return NbtLong.of(value);
     }
 
     public static NbtFloat asFloatTag(float value)
     {
-        return new NBTTagFloat(value);
+        return NbtFloat.of(value);
     }
 
     public static NbtDouble asDoubleTag(double value)
     {
-        return new NBTTagDouble(value);
+        return NbtDouble.of(value);
     }
 
     public static NbtString asStringTag(String value)
     {
-        return new NBTTagString(value);
+        return NbtString.of(value);
     }
 
     public static void putBoolean(NbtCompound tag, String name, boolean value)

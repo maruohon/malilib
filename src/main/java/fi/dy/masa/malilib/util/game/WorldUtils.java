@@ -4,18 +4,15 @@ import javax.annotation.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 public class WorldUtils
 {
-    public static int getDimensionId(World world)
-    {
-        return world.provider.getDimensionType().getId();
-    }
-
     public static String getDimensionAsString(World world)
     {
-        return String.valueOf(world.provider.getDimensionType().getId());
+        Identifier id = world.getRegistryKey().getValue();
+        return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 
     /**
@@ -24,10 +21,11 @@ public class WorldUtils
      */
     public static World getBestWorld(MinecraftClient mc)
     {
-        if (mc.isSingleplayer() && mc.world != null)
+        IntegratedServer server = mc.getServer();
+
+        if (mc.world != null && server != null)
         {
-            IntegratedServer server = mc.getIntegratedServer();
-            return server.getWorld(getDimensionId(mc.world));
+            return server.getWorld(mc.world.getRegistryKey());
         }
         else
         {
@@ -40,8 +38,8 @@ public class WorldUtils
     {
         if (mc.isIntegratedServerRunning() && mc.world != null)
         {
-            IntegratedServer server = mc.getIntegratedServer();
-            return server.getWorld(getDimensionId(mc.world));
+            IntegratedServer server = mc.getServer();
+            return server.getWorld(mc.world.getRegistryKey());
         }
         else
         {

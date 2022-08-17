@@ -55,17 +55,19 @@ public class ItemRenderUtils
             return;
         }
 
-        List<String> list = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        MinecraftClient mc = GameUtils.getClient();
+        List<Text> list = stack.getTooltip(mc.player, mc.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+        List<String> lines = new ArrayList<>();
 
         for (int i = 0; i < list.size(); ++i)
         {
             if (i == 0)
             {
-                list.set(i, stack.getRarity().color + list.get(i));
+                lines.add(stack.getRarity().formatting + list.get(i).getString());
             }
             else
             {
-                list.set(i, StringUtils.translate("malilib.hover.item_tooltip_lines", list.get(i)));
+                lines.add(StringUtils.translate("malilib.hover.item_tooltip_lines", list.get(i).getString()));
             }
         }
 

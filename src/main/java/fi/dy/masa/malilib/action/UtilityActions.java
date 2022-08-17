@@ -1,15 +1,15 @@
 package fi.dy.masa.malilib.action;
 
 import java.util.ArrayList;
-import net.minecraft.util.ScreenShotHelper;
+import org.apache.commons.lang3.StringUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.util.ScreenshotRecorder;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameMode;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.util.game.wrap.EntityWrap;
@@ -26,7 +26,7 @@ public class UtilityActions
 
         if (ctx.getPlayer() != null)
         {
-            ctx.getPlayer().sendChatMessage(arg);
+            ctx.getPlayer().sendCommand(arg);
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -36,7 +36,8 @@ public class UtilityActions
     {
         if (ctx.getPlayer() != null)
         {
-            ctx.getPlayer().sendChatMessage(arg);
+            arg = StringUtils.normalizeSpace(arg.trim());
+            ctx.getPlayer().sendChatMessage(arg, null);
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -84,7 +85,7 @@ public class UtilityActions
                 int slot = Integer.parseInt(arg);
                 if (slot >= 1 && slot <= 9)
                 {
-                    ctx.getPlayer().inventory.currentItem = slot - 1;
+                    ctx.getPlayer().getInventory().selectedSlot = slot - 1;
                     return ActionResult.SUCCESS;
                 }
             }
@@ -153,9 +154,9 @@ public class UtilityActions
 
     public static ActionResult takeScreenshot(ActionContext ctx)
     {
-        Minecraft mc = ctx.getClient();
-        mc.ingameGUI.getChatGUI().printChatMessage(ScreenShotHelper.saveScreenshot(mc.gameDir,
-                                    mc.displayWidth, mc.displayHeight, mc.getFramebuffer()));
+        MinecraftClient mc = ctx.getClient();
+        ScreenshotRecorder.saveScreenshot(mc.runDirectory, mc.getFramebuffer(),
+                                          message -> mc.execute(() -> mc.inGameHud.getChatHud().addMessage(message)));
         return ActionResult.SUCCESS;
     }
 
@@ -207,7 +208,7 @@ public class UtilityActions
                 }
 
                 GameMode mode = modes.get(index);
-                ctx.getPlayer().sendChatMessage("/gamemode " + mode.getName());
+                ctx.getPlayer().sendCommand("gamemode " + mode.getName());
 
                 return ActionResult.SUCCESS;
             }
@@ -218,10 +219,10 @@ public class UtilityActions
 
     private static void translateDebugToggleMessage(String key, Object... args)
     {
-        ITextComponent text = new TextComponentString("");
-        text.appendSibling((new TextComponentTranslation("debug.prefix"))
-                                .setStyle((new Style()).setColor(TextFormatting.YELLOW).setBold(Boolean.TRUE)))
-                .appendText(" ").appendSibling(new TextComponentTranslation(key, args));
-        GameUtils.getClient().ingameGUI.getChatGUI().printChatMessage(text);
+        MutableText text = Text.literal("");
+        text.append(Text.translatable("debug.prefix").setStyle(Style.EMPTY
+                    .withColor(Formatting.YELLOW).withBold(Boolean.TRUE)))
+                    .append(" ").append(Text.translatable(key, args));
+        GameUtils.getClient().inGameHud.getChatHud().addMessage(text);
     }
 }

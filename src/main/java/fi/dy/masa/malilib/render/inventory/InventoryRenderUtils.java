@@ -355,7 +355,8 @@ public class InventoryRenderUtils
         {
             int bgTintColor = 0xFFFFFFFF;
 
-            if (useShulkerBackgroundColor && (stack.getItem() instanceof ItemShulkerBox))
+            if (useShulkerBackgroundColor && (stack.getItem() instanceof BlockItem) &&
+                ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
             {
                 ShulkerBoxBlock block = (ShulkerBoxBlock) ((BlockItem) stack.getItem()).getBlock();
                 bgTintColor = getShulkerBoxBackgroundTintColor(block);
@@ -407,8 +408,9 @@ public class InventoryRenderUtils
         // In 1.13+ there is the separate uncolored Shulker Box variant,
         // which returns null from getColor().
         // In that case don't tint the background.
-        EnumDyeColor dye = block != null ? block.getColor() : null;
-        return dye != null ? 0xFF000000 | dye.getColorValue() : 0xFFFFFFFF;
+        DyeColor dye = block != null ? block.getColor() : null;
+        final float[] colors = dye.getColorComponents();
+        return  0xFF000000 | (int) ((colors[0] * 0xFF)) << 16 | (int) ((colors[1] * 0xFF)) << 8 | (int) (colors[2] * 0xFF);
     }
 
     public static InventoryRenderDefinition getInventoryType(Inventory inv)
@@ -437,7 +439,7 @@ public class InventoryRenderUtils
         {
             return BuiltinInventoryRenderDefinitions.HOPPER;
         }
-        else if (inv instanceof ContainerHorseChest)
+        else if (inv.getClass() == SimpleInventory.class) // FIXME
         {
             return BuiltinInventoryRenderDefinitions.HORSE;
         }
@@ -502,14 +504,14 @@ public class InventoryRenderUtils
             return null;
         }
 
-        if (trace.typeOfHit == RayTraceResult.Type.BLOCK)
+        if (trace.getType() == HitResult.Type.BLOCK)
         {
-            BlockPos pos = trace.getBlockPos();
+            BlockPos pos = ((BlockHitResult) trace).getBlockPos();
             return getInventoryViewFromBlock(pos, world);
         }
-        else if (trace.typeOfHit == RayTraceResult.Type.ENTITY)
+        else if (trace.getType() == HitResult.Type.ENTITY)
         {
-            return getInventoryViewFromEntity(trace.entityHit);
+            return getInventoryViewFromEntity(((EntityHitResult) trace).getEntity());
         }
 
         return null;
@@ -518,27 +520,57 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromBlock(BlockPos pos, World world)
     {
-        TileEntity te = world.getTileEntity(pos);
+        @SuppressWarnings("deprecation")
+        boolean isLoaded = world.isChunkLoaded(pos);
 
-        if (te instanceof IInventory)
+        if (isLoaded == false)
         {
-            IInventory inv = (IInventory) te;
-            IBlockState state = world.getBlockState(pos);
+            return null;
+        }
+
+        // The method in World now checks that the caller is from the same thread...
+        BlockEntity te = world.getWorldChunk(pos).getBlockEntity(pos);
+
+        if (te instanceof Inventory)
+        {
+            Inventory inv = (Inventory) te;
+            BlockState state = world.getBlockState(pos);
 
             // Prevent loot generation attempt from crashing due to NPEs
             // TODO 1.13+ check if this is still needed
+            /*
             if (te instanceof TileEntityLockableLoot && (world instanceof WorldServer) == false)
             {
                 ((TileEntityLockableLoot) te).setLootTable(null, 0);
             }
+            */
 
-            if (state.getBlock() instanceof BlockChest)
+            if (state.getBlock() instanceof ChestBlock && te instanceof ChestBlockEntity)
             {
-                ILockableContainer cont = ((BlockChest) state.getBlock()).getLockableContainer(world, pos);
+                ChestType type = state.get(ChestBlock.CHEST_TYPE);
 
-                if (cont instanceof InventoryLargeChest)
+                if (type != ChestType.SINGLE)
                 {
-                    inv = cont;
+                    BlockPos posAdj = pos.offset(ChestBlock.getFacing(state));
+                    @SuppressWarnings("deprecation")
+                    boolean isLoadedAdj = world.isChunkLoaded(posAdj);
+
+                    if (isLoadedAdj)
+                    {
+                        BlockState stateAdj = world.getBlockState(posAdj);
+                        // The method in World now checks that the caller is from the same thread...
+                        BlockEntity te2 = world.getWorldChunk(posAdj).getBlockEntity(posAdj);
+
+                        if (stateAdj.getBlock() == state.getBlock() &&
+                                    te2 instanceof ChestBlockEntity &&
+                                    stateAdj.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE &&
+                                    stateAdj.get(ChestBlock.FACING) == state.get(ChestBlock.FACING))
+                        {
+                            Inventory invRight = type == ChestType.RIGHT ?             inv : (Inventory) te2;
+                            Inventory invLeft  = type == ChestType.RIGHT ? (Inventory) te2 :             inv;
+                            inv = new DoubleInventory(invRight, invLeft);
+                        }
+                    }
                 }
             }
 

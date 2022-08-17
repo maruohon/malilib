@@ -37,7 +37,7 @@ public class BlockUtils
     {
         try
         {
-            return Block.REGISTRY.getNameForObject(block).toString();
+            return Registry.BLOCK.getId(block).toString();
         }
         catch (Exception e)
         {
@@ -49,7 +49,7 @@ public class BlockUtils
     {
         try
         {
-            return Block.REGISTRY.getNameForObject(state.getBlock()).toString();
+            return Registry.BLOCK.getId(state.getBlock()).toString();
         }
         catch (Exception e)
         {
@@ -61,7 +61,7 @@ public class BlockUtils
     {
         try
         {
-            return Block.REGISTRY.getNameForObject(state.getBlock());
+            return Registry.BLOCK.getId(state.getBlock());
         }
         catch (Exception e)
         {
@@ -74,7 +74,7 @@ public class BlockUtils
     {
         try
         {
-            return Block.REGISTRY.getObject(new ResourceLocation(name));
+            return Registry.BLOCK.get(new Identifier(name));
         }
         catch (Exception e)
         {
@@ -86,7 +86,7 @@ public class BlockUtils
     {
         List<Block> blocks = new ArrayList<>();
 
-        for (Block block : Block.REGISTRY)
+        for (Block block : Registry.BLOCK)
         {
             blocks.add(block);
         }
@@ -107,14 +107,14 @@ public class BlockUtils
         String blockName = index != -1 ? str.substring(0, index) : str;
         Identifier id = new Identifier(blockName);
 
-        if (Block.REGISTRY.containsKey(id))
+        if (Registry.BLOCK.containsId(id))
         {
-            Block block = Block.REGISTRY.getObject(id);
-            IBlockState state = block.getDefaultState();
+            Block block = Registry.BLOCK.get(id);
+            BlockState state = block.getDefaultState();
 
             if (index != -1 && str.length() > (index + 4) && str.charAt(str.length() - 1) == ']')
             {
-                BlockStateContainer blockState = block.getBlockState();
+                StateManager<Block, BlockState> stateManager = block.getStateManager();
                 String propStr = str.substring(index + 1, str.length() - 1);
 
                 for (String propAndVal : COMMA_SPLITTER.split(propStr))
@@ -255,7 +255,7 @@ public class BlockUtils
     @Nullable
     public static <T extends Comparable<T>> T getPropertyValueByName(Property<T> prop, String valStr)
     {
-        return prop.parseValue(valStr).orNull();
+        return prop.parse(valStr).orElse(null);
     }
 
     /**
@@ -264,7 +264,7 @@ public class BlockUtils
      */
     public static Optional<DirectionProperty> getFirstDirectionProperty(BlockState state)
     {
-        for (IProperty<?> prop : state.getProperties().keySet())
+        for (Property<?> prop : state.getProperties())
         {
             if (prop instanceof DirectionProperty)
             {
