@@ -1,5 +1,6 @@
 package malilib.input;
 
+import java.lang.reflect.Field;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,11 +8,12 @@ import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFW;
 
 import malilib.MaLiLib;
+import malilib.util.game.wrap.GameUtils;
 
+@SuppressWarnings("unused")
 public class Keys
 {
     private static final Pattern PATTERN_CHAR_CODE = Pattern.compile("^CHAR_(?<code>[0-9]+)$");
@@ -19,87 +21,87 @@ public class Keys
     private static final Object2IntOpenHashMap<String> NAMES_TO_IDS = new Object2IntOpenHashMap<>();
     private static final Int2ObjectOpenHashMap<String> IDS_TO_NAMES = new Int2ObjectOpenHashMap<>();
 
-    public static final int KEY_NONE            = Keyboard.KEY_NONE;
-    public static final int KEY_0               = Keyboard.KEY_0;
-    public static final int KEY_1               = Keyboard.KEY_1;
-    public static final int KEY_2               = Keyboard.KEY_2;
-    public static final int KEY_3               = Keyboard.KEY_3;
-    public static final int KEY_4               = Keyboard.KEY_4;
-    public static final int KEY_5               = Keyboard.KEY_5;
-    public static final int KEY_6               = Keyboard.KEY_6;
-    public static final int KEY_7               = Keyboard.KEY_7;
-    public static final int KEY_8               = Keyboard.KEY_8;
-    public static final int KEY_9               = Keyboard.KEY_9;
-    public static final int KEY_A               = Keyboard.KEY_A;
-    public static final int KEY_B               = Keyboard.KEY_B;
-    public static final int KEY_C               = Keyboard.KEY_C;
-    public static final int KEY_D               = Keyboard.KEY_D;
-    public static final int KEY_E               = Keyboard.KEY_E;
-    public static final int KEY_F               = Keyboard.KEY_F;
-    public static final int KEY_G               = Keyboard.KEY_G;
-    public static final int KEY_H               = Keyboard.KEY_H;
-    public static final int KEY_I               = Keyboard.KEY_I;
-    public static final int KEY_J               = Keyboard.KEY_J;
-    public static final int KEY_K               = Keyboard.KEY_K;
-    public static final int KEY_L               = Keyboard.KEY_L;
-    public static final int KEY_M               = Keyboard.KEY_M;
-    public static final int KEY_N               = Keyboard.KEY_N;
-    public static final int KEY_O               = Keyboard.KEY_O;
-    public static final int KEY_P               = Keyboard.KEY_P;
-    public static final int KEY_Q               = Keyboard.KEY_Q;
-    public static final int KEY_R               = Keyboard.KEY_R;
-    public static final int KEY_S               = Keyboard.KEY_S;
-    public static final int KEY_T               = Keyboard.KEY_T;
-    public static final int KEY_U               = Keyboard.KEY_U;
-    public static final int KEY_V               = Keyboard.KEY_V;
-    public static final int KEY_W               = Keyboard.KEY_W;
-    public static final int KEY_X               = Keyboard.KEY_X;
-    public static final int KEY_Y               = Keyboard.KEY_Y;
-    public static final int KEY_Z               = Keyboard.KEY_Z;
-    public static final int KEY_SPACE           = Keyboard.KEY_SPACE;
-    public static final int KEY_APOSTROPHE      = Keyboard.KEY_APOSTROPHE;
-    public static final int KEY_COMMA           = Keyboard.KEY_COMMA;
-    public static final int KEY_MINUS           = Keyboard.KEY_MINUS;
-    public static final int KEY_PERIOD          = Keyboard.KEY_PERIOD;
-    public static final int KEY_SLASH           = Keyboard.KEY_SLASH;
-    public static final int KEY_SEMICOLON       = Keyboard.KEY_SEMICOLON;
-    public static final int KEY_EQUAL           = Keyboard.KEY_EQUALS;
-    public static final int KEY_BACKSLASH       = Keyboard.KEY_BACKSLASH;
-    public static final int KEY_ESCAPE          = Keyboard.KEY_ESCAPE;
-    public static final int KEY_ENTER           = Keyboard.KEY_RETURN;
-    public static final int KEY_TAB             = Keyboard.KEY_TAB;
-    public static final int KEY_BACKSPACE       = Keyboard.KEY_BACK;
-    public static final int KEY_INSERT          = Keyboard.KEY_INSERT;
-    public static final int KEY_DELETE          = Keyboard.KEY_DELETE;
-    public static final int KEY_RIGHT           = Keyboard.KEY_RIGHT;
-    public static final int KEY_LEFT            = Keyboard.KEY_LEFT;
-    public static final int KEY_DOWN            = Keyboard.KEY_DOWN;
-    public static final int KEY_UP              = Keyboard.KEY_UP;
-    public static final int KEY_PAGE_UP         = Keyboard.KEY_PRIOR;
-    public static final int KEY_PAGE_DOWN       = Keyboard.KEY_NEXT;
-    public static final int KEY_HOME            = Keyboard.KEY_HOME;
-    public static final int KEY_END             = Keyboard.KEY_END;
-    public static final int KEY_LEFT_BRACKET    = Keyboard.KEY_LBRACKET;
-    public static final int KEY_RIGHT_BRACKET   = Keyboard.KEY_RBRACKET;
-    public static final int KEY_F1              = Keyboard.KEY_F1;
-    public static final int KEY_F2              = Keyboard.KEY_F2;
-    public static final int KEY_F3              = Keyboard.KEY_F3;
-    public static final int KEY_F4              = Keyboard.KEY_F4;
-    public static final int KEY_F5              = Keyboard.KEY_F5;
-    public static final int KEY_F6              = Keyboard.KEY_F6;
-    public static final int KEY_F7              = Keyboard.KEY_F7;
-    public static final int KEY_F8              = Keyboard.KEY_F8;
-    public static final int KEY_F9              = Keyboard.KEY_F9;
-    public static final int KEY_F10             = Keyboard.KEY_F10;
-    public static final int KEY_F11             = Keyboard.KEY_F11;
-    public static final int KEY_F12             = Keyboard.KEY_F12;
-    public static final int KEY_F13             = Keyboard.KEY_F13;
-    public static final int KEY_F14             = Keyboard.KEY_F14;
-    public static final int KEY_F15             = Keyboard.KEY_F15;
-    public static final int KEY_F16             = Keyboard.KEY_F16;
-    public static final int KEY_F17             = Keyboard.KEY_F17;
-    public static final int KEY_F18             = Keyboard.KEY_F18;
-    public static final int KEY_F19             = Keyboard.KEY_F19;
+    public static final int KEY_NONE            = GLFW.GLFW_KEY_UNKNOWN;
+    public static final int KEY_0               = GLFW.GLFW_KEY_0;
+    public static final int KEY_1               = GLFW.GLFW_KEY_1;
+    public static final int KEY_2               = GLFW.GLFW_KEY_2;
+    public static final int KEY_3               = GLFW.GLFW_KEY_3;
+    public static final int KEY_4               = GLFW.GLFW_KEY_4;
+    public static final int KEY_5               = GLFW.GLFW_KEY_5;
+    public static final int KEY_6               = GLFW.GLFW_KEY_6;
+    public static final int KEY_7               = GLFW.GLFW_KEY_7;
+    public static final int KEY_8               = GLFW.GLFW_KEY_8;
+    public static final int KEY_9               = GLFW.GLFW_KEY_9;
+    public static final int KEY_A               = GLFW.GLFW_KEY_A;
+    public static final int KEY_B               = GLFW.GLFW_KEY_B;
+    public static final int KEY_C               = GLFW.GLFW_KEY_C;
+    public static final int KEY_D               = GLFW.GLFW_KEY_D;
+    public static final int KEY_E               = GLFW.GLFW_KEY_E;
+    public static final int KEY_F               = GLFW.GLFW_KEY_F;
+    public static final int KEY_G               = GLFW.GLFW_KEY_G;
+    public static final int KEY_H               = GLFW.GLFW_KEY_H;
+    public static final int KEY_I               = GLFW.GLFW_KEY_I;
+    public static final int KEY_J               = GLFW.GLFW_KEY_J;
+    public static final int KEY_K               = GLFW.GLFW_KEY_K;
+    public static final int KEY_L               = GLFW.GLFW_KEY_L;
+    public static final int KEY_M               = GLFW.GLFW_KEY_M;
+    public static final int KEY_N               = GLFW.GLFW_KEY_N;
+    public static final int KEY_O               = GLFW.GLFW_KEY_O;
+    public static final int KEY_P               = GLFW.GLFW_KEY_P;
+    public static final int KEY_Q               = GLFW.GLFW_KEY_Q;
+    public static final int KEY_R               = GLFW.GLFW_KEY_R;
+    public static final int KEY_S               = GLFW.GLFW_KEY_S;
+    public static final int KEY_T               = GLFW.GLFW_KEY_T;
+    public static final int KEY_U               = GLFW.GLFW_KEY_U;
+    public static final int KEY_V               = GLFW.GLFW_KEY_V;
+    public static final int KEY_W               = GLFW.GLFW_KEY_W;
+    public static final int KEY_X               = GLFW.GLFW_KEY_X;
+    public static final int KEY_Y               = GLFW.GLFW_KEY_Y;
+    public static final int KEY_Z               = GLFW.GLFW_KEY_Z;
+    public static final int KEY_SPACE           = GLFW.GLFW_KEY_SPACE;
+    public static final int KEY_APOSTROPHE      = GLFW.GLFW_KEY_APOSTROPHE;
+    public static final int KEY_COMMA           = GLFW.GLFW_KEY_COMMA;
+    public static final int KEY_MINUS           = GLFW.GLFW_KEY_MINUS;
+    public static final int KEY_PERIOD          = GLFW.GLFW_KEY_PERIOD;
+    public static final int KEY_SLASH           = GLFW.GLFW_KEY_SLASH;
+    public static final int KEY_SEMICOLON       = GLFW.GLFW_KEY_SEMICOLON;
+    public static final int KEY_EQUAL           = GLFW.GLFW_KEY_EQUAL;
+    public static final int KEY_BACKSLASH       = GLFW.GLFW_KEY_BACKSLASH;
+    public static final int KEY_ESCAPE          = GLFW.GLFW_KEY_ESCAPE;
+    public static final int KEY_ENTER           = GLFW.GLFW_KEY_ENTER;
+    public static final int KEY_TAB             = GLFW.GLFW_KEY_TAB;
+    public static final int KEY_BACKSPACE       = GLFW.GLFW_KEY_BACKSPACE;
+    public static final int KEY_INSERT          = GLFW.GLFW_KEY_INSERT;
+    public static final int KEY_DELETE          = GLFW.GLFW_KEY_DELETE;
+    public static final int KEY_RIGHT           = GLFW.GLFW_KEY_RIGHT;
+    public static final int KEY_LEFT            = GLFW.GLFW_KEY_LEFT;
+    public static final int KEY_DOWN            = GLFW.GLFW_KEY_DOWN;
+    public static final int KEY_UP              = GLFW.GLFW_KEY_UP;
+    public static final int KEY_PAGE_UP         = GLFW.GLFW_KEY_PAGE_UP;
+    public static final int KEY_PAGE_DOWN       = GLFW.GLFW_KEY_PAGE_DOWN;
+    public static final int KEY_HOME            = GLFW.GLFW_KEY_HOME;
+    public static final int KEY_END             = GLFW.GLFW_KEY_END;
+    public static final int KEY_LEFT_BRACKET    = GLFW.GLFW_KEY_LEFT_BRACKET;
+    public static final int KEY_RIGHT_BRACKET   = GLFW.GLFW_KEY_RIGHT_BRACKET;
+    public static final int KEY_F1              = GLFW.GLFW_KEY_F1;
+    public static final int KEY_F2              = GLFW.GLFW_KEY_F2;
+    public static final int KEY_F3              = GLFW.GLFW_KEY_F3;
+    public static final int KEY_F4              = GLFW.GLFW_KEY_F4;
+    public static final int KEY_F5              = GLFW.GLFW_KEY_F5;
+    public static final int KEY_F6              = GLFW.GLFW_KEY_F6;
+    public static final int KEY_F7              = GLFW.GLFW_KEY_F7;
+    public static final int KEY_F8              = GLFW.GLFW_KEY_F8;
+    public static final int KEY_F9              = GLFW.GLFW_KEY_F9;
+    public static final int KEY_F10             = GLFW.GLFW_KEY_F10;
+    public static final int KEY_F11             = GLFW.GLFW_KEY_F11;
+    public static final int KEY_F12             = GLFW.GLFW_KEY_F12;
+    public static final int KEY_F13             = GLFW.GLFW_KEY_F13;
+    public static final int KEY_F14             = GLFW.GLFW_KEY_F14;
+    public static final int KEY_F15             = GLFW.GLFW_KEY_F15;
+    public static final int KEY_F16             = GLFW.GLFW_KEY_F16;
+    public static final int KEY_F17             = GLFW.GLFW_KEY_F17;
+    public static final int KEY_F18             = GLFW.GLFW_KEY_F18;
+    public static final int KEY_F19             = GLFW.GLFW_KEY_F19;
     /*
     public static final int KEY_F20             = Keyboard.KEY_F20;
     public static final int KEY_F21             = Keyboard.KEY_F21;
@@ -117,33 +119,42 @@ public class Keys
     public static final int KEY_KP_7            = Keyboard.KEY_KP_7;
     public static final int KEY_KP_8            = Keyboard.KEY_KP_8;
     public static final int KEY_KP_9            = Keyboard.KEY_KP_9;
-    public static final int KEY_KP_DECIMAL      = Keyboard.KEY_KP_DECIMAL;
     */
-    public static final int KEY_KP_DIVIDE       = Keyboard.KEY_DIVIDE;
-    public static final int KEY_KP_MULTIPLY     = Keyboard.KEY_MULTIPLY;
-    public static final int KEY_KP_SUBTRACT     = Keyboard.KEY_SUBTRACT;
-    public static final int KEY_KP_ADD          = Keyboard.KEY_ADD;
-    public static final int KEY_KP_ENTER        = Keyboard.KEY_NUMPADENTER;
-    public static final int KEY_KP_EQUAL        = Keyboard.KEY_EQUALS; // ?
-    public static final int KEY_LEFT_SHIFT      = Keyboard.KEY_LSHIFT;
-    public static final int KEY_LEFT_CONTROL    = Keyboard.KEY_LCONTROL;
-    public static final int KEY_LEFT_ALT        = Keyboard.KEY_LMENU;
-    public static final int KEY_LEFT_SUPER      = Keyboard.KEY_LMETA;
-    public static final int KEY_RIGHT_SHIFT     = Keyboard.KEY_RSHIFT;
-    public static final int KEY_RIGHT_CONTROL   = Keyboard.KEY_RCONTROL;
-    public static final int KEY_RIGHT_ALT       = Keyboard.KEY_RMENU;
-    public static final int KEY_RIGHT_SUPER     = Keyboard.KEY_RMETA;
-    public static final int KEY_GRAVE_ACCENT    = Keyboard.KEY_GRAVE;
-    public static final int KEY_CAPS_LOCK       = Keyboard.KEY_CAPITAL; // ?
-    public static final int KEY_SCROLL_LOCK     = Keyboard.KEY_SCROLL; // ?
-    public static final int KEY_NUM_LOCK        = Keyboard.KEY_NUMLOCK;
-    public static final int KEY_PAUSE           = Keyboard.KEY_PAUSE;
+    public static final int KEY_KP_DECIMAL      = GLFW.GLFW_KEY_KP_DECIMAL;
+    public static final int KEY_KP_DIVIDE       = GLFW.GLFW_KEY_KP_DIVIDE;
+    public static final int KEY_KP_MULTIPLY     = GLFW.GLFW_KEY_KP_MULTIPLY;
+    public static final int KEY_KP_SUBTRACT     = GLFW.GLFW_KEY_KP_SUBTRACT;
+    public static final int KEY_KP_ADD          = GLFW.GLFW_KEY_KP_ADD;
+    public static final int KEY_KP_ENTER        = GLFW.GLFW_KEY_KP_ENTER;
+    public static final int KEY_KP_EQUAL        = GLFW.GLFW_KEY_KP_EQUAL;
+    public static final int KEY_LEFT_SHIFT      = GLFW.GLFW_KEY_LEFT_SHIFT;
+    public static final int KEY_LEFT_CONTROL    = GLFW.GLFW_KEY_LEFT_CONTROL;
+    public static final int KEY_LEFT_ALT        = GLFW.GLFW_KEY_LEFT_ALT;
+    public static final int KEY_LEFT_SUPER      = GLFW.GLFW_KEY_LEFT_SUPER;
+    public static final int KEY_RIGHT_SHIFT     = GLFW.GLFW_KEY_RIGHT_SHIFT;
+    public static final int KEY_RIGHT_CONTROL   = GLFW.GLFW_KEY_RIGHT_CONTROL;
+    public static final int KEY_RIGHT_ALT       = GLFW.GLFW_KEY_RIGHT_ALT;
+    public static final int KEY_RIGHT_SUPER     = GLFW.GLFW_KEY_RIGHT_SUPER;
+    public static final int KEY_GRAVE_ACCENT    = GLFW.GLFW_KEY_GRAVE_ACCENT;
+    public static final int KEY_CAPS_LOCK       = GLFW.GLFW_KEY_CAPS_LOCK;
+    public static final int KEY_SCROLL_LOCK     = GLFW.GLFW_KEY_SCROLL_LOCK;
+    public static final int KEY_NUM_LOCK        = GLFW.GLFW_KEY_NUM_LOCK;
+    public static final int KEY_PAUSE           = GLFW.GLFW_KEY_PAUSE;
     /*
     public static final int KEY_WORLD_1         = Keyboard.KEY_WORLD_1;
     public static final int KEY_WORLD_2         = Keyboard.KEY_WORLD_2;
     public static final int KEY_PRINT_SCREEN    = Keyboard.KEY_PRINT_SCREEN;
     public static final int KEY_MENU            = Keyboard.KEY_MENU;
     */
+
+    public static final int MOUSE_BUTTON_1      = GLFW.GLFW_MOUSE_BUTTON_1 - 100;
+    public static final int MOUSE_BUTTON_2      = GLFW.GLFW_MOUSE_BUTTON_2 - 100;
+    public static final int MOUSE_BUTTON_3      = GLFW.GLFW_MOUSE_BUTTON_3 - 100;
+    public static final int MOUSE_BUTTON_4      = GLFW.GLFW_MOUSE_BUTTON_4 - 100;
+    public static final int MOUSE_BUTTON_5      = GLFW.GLFW_MOUSE_BUTTON_5 - 100;
+    public static final int MOUSE_BUTTON_6      = GLFW.GLFW_MOUSE_BUTTON_6 - 100;
+    public static final int MOUSE_BUTTON_7      = GLFW.GLFW_MOUSE_BUTTON_7 - 100;
+    public static final int MOUSE_BUTTON_8      = GLFW.GLFW_MOUSE_BUTTON_8 - 100;
 
     static
     {
@@ -160,11 +171,6 @@ public class Keys
 
         if (keyCode == Keys.KEY_NONE)
         {
-            keyCode = Keyboard.getKeyIndex(keyName);
-        }
-
-        if (keyCode == Keys.KEY_NONE)
-        {
             Matcher matcher = PATTERN_CHAR_CODE.matcher(keyName);
 
             if (matcher.matches())
@@ -174,20 +180,6 @@ public class Keys
                     keyCode = Integer.parseInt(matcher.group("code")) + 256;
                 }
                 catch (Exception ignore) {}
-            }
-        }
-
-        if (keyCode == Keys.KEY_NONE)
-        {
-            keyCode = Mouse.getButtonIndex(keyName);
-
-            if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
-            {
-                keyCode -= 100;
-            }
-            else
-            {
-                keyCode = Keys.KEY_NONE;
             }
         }
 
@@ -210,22 +202,9 @@ public class Keys
             return name;
         }
 
-        if (keyCode > 0 && keyCode < 256)
-        {
-            return Keyboard.getKeyName(keyCode);
-        }
-        else if (keyCode >= 256)
+        if (keyCode >= 256)
         {
             return charEncoder.apply(keyCode - 256);
-        }
-        else if (keyCode < 0)
-        {
-            keyCode += 100;
-
-            if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
-            {
-                return Mouse.getButtonName(keyCode);
-            }
         }
 
         return null;
@@ -233,14 +212,16 @@ public class Keys
 
     public static boolean isKeyDown(int keyCode)
     {
-        if (keyCode > 0)
+        long window = GameUtils.getClient().getWindow().getHandle();
+
+        if (keyCode >= 0)
         {
-            return keyCode < Keyboard.getKeyCount() && Keyboard.isKeyDown(keyCode);
+            return GLFW.glfwGetKey(window, keyCode) == GLFW.GLFW_PRESS;
         }
 
         keyCode += 100;
 
-        return keyCode >= 0 && keyCode < Mouse.getButtonCount() && Mouse.isButtonDown(keyCode);
+        return keyCode >= 0 && GLFW.glfwGetMouseButton(window, keyCode) == GLFW.GLFW_PRESS;
     }
 
     public static IntArrayList readKeysFromStorageString(String str)
@@ -302,7 +283,7 @@ public class Keys
 
     public static void initKeys()
     {
-        NAMES_TO_IDS.defaultReturnValue(Keys.KEY_NONE);
+        initDefaultKeyMappings();
 
         addNameOverride(Keys.KEY_LEFT_ALT, "L_ALT");
         addNameOverride(Keys.KEY_RIGHT_ALT, "R_ALT");
@@ -327,6 +308,41 @@ public class Keys
         addLoadableNames(-100, "BUTTON0", "MOUSE0", "LMB", "MOUSE_LEFT");
         addLoadableNames(-99, "BUTTON1", "MOUSE1", "RMB", "MOUSE_RIGHT");
         addLoadableNames(-98, "BUTTON2", "MOUSE2", "MMB", "MOUSE_MIDDLE");
+    }
+
+    private static void initDefaultKeyMappings()
+    {
+        NAMES_TO_IDS.defaultReturnValue(KEY_NONE);
+
+        for (Field field : Keys.class.getDeclaredFields())
+        {
+            try
+            {
+                String name = field.getName();
+                int keyCode = KEY_NONE;
+
+                if (name.startsWith("KEY_"))
+                {
+                    name = name.substring(4);
+                    keyCode = field.getInt(null);
+                }
+                else if (name.startsWith("MOUSE_"))
+                {
+                    name = name.substring(6);
+                    keyCode = field.getInt(null);
+                }
+
+                if (keyCode != KEY_NONE)
+                {
+                    IDS_TO_NAMES.put(keyCode, name);
+                    NAMES_TO_IDS.put(name, keyCode);
+                }
+            }
+            catch (Exception e)
+            {
+                MaLiLib.LOGGER.error("Failed to initialize the key name lookup!", e);
+            }
+        }
     }
 
     /**
