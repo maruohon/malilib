@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "malilib",
-	"name": "MaLiLib",
+	"name": "MaLiLib (rewrite dev)",
 	"version": "${mod_version}",
 
 	"description": "A library mod required by masa's client-side mods",

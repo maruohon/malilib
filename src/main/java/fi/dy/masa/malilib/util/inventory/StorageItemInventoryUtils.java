@@ -6,7 +6,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtCompound;
 import fi.dy.masa.malilib.util.data.ItemType;
 import fi.dy.masa.malilib.util.game.wrap.DefaultedList;
 import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
