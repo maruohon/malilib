@@ -97,7 +97,8 @@ public class GuiUtils
 
         if (screen != null)
         {
-            screen.initGui();
+            // TODO 1.13+ port
+            //screen.initGui();
         }
     }
 
@@ -248,12 +249,12 @@ public class GuiUtils
             if (GameUtils.getClient().options.getChatLinksPrompt().getValue())
             {
                 //BaseScreen.openGui(new ConfirmActionScreen(320, "", () -> openWebLink(uri), getCurrentScreen(), ""));
-                BaseScreen.openScreen(new GuiConfirmOpenLink((result, id) -> {
-                    if (result && id == 31102009)
+                BaseScreen.openScreen(new ConfirmLinkScreen((result) -> {
+                    if (result)
                         openWebLink(uri);
                     else
                         BaseScreen.openScreen(currentScreen);
-                    }, urlString, 31102009, false));
+                    }, urlString, false));
             }
             else
             {
