@@ -115,7 +115,7 @@ public class GuiUtils
         if (screen != null)
         {
             // TODO 1.13+ port
-            //screen.init();
+            //screen.initGui();
         }
     }
 
