@@ -65,14 +65,16 @@ public class GuiUtils
 
     public static int getMouseScreenX(int screenWidth)
     {
-        // TODO 1.13+ port
-        return getMouseScreenX();
+        MinecraftClient mc = GameUtils.getClient();
+        Window window = mc.getWindow();
+        return (int) (mc.mouse.getX() * (double) screenWidth / (double) window.getWidth());
     }
 
     public static int getMouseScreenY(int screenHeight)
     {
-        // TODO 1.13+ port
-        return getMouseScreenY();
+        MinecraftClient mc = GameUtils.getClient();
+        Window window = mc.getWindow();
+        return (int) (mc.mouse.getY() * (double) screenHeight / (double) window.getHeight());
     }
 
     public static int getMouseScreenX()
@@ -114,8 +116,9 @@ public class GuiUtils
 
         if (screen != null)
         {
-            // TODO 1.13+ port
-            //screen.initGui();
+            MinecraftClient mc = MinecraftClient.getInstance();
+            Window window = mc.getWindow();
+            screen.init(mc, window.getScaledWidth(), window.getScaledHeight());
         }
     }
 
