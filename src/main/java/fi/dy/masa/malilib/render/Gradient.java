@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.render;
 
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class Gradient

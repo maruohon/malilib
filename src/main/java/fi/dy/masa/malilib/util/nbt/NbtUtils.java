@@ -13,28 +13,28 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.zip.GZIPOutputStream;
 import javax.annotation.Nullable;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.mixin.access.NBTBaseMixin;
+import fi.dy.masa.malilib.mixin.access.NbtElementMixin;
 import fi.dy.masa.malilib.util.data.Constants;
 import fi.dy.masa.malilib.util.game.wrap.NbtWrap;
 
 public class NbtUtils
 {
     @Nullable
-    public static UUID readUUID(NBTTagCompound tag)
+    public static UUID readUUID(NbtCompound tag)
     {
         return readUUID(tag, "UUIDM", "UUIDL");
     }
 
     @Nullable
-    public static UUID readUUID(NBTTagCompound tag, String keyM, String keyL)
+    public static UUID readUUID(NbtCompound tag, String keyM, String keyL)
     {
         if (NbtWrap.containsLong(tag, keyM) && NbtWrap.containsLong(tag, keyL))
         {
@@ -44,20 +44,20 @@ public class NbtUtils
         return null;
     }
 
-    public static void writeUUID(NBTTagCompound tag, UUID uuid)
+    public static void writeUUID(NbtCompound tag, UUID uuid)
     {
         writeUUID(tag, uuid, "UUIDM", "UUIDL");
     }
 
-    public static void writeUUID(NBTTagCompound tag, UUID uuid, String keyM, String keyL)
+    public static void writeUUID(NbtCompound tag, UUID uuid, String keyM, String keyL)
     {
         NbtWrap.putLong(tag, keyM, uuid.getMostSignificantBits());
         NbtWrap.putLong(tag, keyL, uuid.getLeastSignificantBits());
     }
 
-    public static NBTTagCompound getOrCreateCompound(NBTTagCompound tagIn, String tagName)
+    public static NbtCompound getOrCreateCompound(NbtCompound tagIn, String tagName)
     {
-        NBTTagCompound nbt;
+        NbtCompound nbt;
 
         if (NbtWrap.containsCompound(tagIn, tagName))
         {
@@ -65,16 +65,16 @@ public class NbtUtils
         }
         else
         {
-            nbt = new NBTTagCompound();
+            nbt = new NbtCompound();
             NbtWrap.putTag(tagIn, tagName, nbt);
         }
 
         return nbt;
     }
 
-    public static <T> NBTTagList asListTag(Collection<T> values, Function<T, NBTBase> tagFactory)
+    public static <T> NbtList asListTag(Collection<T> values, Function<T, NbtElement> tagFactory)
     {
-        NBTTagList list = new NBTTagList();
+        NbtList list = new NbtList();
 
         for (T val : values)
         {
@@ -84,12 +84,12 @@ public class NbtUtils
         return list;
     }
 
-    public static NBTTagCompound createBlockPosTag(Vec3i pos)
+    public static NbtCompound createBlockPosTag(Vec3i pos)
     {
-        return putVec3i(new NBTTagCompound(), pos);
+        return putVec3i(new NbtCompound(), pos);
     }
 
-    public static NBTTagCompound putVec3i(NBTTagCompound tag, Vec3i pos)
+    public static NbtCompound putVec3i(NbtCompound tag, Vec3i pos)
     {
         NbtWrap.putInt(tag, "x", pos.getX());
         NbtWrap.putInt(tag, "y", pos.getY());
@@ -98,9 +98,9 @@ public class NbtUtils
     }
 
     @Nullable
-    public static NBTTagCompound writeBlockPosToListTag(Vec3i pos, NBTTagCompound tag, String tagName)
+    public static NbtCompound writeBlockPosToListTag(Vec3i pos, NbtCompound tag, String tagName)
     {
-        NBTTagList tagList = new NBTTagList();
+        NbtList tagList = new NbtList();
 
         NbtWrap.addTag(tagList, NbtWrap.asIntTag(pos.getX()));
         NbtWrap.addTag(tagList, NbtWrap.asIntTag(pos.getY()));
@@ -111,7 +111,7 @@ public class NbtUtils
     }
 
     @Nullable
-    public static NBTTagCompound writeBlockPosToArrayTag(Vec3i pos, NBTTagCompound tag, String tagName)
+    public static NbtCompound writeBlockPosToArrayTag(Vec3i pos, NbtCompound tag, String tagName)
     {
         int[] arr = new int[] { pos.getX(), pos.getY(), pos.getZ() };
 
@@ -121,7 +121,7 @@ public class NbtUtils
     }
 
     @Nullable
-    public static BlockPos readBlockPos(@Nullable NBTTagCompound tag)
+    public static BlockPos readBlockPos(@Nullable NbtCompound tag)
     {
         if (tag != null &&
             NbtWrap.containsInt(tag, "x") &&
@@ -135,11 +135,11 @@ public class NbtUtils
     }
 
     @Nullable
-    public static BlockPos readBlockPosFromListTag(NBTTagCompound tag, String tagName)
+    public static BlockPos readBlockPosFromListTag(NbtCompound tag, String tagName)
     {
         if (NbtWrap.containsList(tag, tagName))
         {
-            NBTTagList tagList = NbtWrap.getList(tag, tagName, Constants.NBT.TAG_INT);
+            NbtList tagList = NbtWrap.getList(tag, tagName, Constants.NBT.TAG_INT);
 
             if (NbtWrap.getListSize(tagList) == 3)
             {
@@ -151,7 +151,7 @@ public class NbtUtils
     }
 
     @Nullable
-    public static BlockPos readBlockPosFromArrayTag(NBTTagCompound tag, String tagName)
+    public static BlockPos readBlockPosFromArrayTag(NbtCompound tag, String tagName)
     {
         if (NbtWrap.containsIntArray(tag, tagName))
         {
@@ -166,7 +166,7 @@ public class NbtUtils
         return null;
     }
 
-    public static NBTTagCompound removeBlockPosFromTag(NBTTagCompound tag)
+    public static NbtCompound removeBlockPosFromTag(NbtCompound tag)
     {
         NbtWrap.remove(tag, "x");
         NbtWrap.remove(tag, "y");
@@ -175,14 +175,14 @@ public class NbtUtils
         return tag;
     }
 
-    public static NBTTagCompound writeVec3dToListTag(Vec3d pos, NBTTagCompound tag)
+    public static NbtCompound writeVec3dToListTag(Vec3d pos, NbtCompound tag)
     {
         return writeVec3dToListTag(pos, tag, "Pos");
     }
 
-    public static NBTTagCompound writeVec3dToListTag(Vec3d pos, NBTTagCompound tag, String tagName)
+    public static NbtCompound writeVec3dToListTag(Vec3d pos, NbtCompound tag, String tagName)
     {
-        NBTTagList posList = new NBTTagList();
+        NbtList posList = new NbtList();
 
         NbtWrap.addTag(posList, NbtWrap.asDoubleTag(pos.x));
         NbtWrap.addTag(posList, NbtWrap.asDoubleTag(pos.y));
@@ -193,7 +193,7 @@ public class NbtUtils
     }
 
     @Nullable
-    public static Vec3d readVec3d(@Nullable NBTTagCompound tag)
+    public static Vec3d readVec3d(@Nullable NbtCompound tag)
     {
         if (tag != null &&
             NbtWrap.containsDouble(tag, "dx") &&
@@ -207,17 +207,17 @@ public class NbtUtils
     }
 
     @Nullable
-    public static Vec3d readVec3dFromListTag(@Nullable NBTTagCompound tag)
+    public static Vec3d readVec3dFromListTag(@Nullable NbtCompound tag)
     {
         return readVec3dFromListTag(tag, "Pos");
     }
 
     @Nullable
-    public static Vec3d readVec3dFromListTag(@Nullable NBTTagCompound tag, String tagName)
+    public static Vec3d readVec3dFromListTag(@Nullable NbtCompound tag, String tagName)
     {
         if (tag != null && NbtWrap.containsList(tag, tagName))
         {
-            NBTTagList tagList = NbtWrap.getList(tag, tagName, Constants.NBT.TAG_DOUBLE);
+            NbtList tagList = NbtWrap.getList(tag, tagName, Constants.NBT.TAG_DOUBLE);
 
             if (NbtWrap.getListStoredType(tagList) == Constants.NBT.TAG_DOUBLE && NbtWrap.getListSize(tagList) == 3)
             {
@@ -229,7 +229,7 @@ public class NbtUtils
     }
 
     @Nullable
-    public static NBTTagCompound readNbtFromFile(Path file)
+    public static NbtCompound readNbtFromFile(Path file)
     {
         if (Files.isReadable(file) == false)
         {
@@ -238,7 +238,7 @@ public class NbtUtils
 
         try (InputStream is = Files.newInputStream(file))
         {
-            return CompressedStreamTools.readCompressed(is);
+            return NbtIo.readCompressed(is);
         }
         catch (Exception e)
         {
@@ -251,7 +251,7 @@ public class NbtUtils
     /**
      * Write the compound tag, gzipped, to the output stream.
      */
-    public static void writeCompressed(NBTTagCompound tag, String tagName, OutputStream outputStream) throws IOException
+    public static void writeCompressed(NbtCompound tag, String tagName, OutputStream outputStream) throws IOException
     {
         try (DataOutputStream dataoutputstream = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(outputStream))))
         {
@@ -259,7 +259,7 @@ public class NbtUtils
         }
     }
 
-    private static void writeTag(NBTBase tag, String tagName, DataOutput output) throws IOException
+    private static void writeTag(NbtElement tag, String tagName, DataOutput output) throws IOException
     {
         int typeId = NbtWrap.getTypeId(tag);
         output.writeByte(typeId);
@@ -267,7 +267,7 @@ public class NbtUtils
         if (typeId != 0)
         {
             output.writeUTF(tagName);
-            ((NBTBaseMixin) tag).invokeWrite(output);
+            ((NbtElementMixin) tag).invokeWrite(output);
         }
     }
 }

@@ -2,22 +2,22 @@ package fi.dy.masa.malilib.util.game.wrap;
 
 import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NbtCompound;
 
 public class ItemWrap
 {
     @Nullable
-    public static NBTTagCompound getTag(ItemStack stack)
+    public static NbtCompound getTag(ItemStack stack)
     {
-        return stack.getTagCompound();
+        return stack.getNbt();
     }
 
-    public static void setTag(ItemStack stack, @Nullable NBTTagCompound tag)
+    public static void setTag(ItemStack stack, @Nullable NbtCompound tag)
     {
-        stack.setTagCompound(tag);
+        stack.setNbt(tag);
     }
 
-    public static ItemStack fromTag(NBTTagCompound tag)
+    public static ItemStack fromTag(NbtCompound tag)
     {
         return new ItemStack(tag);
     }

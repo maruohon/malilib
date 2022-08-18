@@ -1,16 +1,16 @@
 package fi.dy.masa.malilib.action;
 
 import java.util.ArrayList;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.ScreenShotHelper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.GameType;
+import net.minecraft.world.GameMode;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.util.game.wrap.EntityWrap;
 import fi.dy.masa.malilib.util.game.wrap.GameUtils;
@@ -97,13 +97,13 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            Minecraft mc = ctx.getClient();
-            mc.gameSettings.showDebugInfo = ! mc.gameSettings.showDebugInfo;
+            MinecraftClient mc = ctx.getClient();
+            mc.options.debugEnabled = ! mc.options.debugEnabled;
 
-            if (mc.gameSettings.showDebugInfo == false)
+            if (mc.options.debugEnabled == false)
             {
-                mc.gameSettings.showDebugProfilerChart = false;
-                mc.gameSettings.showLagometer = false;
+                mc.options.debugProfilerEnabled = false;
+                mc.options.debugTpsEnabled = false;
             }
             return ActionResult.SUCCESS;
         }
@@ -114,12 +114,12 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            Minecraft mc = ctx.getClient();
-            mc.gameSettings.showDebugProfilerChart = ! mc.gameSettings.showDebugProfilerChart;
-            boolean state = mc.gameSettings.showDebugProfilerChart;
+            MinecraftClient mc = ctx.getClient();
+            mc.options.debugProfilerEnabled = ! mc.options.debugProfilerEnabled;
+            boolean state = mc.options.debugProfilerEnabled;
             if (arg.equalsIgnoreCase("on")) state = true;
             else if (arg.equalsIgnoreCase("off")) state = false;
-            mc.gameSettings.showDebugInfo = state;
+            mc.options.debugEnabled = state;
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -129,12 +129,12 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            Minecraft mc = ctx.getClient();
-            mc.gameSettings.showLagometer = ! mc.gameSettings.showLagometer;
-            boolean state = mc.gameSettings.showLagometer;
+            MinecraftClient mc = ctx.getClient();
+            mc.options.debugTpsEnabled = ! mc.options.debugTpsEnabled;
+            boolean state = mc.options.debugTpsEnabled;
             if (arg.equalsIgnoreCase("on")) state = true;
             else if (arg.equalsIgnoreCase("off")) state = false;
-            mc.gameSettings.showDebugInfo = state;
+            mc.options.debugEnabled = state;
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -144,7 +144,7 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            boolean enabled = ctx.getClient().debugRenderer.toggleChunkBorders();
+            boolean enabled = ctx.getClient().debugRenderer.toggleShowChunkBorder();
             translateDebugToggleMessage(enabled ? "debug.chunk_boundaries.on" : "debug.chunk_boundaries.off");
             return ActionResult.SUCCESS;
         }
@@ -163,50 +163,50 @@ public class UtilityActions
     {
         if (ctx.getPlayer() != null && ctx.getPlayer().isSpectator() == false)
         {
-            ctx.getPlayer().dropItem(true);
+            ctx.getPlayer().dropSelectedItem(true);
         }
         return ActionResult.SUCCESS;
     }
 
     public static ActionResult cycleGameMode(ActionContext ctx, String arg)
     {
-        if (ctx.getPlayer() != null && ctx.getClient().getConnection() != null)
+        if (ctx.getPlayer() != null && ctx.getClient().getNetworkHandler() != null)
         {
             String[] parts = arg.split(",");
 
             if (parts.length > 0)
             {
-                ArrayList<GameType> modes = new ArrayList<>();
+                ArrayList<GameMode> modes = new ArrayList<>();
 
                 for (String part : parts)
                 {
                     if (part.equalsIgnoreCase("survival") || part.equals("s") || part.equals("0"))
                     {
-                        modes.add(GameType.SURVIVAL);
+                        modes.add(GameMode.SURVIVAL);
                     }
                     else if (part.equalsIgnoreCase("creative") || part.equals("c") || part.equals("1"))
                     {
-                        modes.add(GameType.CREATIVE);
+                        modes.add(GameMode.CREATIVE);
                     }
                     else if (part.equalsIgnoreCase("adventure") || part.equals("a") || part.equals("2"))
                     {
-                        modes.add(GameType.ADVENTURE);
+                        modes.add(GameMode.ADVENTURE);
                     }
                     else if (part.equalsIgnoreCase("spectator") || part.equals("sp") || part.equals("3"))
                     {
-                        modes.add(GameType.SPECTATOR);
+                        modes.add(GameMode.SPECTATOR);
                     }
                 }
 
-                NetworkPlayerInfo info = ctx.getClient().getConnection().getPlayerInfo(ctx.getPlayer().getGameProfile().getId());
-                int index = info != null ? modes.indexOf(info.getGameType()) : -1;
+                PlayerListEntry info = ctx.getClient().getNetworkHandler().getPlayerListEntry(ctx.getPlayer().getGameProfile().getId());
+                int index = info != null ? modes.indexOf(info.getGameMode()) : -1;
 
                 if (++index >= modes.size())
                 {
                     index = 0;
                 }
 
-                GameType mode = modes.get(index);
+                GameMode mode = modes.get(index);
                 ctx.getPlayer().sendChatMessage("/gamemode " + mode.getName());
 
                 return ActionResult.SUCCESS;

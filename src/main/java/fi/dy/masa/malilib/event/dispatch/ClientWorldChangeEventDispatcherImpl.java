@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.world.ClientWorld;
 import fi.dy.masa.malilib.config.util.ConfigOverrideUtils;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
@@ -37,7 +37,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onWorldLoadPre(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter)
+    public void onWorldLoadPre(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter)
     {
         if (worldBefore != null && worldAfter != null)
         {
@@ -56,7 +56,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onWorldLoadPost(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter)
+    public void onWorldLoadPost(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter)
     {
         // Save all the configs when exiting a world
         if (worldBefore != null && worldAfter == null)

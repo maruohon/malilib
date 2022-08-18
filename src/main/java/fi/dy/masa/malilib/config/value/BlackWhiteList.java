@@ -8,8 +8,8 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraft.util.Identifier;
 import fi.dy.masa.malilib.config.option.list.BlockListConfig;
 import fi.dy.masa.malilib.config.option.list.ItemListConfig;
 import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
@@ -184,7 +184,7 @@ public class BlackWhiteList<TYPE>
     public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         return (t) -> {
-            ResourceLocation id = registry.getNameForObject(t);
+            Identifier id = registry.getId(t);
             return id != null ? id.toString() : "<N/A>";
         };
     }
@@ -194,8 +194,8 @@ public class BlackWhiteList<TYPE>
         return (str) -> {
             try
             {
-                ResourceLocation id = new ResourceLocation(str);
-                return registry.getObject(id);
+                Identifier id = new Identifier(str);
+                return registry.get(id);
             }
             catch (Exception e)
             {

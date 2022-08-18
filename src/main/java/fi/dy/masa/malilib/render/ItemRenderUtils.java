@@ -1,17 +1,17 @@
 package fi.dy.masa.malilib.render;
 
 import java.util.List;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
 public class ItemRenderUtils
 {
-    public static void renderStackAt(ItemStack stack, int x, int y, float z, float scale, Minecraft mc)
+    public static void renderStackAt(ItemStack stack, int x, int y, float z, float scale, MinecraftClient mc)
     {
         if (stack == null || ItemWrap.isEmpty(stack))
         {

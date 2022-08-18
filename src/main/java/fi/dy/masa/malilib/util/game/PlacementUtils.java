@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.util.game;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import fi.dy.masa.malilib.util.position.HitPosition;
+import net.minecraft.block.BlockState;
 
 public class PlacementUtils
 {

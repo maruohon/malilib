@@ -21,9 +21,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.storage.MapData;
@@ -55,7 +55,7 @@ public class RenderUtils
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void bindTexture(ResourceLocation texture)
+    public static void bindTexture(Identifier texture)
     {
         GameUtils.getClient().getTextureManager().bindTexture(texture);
     }
@@ -167,10 +167,10 @@ public class RenderUtils
             float v1 = sprite.getMinV();
             float v2 = sprite.getMaxV();
 
-            buffer.pos(x        , y + height, z).tex(u1, v2).endVertex();
-            buffer.pos(x + width, y + height, z).tex(u2, v2).endVertex();
-            buffer.pos(x + width, y         , z).tex(u2, v1).endVertex();
-            buffer.pos(x        , y         , z).tex(u1, v1).endVertex();
+            buffer.vertex(x        , y + height, z).texture(u1, v2).next();
+            buffer.vertex(x + width, y + height, z).texture(u2, v2).next();
+            buffer.vertex(x + width, y         , z).texture(u2, v1).next();
+            buffer.vertex(x        , y         , z).texture(u1, v1).next();
 
             drawBuffer();
         }
@@ -298,7 +298,7 @@ public class RenderUtils
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
                                                    Color4f color, float partialTicks)
     {
-        EnumFacing playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
 
         double dx = EntityWrap.lerpX(entity, partialTicks);
@@ -324,42 +324,42 @@ public class RenderUtils
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
         // White full block background
-        buffer.pos(x - 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
-        buffer.pos(x + 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
-        buffer.pos(x + 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
-        buffer.pos(x - 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
+        buffer.vertex(x - 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).next();
+        buffer.vertex(x + 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).next();
+        buffer.vertex(x + 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).next();
+        buffer.vertex(x - 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).next();
 
         switch (part)
         {
             case CENTER:
-                buffer.pos(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
                 break;
             case LEFT:
-                buffer.pos(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).next();
                 break;
             case RIGHT:
-                buffer.pos(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).next();
                 break;
             case TOP:
-                buffer.pos(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).next();
                 break;
             case BOTTOM:
-                buffer.pos(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).next();
                 break;
             default:
         }
@@ -379,20 +379,20 @@ public class RenderUtils
 
         buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
         // Bottom left
-        buffer.pos(x - 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x - 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).next();
 
         // Top left
-        buffer.pos(x - 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x - 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).next();
 
         // Bottom right
-        buffer.pos(x + 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x + 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x + 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x + 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).next();
 
         // Top right
-        buffer.pos(x + 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x + 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x + 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x + 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).next();
         tessellator.draw();
 
         GlStateManager.popMatrix();
@@ -401,7 +401,7 @@ public class RenderUtils
     public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, EnumFacing side,
                                                          Color4f color, float partialTicks)
     {
-        EnumFacing playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = entity.getHorizontalFacing();
 
         double dx = EntityWrap.lerpX(entity, partialTicks);
         double dy = EntityWrap.lerpY(entity, partialTicks);
@@ -426,10 +426,10 @@ public class RenderUtils
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
         // Simple colored quad
-        buffer.pos(x - 0.5, y - 0.5, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + 0.5, y - 0.5, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + 0.5, y + 0.5, z).color(r, g, b, a).endVertex();
-        buffer.pos(x - 0.5, y + 0.5, z).color(r, g, b, a).endVertex();
+        buffer.vertex(x - 0.5, y - 0.5, z).color(r, g, b, a).next();
+        buffer.vertex(x + 0.5, y - 0.5, z).color(r, g, b, a).next();
+        buffer.vertex(x + 0.5, y + 0.5, z).color(r, g, b, a).next();
+        buffer.vertex(x - 0.5, y + 0.5, z).color(r, g, b, a).next();
 
         tessellator.draw();
 
@@ -592,11 +592,11 @@ public class RenderUtils
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
         int color = 0xFFFFFFFF;
 
-        if (model.isBuiltInRenderer() == false)
+        if (model.isBuiltin() == false)
         {
             BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.ITEM, true);
 
-            for (EnumFacing enumfacing : PositionUtils.ALL_DIRECTIONS)
+            for (Direction face : PositionUtils.ALL_DIRECTIONS)
             {
                 renderQuads(buffer, model.getQuads(state, enumfacing, 0L), state, color);
             }
@@ -609,7 +609,7 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
-    public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, IBlockState state, int color)
+    public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, BlockState state, int color)
     {
         for (BakedQuad quad : quads)
         {
@@ -617,7 +617,7 @@ public class RenderUtils
         }
     }
 
-    public static void renderQuad(BufferBuilder buffer, BakedQuad quad, IBlockState state, int color)
+    public static void renderQuad(BufferBuilder buffer, BakedQuad quad, BlockState state, int color)
     {
         buffer.addVertexData(quad.getVertexData());
         buffer.putColor4(color);
@@ -649,7 +649,7 @@ public class RenderUtils
      * Renders the given model to the given vertex consumer.
      * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
      */
-    public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, BufferBuilder buffer)
+    public static void renderModelBrightnessColor(BakedModel model, Vec3d pos, BufferBuilder buffer)
     {
         renderModelBrightnessColor(model, pos, null, 1f, 1f, 1f, 1f, buffer);
     }
@@ -658,10 +658,10 @@ public class RenderUtils
      * Renders the given model to the given vertex consumer.
      * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
      */
-    public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, @Nullable IBlockState state,
+    public static void renderModelBrightnessColor(BakedModel model, Vec3d pos, @Nullable BlockState state,
                                                   float brightness, float r, float g, float b, BufferBuilder buffer)
     {
-        for (EnumFacing side : PositionUtils.ALL_DIRECTIONS)
+        for (Direction side : PositionUtils.ALL_DIRECTIONS)
         {
             renderQuads(model.getQuads(state, side, 0L), pos, brightness, r, g, b, buffer);
         }

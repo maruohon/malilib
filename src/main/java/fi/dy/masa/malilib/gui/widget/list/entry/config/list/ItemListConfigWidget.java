@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config.list;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import fi.dy.masa.malilib.config.option.list.ItemListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.ItemStackWidget;

@@ -16,6 +16,7 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -497,12 +498,12 @@ public class StringUtils
                 }
                 else
                 {
-                    NetHandlerPlayClient handler = mc.getConnection();
-                    NetworkManager connection = handler != null ? handler.getNetworkManager() : null;
+                    ClientPlayNetworkHandler handler = mc.getNetworkHandler();
+                    ClientConnection connection = handler != null ? handler.getConnection() : null;
 
                     if (connection != null)
                     {
-                        return "realms_" + stringifyAddress(connection.getRemoteAddress());
+                        return "realms_" + stringifyAddress(connection.getAddress());
                     }
                 }
             }
@@ -511,7 +512,7 @@ public class StringUtils
 
             if (server != null)
             {
-                return server.serverIP.trim().replace(':', '_');
+                return server.address.trim().replace(':', '_');
             }
         }
 
@@ -631,7 +632,7 @@ public class StringUtils
     {
         try
         {
-            return net.minecraft.client.resources.I18n.format(translationKey, args);
+            return I18n.translate(translationKey, args);
         }
         catch (Exception e)
         {
@@ -645,7 +646,7 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return GameUtils.getClient().fontRenderer.FONT_HEIGHT;
+        return GameUtils.getClient().textRenderer.fontHeight;
     }
 
     /**
@@ -655,6 +656,6 @@ public class StringUtils
      */
     public static int getStringWidth(String text)
     {
-        return GameUtils.getClient().fontRenderer.getStringWidth(text);
+        return GameUtils.getClient().textRenderer.getWidth(text);
     }
 }

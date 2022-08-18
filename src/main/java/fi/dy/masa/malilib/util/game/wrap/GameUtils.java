@@ -3,36 +3,36 @@ package fi.dy.masa.malilib.util.game.wrap;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.Util;
+import net.minecraft.util.hit.HitResult;
 
 public class GameUtils
 {
-    public static Minecraft getClient()
+    public static MinecraftClient getClient()
     {
-        return Minecraft.getMinecraft();
+        return MinecraftClient.getInstance();
     }
 
     @Nullable
-    public static WorldClient getClientWorld()
+    public static ClientWorld getClientWorld()
     {
         return getClient().world;
     }
 
     @Nullable
-    public static EntityPlayerSP getClientPlayer()
+    public static ClientPlayerEntity getClientPlayer()
     {
         return getClient().player;
     }
 
-    public static PlayerControllerMP getInteractionManager()
+    public static ClientPlayerInteractionManager getInteractionManager()
     {
-        return getClient().playerController;
+        return getClient().interactionManager;
     }
 
     /**
@@ -41,8 +41,8 @@ public class GameUtils
     @Nullable
     public static Entity getCameraEntity()
     {
-        Minecraft mc = getClient();
-        Entity entity = mc.getRenderViewEntity();
+        MinecraftClient mc = getClient();
+        Entity entity = mc.getCameraEntity();
         return entity != null ? entity : mc.player;
     }
 
@@ -53,9 +53,9 @@ public class GameUtils
     }
 
     @Nullable
-    public static RayTraceResult getHitResult()
+    public static HitResult getHitResult()
     {
-        return getClient().objectMouseOver;
+        return getClient().crosshairTarget;
     }
 
     public static boolean isCreativeMode()
@@ -71,7 +71,7 @@ public class GameUtils
 
     public static boolean isSinglePlayer()
     {
-        return getClient().isSingleplayer();
+        return getClient().isIntegratedServerRunning();
     }
 
     public static void scheduleToClientThread(Runnable task)
@@ -122,7 +122,7 @@ public class GameUtils
     {
         public static boolean hideGui()
         {
-            return getClient().gameSettings.hideGUI;
+            return getClient().options.hudHidden;
         }
     }
 }

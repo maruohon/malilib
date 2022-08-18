@@ -27,7 +27,7 @@ public class EntityWrap
 
     public static Vec3d getEntityPos(Entity entity)
     {
-        return entity.getPositionVector();
+        return entity.getPos();
     }
 
     public static BlockPos getEntityBlockPos(Entity entity)
@@ -62,19 +62,19 @@ public class EntityWrap
 
     public static double lerpX(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosX;
+        double lastTickPos = entity.lastRenderX;
         return lastTickPos + (getX(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpY(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosY;
+        double lastTickPos = entity.lastRenderY;
         return lastTickPos + (getY(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpZ(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosZ;
+        double lastTickPos = entity.lastRenderZ;
         return lastTickPos + (getZ(entity) - lastTickPos) * tickDelta;
     }
 

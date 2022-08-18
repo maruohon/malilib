@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import com.mumfrey.liteloader.core.LiteLoader;
 import org.apache.commons.lang3.StringUtils;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.Formatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
@@ -94,7 +94,7 @@ public class ConfigUtils
      */
     public static void sortConfigsByDisplayName(List<ConfigInfo> configs)
     {
-        configs.sort(Comparator.comparing((c) -> TextFormatting.getTextWithoutFormattingCodes(c.getDisplayName())));
+        configs.sort(Comparator.comparing((c) -> Formatting.strip(c.getDisplayName())));
     }
 
     /**

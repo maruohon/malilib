@@ -9,9 +9,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.util.BackupUtils;
@@ -138,7 +139,7 @@ public class OverlayRendererContainer
         this.checkVideoSettings();
         this.countActive = 0;
 
-        Minecraft mc = GameUtils.getClient();
+        MinecraftClient mc = GameUtils.getClient();
 
         for (BaseOverlayRenderer renderer : this.enabledRenderers)
         {
@@ -182,11 +183,11 @@ public class OverlayRendererContainer
                 GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
                 GlStateManager.glEnableClientState(GL11.GL_COLOR_ARRAY);
             }
+            MinecraftClient mc = GameUtils.getClient();
 
             double cx = cameraPos.x;
             double cy = cameraPos.y;
             double cz = cameraPos.z;
-            Minecraft mc = GameUtils.getClient();
 
             for (BaseOverlayRenderer renderer : this.enabledRenderers)
             {

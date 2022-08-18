@@ -70,7 +70,7 @@ public class ItemType
 
         if (this.checkNbt())
         {
-            NBTTagCompound tag = ItemWrap.getTag(this.stack);
+            NbtCompound tag = ItemWrap.getTag(this.stack);
             result = prime * result + (tag != null ? tag.hashCode() : 0);
         }
 
@@ -106,7 +106,7 @@ public class ItemType
                 return false;
             }
 
-            return this.checkNbt() == false || ItemStack.areItemStackTagsEqual(this.stack, other.stack);
+            return this.checkNbt() == false || ItemStack.areNbtEqual(this.stack, other.stack);
         }
     }
 

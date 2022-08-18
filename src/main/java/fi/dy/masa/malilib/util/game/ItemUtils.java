@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 public class ItemUtils
 {

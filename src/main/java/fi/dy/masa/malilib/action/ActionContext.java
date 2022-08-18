@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.action;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.util.game.wrap.GameUtils;
@@ -29,19 +29,19 @@ public class ActionContext
         return this.messageOutput != null ? this.messageOutput : defaultOutput;
     }
 
-    public Minecraft getClient()
+    public MinecraftClient getClient()
     {
         return GameUtils.getClient();
     }
 
     @Nullable
-    public WorldClient getWorld()
+    public ClientWorld getWorld()
     {
         return GameUtils.getClientWorld();
     }
 
     @Nullable
-    public EntityPlayerSP getPlayer()
+    public ClientPlayerEntity getPlayer()
     {
         return GameUtils.getClientPlayer();
     }

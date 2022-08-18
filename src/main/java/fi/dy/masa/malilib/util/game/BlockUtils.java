@@ -11,24 +11,25 @@ import javax.annotation.Nullable;
 import com.google.common.base.Splitter;
 import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidBlock;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.IntProperty;
+import net.minecraft.state.property.Property;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.game.wrap.NbtWrap;
 
 public class BlockUtils
 {
-    private static final ResourceLocation DUMMY = new ResourceLocation("-", "-");
+    private static final Identifier DUMMY = new Identifier("-", "-");
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
 
@@ -44,7 +45,7 @@ public class BlockUtils
         }
     }
 
-    public static String getBlockRegistryName(IBlockState state)
+    public static String getBlockRegistryName(BlockState state)
     {
         try
         {
@@ -56,7 +57,7 @@ public class BlockUtils
         }
     }
 
-    public static ResourceLocation getBlockIdentifier(IBlockState state)
+    public static Identifier getBlockIdentifier(BlockState state)
     {
         try
         {
@@ -100,11 +101,11 @@ public class BlockUtils
      * The string should be in either one of the following formats:<br>
      * 'minecraft:stone' or 'minecraft:smooth_stone_slab[half=top,waterlogged=false]'
      */
-    public static Optional<IBlockState> getBlockStateFromString(String str)
+    public static Optional<BlockState> getBlockStateFromString(String str)
     {
         int index = str.indexOf("["); // [f=b]
         String blockName = index != -1 ? str.substring(0, index) : str;
-        ResourceLocation id = new ResourceLocation(blockName);
+        Identifier id = new Identifier(blockName);
 
         if (Block.REGISTRY.containsKey(id))
         {
@@ -125,7 +126,7 @@ public class BlockUtils
                         continue;
                     }
 
-                    IProperty<?> prop = blockState.getProperty(valIter.next());
+                    Property<?> prop = stateManager.getProperty(valIter.next());
 
                     if (prop == null || valIter.hasNext() == false)
                     {
@@ -156,17 +157,17 @@ public class BlockUtils
      * None of the values are checked for validity here, and this can be used for
      * parsing strings for states from another Minecraft version, such as 1.12 <-> 1.13+.
      */
-    public static NBTTagCompound getBlockStateTagFromString(String stateString)
+    public static NbtCompound getBlockStateTagFromString(String stateString)
     {
         int index = stateString.indexOf("["); // [f=b]
         String blockName = index != -1 ? stateString.substring(0, index) : stateString;
-        NBTTagCompound tag = new NBTTagCompound();
+        NbtCompound tag = new NbtCompound();
 
         NbtWrap.putString(tag, "Name", blockName);
 
         if (index != -1 && stateString.length() > (index + 4) && stateString.charAt(stateString.length() - 1) == ']')
         {
-            NBTTagCompound propsTag = new NBTTagCompound();
+            NbtCompound propsTag = new NbtCompound();
             String propStr = stateString.substring(index + 1, stateString.length() - 1);
 
             for (String propAndVal : COMMA_SPLITTER.split(propStr))
@@ -200,9 +201,9 @@ public class BlockUtils
      * Parses the input tag representing a block state, and produces a string
      * in the same format as the toString() method in the vanilla block state.
      * This string format is what the Sponge schematic format uses in the palette.
-     * @return an equivalent of IBlockState.toString() of the given tag representing a block state
+     * @return an equivalent of BlockState.toString() of the given tag representing a block state
      */
-    public static String getBlockStateStringFromTag(NBTTagCompound stateTag)
+    public static String getBlockStateStringFromTag(NbtCompound stateTag)
     {
         String name = NbtWrap.getString(stateTag, "Name");
 
@@ -211,7 +212,7 @@ public class BlockUtils
             return name;
         }
 
-        NBTTagCompound propTag = NbtWrap.getCompound(stateTag, "Properties");
+        NbtCompound propTag = NbtWrap.getCompound(stateTag, "Properties");
         ArrayList<Pair<String, String>> props = new ArrayList<>();
 
         for (String key : NbtWrap.getKeys(propTag))
@@ -246,13 +247,13 @@ public class BlockUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<T>> IBlockState getBlockStateWithProperty(IBlockState state, IProperty<T> prop, Comparable<?> value)
+    public static <T extends Comparable<T>> BlockState getBlockStateWithProperty(BlockState state, Property<T> prop, Comparable<?> value)
     {
-        return state.withProperty(prop, (T) value);
+        return state.with(prop, (T) value);
     }
 
     @Nullable
-    public static <T extends Comparable<T>> T getPropertyValueByName(IProperty<T> prop, String valStr)
+    public static <T extends Comparable<T>> T getPropertyValueByName(Property<T> prop, String valStr)
     {
         return prop.parseValue(valStr).orNull();
     }
@@ -261,13 +262,13 @@ public class BlockUtils
      * Returns the first PropertyDirection property from the provided state, if any.
      * @return the first PropertyDirection, or empty() if there are no such properties
      */
-    public static Optional<PropertyDirection> getFirstDirectionProperty(IBlockState state)
+    public static Optional<DirectionProperty> getFirstDirectionProperty(BlockState state)
     {
         for (IProperty<?> prop : state.getProperties().keySet())
         {
-            if (prop instanceof PropertyDirection)
+            if (prop instanceof DirectionProperty)
             {
-                return Optional.of((PropertyDirection) prop);
+                return Optional.of((DirectionProperty) prop);
             }
         }
 
@@ -279,20 +280,20 @@ public class BlockUtils
      * type block state property in the given state, if any.
      * If there are no PropertyDirection properties, then empty() is returned.
      */
-    public static Optional<EnumFacing> getFirstPropertyFacingValue(IBlockState state)
+    public static Optional<Direction> getFirstPropertyFacingValue(BlockState state)
     {
-        Optional<PropertyDirection> propOptional = getFirstDirectionProperty(state);
-        return propOptional.isPresent() ? Optional.ofNullable(state.getValue(propOptional.get())) : Optional.empty();
+        Optional<DirectionProperty> propOptional = getFirstDirectionProperty(state);
+        return propOptional.isPresent() ? Optional.ofNullable(state.get(propOptional.get())) : Optional.empty();
     }
 
-    public static List<String> getFormattedBlockStateProperties(IBlockState state)
+    public static List<String> getFormattedBlockStateProperties(BlockState state)
     {
         return getFormattedBlockStateProperties(state, ": ");
     }
 
-    public static List<String> getFormattedBlockStateProperties(IBlockState state, String separator)
+    public static List<String> getFormattedBlockStateProperties(BlockState state, String separator)
     {
-        Collection<IProperty<?>> properties = state.getPropertyKeys();
+        Collection<Property<?>> properties = state.getProperties();
 
         if (properties.size() > 0)
         {
@@ -300,25 +301,25 @@ public class BlockUtils
 
             try
             {
-                for (IProperty<?> prop : properties)
+                for (Property<?> prop : properties)
                 {
-                    Comparable<?> val = state.getValue(prop);
+                    Comparable<?> val = state.get(prop);
                     String key;
 
-                    if (prop instanceof PropertyBool)
+                    if (prop instanceof BooleanProperty)
                     {
                         key = val.equals(Boolean.TRUE) ? "malilib.label.block_state_properties.boolean.true" :
                                                          "malilib.label.block_state_properties.boolean.false";
                     }
-                    else if (prop instanceof PropertyDirection)
+                    else if (prop instanceof DirectionProperty)
                     {
                         key = "malilib.label.block_state_properties.direction";
                     }
-                    else if (prop instanceof PropertyEnum)
+                    else if (prop instanceof EnumProperty)
                     {
                         key = "malilib.label.block_state_properties.enum";
                     }
-                    else if (prop instanceof PropertyInteger)
+                    else if (prop instanceof IntProperty)
                     {
                         key = "malilib.label.block_state_properties.integer";
                     }
@@ -339,9 +340,9 @@ public class BlockUtils
     }
 
 
-    public static List<StyledTextLine> getBlockStatePropertyStyledTextLines(IBlockState state, String separator)
+    public static List<StyledTextLine> getBlockStatePropertyStyledTextLines(BlockState state, String separator)
     {
-        Collection<IProperty<?>> properties = state.getPropertyKeys();
+        Collection<Property<?>> properties = state.getProperties();
 
         if (properties.size() > 0)
         {
@@ -349,25 +350,25 @@ public class BlockUtils
 
             try
             {
-                for (IProperty<?> prop : properties)
+                for (Property<?> prop : properties)
                 {
-                    Comparable<?> val = state.getValue(prop);
+                    Comparable<?> val = state.get(prop);
                     String key;
 
-                    if (prop instanceof PropertyBool)
+                    if (prop instanceof BooleanProperty)
                     {
                         key = val.equals(Boolean.TRUE) ? "malilib.label.block_state_properties.boolean.true" :
                                                          "malilib.label.block_state_properties.boolean.false";
                     }
-                    else if (prop instanceof PropertyDirection)
+                    else if (prop instanceof DirectionProperty)
                     {
                         key = "malilib.label.block_state_properties.direction";
                     }
-                    else if (prop instanceof PropertyEnum)
+                    else if (prop instanceof EnumProperty)
                     {
                         key = "malilib.label.block_state_properties.enum";
                     }
-                    else if (prop instanceof PropertyInteger)
+                    else if (prop instanceof IntProperty)
                     {
                         key = "malilib.label.block_state_properties.integer";
                     }
@@ -387,13 +388,13 @@ public class BlockUtils
         return Collections.emptyList();
     }
 
-    public static boolean isFluidBlock(IBlockState state)
+    public static boolean isFluidBlock(BlockState state)
     {
         return state.getMaterial().isLiquid();
     }
 
-    public static boolean isFluidSourceBlock(IBlockState state)
+    public static boolean isFluidSourceBlock(BlockState state)
     {
-        return state.getBlock() instanceof BlockLiquid && state.getValue(BlockLiquid.LEVEL).intValue() == 0;
+        return state.getBlock() instanceof FluidBlock && state.get(FluidBlock.LEVEL).intValue() == 0;
     }
 }
