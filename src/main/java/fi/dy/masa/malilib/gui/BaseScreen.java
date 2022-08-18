@@ -423,7 +423,7 @@ public abstract class BaseScreen extends Screen
         this.hoveredWidget = isActiveScreen ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
     }
 
-    public ScreenContext getContext()
+    public ScreenContext getContext(MatrixStack matrices)
     {
         int mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
         int mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
@@ -433,7 +433,7 @@ public abstract class BaseScreen extends Screen
         if (this.context == null ||
             this.context.matches(mouseX, mouseY, isActiveScreen, hoveredWidgetId) == false)
         {
-            this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveScreen);
+            this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveScreen, matrices);
         }
 
         return this.context;
@@ -461,7 +461,7 @@ public abstract class BaseScreen extends Screen
             RenderUtils.setupScaledScreenRendering(this.customScreenScale);
         }
 
-        ScreenContext ctx = this.getContext();
+        ScreenContext ctx = this.getContext(matrices);
 
         this.renderScreenBackground(ctx);
         this.renderScreenTitle(ctx);

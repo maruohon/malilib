@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.VertexBufferUploader;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import fi.dy.masa.malilib.listener.EventListener;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Matrix4f;
 
 public class VboRenderObject extends BaseRenderObject
 {
@@ -32,7 +34,7 @@ public class VboRenderObject extends BaseRenderObject
     }
 
     @Override
-    public void draw()
+    public void draw(MatrixStack matrixStack, Matrix4f projMatrix)
     {
         if (this.hasTexture)
         {

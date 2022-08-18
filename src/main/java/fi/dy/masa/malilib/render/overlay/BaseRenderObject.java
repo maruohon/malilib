@@ -43,7 +43,7 @@ public abstract class BaseRenderObject
     /**
      * Draws the VBO or Render List to the screen
      */
-    public abstract void draw();
+    public abstract void draw(MatrixStack matrixStack, Matrix4f projMatrix);
 
     /**
      * De-allocates the VBO or Render List

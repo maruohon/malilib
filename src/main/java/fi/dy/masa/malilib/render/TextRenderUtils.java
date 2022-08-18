@@ -28,8 +28,8 @@ public class TextRenderUtils
 
         for (String line : parts)
         {
-            textRenderer.drawString(line, x, y, color);
-            y += textRenderer.FONT_HEIGHT + 1;
+            textRenderer.draw(ctx.matrixStack, line, x, y, color);
+            y += textRenderer.fontHeight + 1;
         }
     }
 
@@ -41,8 +41,8 @@ public class TextRenderUtils
 
             for (String line : lines)
             {
-                textRenderer.drawString(line, x, y, color);
-                y += textRenderer.FONT_HEIGHT + 2;
+                textRenderer.draw(ctx.matrixStack, line, x, y, color);
+                y += textRenderer.fontHeight + 2;
             }
         }
     }
@@ -101,11 +101,11 @@ public class TextRenderUtils
 
             if (useShadow)
             {
-                fontRenderer.drawStringWithShadow(line, x, y, textColor);
+                textRenderer.drawWithShadow(ctx.matrixStack, line, x, y, textColor);
             }
             else
             {
-                fontRenderer.drawString(line, x, y, textColor);
+                textRenderer.draw(ctx.matrixStack, line, x, y, textColor);
             }
         }
 
@@ -215,7 +215,7 @@ public class TextRenderUtils
 
             for (String str : textLines)
             {
-                font.drawStringWithShadow(str, textStartX, textStartY, textColor);
+                textRenderer.drawWithShadow(ctx.matrixStack, str, textStartX, textStartY, textColor);
                 textStartY += lineHeight;
             }
 
@@ -411,15 +411,15 @@ public class TextRenderUtils
                 GlStateManager.disableDepth();
 
                 // Render the faint version that will also show through blocks
-                textRenderer.drawString(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
+                textRenderer.draw(matrixStack, line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
 
                 GlStateManager.enableDepth();
                 GlStateManager.depthMask(true);
             }
 
             // Render the actual fully opaque text, that will not show through blocks
-            textRenderer.drawString(line, -strLenHalf, textY, textColor);
-            textY += textRenderer.FONT_HEIGHT;
+            textRenderer.draw(matrixStack, line, -strLenHalf, textY, textColor);
+            textY += textRenderer.fontHeight;
         }
 
         if (disableDepth == false)

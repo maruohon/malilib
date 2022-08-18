@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.event;
 
+import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.util.ProfilerSectionSupplierSupplier;
 
 public interface PostGameOverlayRenderer extends ProfilerSectionSupplierSupplier
@@ -13,5 +14,5 @@ public interface PostGameOverlayRenderer extends ProfilerSectionSupplierSupplier
      * Note: The client world and the client player are checked
      * to not be null before this method is called.
      */
-    void onPostGameOverlayRender();
+    void onPostGameOverlayRender(MatrixStack matrices);
 }

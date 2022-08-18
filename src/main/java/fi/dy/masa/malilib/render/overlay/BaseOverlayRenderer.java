@@ -127,13 +127,13 @@ public abstract class BaseOverlayRenderer
     /**
      * Draws all the buffers to screen
      */
-    public void draw()
+    public void draw(MatrixStack matrixStack, Matrix4f projMatrix)
     {
         this.preRender();
 
         for (BaseRenderObject obj : this.renderObjects)
         {
-            obj.draw();
+            obj.draw(matrixStack, projMatrix);
         }
 
         this.postRender();
