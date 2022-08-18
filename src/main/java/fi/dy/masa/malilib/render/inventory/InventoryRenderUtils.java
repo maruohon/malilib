@@ -5,51 +5,51 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.block.BlockFurnace;
-import net.minecraft.block.BlockHopper;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.HopperBlock;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BrewingStandBlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.DispenserBlockEntity;
+import net.minecraft.block.entity.HopperBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.block.enums.ChestType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.ContainerHorseChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryLargeChest;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.entity.passive.LlamaEntity;
+import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.DoubleInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityBrewingStand;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.tileentity.TileEntityHopper;
-import net.minecraft.tileentity.TileEntityLockableLoot;
-import net.minecraft.tileentity.TileEntityShulkerBox;
+import net.minecraft.item.Items;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.config.value.VerticalAlignment;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.mixin.access.AbstractHorseMixin;
+import fi.dy.masa.malilib.mixin.access.AbstractHorseEntityMixin;
 import fi.dy.masa.malilib.render.ItemRenderUtils;
+import fi.dy.masa.malilib.render.RenderContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.game.RayTraceUtils;
@@ -76,8 +76,9 @@ public class InventoryRenderUtils
         final int invSize = inv.getSize();
 
         RenderUtils.enableGuiItemLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.enableRescaleNormal();
+        // TODO 1.13+ port
+        //GlStateManager.enableDepth();
+        //GlStateManager.enableRescaleNormal();
 
         for (int slot : customSlotPositions.keySet())
         {
@@ -323,8 +324,9 @@ public class InventoryRenderUtils
         y += slotOffset.y;
 
         RenderUtils.enableGuiItemLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.enableRescaleNormal();
+        // TODO 1.13+ port
+        //GlStateManager.enableDepth();
+        //GlStateManager.enableRescaleNormal();
 
         for (int slotOnRow = 0; slot < endSlot; ++slot)
         {

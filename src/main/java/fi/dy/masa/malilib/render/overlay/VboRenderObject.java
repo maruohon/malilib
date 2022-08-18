@@ -1,36 +1,38 @@
 package fi.dy.masa.malilib.render.overlay;
 
-import org.lwjgl.opengl.GL11;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.VertexBufferUploader;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import fi.dy.masa.malilib.listener.EventListener;
+import java.util.function.Supplier;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.VertexBuffer;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Shader;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 
 public class VboRenderObject extends BaseRenderObject
 {
-    public static final VertexBufferUploader VERTEX_UPLOADER = new VertexBufferUploader();
-
     protected final VertexBuffer vertexBuffer;
-    protected final EventListener arrayPointerSetter;
+    protected final boolean hasTexture;
 
-    public VboRenderObject(int glMode, VertexFormat vertexFormat, EventListener arrayPointerSetter)
+    public VboRenderObject(VertexFormat.DrawMode glMode,
+                           Supplier<Shader> shader,
+                           //VertexFormat vertexFormat)
+                           boolean hasTexture)
     {
-        super(glMode, vertexFormat);
+        super(glMode, shader);
 
-        this.vertexBuffer = new VertexBuffer(vertexFormat);
-        this.arrayPointerSetter = arrayPointerSetter;
+        this.vertexBuffer = new VertexBuffer();
+        //this.hasTexture = vertexFormat.getElements().stream().anyMatch((el) -> el.getType() == VertexFormatElement.Type.UV);
+        this.hasTexture = hasTexture;
     }
 
     @Override
     public void uploadData(BufferBuilder buffer)
     {
-        VERTEX_UPLOADER.setVertexBuffer(this.vertexBuffer);
-        VERTEX_UPLOADER.draw(buffer);
+        BufferBuilder.BuiltBuffer renderBuffer = buffer.end();
+        this.vertexBuffer.bind();
+        this.vertexBuffer.upload(renderBuffer);
+        VertexBuffer.unbind();
     }
 
     @Override
@@ -38,43 +40,24 @@ public class VboRenderObject extends BaseRenderObject
     {
         if (this.hasTexture)
         {
-            GlStateManager.enableTexture2D();
-
-            OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
-            GlStateManager.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-        }
-        else
-        {
-            GlStateManager.disableTexture2D();
+            RenderSystem.enableTexture();
         }
 
-        this.vertexBuffer.bindBuffer();
-        this.arrayPointerSetter.onEvent();
-        this.vertexBuffer.drawArrays(this.getGlMode());
+        RenderSystem.setShader(this.getShader());
+
+        this.vertexBuffer.bind();
+        this.vertexBuffer.draw(matrixStack.peek().getPositionMatrix(), projMatrix, this.getShader().get());
+        VertexBuffer.unbind();
 
         if (this.hasTexture)
         {
-            OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
-            GlStateManager.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+            RenderSystem.disableTexture();
         }
     }
 
     @Override
     public void deleteGlResources()
     {
-        this.vertexBuffer.deleteGlBuffers();
-    }
-
-    public static void setupArrayPointersPosColor()
-    {
-        GlStateManager.glVertexPointer(3, GL11.GL_FLOAT, 16, 0);
-        GlStateManager.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, 16, 12);
-    }
-
-    public static void setupArrayPointersPosUvColor()
-    {
-        GlStateManager.glVertexPointer(3, GL11.GL_FLOAT, 24, 0);
-        GlStateManager.glTexCoordPointer(2, GL11.GL_FLOAT, 24, 12);
-        GlStateManager.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, 24, 20);
+        this.vertexBuffer.close();
     }
 }

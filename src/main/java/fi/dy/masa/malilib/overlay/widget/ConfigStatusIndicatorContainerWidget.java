@@ -9,9 +9,9 @@ import java.util.Set;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.lwjgl.opengl.GL11;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
@@ -242,7 +242,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     @Override
     protected void renderOddEvenTextLineBackgrounds(int x, int y, float z, ScreenContext ctx)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
 
         MultiLineTextRenderSettings settings = this.getTextSettings();
         int bgColor = settings.getBackgroundColor();
