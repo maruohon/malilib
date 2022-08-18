@@ -51,7 +51,8 @@ public class ItemRenderUtils
         */
     }
 
-    public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack, Minecraft mc)
+    public static void renderStackToolTip(int x, int y, float zLevel,
+                                          ItemStack stack, RenderContext ctx)
     {
         if (stack == null || ItemWrap.isEmpty(stack))
         {
@@ -74,6 +75,6 @@ public class ItemRenderUtils
             }
         }
 
-        TextRenderUtils.renderHoverText(x, y, zLevel, list);
+        TextRenderUtils.renderHoverText(x, y, zLevel, lines, ctx);
     }
 }

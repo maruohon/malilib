@@ -23,7 +23,7 @@ import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class TextRenderUtils
 {
-    public static void renderText(int x, int y, int color, String text)
+    public static void renderText(int x, int y, int color, String text, RenderContext ctx)
     {
         String[] parts = text.split("\\\\n");
         net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
@@ -35,7 +35,7 @@ public class TextRenderUtils
         }
     }
 
-    public static void renderText(int x, int y, int color, List<String> lines)
+    public static void renderText(int x, int y, int color, List<String> lines, RenderContext ctx)
     {
         if (lines.isEmpty() == false)
         {
@@ -49,8 +49,10 @@ public class TextRenderUtils
         }
     }
 
-    public static int renderText(int xOff, int yOff, int z, double scale, int textColor, int bgColor,
-                                 HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
+    public static int renderText(int xOff, int yOff, int z,
+                                 float scale, int textColor, int bgColor,
+                                 HudAlignment alignment, boolean useBackground,
+                                 boolean useShadow, List<String> lines, RenderContext ctx)
     {
         net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
         final int scaledWidth = GuiUtils.getScaledWindowWidth();
@@ -59,12 +61,12 @@ public class TextRenderUtils
         int bgMargin = 2;
 
         // Only Chuck Norris can divide by zero
-        if (scale == 0d)
+        if (scale == 0.0F)
         {
             return 0;
         }
 
-        if (scale != 1d)
+        if (scale != 1.0F)
         {
             xOff = (int) (xOff * scale);
             yOff = (int) (yOff * scale);
@@ -113,7 +115,7 @@ public class TextRenderUtils
             }
         }
 
-        if (scale != 1d)
+        if (scale != 1.0F)
         {
             ctx.matrixStack.pop();
         }
@@ -164,18 +166,20 @@ public class TextRenderUtils
         return new Vec2i(textStartX, textStartY);
     }
 
-    public static void renderHoverText(int x, int y, float z, String text)
+    public static void renderHoverText(int x, int y, float z, String text, RenderContext ctx)
     {
-        renderHoverText(x, y, z, Collections.singletonList(text));
+        renderHoverText(x, y, z, Collections.singletonList(text), ctx);
     }
 
-    public static void renderHoverText(int x, int y, float z, List<String> textLines)
+    public static void renderHoverText(int x, int y, float z, List<String> textLines, RenderContext ctx)
     {
-        renderHoverText(x, y, z, textLines, 0xFFC0C0C0 , TextRenderUtils::renderDefaultHoverTextBackground);
+        renderHoverText(x, y, z, textLines, 0xFFC0C0C0 ,
+                        TextRenderUtils::renderDefaultHoverTextBackground, ctx);
     }
 
     public static void renderHoverText(int x, int y, float z, List<String> textLines,
-                                       int textColor, RectangleRenderer backgroundRenderer)
+                                       int textColor, RectangleRenderer backgroundRenderer,
+                                       RenderContext ctx)
     {
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
@@ -329,13 +333,15 @@ public class TextRenderUtils
      * Renders a text plate/billboard, similar to the player name plate.<br>
      * The plate will face towards the camera entity.
      */
-    public static void renderTextPlate(List<String> text, double x, double y, double z, float scale)
+    public static void renderTextPlate(List<String> text, double x, double y, double z,
+                                       float scale, RenderContext ctx)
     {
         Entity entity = GameUtils.getCameraEntity();
 
         if (entity != null)
         {
-            renderTextPlate(text, x, y, z, EntityWrap.getYaw(entity), EntityWrap.getPitch(entity), scale, 0xFFFFFFFF, 0x40000000, true);
+            renderTextPlate(text, x, y, z, EntityWrap.getYaw(entity), EntityWrap.getPitch(entity),
+                            scale, 0xFFFFFFFF, 0x40000000, true, ctx);
         }
     }
 
@@ -344,7 +350,8 @@ public class TextRenderUtils
      * The plate will face towards the given angle.
      */
     public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-                                       float scale, int textColor, int bgColor, boolean disableDepth)
+                                       float scale, int textColor, int bgColor,
+                                       boolean disableDepth, RenderContext ctx)
     {
         net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
 

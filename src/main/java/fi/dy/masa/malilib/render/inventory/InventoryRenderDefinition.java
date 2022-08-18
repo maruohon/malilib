@@ -59,7 +59,10 @@ public class InventoryRenderDefinition
         return this.renderHeightFunction.applyAsInt(inv.getSize());
     }
 
-    public void renderInventory(int x, int y, float z, int backgroundTintColor, InventoryView inv)
+    public void renderInventory(int x, int y, float z,
+                                int backgroundTintColor,
+                                InventoryView inv,
+                                RenderContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.disableItemLighting();

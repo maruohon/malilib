@@ -19,6 +19,7 @@ import fi.dy.masa.malilib.overlay.widget.sub.IntegerConfigStatusWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.OptionListConfigStatusWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.StringConfigStatusWidget;
 
+@SuppressWarnings("unchecked")
 public class ConfigStatusWidgetRegistry
 {
     protected final HashMap<Class<? extends ConfigInfo>, ConfigStatusWidgetFactory<?>> configStatusWidgetFactories = new HashMap<>();

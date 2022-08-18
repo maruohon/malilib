@@ -24,6 +24,7 @@ import fi.dy.masa.malilib.config.option.Vec2iConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 
+@SuppressWarnings("unchecked")
 public class JsonConfigSerializerRegistry
 {
     private final HashMap<Class<? extends ConfigInfo>, JsonConfigSerializer<?>> serializers = new HashMap<>();
