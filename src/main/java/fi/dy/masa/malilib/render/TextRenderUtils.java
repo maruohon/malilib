@@ -6,6 +6,7 @@ import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -66,13 +67,16 @@ public class TextRenderUtils
             return 0;
         }
 
+        MatrixStack matrixStack = ctx.matrixStack;
+        matrixStack.push();
+        matrixStack.translate(0, 0, z);
+
         if (scale != 1.0F)
         {
             xOff = (int) (xOff * scale);
             yOff = (int) (yOff * scale);
 
-            ctx.matrixStack.push();
-            ctx.matrixStack.scale(scale, scale, 1);
+            matrixStack.scale(scale, scale, 1);
         }
 
         double posX = xOff + bgMargin;
@@ -100,25 +104,23 @@ public class TextRenderUtils
 
             if (useBackground)
             {
-                ShapeRenderUtils.renderRectangle(x - bgMargin, y - bgMargin, z,
+                ShapeRenderUtils.renderRectangle(x - bgMargin, y - bgMargin, 0,
                                                  width + bgMargin,
                                                  bgMargin + textRenderer.fontHeight, bgColor);
             }
 
             if (useShadow)
             {
-                textRenderer.drawWithShadow(ctx.matrixStack, line, x, y, textColor);
+                textRenderer.drawWithShadow(matrixStack, line, x, y, textColor);
             }
             else
             {
-                textRenderer.draw(ctx.matrixStack, line, x, y, textColor);
+                textRenderer.draw(matrixStack, line, x, y, textColor);
             }
+            
         }
 
-        if (scale != 1.0F)
-        {
-            ctx.matrixStack.pop();
-        }
+        matrixStack.pop();
 
         return contentHeight + bgMargin * 2;
     }
@@ -214,23 +216,23 @@ public class TextRenderUtils
             int textStartX = startPos.x + 4;
             int textStartY = startPos.y + 4;
 
-            //GlStateManager.disableRescaleNormal();
+            MatrixStack matrixStack = ctx.matrixStack;
+            matrixStack.push();
+            matrixStack.translate(0, 0, z + 1);
+
             RenderUtils.disableItemLighting();
-            //RenderSystem.disableLighting();
-            RenderSystem.disableDepthTest();
 
             backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight);
 
             for (String str : textLines)
             {
-                textRenderer.drawWithShadow(ctx.matrixStack, str, textStartX, textStartY, textColor);
+                textRenderer.drawWithShadow(matrixStack, str, textStartX, textStartY, textColor);
                 textStartY += lineHeight;
             }
 
-            //GlStateManager.enableLighting();
+            matrixStack.pop();
+
             RenderSystem.enableDepthTest();
-            //RenderHelper.enableStandardItemLighting();
-            //GlStateManager.enableRescaleNormal();
         }
     }
 
@@ -288,14 +290,7 @@ public class TextRenderUtils
     public static void renderHoverTextBackground(int x, int y, float z, int width, int height,
                                                  int fillColor, int borderColor1, int borderColor2)
     {
-        RenderSystem.disableTexture();
-        //RenderSystem.disableAlpha();
-        RenderUtils.setupBlend();
-        //GlStateManager.shadeModel(GL11.GL_SMOOTH);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
 
         int xl1 = x;
         int xl2 = xl1 + 1;
@@ -310,6 +305,9 @@ public class TextRenderUtils
         int yb2 = yb1 + 1;
         int yb3 = yb2 + 1;
 
+        RenderUtils.setupBlend();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
         ShapeRenderUtils.renderGradientRectangle(xl2, yt1, xr2, yt2, z, fillColor, fillColor, buffer);
         ShapeRenderUtils.renderGradientRectangle(xl2, yb2, xr2, yb3, z, fillColor, fillColor, buffer);
         ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yb2, z, fillColor, fillColor, buffer);
@@ -321,11 +319,9 @@ public class TextRenderUtils
         ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yt3, z, borderColor1, borderColor1, buffer);
         ShapeRenderUtils.renderGradientRectangle(xl2, yb1, xr2, yb2, z, borderColor2, borderColor2, buffer);
 
-        tessellator.draw();
+        RenderUtils.drawBuffer();
 
-        //GlStateManager.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        //GlStateManager.enableAlpha();
         RenderSystem.enableTexture();
     }
 
