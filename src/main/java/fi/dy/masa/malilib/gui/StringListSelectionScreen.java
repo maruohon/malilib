@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.StringListEntryWidget;
 
 public class StringListSelectionScreen extends BaseListScreen<DataListWidget<String>>
 {
@@ -16,7 +17,7 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
 
     public StringListSelectionScreen(Collection<String> strings, Consumer<Collection<String>> consumer)
     {
-        super(10, 30, 20, 60);
+        super(10, 30, 20, 58);
 
         this.strings = ImmutableList.copyOf(strings);
         this.consumer = consumer;
@@ -40,7 +41,7 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         super.updateWidgetPositions();
 
         int x = 12;
-        int y = this.getBottom() - 32;
+        int y = this.getBottom() - 24;
 
         this.confirmButton.setPosition(x, y);
         this.cancelButton.setPosition(this.confirmButton.getRight() + 6, y);
@@ -59,6 +60,14 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
     @Override
     protected DataListWidget<String> createListWidget()
     {
-        return new DataListWidget<>(this::getStrings, false);
+        DataListWidget<String> listWidget = new DataListWidget<>(this::getStrings, false);
+        listWidget.setListEntryWidgetFixedHeight(16);
+        listWidget.setShouldSortList(true);
+        listWidget.setListSortComparator(String::compareTo);
+        listWidget.setDataListEntryWidgetFactory(StringListEntryWidget::new);
+        listWidget.getEntrySelectionHandler().setAllowSelection(true);
+        listWidget.getEntrySelectionHandler().setAllowMultiSelection(true);
+        listWidget.getEntrySelectionHandler().setModifierKeyMultiSelection(false);
+        return listWidget;
     }
 }
