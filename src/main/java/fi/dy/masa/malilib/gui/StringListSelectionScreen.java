@@ -50,6 +50,7 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
     protected void onConfirm()
     {
         this.consumer.accept(this.getListWidget().getSelectedEntries());
+        this.closeScreenOrShowParent();
     }
 
     public List<String> getStrings()
