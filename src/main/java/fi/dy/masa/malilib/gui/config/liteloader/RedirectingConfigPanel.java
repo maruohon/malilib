@@ -31,4 +31,10 @@ public abstract class RedirectingConfigPanel extends AbstractConfigPanel
     {
         return "<none>";
     }
+
+    // This is mainly useful for the LiteFabric mod or related things
+    public Supplier<BaseScreen> getConfigScreenFactory()
+    {
+        return this.configScreenFactory;
+    }
 }
