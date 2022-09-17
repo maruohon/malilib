@@ -63,6 +63,7 @@ public abstract class BaseScreen extends Screen
     protected boolean addCloseButton = true;
     protected boolean canDragMove;
     protected boolean dragging;
+    protected boolean isPopup;
     protected boolean renderBorder;
     protected boolean shouldCenter;
     protected boolean shouldRenderParent;
@@ -176,7 +177,7 @@ public abstract class BaseScreen extends Screen
 
     protected boolean isFullScreen()
     {
-        return this.screenWidth != this.getTotalWidth() || this.screenHeight != this.getTotalHeight();
+        return !this.isPopup && (this.screenWidth != this.getTotalWidth() || this.screenHeight != this.getTotalHeight());
     }
 
     protected int getVanillaGuiScale()
@@ -416,6 +417,11 @@ public abstract class BaseScreen extends Screen
     public void setCanDragMove(boolean canDragMove)
     {
         this.canDragMove = canDragMove;
+    }
+
+    public void setIsPopup(boolean isPopup)
+    {
+        this.isPopup = isPopup;
     }
 
     protected int getPopupGuiZLevelIncrement()
@@ -999,6 +1005,7 @@ public abstract class BaseScreen extends Screen
         screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
         screen.setShouldRenderParent(shouldRenderParent);
         screen.setCanDragMove(true);
+        screen.setIsPopup(true);
         return openScreen(screen);
     }
 
