@@ -176,7 +176,7 @@ public abstract class BaseScreen extends Screen
 
     protected boolean isFullScreen()
     {
-        return this.screenWidth != this.getTotalWidth() && this.screenHeight != this.getTotalHeight();
+        return this.screenWidth != this.getTotalWidth() || this.screenHeight != this.getTotalHeight();
     }
 
     protected int getVanillaGuiScale()
