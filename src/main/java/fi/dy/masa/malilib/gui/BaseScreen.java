@@ -55,6 +55,8 @@ public abstract class BaseScreen extends Screen
     protected float z;
     protected int screenWidth;
     protected int screenHeight;
+    protected int oldWidth;
+    protected int oldHeight;
     protected int titleColor = 0xFFFFFFFF;
     protected int titleX = 10;
     protected int titleY = 6;
@@ -135,6 +137,15 @@ public abstract class BaseScreen extends Screen
         }
     }
 
+    @Override
+    public void resize(MinecraftClient client, int width, int height)
+    {
+        this.oldWidth = width;
+        this.oldHeight = height;
+
+        super.resize(client, width, height);
+    }
+
     protected void onScreenResolutionSet(int width, int height)
     {
         boolean initial = this.isFullScreen() || this.screenWidth == 0 || this.screenHeight == 0;
@@ -158,11 +169,14 @@ public abstract class BaseScreen extends Screen
         {
             this.centerOnScreen();
         }
+
+        this.oldWidth = 0;
+        this.oldHeight = 0;
     }
 
     protected boolean isFullScreen()
     {
-        return this.screenWidth == this.getTotalWidth() && this.screenHeight == this.getTotalHeight();
+        return this.screenWidth != this.getTotalWidth() && this.screenHeight != this.getTotalHeight();
     }
 
     protected int getVanillaGuiScale()
@@ -228,11 +242,19 @@ public abstract class BaseScreen extends Screen
 
     public int getTotalWidth()
     {
+        if (this.oldWidth != 0) {
+            return this.oldWidth;
+        }
+
         return this.width;
     }
 
     public int getTotalHeight()
     {
+        if (this.oldHeight != 0) {
+            return this.oldHeight;
+        }
+
         return this.height;
     }
 
