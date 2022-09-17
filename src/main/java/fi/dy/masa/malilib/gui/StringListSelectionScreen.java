@@ -14,6 +14,7 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
     protected final Consumer<Collection<String>> consumer;
     protected final GenericButton confirmButton;
     protected final GenericButton cancelButton;
+    protected boolean hasSearch;
 
     public StringListSelectionScreen(Collection<String> strings, Consumer<Collection<String>> consumer)
     {
@@ -24,6 +25,11 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
 
         this.confirmButton = GenericButton.create("malilib.button.misc.ok.caps", this::onConfirm);
         this.cancelButton = GenericButton.create("malilib.button.misc.cancel", this::openParentScreen);
+    }
+
+    public void setHasSearch(boolean hasSearch)
+    {
+        this.hasSearch = hasSearch;
     }
 
     @Override
@@ -68,6 +74,12 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         listWidget.getEntrySelectionHandler().setAllowSelection(true);
         listWidget.getEntrySelectionHandler().setAllowMultiSelection(true);
         listWidget.getEntrySelectionHandler().setModifierKeyMultiSelection(false);
+
+        if (this.hasSearch)
+        {
+            listWidget.addDefaultSearchBar();
+        }
+
         return listWidget;
     }
 }
