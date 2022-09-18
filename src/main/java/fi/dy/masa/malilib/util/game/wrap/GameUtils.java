@@ -9,7 +9,9 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.World;
 
 public class GameUtils
 {
@@ -35,6 +37,12 @@ public class GameUtils
         return getClient().playerController;
     }
 
+    @Nullable
+    public static MinecraftServer getIntegratedServer()
+    {
+        return getClient().getIntegratedServer();
+    }
+
     /**
      * @return The camera entity, if it's not null, otherwise returns the client player entity.
      */
@@ -56,6 +64,12 @@ public class GameUtils
     public static RayTraceResult getHitResult()
     {
         return getClient().objectMouseOver;
+    }
+
+    public static long getCurrentWorldTick()
+    {
+        World world = getClientWorld();
+        return world != null ? world.getTotalWorldTime() : -1L;
     }
 
     public static boolean isCreativeMode()
