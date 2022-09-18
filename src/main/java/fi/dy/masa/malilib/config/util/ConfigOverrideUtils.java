@@ -91,7 +91,10 @@ public class ConfigOverrideUtils
         }
 
         // Strip away the ending '§r'
-        str = str.substring(0, lastBrace + 1);
+        if (str.endsWith("§r"))
+        {
+            str = str.substring(0, lastBrace + 1);
+        }
 
         JsonElement el = JsonUtils.parseJsonFromString(str);
 
@@ -209,6 +212,9 @@ public class ConfigOverrideUtils
         JsonArray arrModFeatures = root.get("config_overrides").getAsJsonArray();
         final int size = arrModFeatures.size();
 
+        MaLiLib.debugLog("Found {} config override definitions", size);
+        MaLiLib.debugLog("  There are {} overridable configs", categoriesAndConfigs.size());
+
         for (int i = 0; i < size; ++i)
         {
             JsonElement el = arrModFeatures.get(i);
@@ -232,7 +238,7 @@ public class ConfigOverrideUtils
                 JsonArray overrideArr = obj.get("overrides").getAsJsonArray();
                 final int overridesSize = overrideArr.size();
 
-                MaLiLib.debugLog("Found {} override definitions", overridesSize);
+                MaLiLib.debugLog("    Found {} config override policy overrides", overridesSize);
 
                 for (int overrideIndex = 0; overrideIndex < overridesSize; ++overrideIndex)
                 {
@@ -255,6 +261,7 @@ public class ConfigOverrideUtils
             }
         }
 
+        MaLiLib.debugLog("  Applying {} feature overrides...", activeOverrides.size());
         int overrideCount = applyOverrides(activeOverrides);
 
         /*
@@ -267,9 +274,10 @@ public class ConfigOverrideUtils
         }
         */
 
+        MaLiLib.debugLog("  Applied {} feature overrides", overrideCount);
+
         if (overrideCount > 0)
         {
-            MaLiLib.debugLog("Applied {} feature overrides", overrideCount);
             MessageDispatcher.warning(8000).translate("malilib.message.info.config_overrides_applied", overrideCount);
         }
 
@@ -289,6 +297,9 @@ public class ConfigOverrideUtils
         JsonElement overrideValue = obj.get("override_value");
         Pair<JsonElement, String> pair = Pair.of(overrideValue, message);
         boolean enableOverride = "override".equalsIgnoreCase(policy);
+        int overrideCount = 0;
+
+        MaLiLib.debugLog("    Reading feature override, policy = {}", policy);
 
         for (String modId : categoriesAndConfigs.keySet())
         {
@@ -316,7 +327,18 @@ public class ConfigOverrideUtils
                 {
                     activeOverrides.remove(cfg);
                 }
+
+                ++overrideCount;
             }
+        }
+
+        if (enableOverride)
+        {
+            MaLiLib.debugLog("      Found {} override rules", overrideCount);
+        }
+        else
+        {
+            MaLiLib.debugLog("      Found {} override removal rules", overrideCount);
         }
     }
 
@@ -346,39 +368,40 @@ public class ConfigOverrideUtils
                 if (info != null && info.hasToggle && overrideValue.isJsonPrimitive())
                 {
                     BooleanStorageWithDefault storage = info.getBooleanStorage(cfg);
-                    boolean booleanValue = overrideValue.getAsBoolean();
+                    boolean overrideBoolValue = overrideValue.getAsBoolean();
+                    boolean origValue = storage.getBooleanValue();
 
                     if (storage instanceof BooleanConfig)
                     {
-                        MaLiLib.debugLog("Overriding value of '{}' to '{}'", cfg.getName(), booleanValue);
-                        ((BooleanConfig) cfg).enableOverrideWithValue(booleanValue);
+                        MaLiLib.debugLog("    Overriding '{}' from '{}' to '{}'", cfg.getName(), origValue, overrideBoolValue);
+                        ((BooleanConfig) cfg).enableOverrideWithValue(overrideBoolValue);
                         cfg.setOverrideMessage(message);
                         ++count;
                     }
                     else if (storage instanceof BooleanAndIntConfig)
                     {
-                        MaLiLib.debugLog("Overriding value of '{}' to '{}'", cfg.getName(), booleanValue);
+                        MaLiLib.debugLog("    Overriding '{}' from '{}' to '{}'", cfg.getName(), origValue, overrideBoolValue);
                         BooleanAndIntConfig config = (BooleanAndIntConfig) cfg;
                         BooleanAndIntConfig.BooleanAndInt currentValue = config.getValue();
-                        config.enableOverrideWithValue(new BooleanAndIntConfig.BooleanAndInt(booleanValue, currentValue.intValue));
+                        config.enableOverrideWithValue(new BooleanAndIntConfig.BooleanAndInt(overrideBoolValue, currentValue.intValue));
                         cfg.setOverrideMessage(message);
                         ++count;
                     }
                     else if (storage instanceof BooleanAndDoubleConfig)
                     {
-                        MaLiLib.debugLog("Overriding value of '{}' to '{}'", cfg.getName(), booleanValue);
+                        MaLiLib.debugLog("    Overriding '{}' from '{}' to '{}'", cfg.getName(), origValue, overrideBoolValue);
                         BooleanAndDoubleConfig config = (BooleanAndDoubleConfig) cfg;
                         BooleanAndDoubleConfig.BooleanAndDouble currentValue = config.getValue();
-                        config.enableOverrideWithValue(new BooleanAndDoubleConfig.BooleanAndDouble(booleanValue, currentValue.doubleValue));
+                        config.enableOverrideWithValue(new BooleanAndDoubleConfig.BooleanAndDouble(overrideBoolValue, currentValue.doubleValue));
                         cfg.setOverrideMessage(message);
                         ++count;
                     }
                     else if (storage instanceof BooleanAndFileConfig)
                     {
-                        MaLiLib.debugLog("Overriding value of '{}' to '{}'", cfg.getName(), booleanValue);
+                        MaLiLib.debugLog("    Overriding '{}' from '{}' to '{}'", cfg.getName(), origValue, overrideBoolValue);
                         BooleanAndFileConfig config = (BooleanAndFileConfig) cfg;
                         BooleanAndFileConfig.BooleanAndFile currentValue = config.getValue();
-                        config.enableOverrideWithValue(new BooleanAndFileConfig.BooleanAndFile(booleanValue, currentValue.fileValue));
+                        config.enableOverrideWithValue(new BooleanAndFileConfig.BooleanAndFile(overrideBoolValue, currentValue.fileValue));
                         cfg.setOverrideMessage(message);
                         ++count;
                     }

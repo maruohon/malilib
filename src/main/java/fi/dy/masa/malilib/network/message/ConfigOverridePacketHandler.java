@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.util.ConfigOverrideUtils;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
@@ -31,6 +32,8 @@ public class ConfigOverridePacketHandler extends BasePacketHandler
             boolean resetFirst = buf.readBoolean();
             String str = buf.readString(256 * 1024);
             JsonElement el = JsonUtils.parseJsonFromString(str);
+
+            MaLiLib.debugLog("Received a config override packet from the server (reset first: {})", resetFirst);
 
             if (el != null && el.isJsonObject())
             {
