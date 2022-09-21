@@ -117,6 +117,7 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
 
         if (handler != null)
         {
+            MaLiLib.debugLog("(Un-)Registering packet handlers: type: '{}', '{}'", type, channels);
             handler.sendPacket(packet);
         }
         else
