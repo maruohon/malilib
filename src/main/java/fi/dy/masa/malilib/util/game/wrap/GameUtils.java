@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
@@ -41,6 +42,12 @@ public class GameUtils
     public static MinecraftServer getIntegratedServer()
     {
         return getClient().getIntegratedServer();
+    }
+
+    @Nullable
+    public static NetHandlerPlayClient getNetworkConnection()
+    {
+        return getClient().getConnection();
     }
 
     /**
