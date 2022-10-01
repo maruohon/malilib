@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 public class GameUtils
 {
@@ -25,6 +26,14 @@ public class GameUtils
     public static WorldClient getClientWorld()
     {
         return getClient().world;
+    }
+
+    @Nullable
+    public static WorldServer getClientPlayersServerWorld()
+    {
+        Entity player = getClientPlayer();
+        MinecraftServer server = getIntegratedServer();
+        return player != null && server != null ? server.getWorld(player.dimension) : null;
     }
 
     @Nullable
