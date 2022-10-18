@@ -66,13 +66,16 @@ public abstract class BaseScreen extends Screen
     protected boolean shouldRenderParent;
     protected boolean useCustomScreenScaling;
     protected boolean useTitleHierarchy = true;
+    /** This indicates that the screen should be automatically resized to cover the entire window.
+     * Any draggable smaller popup type screens should set this to false. */
+    protected boolean useWindowDimensions = true;
 
     public BaseScreen()
     {
         super(Text.of(""));
 
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
-        this.useCustomScreenScaling = customScale != this.getVanillaGuiScale() && customScale > 0;
+        this.useCustomScreenScaling = customScale != GuiUtils.getVanillaScreenScale() && customScale > 0;
         this.closeButton = GenericButton.create(DefaultIcons.CLOSE_BUTTON_9, this::closeScreenOrShowParent);
         this.closeButton.translateAndAddHoverString("malilib.hover.misc.close_screen");
         this.closeButton.setPlayClickSound(false);
@@ -106,7 +109,7 @@ public abstract class BaseScreen extends Screen
 
         if (this.getParent() != null)
         {
-            this.getParent().init(this.mc, this.width, this.height);
+            this.getParent().clearAndInit();
         }
 
         super.clearAndInit();
@@ -137,19 +140,14 @@ public abstract class BaseScreen extends Screen
 
     protected void onScreenResolutionSet(int width, int height)
     {
-        boolean initial = this.isFullScreen() || this.screenWidth == 0 || this.screenHeight == 0;
-
         this.updateCustomScreenScale();
 
         if (this.useCustomScreenScaling)
         {
-            width = this.getTotalWidth();
-            height = this.getTotalHeight();
+            this.setWidthAndHeightForScale(this.customScreenScale);
         }
-
-        // Don't override custom screen sizes when the window is resized or whatever,
-        // which calls this method again.
-        if (initial)
+        // Only set the screen size if this is not a smaller (pop-up?) screen.
+        else if (this.useWindowDimensions)
         {
             this.setScreenWidthAndHeight(width, height);
         }
@@ -160,16 +158,6 @@ public abstract class BaseScreen extends Screen
         }
     }
 
-    protected boolean isFullScreen()
-    {
-        return this.screenWidth == this.getTotalWidth() && this.screenHeight == this.getTotalHeight();
-    }
-
-    protected int getVanillaGuiScale()
-    {
-        return this.mc.options.getGuiScale().getValue();
-    }
-
     protected void updateCustomScreenScale()
     {
         int currentValue = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
@@ -177,7 +165,7 @@ public abstract class BaseScreen extends Screen
         if (currentValue != this.customScreenScale)
         {
             boolean oldUseCustomScale = this.useCustomScreenScaling;
-            this.useCustomScreenScaling = currentValue > 0 && currentValue != this.getVanillaGuiScale();
+            this.useCustomScreenScaling = currentValue > 0 && currentValue != GuiUtils.getVanillaScreenScale();
             this.customScreenScale = currentValue;
 
             if ((oldUseCustomScale || this.useCustomScreenScaling) && currentValue > 0)
@@ -194,20 +182,20 @@ public abstract class BaseScreen extends Screen
 
         if (this.getTotalWidth() != width || this.getTotalHeight() != height)
         {
-            // Only set the screen size if it was originally the same as the window dimensions,
-            // ie. the screen was not a smaller (popup?) screen.
-            boolean setScreenSize = this.isFullScreen();
-
             this.width = width;
             this.height = height;
-
-            // Only set the screen size if it was originally the same as the window dimensions,
-            // ie. the screen was not a smaller (popup?) screen.
-            if (setScreenSize)
-            {
-                this.setScreenWidthAndHeight(width, height);
-            }
         }
+
+        // Only set the screen size if this is not a smaller (pop-up?) screen.
+        if (this.useWindowDimensions)
+        {
+            this.setScreenWidthAndHeight(width, height);
+        }
+    }
+
+    public void setUseWindowDimensions(boolean useWindowDimensions)
+    {
+        this.useWindowDimensions = useWindowDimensions;
     }
 
     protected void setScreenWidthAndHeight(int width, int height)
@@ -974,9 +962,10 @@ public abstract class BaseScreen extends Screen
      */
     public static boolean openPopupScreen(BaseScreen screen, boolean shouldRenderParent)
     {
-        screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
-        screen.setShouldRenderParent(shouldRenderParent);
+        screen.setUseWindowDimensions(false);
         screen.setCanDragMove(true);
+        screen.setShouldRenderParent(shouldRenderParent);
+        screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
         return openScreen(screen);
     }
 

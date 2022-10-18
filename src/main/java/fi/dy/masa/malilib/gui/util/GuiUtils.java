@@ -26,6 +26,11 @@ public class GuiUtils
 {
     private static final Set<String> LINK_PROTOCOLS = Sets.newHashSet("http", "https");
 
+    public static int getVanillaScreenScale()
+    {
+        return GameUtils.getClient().options.getGuiScale().getValue();
+    }
+
     public static int getScaledWindowWidth()
     {
         return GameUtils.getClient().getWindow().getScaledWidth();
