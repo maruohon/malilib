@@ -66,6 +66,9 @@ public abstract class BaseScreen extends GuiScreen
     protected boolean shouldRenderParent;
     protected boolean useCustomScreenScaling;
     protected boolean useTitleHierarchy = true;
+    /** This indicates that the screen should be automatically resized to cover the entire window.
+     * Any draggable smaller popup type screens should set this to false. */
+    protected boolean useWindowDimensions = true;
 
     public BaseScreen()
     {
@@ -133,19 +136,14 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void onScreenResolutionSet(int width, int height)
     {
-        boolean initial = this.isFullScreen();
-
         this.updateCustomScreenScale();
 
         if (this.useCustomScreenScaling)
         {
-            width = this.getTotalWidth();
-            height = this.getTotalHeight();
+            this.setWidthAndHeightForScale(this.customScreenScale);
         }
-
-        // Don't override custom screen sizes when the window is resized or whatever,
-        // which calls this method again.
-        if (initial)
+        // Only set the screen size if this is not a smaller (pop-up?) screen.
+        else if (this.useWindowDimensions)
         {
             this.setScreenWidthAndHeight(width, height);
         }
@@ -154,11 +152,6 @@ public abstract class BaseScreen extends GuiScreen
         {
             this.centerOnScreen();
         }
-    }
-
-    protected boolean isFullScreen()
-    {
-        return this.screenWidth == this.getTotalWidth() && this.screenHeight == this.getTotalHeight();
     }
 
     protected void updateCustomScreenScale()
@@ -180,25 +173,25 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void setWidthAndHeightForScale(double scaleFactor)
     {
-        int width = (int) Math.ceil((double) this.mc.displayWidth / scaleFactor);
-        int height = (int) Math.ceil((double) this.mc.displayHeight / scaleFactor);
+        int width = (int) Math.ceil((double) GuiUtils.getDisplayWidth() / scaleFactor);
+        int height = (int) Math.ceil((double) GuiUtils.getDisplayHeight() / scaleFactor);
 
         if (this.getTotalWidth() != width || this.getTotalHeight() != height)
         {
-            // Only set the screen size if it was originally the same as the window dimensions,
-            // ie. the screen was not a smaller (popup?) screen.
-            boolean setScreenSize = this.isFullScreen();
-
             this.width = width;
             this.height = height;
-
-            // Only set the screen size if it was originally the same as the window dimensions,
-            // ie. the screen was not a smaller (popup?) screen.
-            if (setScreenSize)
-            {
-                this.setScreenWidthAndHeight(width, height);
-            }
         }
+
+        // Only set the screen size if this is not a smaller (pop-up?) screen.
+        if (this.useWindowDimensions)
+        {
+            this.setScreenWidthAndHeight(width, height);
+        }
+    }
+
+    public void setUseWindowDimensions(boolean useWindowDimensions)
+    {
+        this.useWindowDimensions = useWindowDimensions;
     }
 
     protected void setScreenWidthAndHeight(int width, int height)
@@ -745,7 +738,7 @@ public abstract class BaseScreen extends GuiScreen
 
     public void bindTexture(ResourceLocation texture)
     {
-        this.mc.getTextureManager().bindTexture(texture);
+        RenderUtils.bindTexture(texture);
     }
 
     public BaseScreen setZ(float z)
@@ -943,9 +936,10 @@ public abstract class BaseScreen extends GuiScreen
      */
     public static boolean openPopupScreen(BaseScreen screen, boolean shouldRenderParent)
     {
-        screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
-        screen.setShouldRenderParent(shouldRenderParent);
+        screen.setUseWindowDimensions(false);
         screen.setCanDragMove(true);
+        screen.setShouldRenderParent(shouldRenderParent);
+        screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
         return openScreen(screen);
     }
 
