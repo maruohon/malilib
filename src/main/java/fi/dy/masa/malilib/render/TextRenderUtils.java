@@ -8,11 +8,14 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -349,12 +352,16 @@ public class TextRenderUtils
                                        float scale, int textColor, int bgColor,
                                        boolean disableDepth, RenderContext ctx)
     {
+        Vec3d cameraPos = GameUtils.getClient().gameRenderer.getCamera().getPos();
+        double cx = cameraPos.x;
+        double cy = cameraPos.y;
+        double cz = cameraPos.z;
         net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
 
         //GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         MatrixStack matrixStack = ctx.matrixStack;
         matrixStack.push();
-        matrixStack.translate(x, y, z);
+        matrixStack.translate(x - cx, y - cy, z - cz);
         //GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
 
         Quaternion rot = Vec3f.POSITIVE_Y.getDegreesQuaternion(-yaw);
@@ -362,13 +369,15 @@ public class TextRenderUtils
         matrixStack.multiply(rot);
 
         matrixStack.scale(-scale, -scale, scale);
+        RenderSystem.applyModelViewMatrix();
         //GlStateManager.disableLighting();
         RenderSystem.disableCull();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        //RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.setupBlend();
         RenderSystem.disableTexture();
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         int maxLineLen = 0;
@@ -408,9 +417,12 @@ public class TextRenderUtils
             RenderSystem.polygonOffset(-0.6f, -1.2f);
             //GlStateManager.translate(0, 0, -0.02);
 
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthMask(true);
+            //RenderSystem.enableDepthTest();
+            //RenderSystem.depthMask(true);
         }
+
+        Matrix4f modelMatrix = new Matrix4f();
+        modelMatrix.loadIdentity();
 
         for (String line : text)
         {
@@ -418,16 +430,18 @@ public class TextRenderUtils
             {
                 RenderSystem.depthMask(false);
                 RenderSystem.disableDepthTest();
-
+                VertexConsumerProvider.Immediate immediate =VertexConsumerProvider.immediate(buffer);
                 // Render the faint version that will also show through blocks
-                textRenderer.draw(matrixStack, line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
-
+                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, modelMatrix, immediate, true, 0, 15728880);
+                immediate.draw();
                 RenderSystem.enableDepthTest();
                 RenderSystem.depthMask(true);
             }
 
             // Render the actual fully opaque text, that will not show through blocks
-            textRenderer.draw(matrixStack, line, -strLenHalf, textY, textColor);
+            VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
+            textRenderer.draw(line, -strLenHalf, textY, textColor, false, modelMatrix, immediate, true, 0, 15728880);
+            immediate.draw();
             textY += textRenderer.fontHeight;
         }
 
