@@ -109,7 +109,7 @@ public abstract class BaseScreen extends Screen
 
         if (this.getParent() != null)
         {
-            this.getParent().clearAndInit();
+            this.getParent().init(this.mc, this.width, this.height);
         }
 
         super.clearAndInit();
@@ -445,6 +445,12 @@ public abstract class BaseScreen extends Screen
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks)
     {
+        if (this.useCustomScreenScaling)
+        {
+            mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
+            mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
+        }
+
         this.runTasks();
 
         if (this.shouldRenderParent && this.getParent() != null)
@@ -535,6 +541,12 @@ public abstract class BaseScreen extends Screen
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount)
     {
+        if (this.useCustomScreenScaling)
+        {
+            mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
+            mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
+        }
+
         if (this.onMouseScrolled((int) mouseX, (int) mouseY, amount))
         {
             return true;
@@ -546,6 +558,12 @@ public abstract class BaseScreen extends Screen
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY)
     {
+        if (this.useCustomScreenScaling)
+        {
+            mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
+            mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
+        }
+
         if (this.onMouseMoved((int) mouseX, (int) mouseY))
         {
             return true;
