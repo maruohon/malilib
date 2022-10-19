@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "fi.dy.masa.malilib.mixin",
+	"package": "malilib.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"minVersion": "0.8",
 	"client": [

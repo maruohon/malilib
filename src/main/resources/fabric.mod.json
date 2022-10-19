@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
-	"id": "malilib",
-	"name": "MaLiLib (rewrite dev)",
+	"id": "malilibdev",
+	"name": "MaLiLib (rewrite devel version)",
 	"version": "${mod_version}",
 
 	"description": "A library mod required by masa's client-side mods",
@@ -17,18 +17,18 @@
 	},
 
 	"license": "LGPLv3",
-	"icon": "assets/malilib/icon.png",
+	"icon": "assets/malilibdev/icon.png",
 	"environment": "client",
 	"entrypoints": {
 		"main": [
-			"fi.dy.masa.malilib.MaLiLib"
+			"malilib.MaLiLib"
 		],
 		"modmenu": [
-			"fi.dy.masa.malilib.compat.modmenu.ModMenuImpl"
+			"malilib.compat.modmenu.ModMenuImpl"
 		]
 	},
 	"mixins": [
-		"mixins.malilib.json"
+		"mixins.malilibdev.json"
 	],
 
 	"depends": {
