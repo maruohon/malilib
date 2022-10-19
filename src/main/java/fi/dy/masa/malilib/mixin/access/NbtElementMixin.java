@@ -10,5 +10,5 @@ import net.minecraft.nbt.NbtElement;
 public interface NbtElementMixin
 {
     @Invoker("write")
-    void invokeWrite(DataOutput output) throws IOException;
+    void malilib_invokeWrite(DataOutput output) throws IOException;
 }

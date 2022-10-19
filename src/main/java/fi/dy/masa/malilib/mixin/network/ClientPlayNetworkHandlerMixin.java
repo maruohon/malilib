@@ -15,7 +15,7 @@ public abstract class ClientPlayNetworkHandlerMixin
     @Inject(method = "onCustomPayload", cancellable = true,
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;getChannel()Lnet/minecraft/util/Identifier;"))
-    private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci)
+    private void malilib_onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci)
     {
         if (((ClientPacketChannelHandlerImpl) Registry.CLIENT_PACKET_CHANNEL_HANDLER).processPacketFromServer(packet, (ClientPlayNetworkHandler)(Object) this))
         {

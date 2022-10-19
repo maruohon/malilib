@@ -25,7 +25,7 @@ public abstract class WorldRendererMixin
     @Inject(method = "render",
             at = @At(value = "INVOKE", ordinal = 1,
                     target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/LightmapTextureManager;FDDD)V"))
-    private void onRenderWorldLastNormal(
+    private void malilib_onRenderWorldLastNormal(
             MatrixStack matrices,
             float tickDelta, long limitTime, boolean renderBlockOutline,
             Camera camera,
@@ -44,7 +44,7 @@ public abstract class WorldRendererMixin
                             target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/LightmapTextureManager;FDDD)V")),
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/client/gl/ShaderEffect;render(F)V"))
-    private void onRenderWorldLastFabulous(
+    private void malilib_onRenderWorldLastFabulous(
             MatrixStack matrices,
             float tickDelta, long limitTime, boolean renderBlockOutline,
             Camera camera,

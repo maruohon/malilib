@@ -17,14 +17,14 @@ public class MouseMixin
 
     @Inject(method = "onCursorPos",
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/Mouse;hasResolutionChanged:Z", ordinal = 0))
-    private void hookOnMouseMove(long handle, double xpos, double ypos, CallbackInfo ci)
+    private void malilib_hookOnMouseMove(long handle, double xpos, double ypos, CallbackInfo ci)
     {
         ((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onMouseMove(xpos, ypos);
     }
 
     @Inject(method = "onMouseScroll", cancellable = true,
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", ordinal = 0))
-    private void hookOnMouseScroll(long handle, double xOffset, double yOffset, CallbackInfo ci)
+    private void malilib_hookOnMouseScroll(long handle, double xOffset, double yOffset, CallbackInfo ci)
     {
         if (((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onMouseScroll(xOffset, yOffset))
         {
@@ -35,7 +35,7 @@ public class MouseMixin
 
     @Inject(method = "onMouseButton", cancellable = true,
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;IS_SYSTEM_MAC:Z", ordinal = 0))
-    private void hookOnMouseClick(long handle, final int button, final int action, int mods, CallbackInfo ci)
+    private void malilib_hookOnMouseClick(long handle, final int button, final int action, int mods, CallbackInfo ci)
     {
         final boolean keyState = action == GLFW.GLFW_PRESS;
 

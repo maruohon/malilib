@@ -13,7 +13,7 @@ import fi.dy.masa.malilib.registry.Registry;
 public abstract class InGameHudMixin
 {
     @Inject(method = "render", at = @At("RETURN"))
-    private void onGameOverlayPost(MatrixStack matrixStack, float partialTicks, CallbackInfo ci)
+    private void malilib_onGameOverlayPost(MatrixStack matrixStack, float partialTicks, CallbackInfo ci)
     {
         ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderGameOverlayPost(matrixStack);
     }

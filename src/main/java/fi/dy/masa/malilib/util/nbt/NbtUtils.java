@@ -267,7 +267,7 @@ public class NbtUtils
         if (typeId != 0)
         {
             output.writeUTF(tagName);
-            ((NbtElementMixin) tag).invokeWrite(output);
+            ((NbtElementMixin) tag).malilib_invokeWrite(output);
         }
     }
 }

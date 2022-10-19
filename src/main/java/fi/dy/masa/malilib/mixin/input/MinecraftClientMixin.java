@@ -13,7 +13,7 @@ import fi.dy.masa.malilib.registry.Registry;
 public abstract class MinecraftClientMixin
 {
     @Inject(method = "tick()V", at = @At("RETURN"))
-    private void onPostKeyboardInput(CallbackInfo ci)
+    private void malilib_onPostKeyboardInput(CallbackInfo ci)
     {
         KeyBindImpl.reCheckPressedKeys();
         ((TickEventDispatcherImpl) Registry.TICK_EVENT_DISPATCHER).onClientTick();

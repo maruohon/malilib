@@ -22,14 +22,14 @@ public abstract class MinecraftClientMixin
     private ClientWorld worldBefore;
 
     @Inject(method = "<init>(Lnet/minecraft/client/RunArgs;)V", at = @At("RETURN"))
-    private void onInitComplete(RunArgs args, CallbackInfo ci)
+    private void malilib_onInitComplete(RunArgs args, CallbackInfo ci)
     {
         // Register all mod handlers
         ((InitializationDispatcherImpl) Registry.INITIALIZATION_DISPATCHER).onGameInitDone();
     }
 
     @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;)V", at = @At("HEAD"))
-    private void onLoadWorldPre(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
+    private void malilib_onLoadWorldPre(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
     {
         // Only handle dimension changes/respawns here.
         // The initial join is handled in MixinClientPlayNetworkHandler onGameJoin 
@@ -41,7 +41,7 @@ public abstract class MinecraftClientMixin
     }
 
     @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;)V", at = @At("RETURN"))
-    private void onLoadWorldPost(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
+    private void malilib_onLoadWorldPost(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
     {
         if (this.worldBefore != null)
         {
@@ -51,14 +51,14 @@ public abstract class MinecraftClientMixin
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
-    private void onDisconnectPre(Screen screen, CallbackInfo ci)
+    private void malilib_onDisconnectPre(Screen screen, CallbackInfo ci)
     {
         this.worldBefore = this.world;
         ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.worldBefore, null);
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("RETURN"))
-    private void onDisconnectPost(Screen screen, CallbackInfo ci)
+    private void malilib_onDisconnectPost(Screen screen, CallbackInfo ci)
     {
         ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, null);
         this.worldBefore = null;
