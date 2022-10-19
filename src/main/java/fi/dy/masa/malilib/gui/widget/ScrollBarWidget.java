@@ -158,6 +158,8 @@ public class ScrollBarWidget extends InteractableWidget
         else if (mouseButton == 0 && this.wasMouseOver())
         {
             this.setIsDragging(true);
+            this.dragStartY = mouseY;
+            this.dragStartValue = this.currentValue;
         }
         else
         {
@@ -245,11 +247,6 @@ public class ScrollBarWidget extends InteractableWidget
         {
             float valuePerPixel = (float) this.maxValue / barTravel;
             this.setValue((int) (this.dragStartValue + ((mouseY - this.dragStartY) * valuePerPixel)));
-        }
-        else
-        {
-            this.dragStartY = mouseY;
-            this.dragStartValue = this.currentValue;
         }
     }
 
