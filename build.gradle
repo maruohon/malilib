@@ -34,7 +34,8 @@ dependencies {
 	modCompileOnly "com.terraformersmc:modmenu:${config.mod_menu_version}"
 }
 
-group = config.group + "." + config.mod_id
+//group = config.group + "." + config.mod_id
+group = config.mod_id
 archivesBaseName = config.mod_file_name + '-' + config.minecraft_version_out
 version = config.mod_version
 
