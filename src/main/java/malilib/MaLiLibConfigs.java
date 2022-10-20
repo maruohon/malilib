@@ -96,8 +96,8 @@ public class MaLiLibConfigs
         public static final KeyBindSettings SCROLL_ADJUST = KeyBindSettings.builder().extra().cancel(CancelCondition.ON_SUCCESS).noOutput().build();
 
         public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "");
-        public static final HotkeyConfig OPEN_ACTION_PROMPT_SCREEN              = new HotkeyConfig("openActionPromptScreen", "");
-        public static final HotkeyConfig OPEN_CONFIG_SCREEN                     = new HotkeyConfig("openConfigScreen", "A,C");
+        public static final HotkeyConfig OPEN_ACTION_PROMPT_SCREEN              = new HotkeyConfig("openActionPromptScreen", "L_ALT,A");
+        public static final HotkeyConfig OPEN_CONFIG_SCREEN                     = new HotkeyConfig("openConfigScreen", "B,C");
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_DECREASE           = new HotkeyConfig("scrollValueAdjustDecrease", "SCROLL_DOWN", SCROLL_ADJUST);
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_INCREASE           = new HotkeyConfig("scrollValueAdjustIncrease", "SCROLL_UP", SCROLL_ADJUST);
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_MODIFIER           = new HotkeyConfig("scrollValueAdjustModifier", "", KeyBindSettings.INGAME_MODIFIER_EMPTY);
