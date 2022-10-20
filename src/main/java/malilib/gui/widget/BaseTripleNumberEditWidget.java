@@ -29,16 +29,16 @@ public abstract class BaseTripleNumberEditWidget<T, W extends BaseNumberEditWidg
         this.addMoveToPlayerButton = addMoveToPlayerButton;
 
         int h = addMoveToPlayerButton ? (height - gap * 3 - 18) / 3 : (height - gap * 2) / 3;
-        this.moveToPlayerButton = GenericButton.create(18, "malilib.button.render_layers.set_to_player");
+        this.moveToPlayerButton = GenericButton.create(18, "malilibdev.button.render_layers.set_to_player");
         this.moveToPlayerButton.setActionListener(this::moveToPlayer);
 
         this.xCoordinateWidget = this.createNumberEditWidget(width, h, initialPos, Coordinate.X);
         this.yCoordinateWidget = this.createNumberEditWidget(width, h, initialPos, Coordinate.Y);
         this.zCoordinateWidget = this.createNumberEditWidget(width, h, initialPos, Coordinate.Z);
 
-        this.xCoordinateWidget.setLabelText("malilib.label.misc.coordinate.x_colon");
-        this.yCoordinateWidget.setLabelText("malilib.label.misc.coordinate.y_colon");
-        this.zCoordinateWidget.setLabelText("malilib.label.misc.coordinate.z_colon");
+        this.xCoordinateWidget.setLabelText("malilibdev.label.misc.coordinate.x_colon");
+        this.yCoordinateWidget.setLabelText("malilibdev.label.misc.coordinate.y_colon");
+        this.zCoordinateWidget.setLabelText("malilibdev.label.misc.coordinate.z_colon");
 
         BooleanSupplier enabledSupplier = this::isEnabled;
         this.moveToPlayerButton.setEnabledStatusSupplier(enabledSupplier);

@@ -4,11 +4,11 @@ import malilib.util.StringUtils;
 
 public enum RunStatus
 {
-    STOPPED     ("malilib.name.run_status.stopped",  "malilib.name.run_status.stopped.colored"),
-    PAUSED      ("malilib.name.run_status.paused",   "malilib.name.run_status.paused.colored"),
-    RUNNING     ("malilib.name.run_status.running",  "malilib.name.run_status.running.colored"),
-    FINISHED    ("malilib.name.run_status.finished", "malilib.name.run_status.finished.colored"),
-    ABORTED     ("malilib.name.run_status.aborted",  "malilib.name.run_status.aborted.colored");
+    STOPPED     ("malilibdev.name.run_status.stopped",  "malilibdev.name.run_status.stopped.colored"),
+    PAUSED      ("malilibdev.name.run_status.paused",   "malilibdev.name.run_status.paused.colored"),
+    RUNNING     ("malilibdev.name.run_status.running",  "malilibdev.name.run_status.running.colored"),
+    FINISHED    ("malilibdev.name.run_status.finished", "malilibdev.name.run_status.finished.colored"),
+    ABORTED     ("malilibdev.name.run_status.aborted",  "malilibdev.name.run_status.aborted.colored");
 
     private final String translationKey;
     private final String coloredTranslationKey;

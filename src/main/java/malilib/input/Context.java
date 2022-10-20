@@ -5,9 +5,9 @@ import malilib.config.value.BaseOptionListConfigValue;
 
 public class Context extends BaseOptionListConfigValue
 {
-    public static final Context INGAME = new Context("ingame",  "malilib.name.key_context.ingame", 0);
-    public static final Context GUI    = new Context("gui",     "malilib.name.key_context.gui", 1);
-    public static final Context ANY    = new Context("any",     "malilib.name.key_context.any", 2);
+    public static final Context INGAME = new Context("ingame",  "malilibdev.name.key_context.ingame", 0);
+    public static final Context GUI    = new Context("gui",     "malilibdev.name.key_context.gui", 1);
+    public static final Context ANY    = new Context("any",     "malilibdev.name.key_context.any", 2);
 
     public static final ImmutableList<Context> VALUES = ImmutableList.of(INGAME, GUI, ANY);
 

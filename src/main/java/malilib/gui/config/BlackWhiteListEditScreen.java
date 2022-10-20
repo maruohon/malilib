@@ -23,12 +23,12 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
 
         this.config = config;
         this.externalSaveListener = saveListener;
-        this.setTitle("malilib.title.screen.black_white_list_edit", config.getDisplayName());
+        this.setTitle("malilibdev.title.screen.black_white_list_edit", config.getDisplayName());
 
         // Initialize them to the default value so that the reset button is active when they differ from the default value,
         // and also so that the reset restores them to the default value, not the value they were at when the screen was opened
         BlackWhiteList<TYPE> bwList = config.getValue();
-        this.typeConfig = new OptionListConfig<>("malilib.label.config.black_white_list_edit.type",
+        this.typeConfig = new OptionListConfig<>("malilibdev.label.config.black_white_list_edit.type",
                                                  config.getDefaultValue().getListType(), ListType.VALUES);
         this.typeConfig.setValue(bwList.getListType());
         this.typeConfig.setCommentTranslationKey(null);

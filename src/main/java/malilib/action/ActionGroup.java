@@ -8,14 +8,14 @@ import malilib.util.StringUtils;
 
 public enum ActionGroup
 {
-    ALL             ("malilib.name.action_group.all", Registry.ACTION_REGISTRY::getAllActions),
-    BASE            ("malilib.name.action_group.base",            Registry.ACTION_REGISTRY::getBaseActions),
-    ALIAS           ("malilib.name.action_group.alias",           Registry.ACTION_REGISTRY::getAliases),
-    MACRO           ("malilib.name.action_group.macro",           Registry.ACTION_REGISTRY::getMacros),
-    PARAMETERIZED   ("malilib.name.action_group.parameterized",   Registry.ACTION_REGISTRY::getParameterizedActions),
-    PARAMETERIZABLE ("malilib.name.action_group.parameterizable", ActionUtils::getParameterizableActions),
-    USER_ADDED      ("malilib.name.action_group.user_added",      ActionUtils::getUserAddedActions),
-    SIMPLE          ("malilib.name.action_group.simple",          ActionUtils::getSimpleActions);
+    ALL             ("malilibdev.name.action_group.all", Registry.ACTION_REGISTRY::getAllActions),
+    BASE            ("malilibdev.name.action_group.base",            Registry.ACTION_REGISTRY::getBaseActions),
+    ALIAS           ("malilibdev.name.action_group.alias",           Registry.ACTION_REGISTRY::getAliases),
+    MACRO           ("malilibdev.name.action_group.macro",           Registry.ACTION_REGISTRY::getMacros),
+    PARAMETERIZED   ("malilibdev.name.action_group.parameterized",   Registry.ACTION_REGISTRY::getParameterizedActions),
+    PARAMETERIZABLE ("malilibdev.name.action_group.parameterizable", ActionUtils::getParameterizableActions),
+    USER_ADDED      ("malilibdev.name.action_group.user_added",      ActionUtils::getUserAddedActions),
+    SIMPLE          ("malilibdev.name.action_group.simple",          ActionUtils::getSimpleActions);
 
     public static final ImmutableList<ActionGroup> VALUES = ImmutableList.copyOf(values());
     public static final ImmutableList<ActionGroup> VALUES_USER_ADDED = ImmutableList.of(ALIAS, MACRO, PARAMETERIZED, USER_ADDED);

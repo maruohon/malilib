@@ -22,8 +22,8 @@ public class SettingsExportImportScreen extends TextInputScreen
     protected final RadioButtonWidget<AppendOverwrite> appendOverwriteRadioWidget;
     @Nullable protected ResultingStringConsumer appendStringConsumer;
     protected boolean addAppendOverwriteSelection;
-    protected String copyToClipboardMessage = "malilib.message.info.setting_string_copied_to_clipboard";
-    protected String pasteFromClipboardMessage = "malilib.message.info.setting_string_pasted_from_clipboard";
+    protected String copyToClipboardMessage = "malilibdev.message.info.setting_string_copied_to_clipboard";
+    protected String pasteFromClipboardMessage = "malilibdev.message.info.setting_string_pasted_from_clipboard";
     protected int messageDisplayTime = 2000;
 
     public SettingsExportImportScreen(String titleKey,
@@ -32,20 +32,20 @@ public class SettingsExportImportScreen extends TextInputScreen
     {
         super(titleKey, exportString, overwriteStringConsumer);
 
-        this.copyToClipboardButton = GenericButton.create(14, "malilib.button.export_import_screen.copy_to_clipboard", this::copyToClipboard);
-        this.copyToClipboardButton.translateAndAddHoverString("malilib.hover.button.export_import_screen.copy_to_clipboard");
+        this.copyToClipboardButton = GenericButton.create(14, "malilibdev.button.export_import_screen.copy_to_clipboard", this::copyToClipboard);
+        this.copyToClipboardButton.translateAndAddHoverString("malilibdev.hover.button.export_import_screen.copy_to_clipboard");
         this.copyToClipboardButton.getTextOffset().setCenterHorizontally(false).setXOffset(5);
 
-        this.pasteFromClipboardButton = GenericButton.create(14, "malilib.button.export_import_screen.paste_from_clipboard", this::pasteFromClipboard);
-        this.pasteFromClipboardButton.translateAndAddHoverString("malilib.hover.button.export_import_screen.paste_from_clipboard");
+        this.pasteFromClipboardButton = GenericButton.create(14, "malilibdev.button.export_import_screen.paste_from_clipboard", this::pasteFromClipboard);
+        this.pasteFromClipboardButton.translateAndAddHoverString("malilibdev.hover.button.export_import_screen.paste_from_clipboard");
         this.pasteFromClipboardButton.getTextOffset().setCenterHorizontally(false).setXOffset(5);
 
-        this.readFromFileButton = GenericButton.create(14, "malilib.button.export_import_screen.read_from_file", this::readFromFile);
-        this.readFromFileButton.translateAndAddHoverString("malilib.hover.button.export_import_screen.read_from_file");
+        this.readFromFileButton = GenericButton.create(14, "malilibdev.button.export_import_screen.read_from_file", this::readFromFile);
+        this.readFromFileButton.translateAndAddHoverString("malilibdev.hover.button.export_import_screen.read_from_file");
         this.readFromFileButton.getTextOffset().setCenterHorizontally(false).setXOffset(5);
 
-        this.writeToFileButton = GenericButton.create(14, "malilib.button.export_import_screen.write_to_file", this::writeToFile);
-        this.writeToFileButton.translateAndAddHoverString("malilib.hover.button.export_import_screen.write_to_file");
+        this.writeToFileButton = GenericButton.create(14, "malilibdev.button.export_import_screen.write_to_file", this::writeToFile);
+        this.writeToFileButton.translateAndAddHoverString("malilibdev.hover.button.export_import_screen.write_to_file");
         this.writeToFileButton.getTextOffset().setCenterHorizontally(false).setXOffset(5);
 
         this.appendOverwriteRadioWidget = new RadioButtonWidget<>(AppendOverwrite.VALUES, AppendOverwrite::getDisplayName);
@@ -177,12 +177,12 @@ public class SettingsExportImportScreen extends TextInputScreen
             this.textField.setCursorToStart();
             this.textField.setFocused(true);
 
-            MessageDispatcher.success("malilib.message.info.settings_read_from_file_to_text_field");
+            MessageDispatcher.success("malilibdev.message.info.settings_read_from_file_to_text_field");
 
             return true;
         }
 
-        MessageDispatcher.error("malilib.message.error.setting_string_failed_to_read_from_file");
+        MessageDispatcher.error("malilibdev.message.error.setting_string_failed_to_read_from_file");
 
         return false;
     }
@@ -195,16 +195,16 @@ public class SettingsExportImportScreen extends TextInputScreen
         {
             if (FileUtils.writeStringToFile(this.textField.getText(), file, override))
             {
-                MessageDispatcher.success("malilib.message.info.settings_written_to_file");
+                MessageDispatcher.success("malilibdev.message.info.settings_written_to_file");
                 return true;
             }
 
-            MessageDispatcher.error("malilib.message.error.failed_to_write_string_to_file", file.toAbsolutePath());
+            MessageDispatcher.error("malilibdev.message.error.failed_to_write_string_to_file", file.toAbsolutePath());
 
             return false;
         }
 
-        MessageDispatcher.error("malilib.message.error.file_already_exists_hold_shift_to_override");
+        MessageDispatcher.error("malilibdev.message.error.file_already_exists_hold_shift_to_override");
 
         return false;
     }
@@ -219,7 +219,7 @@ public class SettingsExportImportScreen extends TextInputScreen
     {
         FileSelectorScreen screen = this.createFileSelectorScreen(this::writeStringToFile);
         screen.setAllowCreatingFilesWithExtension("json");
-        screen.setConfirmButtonLabel("malilib.button.misc.save_to_file");
+        screen.setConfirmButtonLabel("malilibdev.button.misc.save_to_file");
         BaseScreen.openScreen(screen);
     }
 
@@ -235,8 +235,8 @@ public class SettingsExportImportScreen extends TextInputScreen
 
     protected enum AppendOverwrite
     {
-        APPEND    ("malilib.name.append_overwrite.append"),
-        OVERWRITE ("malilib.name.append_overwrite.overwrite");
+        APPEND    ("malilibdev.name.append_overwrite.append"),
+        OVERWRITE ("malilibdev.name.append_overwrite.overwrite");
 
         public static final ImmutableList<AppendOverwrite> VALUES = ImmutableList.copyOf(values());
 

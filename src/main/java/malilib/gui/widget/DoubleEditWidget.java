@@ -133,7 +133,7 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
 
     protected List<String> getRangeHoverTooltip()
     {
-        return Collections.singletonList(StringUtils.translate("malilib.hover.config.numeric.range",
+        return Collections.singletonList(StringUtils.translate("malilibdev.hover.config.numeric.range",
                                                                this.minValue, this.maxValue));
     }
 }

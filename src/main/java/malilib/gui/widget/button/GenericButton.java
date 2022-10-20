@@ -180,7 +180,7 @@ public class GenericButton extends InteractableWidget
             if (this.automaticWidth == false &&
                 this.text.renderWidth > this.getMaxDisplayStringWidth())
             {
-                return ImmutableList.of(StringUtils.translate("malilib.hover.button.full_button_label",
+                return ImmutableList.of(StringUtils.translate("malilibdev.hover.button.full_button_label",
                                                               this.fullDisplayString));
             }
         }

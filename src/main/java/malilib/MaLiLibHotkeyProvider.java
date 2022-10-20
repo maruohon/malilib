@@ -29,7 +29,7 @@ public class MaLiLibHotkeyProvider implements HotkeyProvider
         ModInfo modInfo = MaLiLibReference.MOD_INFO;
 
         return ImmutableList.of(
-                new HotkeyCategory(modInfo, "malilib.hotkeys.category.debug_hotkeys"  , MaLiLibConfigs.Debug.HOTKEYS),
-                new HotkeyCategory(modInfo, "malilib.hotkeys.category.generic_hotkeys", MaLiLibConfigs.Hotkeys.FUNCTIONAL_HOTKEYS));
+                new HotkeyCategory(modInfo, "malilibdev.hotkeys.category.debug_hotkeys"  , MaLiLibConfigs.Debug.HOTKEYS),
+                new HotkeyCategory(modInfo, "malilibdev.hotkeys.category.generic_hotkeys", MaLiLibConfigs.Hotkeys.FUNCTIONAL_HOTKEYS));
     }
 }

@@ -5,9 +5,9 @@ import malilib.config.value.BaseOptionListConfigValue;
 
 public class KeyAction extends BaseOptionListConfigValue
 {
-    public static final KeyAction PRESS   = new KeyAction("press",   "malilib.name.key_action.press", 0);
-    public static final KeyAction RELEASE = new KeyAction("release", "malilib.name.key_action.release", 1);
-    public static final KeyAction BOTH    = new KeyAction("both",    "malilib.name.key_action.both", 2);
+    public static final KeyAction PRESS   = new KeyAction("press",   "malilibdev.name.key_action.press", 0);
+    public static final KeyAction RELEASE = new KeyAction("release", "malilibdev.name.key_action.release", 1);
+    public static final KeyAction BOTH    = new KeyAction("both",    "malilibdev.name.key_action.both", 2);
 
     public static final ImmutableList<KeyAction> VALUES = ImmutableList.of(PRESS, RELEASE, BOTH);
 

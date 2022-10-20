@@ -66,7 +66,7 @@ public class MessageOutput extends BaseOptionListConfigValue
                                           BiConsumer<String, MessageDispatcher> stringMessageDispatcher,
                                           BiConsumer<StyledText, MessageDispatcher> styledTextMessageDispatcher)
     {
-        return register(name, "malilib.name.message_output." + name,
+        return register(name, "malilibdev.name.message_output." + name,
                         stringMessageDispatcher, styledTextMessageDispatcher);
     }
 

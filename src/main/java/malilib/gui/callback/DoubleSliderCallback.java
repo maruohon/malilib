@@ -73,7 +73,7 @@ public class DoubleSliderCallback implements SteppedSliderCallback
     @Override
     public void updateDisplayText()
     {
-        this.displayText = StyledTextLine.translate("malilib.label.config.slider_value.double",
+        this.displayText = StyledTextLine.translate("malilibdev.label.config.slider_value.double",
                                                     String.format("%.4f", this.storage.getDoubleValue()));
     }
 

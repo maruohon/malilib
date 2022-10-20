@@ -38,7 +38,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected ImmutableList<T> entries;
     protected SelectionHandler<T> selectionHandler;
-    protected String multiSelectionTranslationKey = "malilib.label.misc.dropdown.multiple_entries_selected";
+    protected String multiSelectionTranslationKey = "malilibdev.label.misc.dropdown.multiple_entries_selected";
     @Nullable protected Supplier<List<StyledTextLine>> multiSelectionHoverTextSupplier;
     @Nullable protected SelectionListener<T> selectionListener;
     @Nullable protected InteractableWidget currentEntryBarWidget;
@@ -98,7 +98,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
         this.zLevelIncrement = 20;
         this.shouldReceiveOutsideClicks = true;
-        this.searchTipText = StyledTextLine.translate("malilib.label.misc.dropdown.type_to_search");
+        this.searchTipText = StyledTextLine.translate("malilibdev.label.misc.dropdown.type_to_search");
 
         this.setHoverInfoRequiresShift(true);
         this.setWidthNoUpdate(120); // The width will get updated later

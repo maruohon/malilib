@@ -11,7 +11,7 @@ public class ConfigInfoEntryWidget extends BaseDataListEntryWidget<ConfigOnTab>
         super(data, constructData);
 
         ConfigInfo config = data.getConfig();
-        this.translateAndAddHoverString("malilib.hover.config.info_entry_widget",
+        this.translateAndAddHoverString("malilibdev.hover.config.info_entry_widget",
                                         config.getDisplayName(), config.getName(),
                                         config.getClass().getSimpleName());
 

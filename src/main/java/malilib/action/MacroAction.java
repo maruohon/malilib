@@ -23,7 +23,7 @@ public class MacroAction extends NamedAction
         super(ActionType.MACRO, name, name, MACRO_MOD_INFO);
 
         this.actionList = actionList;
-        this.coloredDisplayNameTranslationKey = "malilib.label.actions.macro_entry_widget_name";
+        this.coloredDisplayNameTranslationKey = "malilibdev.label.actions.macro_entry_widget_name";
     }
 
     @Override
@@ -65,12 +65,12 @@ public class MacroAction extends NamedAction
     public List<StyledTextLine> getHoverInfo()
     {
         List<StyledTextLine> lines = new ArrayList<>();
-        lines.add(StyledTextLine.translate("malilib.hover.action.name", this.getName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.action_type", this.type.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.name", this.getName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.action_type", this.type.getDisplayName()));
 
         if (this.registryName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover.action.registry_name", this.registryName));
+            lines.add(StyledTextLine.translate("malilibdev.hover.action.registry_name", this.registryName));
         }
 
         getContainedActionsTooltip(this.actionList, lines::add, 8);
@@ -86,8 +86,8 @@ public class MacroAction extends NamedAction
 
         if (size > 0)
         {
-            String titleKey = "malilib.hover.action.contained_actions";
-            String entryKey = "malilib.hover.action.contained_actions.entry";
+            String titleKey = "malilibdev.hover.action.contained_actions";
+            String entryKey = "malilibdev.hover.action.contained_actions.entry";
             int count = Math.min(size, maxEntriesShown);
 
             if (maxEntriesShown == size - 1)
@@ -104,7 +104,7 @@ public class MacroAction extends NamedAction
 
             if (size > count)
             {
-                String footerKey = "malilib.hover.action.contained_actions.more";
+                String footerKey = "malilibdev.hover.action.contained_actions.more";
                 consumer.accept(StyledTextLine.translate(footerKey, size - count));
             }
         }
@@ -141,6 +141,6 @@ public class MacroAction extends NamedAction
 
     public static ModInfo getMacroModInfo()
     {
-        return new ModInfo("<macro>", StringUtils.translate("malilib.label.actions.macro_action"));
+        return new ModInfo("<macro>", StringUtils.translate("malilibdev.label.actions.macro_action"));
     }
 }

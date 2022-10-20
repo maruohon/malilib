@@ -102,8 +102,8 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
     {
         List<StyledTextLine> lines = new ArrayList<>();
 
-        String titleKey = "malilib.hover.config.expandable_config_group.contained_configs";
-        String entryKey = "malilib.hover.config.expandable_config_group.config_entry";
+        String titleKey = "malilibdev.hover.config.expandable_config_group.contained_configs";
+        String entryKey = "malilibdev.hover.config.expandable_config_group.config_entry";
         final int size = configs.size();
         final int maxEntriesShown = 10;
         int count = Math.min(size, maxEntriesShown);
@@ -125,7 +125,7 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
 
         if (size > count)
         {
-            String footerKey = "malilib.hover.config.expandable_config_group.more";
+            String footerKey = "malilibdev.hover.config.expandable_config_group.more";
             lines.add(StyledTextLine.translate(footerKey, size - count));
         }
 

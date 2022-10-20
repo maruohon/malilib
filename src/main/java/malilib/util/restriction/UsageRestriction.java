@@ -157,9 +157,9 @@ public class UsageRestriction<TYPE>
 
     public static class ListType extends BaseOptionListConfigValue
     {
-        public static final ListType NONE      = new ListType("none",        "malilib.label.list_type.none");
-        public static final ListType BLACKLIST = new ListType("blacklist",   "malilib.label.list_type.blacklist");
-        public static final ListType WHITELIST = new ListType("whitelist",   "malilib.label.list_type.whitelist");
+        public static final ListType NONE      = new ListType("none",        "malilibdev.label.list_type.none");
+        public static final ListType BLACKLIST = new ListType("blacklist",   "malilibdev.label.list_type.blacklist");
+        public static final ListType WHITELIST = new ListType("whitelist",   "malilibdev.label.list_type.whitelist");
 
         public static final ImmutableList<ListType> VALUES = ImmutableList.of(NONE, BLACKLIST, WHITELIST);
 

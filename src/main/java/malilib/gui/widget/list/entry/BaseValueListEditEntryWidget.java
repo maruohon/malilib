@@ -34,7 +34,7 @@ public class BaseValueListEditEntryWidget<DATATYPE> extends BaseOrderableListEdi
         this.labelWidget.setWidth(24);
         this.labelWidget.setHorizontalAlignment(HorizontalAlignment.RIGHT);
 
-        this.resetButton = GenericButton.create(16, "malilib.button.misc.reset.caps");
+        this.resetButton = GenericButton.create(16, "malilibdev.button.misc.reset.caps");
         this.resetButton.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF404040);
 
         this.resetButton.setRenderButtonBackgroundTexture(false);

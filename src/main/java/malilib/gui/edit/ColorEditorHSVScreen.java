@@ -56,7 +56,7 @@ public class ColorEditorHSVScreen extends BaseScreen
         this.renderBorder = true;
         this.useTitleHierarchy = false;
 
-        this.setTitle("malilib.title.screen.color_editor");
+        this.setTitle("malilibdev.title.screen.color_editor");
         this.setScreenWidthAndHeight(300, 180);
         this.centerOnScreen();
     }
@@ -106,7 +106,7 @@ public class ColorEditorHSVScreen extends BaseScreen
         this.textFieldFullColor.setListener(new TextChangeListener(null, this));
         this.addWidget(this.textFieldFullColor);
 
-        //String str = StringUtils.translate("malilib.gui.label.color_editor.current_color");
+        //String str = StringUtils.translate("malilibdev.gui.label.color_editor.current_color");
         //this.addLabel(this.xHS, this.yHS + this.sizeHS + 10, 60, 12, 0xFFFFFF, str);
 
         this.setColor(this.initialValue); // Set the text field values

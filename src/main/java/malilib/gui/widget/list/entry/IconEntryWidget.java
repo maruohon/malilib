@@ -19,8 +19,8 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
     {
         super(data, constructData);
 
-        this.editButton = GenericButton.create(20, "malilib.button.misc.edit", this::openEditScreen);
-        this.removeButton = GenericButton.create(20, "malilib.button.misc.remove", this::removeIcon);
+        this.editButton = GenericButton.create(20, "malilibdev.button.misc.edit", this::openEditScreen);
+        this.removeButton = GenericButton.create(20, "malilibdev.button.misc.remove", this::removeIcon);
 
         int w = data.getWidth();
         int h = data.getHeight();

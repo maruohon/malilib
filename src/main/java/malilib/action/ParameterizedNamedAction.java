@@ -23,7 +23,7 @@ public class ParameterizedNamedAction extends NamedAction
 
         this.baseAction = baseAction;
         this.argument = argument;
-        this.coloredDisplayNameTranslationKey = "malilib.label.actions.parameterized_entry_widget_name";
+        this.coloredDisplayNameTranslationKey = "malilibdev.label.actions.parameterized_entry_widget_name";
     }
 
     @Override
@@ -57,20 +57,20 @@ public class ParameterizedNamedAction extends NamedAction
     {
         List<StyledTextLine> lines = new ArrayList<>();
 
-        lines.add(StyledTextLine.translate("malilib.hover.action.name", this.getName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.mod", this.baseAction.getModInfo().getModName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.display_name", this.baseAction.getDisplayName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.action_type", this.type.getDisplayName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.base_action_name", this.baseAction.getName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.name", this.getName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.mod", this.baseAction.getModInfo().getModName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.display_name", this.baseAction.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.action_type", this.type.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.base_action_name", this.baseAction.getName()));
 
         String regName = this.baseAction.getRegistryName();
 
         if (regName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover.action.base_action_registry_name", regName));
+            lines.add(StyledTextLine.translate("malilibdev.hover.action.base_action_registry_name", regName));
         }
 
-        StyledTextLine start = StyledTextLine.translate("malilib.hover.action.parameterized_action_argument");
+        StyledTextLine start = StyledTextLine.translate("malilibdev.hover.action.parameterized_action_argument");
         lines.add(start.append(StyledTextLine.rawWithStyle(this.argument, start.getLastStyle())));
 
         return lines;

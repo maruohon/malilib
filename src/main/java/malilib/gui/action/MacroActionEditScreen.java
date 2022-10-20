@@ -44,16 +44,16 @@ public class MacroActionEditScreen extends BaseActionListScreen
         this.macro = macro;
         this.originalMacroActionsList = macro.getActionList();
 
-        this.setTitle("malilib.title.screen.edit_macro");
+        this.setTitle("malilibdev.title.screen.edit_macro");
 
-        String label = StringUtils.translate("malilib.label.actions.macro_edit_screen.contained_actions", macro.getName());
+        String label = StringUtils.translate("malilibdev.label.actions.macro_edit_screen.contained_actions", macro.getName());
         this.macroActionsLabelWidget = new LabelWidget(label);
 
-        this.addActionsButton = GenericButton.create(15, "malilib.button.macro_edit_screen.add_actions", this::addSelectedActions);
-        this.addActionsButton.translateAndAddHoverString("malilib.hover.macro_edit_screen.add_actions");
+        this.addActionsButton = GenericButton.create(15, "malilibdev.button.macro_edit_screen.add_actions", this::addSelectedActions);
+        this.addActionsButton.translateAndAddHoverString("malilibdev.hover.macro_edit_screen.add_actions");
         this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
 
-        this.exportImportButton = GenericButton.create(15, "malilib.button.export_slash_import", this::openExportImportScreen);
+        this.exportImportButton = GenericButton.create(15, "malilibdev.button.export_slash_import", this::openExportImportScreen);
 
         this.leftSideListWidget.setDataListEntryWidgetFactory(this::createMacroSourceActionsWidget);
         this.rightSideListWidget = this.createRightSideActionListWidget();
@@ -114,7 +114,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
         {
             if (ActionUtils.containsMacroLoop(this.macro, selectedActions))
             {
-                MessageDispatcher.error("malilib.message.error.action.macro_add_actions_loop_detected");
+                MessageDispatcher.error("malilibdev.message.error.action.macro_add_actions_loop_detected");
                 return;
             }
 
@@ -127,7 +127,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
     {
         if (ActionUtils.containsMacroLoop(this.macro, Collections.singletonList(action)))
         {
-            MessageDispatcher.error("malilib.message.error.action.macro_add_actions_loop_detected");
+            MessageDispatcher.error("malilibdev.message.error.action.macro_add_actions_loop_detected");
             return false;
         }
 
@@ -212,12 +212,12 @@ public class MacroActionEditScreen extends BaseActionListScreen
 
     protected void openExportImportScreen()
     {
-        String title = "malilib.title.screen.macro_edit.export_import";
+        String title = "malilibdev.title.screen.macro_edit.export_import";
         MacroAction macro = new MacroAction(this.macro.getName(), ImmutableList.copyOf(this.macroActionsList));
         String settingsStr = JsonUtils.jsonToString(macro.toJson(), true);
         SettingsExportImportScreen screen = new SettingsExportImportScreen(title, settingsStr, this::importOverwrite);
         screen.setAppendStringConsumer(this::importAppend);
-        screen.setRadioWidgetHoverText("malilib.hover.macro_action_export_import_screen.append_overwrite");
+        screen.setRadioWidgetHoverText("malilibdev.hover.macro_action_export_import_screen.append_overwrite");
         screen.setParent(this);
         BaseScreen.openPopupScreen(screen);
     }
@@ -234,7 +234,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
             return true;
         }
 
-        MessageDispatcher.error("malilib.message.error.macro_import_from_string_failed");
+        MessageDispatcher.error("malilibdev.message.error.macro_import_from_string_failed");
 
         return false;
     }
@@ -250,7 +250,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
             return true;
         }
 
-        MessageDispatcher.error("malilib.message.error.macro_import_from_string_failed");
+        MessageDispatcher.error("malilibdev.message.error.macro_import_from_string_failed");
 
         return false;
     }
@@ -287,7 +287,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
         {
             ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(data, constructData);
             parWidget.setParameterizedActionConsumer(this::addAction);
-            parWidget.setParameterizationButtonHoverText("malilib.hover.button.parameterize_action_for_macro");
+            parWidget.setParameterizationButtonHoverText("malilibdev.hover.button.parameterize_action_for_macro");
             widget = parWidget;
         }
         else
@@ -316,7 +316,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
         if (data instanceof ParameterizedNamedAction)
         {
             widget.setActionEditFunction((i, a) -> this.openParameterizedActionEditScreen(i));
-            widget.setEditButtonHoverText("malilib.hover.button.re_parameterize_action_for_macro");
+            widget.setEditButtonHoverText("malilibdev.hover.button.re_parameterize_action_for_macro");
         }
         else if (data instanceof MacroAction)
         {

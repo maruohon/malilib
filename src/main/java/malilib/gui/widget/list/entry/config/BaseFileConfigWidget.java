@@ -68,12 +68,12 @@ public abstract class BaseFileConfigWidget<T, CFG extends BaseGenericConfig<T>> 
 
     protected String getButtonLabelKey()
     {
-        return "malilib.button.config.select_directory";
+        return "malilibdev.button.config.select_directory";
     }
 
     protected String getButtonHoverTextKey()
     {
-        return "malilib.hover.button.config.selected_directory";
+        return "malilibdev.hover.button.config.selected_directory";
     }
 
     protected BaseScreen createScreen(Path currentDir, Path rootDir)

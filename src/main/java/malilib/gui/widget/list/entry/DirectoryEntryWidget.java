@@ -27,15 +27,15 @@ import malilib.util.data.LeftRight;
 public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry>
 {
     public static final DataColumn<DirectoryEntry> NAME_COLUMN =
-            new DataColumn<DirectoryEntry>("malilib.label.file_browser.column.file_name",
+            new DataColumn<DirectoryEntry>("malilibdev.label.file_browser.column.file_name",
                                            Comparator.naturalOrder());
 
     public static final DataColumn<DirectoryEntry> SIZE_COLUMN =
-            new DataColumn<>("malilib.label.file_browser.column.file_size",
+            new DataColumn<>("malilibdev.label.file_browser.column.file_size",
                              Comparator.comparingLong((e) -> FileUtils.size(e.getFullPath())));
 
     public static final DataColumn<DirectoryEntry> TIME_COLUMN =
-            new DataColumn<>("malilib.label.file_browser.column.last_modified",
+            new DataColumn<>("malilibdev.label.file_browser.column.last_modified",
                              Comparator.comparingLong((e) -> FileUtils.getMTime(e.getFullPath())));
 
     protected static final DecimalFormat FILE_SIZE_FORMAT = new DecimalFormat("###,###,###.#");

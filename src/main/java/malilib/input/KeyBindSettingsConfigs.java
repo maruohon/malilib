@@ -32,20 +32,20 @@ public class KeyBindSettingsConfigs
         this.changeListener = changeListener;
 
         KeyBindSettings defaultSettings = keybind.getDefaultSettings();
-        this.cfgActivateOn     = new OptionListConfig<>("", defaultSettings.getActivateOn(), KeyAction.VALUES, "malilib.label.keybind_settings.activate_on",    "malilib.config.comment.keybind_settings.activate_on");
-        this.cfgContext        = new OptionListConfig<>("", defaultSettings.getContext(),    Context.VALUES, "malilib.label.keybind_settings.context",          "malilib.config.comment.keybind_settings.context");
-        this.cfgCancel         = new OptionListConfig<>("", defaultSettings.getCancelCondition(), CancelCondition.VALUES, "malilib.label.keybind_settings.cancel_further",  "malilib.config.comment.keybind_settings.cancel_further");
-        this.cfgMessageType    = new OptionListConfig<>("", defaultSettings.getMessageType(), MessageOutput.getValues(), "malilib.label.keybind_settings.message_output", "malilib.config.comment.keybind_settings.message_output");
-        this.cfgAllowEmpty     = new BooleanConfig("", defaultSettings.getAllowEmpty(),     "malilib.label.keybind_settings.allow_empty_keybind",       "malilib.config.comment.keybind_settings.allow_empty_keybind");
-        this.cfgAllowExtra     = new BooleanConfig("", defaultSettings.getAllowExtraKeys(), "malilib.label.keybind_settings.allow_extra_keys",          "malilib.config.comment.keybind_settings.allow_extra_keys");
-        this.cfgOrderSensitive = new BooleanConfig("", defaultSettings.isOrderSensitive(),  "malilib.label.keybind_settings.order_sensitive",           "malilib.config.comment.keybind_settings.order_sensitive");
-        this.cfgExclusive      = new BooleanConfig("", defaultSettings.isExclusive(),       "malilib.label.keybind_settings.exclusive",                 "malilib.config.comment.keybind_settings.exclusive");
-        this.cfgFirstOnly      = new BooleanConfig("", defaultSettings.getFirstOnly(),      "malilib.label.keybind_settings.first_only",                "malilib.config.comment.keybind_settings.first_only");
-        this.cfgInvertHeld     = new BooleanConfig("", defaultSettings.getInvertHeld(),     "malilib.label.keybind_settings.invert_held",               "malilib.config.comment.keybind_settings.invert_held");
-        this.cfgPriority       = new IntegerConfig("", defaultSettings.getPriority(), 0, 100, false, "malilib.config.comment.keybind_settings.priority");
-        this.cfgShowToast      = new BooleanConfig("", defaultSettings.getShowToast(),      "malilib.label.keybind_settings.show_toast",                "malilib.config.comment.keybind_settings.show_toast");
-        this.cfgToggle         = new BooleanConfig("", defaultSettings.isToggle(),          "malilib.label.keybind_settings.toggle",                    "malilib.config.comment.keybind_settings.toggle");
-        this.cfgPriority.setPrettyNameTranslationKey("malilib.label.keybind_settings.priority");
+        this.cfgActivateOn     = new OptionListConfig<>("", defaultSettings.getActivateOn(), KeyAction.VALUES, "malilibdev.label.keybind_settings.activate_on",    "malilibdev.config.comment.keybind_settings.activate_on");
+        this.cfgContext        = new OptionListConfig<>("", defaultSettings.getContext(),    Context.VALUES, "malilibdev.label.keybind_settings.context",          "malilibdev.config.comment.keybind_settings.context");
+        this.cfgCancel         = new OptionListConfig<>("", defaultSettings.getCancelCondition(), CancelCondition.VALUES, "malilibdev.label.keybind_settings.cancel_further",  "malilibdev.config.comment.keybind_settings.cancel_further");
+        this.cfgMessageType    = new OptionListConfig<>("", defaultSettings.getMessageType(), MessageOutput.getValues(), "malilibdev.label.keybind_settings.message_output", "malilibdev.config.comment.keybind_settings.message_output");
+        this.cfgAllowEmpty     = new BooleanConfig("", defaultSettings.getAllowEmpty(),     "malilibdev.label.keybind_settings.allow_empty_keybind",       "malilibdev.config.comment.keybind_settings.allow_empty_keybind");
+        this.cfgAllowExtra     = new BooleanConfig("", defaultSettings.getAllowExtraKeys(), "malilibdev.label.keybind_settings.allow_extra_keys",          "malilibdev.config.comment.keybind_settings.allow_extra_keys");
+        this.cfgOrderSensitive = new BooleanConfig("", defaultSettings.isOrderSensitive(),  "malilibdev.label.keybind_settings.order_sensitive",           "malilibdev.config.comment.keybind_settings.order_sensitive");
+        this.cfgExclusive      = new BooleanConfig("", defaultSettings.isExclusive(),       "malilibdev.label.keybind_settings.exclusive",                 "malilibdev.config.comment.keybind_settings.exclusive");
+        this.cfgFirstOnly      = new BooleanConfig("", defaultSettings.getFirstOnly(),      "malilibdev.label.keybind_settings.first_only",                "malilibdev.config.comment.keybind_settings.first_only");
+        this.cfgInvertHeld     = new BooleanConfig("", defaultSettings.getInvertHeld(),     "malilibdev.label.keybind_settings.invert_held",               "malilibdev.config.comment.keybind_settings.invert_held");
+        this.cfgPriority       = new IntegerConfig("", defaultSettings.getPriority(), 0, 100, false, "malilibdev.config.comment.keybind_settings.priority");
+        this.cfgShowToast      = new BooleanConfig("", defaultSettings.getShowToast(),      "malilibdev.label.keybind_settings.show_toast",                "malilibdev.config.comment.keybind_settings.show_toast");
+        this.cfgToggle         = new BooleanConfig("", defaultSettings.isToggle(),          "malilibdev.label.keybind_settings.toggle",                    "malilibdev.config.comment.keybind_settings.toggle");
+        this.cfgPriority.setPrettyNameTranslationKey("malilibdev.label.keybind_settings.priority");
 
         KeyBindSettings settings = keybind.getSettings();
         this.cfgActivateOn.setValue(settings.getActivateOn());

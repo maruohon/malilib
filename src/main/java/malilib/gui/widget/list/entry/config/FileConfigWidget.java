@@ -37,12 +37,12 @@ public class FileConfigWidget extends BaseFileConfigWidget<Path, FileConfig>
     @Override
     protected String getButtonLabelKey()
     {
-        return "malilib.button.config.select_file";
+        return "malilibdev.button.config.select_file";
     }
 
     @Override
     protected String getButtonHoverTextKey()
     {
-        return "malilib.hover.button.config.selected_file";
+        return "malilibdev.hover.button.config.selected_file";
     }
 }

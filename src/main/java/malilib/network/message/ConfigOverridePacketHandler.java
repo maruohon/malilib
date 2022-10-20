@@ -46,11 +46,11 @@ public class ConfigOverridePacketHandler extends BasePacketHandler
         }
         catch (Exception e)
         {
-            MessageDispatcher.error().console(e).translate("malilib.message.error.invalid_config_override_packet");
+            MessageDispatcher.error().console(e).translate("malilibdev.message.error.invalid_config_override_packet");
             return;
         }
 
-        MessageDispatcher.error().console().translate("malilib.message.error.invalid_config_override_packet");
+        MessageDispatcher.error().console().translate("malilibdev.message.error.invalid_config_override_packet");
     }
 
     public static void updateRegistration(boolean enabled)

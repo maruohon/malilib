@@ -40,9 +40,9 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.renderBorder = true;
         this.setTitle(titleKey);
 
-        this.okButton = createButton("malilib.button.misc.ok.caps_colored", this::closeScreenIfValueApplied);
-        this.resetButton = createButton("malilib.button.misc.reset", this::resetTextFieldToOriginalText);
-        this.cancelButton = createButton("malilib.button.misc.cancel", this::cancel);
+        this.okButton = createButton("malilibdev.button.misc.ok.caps_colored", this::closeScreenIfValueApplied);
+        this.resetButton = createButton("malilibdev.button.misc.reset", this::resetTextFieldToOriginalText);
+        this.cancelButton = createButton("malilibdev.button.misc.cancel", this::cancel);
 
         this.textField = new BaseTextFieldWidget(240, 20, this.originalText);
         this.textField.setFocused(true);

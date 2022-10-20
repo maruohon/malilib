@@ -80,7 +80,7 @@ public class CustomHotkeyDefinition extends CommonDescription implements Hotkey,
             return this.actions.get(0).getColoredWidgetDisplayName();
         }
 
-        String key = "malilib.label.custom_hotkeys.widget.action_display_name.multiple_actions";
+        String key = "malilibdev.label.custom_hotkeys.widget.action_display_name.multiple_actions";
         return StyledTextLine.translate(key, this.actions.size());
     }
 

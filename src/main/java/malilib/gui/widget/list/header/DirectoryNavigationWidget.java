@@ -73,29 +73,29 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.setToggleButtonAlignment(HorizontalAlignment.RIGHT);
 
         this.buttonRoot = GenericButton.create(iconProvider.getIcon(FileBrowserIconType.ROOT));
-        this.buttonRoot.translateAndAddHoverString("malilib.hover.button.directory_navigation_widget.root");
+        this.buttonRoot.translateAndAddHoverString("malilibdev.hover.button.directory_navigation_widget.root");
         this.buttonRoot.setPlayClickSound(false);
         this.buttonRoot.setActionListener(() -> { if (this.isSearchOpen == false) this.navigator.switchToRootDirectory(); });
 
         this.buttonUp = GenericButton.create(iconProvider.getIcon(FileBrowserIconType.UP));
-        this.buttonUp.translateAndAddHoverString("malilib.hover.button.directory_navigation_widget.up");
+        this.buttonUp.translateAndAddHoverString("malilibdev.hover.button.directory_navigation_widget.up");
         this.buttonUp.setPlayClickSound(false);
         this.buttonUp.setActionListener(() -> { if (this.isSearchOpen == false) this.navigator.switchToParentDirectory(); });
 
         this.buttonCreateDir = GenericButton.create(iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
-        this.buttonCreateDir.translateAndAddHoverString("malilib.hover.button.directory_navigation_widget.create_directory");
+        this.buttonCreateDir.translateAndAddHoverString("malilibdev.hover.button.directory_navigation_widget.create_directory");
         this.buttonCreateDir.setPlayClickSound(false);
         this.buttonCreateDir.setActionListener(() -> {
             if (this.isSearchOpen == false)
             {
                 DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this.navigator);
-                TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_directory", "", creator);
+                TextInputScreen screen = new TextInputScreen("malilibdev.title.screen.create_directory", "", creator);
                 screen.setParent(GuiUtils.getCurrentScreen());
                 BaseScreen.openPopupScreen(screen);
             }
         });
 
-        String hoverKey = "malilib.hover.button.directory_navigation_widget.hold_shift_to_open_directory";
+        String hoverKey = "malilibdev.hover.button.directory_navigation_widget.hold_shift_to_open_directory";
         this.infoWidget = new InfoIconWidget(DefaultIcons.INFO_ICON_11, hoverKey);
     }
 

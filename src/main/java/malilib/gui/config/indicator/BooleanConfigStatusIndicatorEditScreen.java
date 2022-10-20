@@ -17,8 +17,8 @@ extends BaseConfigStatusIndicatorEditScreen<WIDGET>
     {
         super(widget);
 
-        this.typeLabel = new LabelWidget("malilib.label.boolean_config_status.render_type");
-        this.conditionLabel = new LabelWidget("malilib.label.boolean_config_status.enabled_condition");
+        this.typeLabel = new LabelWidget("malilibdev.label.boolean_config_status.render_type");
+        this.conditionLabel = new LabelWidget("malilibdev.label.boolean_config_status.enabled_condition");
 
         this.typeDropdown = new DropDownListWidget<>(16, 10, BooleanConfigStatusWidget.Style.VALUES,
                                                      BooleanConfigStatusWidget.Style::getDisplayName);

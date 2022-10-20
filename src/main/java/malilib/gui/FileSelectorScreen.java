@@ -35,7 +35,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 
         this.fileNameTextField = new BaseTextFieldWidget(240, 16);
 
-        this.setTitle("malilib.title.screen.file_browser");
+        this.setTitle("malilibdev.title.screen.file_browser");
     }
 
     @Override
@@ -96,7 +96,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 
     protected String getButtonLabel()
     {
-        return "malilib.button.config.use_selected_file";
+        return "malilibdev.button.config.use_selected_file";
     }
 
     protected void onConfirm()
@@ -109,7 +109,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 
             if (org.apache.commons.lang3.StringUtils.isBlank(name))
             {
-                MessageDispatcher.error("malilib.message.error.no_file_name_given");
+                MessageDispatcher.error("malilibdev.message.error.no_file_name_given");
                 return;
             }
 
@@ -134,7 +134,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
         }
         else
         {
-            MessageDispatcher.error("malilib.message.error.no_file_selected");
+            MessageDispatcher.error("malilibdev.message.error.no_file_selected");
         }
     }
 

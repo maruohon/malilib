@@ -62,12 +62,12 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
     {
         if (widgets.size() > 1)
         {
-            this.setTitle("malilib.title.screen.edit_action_execution_widget.multiple", widgets.size());
+            this.setTitle("malilibdev.title.screen.edit_action_execution_widget.multiple", widgets.size());
             this.setScreenWidthAndHeight(240, 164);
         }
         else
         {
-            this.setTitle("malilib.title.screen.edit_action_execution_widget");
+            this.setTitle("malilibdev.title.screen.edit_action_execution_widget");
             this.setScreenWidthAndHeight(240, 324);
         }
 
@@ -76,8 +76,8 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         BaseActionExecutionWidget widget = widgets.get(0);
         this.firstWidget = widget;
 
-        this.nameLabelWidget = new LabelWidget("malilib.label.misc.name_optional");
-        this.iconLabelWidget = new LabelWidget("malilib.label.actions.action_widget.icon_optional");
+        this.nameLabelWidget = new LabelWidget("malilibdev.label.misc.name_optional");
+        this.iconLabelWidget = new LabelWidget("malilibdev.label.actions.action_widget.icon_optional");
 
         this.nameTextField = new BaseTextFieldWidget(140, 16, widget.getName());
         this.nameTextField.setListener(this.firstWidget::setName);
@@ -90,40 +90,40 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.iconDropDownWidget.setSelectedEntry(widget.getIcon());
         this.iconDropDownWidget.setSelectionListener(this.firstWidget::setIcon);
 
-        this.nameXOffsetLabelWidget = new LabelWidget("malilib.label.misc.name_x_offset");
-        this.nameYOffsetLabelWidget = new LabelWidget("malilib.label.misc.name_y_offset");
+        this.nameXOffsetLabelWidget = new LabelWidget("malilibdev.label.misc.name_x_offset");
+        this.nameYOffsetLabelWidget = new LabelWidget("malilibdev.label.misc.name_y_offset");
 
-        this.iconXOffsetLabelWidget = new LabelWidget("malilib.label.actions.action_widget.icon_x_offset");
-        this.iconYOffsetLabelWidget = new LabelWidget("malilib.label.actions.action_widget.icon_y_offset");
+        this.iconXOffsetLabelWidget = new LabelWidget("malilibdev.label.actions.action_widget.icon_x_offset");
+        this.iconYOffsetLabelWidget = new LabelWidget("malilibdev.label.actions.action_widget.icon_y_offset");
 
-        this.iconScaleXLabelWidget = new LabelWidget("malilib.label.actions.action_widget.icon_scale_x");
-        this.iconScaleYLabelWidget = new LabelWidget("malilib.label.actions.action_widget.icon_scale_y");
+        this.iconScaleXLabelWidget = new LabelWidget("malilibdev.label.actions.action_widget.icon_scale_x");
+        this.iconScaleYLabelWidget = new LabelWidget("malilibdev.label.actions.action_widget.icon_scale_y");
 
-        this.nameNormalColorLabelWidget = new LabelWidget("malilib.label.misc.name_color_normal");
-        this.nameHoveredColorLabelWidget = new LabelWidget("malilib.label.misc.name_color_hovered");
+        this.nameNormalColorLabelWidget = new LabelWidget("malilibdev.label.misc.name_color_normal");
+        this.nameHoveredColorLabelWidget = new LabelWidget("malilibdev.label.misc.name_color_hovered");
 
-        this.normalBgColorLabelWidget = new LabelWidget("malilib.label.misc.background");
-        this.hoveredBgColorLabelWidget = new LabelWidget("malilib.label.misc.hovered_background.short");
+        this.normalBgColorLabelWidget = new LabelWidget("malilibdev.label.misc.background");
+        this.hoveredBgColorLabelWidget = new LabelWidget("malilibdev.label.misc.hovered_background.short");
 
-        this.normalBorderColorLabelWidget = new LabelWidget("malilib.label.misc.border_color");
-        this.hoveredBorderColorLabelWidget = new LabelWidget("malilib.label.misc.hovered_border");
+        this.normalBorderColorLabelWidget = new LabelWidget("malilibdev.label.misc.border_color");
+        this.hoveredBorderColorLabelWidget = new LabelWidget("malilibdev.label.misc.hovered_border");
 
-        this.cancelButton = GenericButton.create(16, "malilib.button.misc.cancel", this::cancel);
+        this.cancelButton = GenericButton.create(16, "malilibdev.button.misc.cancel", this::cancel);
 
         this.removeIconButton = GenericButton.create(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeIcon);
-        this.removeIconButton.translateAndAddHoverString("malilib.button.misc.remove_icon");
+        this.removeIconButton.translateAndAddHoverString("malilibdev.button.misc.remove_icon");
 
         this.nameXOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getTextOffset().getXOffset(), -512, 512, widget.getTextOffset()::setXOffset);
         this.nameYOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getTextOffset().getYOffset(), -512, 512, widget.getTextOffset()::setYOffset);
 
-        this.nameCenteredOnXCheckbox = new CheckBoxWidget("malilib.checkbox.center", widget.getTextOffset()::getCenterHorizontally, widget.getTextOffset()::setCenterHorizontally);
-        this.nameCenteredOnYCheckbox = new CheckBoxWidget("malilib.checkbox.center", widget.getTextOffset()::getCenterVertically, widget.getTextOffset()::setCenterVertically);
+        this.nameCenteredOnXCheckbox = new CheckBoxWidget("malilibdev.checkbox.center", widget.getTextOffset()::getCenterHorizontally, widget.getTextOffset()::setCenterHorizontally);
+        this.nameCenteredOnYCheckbox = new CheckBoxWidget("malilibdev.checkbox.center", widget.getTextOffset()::getCenterVertically, widget.getTextOffset()::setCenterVertically);
 
         this.iconXOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getIconOffset().getXOffset(), -512, 512, widget.getIconOffset()::setXOffset);
         this.iconYOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getIconOffset().getYOffset(), -512, 512, widget.getIconOffset()::setYOffset);
 
-        this.iconCenteredOnXCheckbox = new CheckBoxWidget("malilib.checkbox.center", widget.getIconOffset()::getCenterHorizontally, widget.getIconOffset()::setCenterHorizontally);
-        this.iconCenteredOnYCheckbox = new CheckBoxWidget("malilib.checkbox.center", widget.getIconOffset()::getCenterVertically, widget.getIconOffset()::setCenterVertically);
+        this.iconCenteredOnXCheckbox = new CheckBoxWidget("malilibdev.checkbox.center", widget.getIconOffset()::getCenterHorizontally, widget.getIconOffset()::setCenterHorizontally);
+        this.iconCenteredOnYCheckbox = new CheckBoxWidget("malilibdev.checkbox.center", widget.getIconOffset()::getCenterVertically, widget.getIconOffset()::setCenterVertically);
 
         this.iconScaleXEditWidget = new FloatEditWidget(72, 16, widget.getIconScaleX(), 0, 100, widget::setIconScaleX);
         this.iconScaleYEditWidget = new FloatEditWidget(72, 16, widget.getIconScaleY(), 0, 100, widget::setIconScaleY);

@@ -35,15 +35,15 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
 
         this.hotkey = hotkey;
         this.originalActionsList = hotkey.getActionList();
-        this.setTitle("malilib.title.screen.custom_hotkey_edit");
+        this.setTitle("malilibdev.title.screen.custom_hotkey_edit");
 
-        this.actionsLabelWidget = new LabelWidget(0xFFF0F0F0, "malilib.label.custom_hotkeys.edit.bound_actions");
+        this.actionsLabelWidget = new LabelWidget(0xFFF0F0F0, "malilibdev.label.custom_hotkeys.edit.bound_actions");
 
-        this.addActionsButton = GenericButton.create(15, "malilib.button.custom_hotkey_edit_screen.add_actions", this::addSelectedActions);
-        this.addActionsButton.translateAndAddHoverString("malilib.hover.custom_hotkey_edit_screen.add_actions");
+        this.addActionsButton = GenericButton.create(15, "malilibdev.button.custom_hotkey_edit_screen.add_actions", this::addSelectedActions);
+        this.addActionsButton.translateAndAddHoverString("malilibdev.hover.custom_hotkey_edit_screen.add_actions");
         this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
 
-        this.exportImportButton = GenericButton.create(15, "malilib.button.export_slash_import", this::openExportImportScreen);
+        this.exportImportButton = GenericButton.create(15, "malilibdev.button.export_slash_import", this::openExportImportScreen);
 
         this.leftSideListWidget.setDataListEntryWidgetFactory(ActionListBaseActionEntryWidget::new);
         this.rightSideListWidget = this.createRightSideActionListWidget();
@@ -110,12 +110,12 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
 
     protected void openExportImportScreen()
     {
-        String title = "malilib.title.screen.custom_hotkey_edit.export_import";
+        String title = "malilibdev.title.screen.custom_hotkey_edit.export_import";
         this.hotkey.setActionList(ImmutableList.copyOf(this.currentActionsList));
         String settingsStr = JsonUtils.jsonToString(this.hotkey.toJson(), true);
         SettingsExportImportScreen screen = new SettingsExportImportScreen(title, settingsStr, this::importOverwrite);
         screen.setAppendStringConsumer(this::importAppend);
-        screen.setRadioWidgetHoverText("malilib.hover.custom_hotkey_export_import_screen.append_overwrite");
+        screen.setRadioWidgetHoverText("malilibdev.hover.custom_hotkey_export_import_screen.append_overwrite");
         screen.setParent(this);
         BaseScreen.openPopupScreen(screen);
     }
@@ -136,7 +136,7 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
 
         if (hotkey == null)
         {
-            MessageDispatcher.error("malilib.message.error.custom_hotkey_import_from_string_failed");
+            MessageDispatcher.error("malilibdev.message.error.custom_hotkey_import_from_string_failed");
             return false;
         }
 

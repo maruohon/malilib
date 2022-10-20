@@ -11,13 +11,13 @@ public class DirectorySelectorScreen extends FileSelectorScreen
         super(currentDirectory, rootDirectory, fileConsumer);
 
         this.fileFilter = FileUtils.ALWAYS_FALSE_FILEFILTER;
-        this.setTitle("malilib.title.screen.directory_browser");
+        this.setTitle("malilibdev.title.screen.directory_browser");
     }
 
     @Override
     protected String getButtonLabel()
     {
-        return "malilib.button.config.use_current_directory";
+        return "malilibdev.button.config.use_current_directory";
     }
 
     @Override

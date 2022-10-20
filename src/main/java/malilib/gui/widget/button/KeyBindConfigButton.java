@@ -163,7 +163,7 @@ public class KeyBindConfigButton extends GenericButton
         if (MaLiLibConfigs.Hotkeys.IGNORED_KEYS.getKeyBind().containsKey(keyCode))
         {
             String str = Keys.getStorageStringForKeyCode(keyCode, Keys::charAsCharacter);
-            MessageDispatcher.warning("malilib.message.error.keybind.attempt_to_bind_ignored_key", str);
+            MessageDispatcher.warning("malilibdev.message.error.keybind.attempt_to_bind_ignored_key", str);
             return;
         }
 
@@ -247,18 +247,18 @@ public class KeyBindConfigButton extends GenericButton
 
         if (isEmpty || org.apache.commons.lang3.StringUtils.isBlank(valueStr))
         {
-            valueStr = StringUtils.translate("malilib.button.misc.none.caps");
+            valueStr = StringUtils.translate("malilibdev.button.misc.none.caps");
         }
 
         if (this.isSelected())
         {
-            return StringUtils.translate("malilib.button.config.keybind_button.selected", valueStr);
+            return StringUtils.translate("malilibdev.button.config.keybind_button.selected", valueStr);
         }
         else
         {
             if (this.overlapInfoSize > 0)
             {
-                return StringUtils.translate("malilib.button.config.keybind_button.overlapping", valueStr);
+                return StringUtils.translate("malilibdev.button.config.keybind_button.overlapping", valueStr);
             }
             else
             {
@@ -304,12 +304,12 @@ public class KeyBindConfigButton extends GenericButton
                 }
 
                 overlapInfo.add(category.getModInfo().getModName());
-                overlapInfo.add(StringUtils.translate("malilib.hover.button.keybind.overlap.category",
+                overlapInfo.add(StringUtils.translate("malilibdev.hover.button.keybind.overlap.category",
                                                       category.getCategoryName()));
 
                 for (Hotkey overlap : overlaps)
                 {
-                    String translationKey = "malilib.hover.button.keybind.overlap.keybind";
+                    String translationKey = "malilibdev.hover.button.keybind.overlap.keybind";
                     String name = overlap.getDisplayName();
                     String keys = overlap.getKeyBind().getKeysDisplayString();
                     overlapInfo.add(StringUtils.translate(translationKey, name, keys));
@@ -330,15 +330,15 @@ public class KeyBindConfigButton extends GenericButton
 
             if (org.apache.commons.lang3.StringUtils.isBlank(defaultStr))
             {
-                defaultStr = StringUtils.translate("malilib.button.misc.none.caps");
+                defaultStr = StringUtils.translate("malilibdev.button.misc.none.caps");
             }
 
-            hoverStrings.add(StringUtils.translate("malilib.hover.button.keybind.default_value", defaultStr));
+            hoverStrings.add(StringUtils.translate("malilibdev.hover.button.keybind.default_value", defaultStr));
         }
 
         if (nonEmpty)
         {
-            hoverStrings.add(StringUtils.translate("malilib.hover.button.keybind.middle_click_to_clear"));
+            hoverStrings.add(StringUtils.translate("malilibdev.hover.button.keybind.middle_click_to_clear"));
         }
 
         if (this.overlapInfoSize > 0)
@@ -348,7 +348,7 @@ public class KeyBindConfigButton extends GenericButton
                 hoverStrings.add("----------------");
             }
 
-            hoverStrings.add(StringUtils.translate("malilib.hover.button.keybind.possible_overlaps"));
+            hoverStrings.add(StringUtils.translate("malilibdev.hover.button.keybind.possible_overlaps"));
             hoverStrings.add("----------------");
             hoverStrings.addAll(overlapInfo);
         }

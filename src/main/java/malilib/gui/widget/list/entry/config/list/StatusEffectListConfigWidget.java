@@ -25,7 +25,7 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
     @Override
     protected GenericButton createButton(int width, int height, StatusEffectListConfig config, ConfigWidgetContext ctx)
     {
-        String title = StringUtils.translate("malilib.title.screen.status_effect_list_edit", this.config.getDisplayName());
+        String title = StringUtils.translate("malilibdev.title.screen.status_effect_list_edit", this.config.getDisplayName());
 
         return new BaseValueListEditButton<>(width, height,
                                              config,

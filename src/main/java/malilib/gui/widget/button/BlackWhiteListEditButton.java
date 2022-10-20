@@ -40,12 +40,12 @@ public class BlackWhiteListEditButton extends GenericButton
 
         if (type == ListType.NONE)
         {
-            return StringUtils.translate("malilib.button.config.black_white_list.type_none");
+            return StringUtils.translate("malilibdev.button.config.black_white_list.type_none");
         }
         else
         {
             int total = this.config.getValue().getActiveList().getValue().size();
-            return StringUtils.translate("malilib.button.config.black_white_list.type_entries", type.getDisplayName(), total);
+            return StringUtils.translate("malilibdev.button.config.black_white_list.type_entries", type.getDisplayName(), total);
         }
     }
 
@@ -60,8 +60,8 @@ public class BlackWhiteListEditButton extends GenericButton
             int total = list.size();
             int max = Math.min(10, total);
 
-            hoverStrings.add(StringUtils.translate("malilib.hover.button.config.black_white_list_edit.type", type.getDisplayName()));
-            hoverStrings.add(StringUtils.translate("malilib.hover.button.config_list.total_entries", total));
+            hoverStrings.add(StringUtils.translate("malilibdev.hover.button.config.black_white_list_edit.type", type.getDisplayName()));
+            hoverStrings.add(StringUtils.translate("malilibdev.hover.button.config_list.total_entries", total));
 
             for (int i = 0; i < max; ++i)
             {
@@ -70,7 +70,7 @@ public class BlackWhiteListEditButton extends GenericButton
 
             if (total > max)
             {
-                hoverStrings.add(StringUtils.translate("malilib.hover.button.config_list.more_entries", total - max));
+                hoverStrings.add(StringUtils.translate("malilibdev.hover.button.config_list.more_entries", total - max));
             }
 
             return hoverStrings;

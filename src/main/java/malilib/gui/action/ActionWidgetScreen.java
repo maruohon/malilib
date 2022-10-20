@@ -66,30 +66,30 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         this.data = data;
         this.name = name;
 
-        this.editModeLabel = new LabelWidget("malilib.label.misc.edit_mode");
+        this.editModeLabel = new LabelWidget("malilibdev.label.misc.edit_mode");
         this.editModeButton = OnOffButton.simpleSlider(16, () -> this.editMode, this::toggleEditMode);
 
         this.infoWidget = new InfoIconWidget(DefaultIcons.INFO_ICON_18, "");
 
-        this.closeOnExecuteCheckbox = new CheckBoxWidget("malilib.checkbox.action_widget_screen.close_on_execute",
-                                                         "malilib.hover.action.command_deck.close_screen_on_execute",
+        this.closeOnExecuteCheckbox = new CheckBoxWidget("malilibdev.checkbox.action_widget_screen.close_on_execute",
+                                                         "malilibdev.hover.action.command_deck.close_screen_on_execute",
                                                          this::shouldCloseScreenOnExecute, this::setCloseScreenOnExecute);
 
-        this.closeOnKeyReleaseCheckbox = new CheckBoxWidget("malilib.checkbox.action_widget_screen.close_on_key_release",
-                                                            "malilib.hover.action.command_deck.close_screen_on_key_release",
+        this.closeOnKeyReleaseCheckbox = new CheckBoxWidget("malilibdev.checkbox.action_widget_screen.close_on_key_release",
+                                                            "malilibdev.hover.action.command_deck.close_screen_on_key_release",
                                                             () -> this.closeScreenOnKeyRelease, this::setCloseScreenOnKeyRelease);
 
-        this.addWidgetButton = GenericButton.create(16, "malilib.button.action_widgets.add_action", this::openAddWidgetScreen);
+        this.addWidgetButton = GenericButton.create(16, "malilibdev.button.action_widgets.add_action", this::openAddWidgetScreen);
 
-        this.exportSettingsButton = GenericButton.create(16, "malilib.button.misc.export");
+        this.exportSettingsButton = GenericButton.create(16, "malilibdev.button.misc.export");
         this.exportSettingsButton.setActionListener(this::onExportSettings);
-        this.exportSettingsButton.translateAndAddHoverString("malilib.hover.button.action_widget_screen.export_settings");
+        this.exportSettingsButton.translateAndAddHoverString("malilibdev.hover.button.action_widget_screen.export_settings");
 
-        this.importSettingsButton = GenericButton.create(16, "malilib.button.misc.import");
+        this.importSettingsButton = GenericButton.create(16, "malilibdev.button.misc.import");
         this.importSettingsButton.setActionListener(this::onImportSettings);
-        this.importSettingsButton.translateAndAddHoverString("malilib.hover.button.action_widget_screen.import_settings");
+        this.importSettingsButton.translateAndAddHoverString("malilibdev.hover.button.action_widget_screen.import_settings");
 
-        this.gridLabel = new LabelWidget("malilib.label.misc.grid");
+        this.gridLabel = new LabelWidget("malilibdev.label.misc.grid");
         this.gridEnabledButton = OnOffButton.simpleSlider(16, () -> this.gridEnabled, this::toggleGridEnabled);
         this.gridEditWidget = new IntegerEditWidget(40, 16, this.gridSize, 1, 256, this::setGridSize);
 
@@ -387,8 +387,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     {
         this.menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
 
-        StyledTextLine textEdit = StyledTextLine.translate("malilib.label.misc.edit");
-        StyledTextLine textRemove = StyledTextLine.translate("malilib.label.misc.delete.colored");
+        StyledTextLine textEdit = StyledTextLine.translate("malilibdev.label.misc.edit");
+        StyledTextLine textRemove = StyledTextLine.translate("malilibdev.label.misc.delete.colored");
         this.menuWidget.setMenuEntries(new MenuEntryWidget(textEdit, () -> this.editActionWidget(widget)),
                                        new MenuEntryWidget(textRemove, () -> this.removeActionWidget(widget)));
 
@@ -401,8 +401,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     {
         this.menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
 
-        StyledTextLine textEdit = StyledTextLine.translate("malilib.label.misc.edit_selected");
-        StyledTextLine textRemove = StyledTextLine.translate("malilib.label.misc.delete_selected.colored");
+        StyledTextLine textEdit = StyledTextLine.translate("malilibdev.label.misc.edit_selected");
+        StyledTextLine textRemove = StyledTextLine.translate("malilibdev.label.misc.delete_selected.colored");
         this.menuWidget.setMenuEntries(new MenuEntryWidget(textEdit, this::editSelectedWidgets),
                                        new MenuEntryWidget(textRemove, this::deleteSelectedWidgets));
 
@@ -552,12 +552,12 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         if (mouseButton == 0 && isShiftDown())
         {
             setStringToClipboard(this.getSettingsExportString());
-            MessageDispatcher.success("malilib.message.info.action_screen_settings_copied_to_clipboard");
+            MessageDispatcher.success("malilibdev.message.info.action_screen_settings_copied_to_clipboard");
         }
         else if (mouseButton == 0)
         {
             String str = this.getSettingsExportString();
-            TextInputScreen screen = new TextInputScreen("malilib.title.screen.action_screen.export_settings",
+            TextInputScreen screen = new TextInputScreen("malilibdev.title.screen.action_screen.export_settings",
                                                          str, (s) -> true);
             screen.setParent(this);
             openPopupScreen(screen);
@@ -574,7 +574,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         }
         else if (mouseButton == 0)
         {
-            TextInputScreen screen = new TextInputScreen("malilib.title.screen.action_screen.import_settings",
+            TextInputScreen screen = new TextInputScreen("malilibdev.title.screen.action_screen.import_settings",
                                                          "", this::applySettingsFromImportString);
             screen.setParent(this);
             openPopupScreen(screen);
@@ -604,7 +604,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                     this.readData(data);
                     this.initScreen();
                     this.notifyWidgetEdited();
-                    MessageDispatcher.success("malilib.message.info.action_screen_settings_imported");
+                    MessageDispatcher.success("malilibdev.message.info.action_screen_settings_imported");
                     return true;
                 }
             }
@@ -641,10 +641,10 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
     public static void openCreateActionWidgetScreen()
     {
-        TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_action_widget_screen", "",
+        TextInputScreen screen = new TextInputScreen("malilibdev.title.screen.create_action_widget_screen", "",
                                                      ActionExecutionWidgetManager::createActionWidgetScreen);
-        screen.setInfoText(StyledText.translate("malilib.info.action.create_action_widget_screen.name_is_final"));
-        screen.setLabelText(StyledText.translate("malilib.label.misc.name.colon"));
+        screen.setInfoText(StyledText.translate("malilibdev.info.action.create_action_widget_screen.name_is_final"));
+        screen.setLabelText(StyledText.translate("malilibdev.label.misc.name.colon"));
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openPopupScreen(screen);
     }
@@ -662,7 +662,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         }
         else
         {
-            MessageDispatcher.error("malilib.message.error.no_action_screen_found_by_name", arg);
+            MessageDispatcher.error("malilibdev.message.error.no_action_screen_found_by_name", arg);
             return ActionResult.FAIL;
         }
     }
@@ -673,7 +673,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
         if (StringUtils.isBlank(name))
         {
-            MessageDispatcher.error("malilib.message.error.no_previously_opened_action_screen");
+            MessageDispatcher.error("malilibdev.message.error.no_previously_opened_action_screen");
             return ActionResult.FAIL;
         }
 

@@ -7,9 +7,9 @@ import malilib.util.data.EdgeInt;
 
 public class HorizontalAlignment extends BaseOptionListConfigValue
 {
-    public static final HorizontalAlignment LEFT   = new HorizontalAlignment("left",   "malilib.name.horizontal_alignment.left",   (w) -> 0, (cw, vw, o) -> o);
-    public static final HorizontalAlignment RIGHT  = new HorizontalAlignment("right",  "malilib.name.horizontal_alignment.right",  (w) -> -w, (cw, vw, o) -> vw - cw - o);
-    public static final HorizontalAlignment CENTER = new HorizontalAlignment("center", "malilib.name.horizontal_alignment.center", (w) -> -w / 2, (cw, vw, o) -> vw / 2 - cw / 2 + o);
+    public static final HorizontalAlignment LEFT   = new HorizontalAlignment("left",   "malilibdev.name.horizontal_alignment.left",   (w) -> 0, (cw, vw, o) -> o);
+    public static final HorizontalAlignment RIGHT  = new HorizontalAlignment("right",  "malilibdev.name.horizontal_alignment.right",  (w) -> -w, (cw, vw, o) -> vw - cw - o);
+    public static final HorizontalAlignment CENTER = new HorizontalAlignment("center", "malilibdev.name.horizontal_alignment.center", (w) -> -w / 2, (cw, vw, o) -> vw / 2 - cw / 2 + o);
 
     public static final ImmutableList<HorizontalAlignment> VALUES = ImmutableList.of(LEFT, RIGHT, CENTER);
 

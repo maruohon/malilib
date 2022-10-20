@@ -18,11 +18,11 @@ public class BooleanAndIntConfigWidget extends BaseBooleanAndNumberConfigWidget<
 
         this.textField.setTextValidator(new IntValidator(config.getMinIntegerValue(),
                                                          config.getMaxIntegerValue()));
-        this.textField.translateAndAddHoverString("malilib.hover.config.numeric.range_and_default",
+        this.textField.translateAndAddHoverString("malilibdev.hover.config.numeric.range_and_default",
                                                   config.getMinIntegerValue(),
                                                   config.getMaxIntegerValue(),
                                                   config.getDefaultValue().intValue);
-        this.sliderWidget.translateAndAddHoverString("malilib.hover.config.numeric.range_and_default",
+        this.sliderWidget.translateAndAddHoverString("malilibdev.hover.config.numeric.range_and_default",
                                                      config.getMinIntegerValue(),
                                                      config.getMaxIntegerValue(),
                                                      config.getDefaultValue().intValue);

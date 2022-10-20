@@ -308,24 +308,24 @@ public class BlockUtils
 
                     if (prop instanceof BooleanProperty)
                     {
-                        key = val.equals(Boolean.TRUE) ? "malilib.label.block_state_properties.boolean.true" :
-                                                         "malilib.label.block_state_properties.boolean.false";
+                        key = val.equals(Boolean.TRUE) ? "malilibdev.label.block_state_properties.boolean.true" :
+                                                         "malilibdev.label.block_state_properties.boolean.false";
                     }
                     else if (prop instanceof DirectionProperty)
                     {
-                        key = "malilib.label.block_state_properties.direction";
+                        key = "malilibdev.label.block_state_properties.direction";
                     }
                     else if (prop instanceof EnumProperty)
                     {
-                        key = "malilib.label.block_state_properties.enum";
+                        key = "malilibdev.label.block_state_properties.enum";
                     }
                     else if (prop instanceof IntProperty)
                     {
-                        key = "malilib.label.block_state_properties.integer";
+                        key = "malilibdev.label.block_state_properties.integer";
                     }
                     else
                     {
-                        key = "malilib.label.block_state_properties.generic";
+                        key = "malilibdev.label.block_state_properties.generic";
                     }
 
                     lines.add(StringUtils.translate(key, prop.getName(), separator, val.toString()));
@@ -357,24 +357,24 @@ public class BlockUtils
 
                     if (prop instanceof BooleanProperty)
                     {
-                        key = val.equals(Boolean.TRUE) ? "malilib.label.block_state_properties.boolean.true" :
-                                                         "malilib.label.block_state_properties.boolean.false";
+                        key = val.equals(Boolean.TRUE) ? "malilibdev.label.block_state_properties.boolean.true" :
+                                                         "malilibdev.label.block_state_properties.boolean.false";
                     }
                     else if (prop instanceof DirectionProperty)
                     {
-                        key = "malilib.label.block_state_properties.direction";
+                        key = "malilibdev.label.block_state_properties.direction";
                     }
                     else if (prop instanceof EnumProperty)
                     {
-                        key = "malilib.label.block_state_properties.enum";
+                        key = "malilibdev.label.block_state_properties.enum";
                     }
                     else if (prop instanceof IntProperty)
                     {
-                        key = "malilib.label.block_state_properties.integer";
+                        key = "malilibdev.label.block_state_properties.integer";
                     }
                     else
                     {
-                        key = "malilib.label.block_state_properties.generic";
+                        key = "malilibdev.label.block_state_properties.generic";
                     }
 
                     lines.add(StyledTextLine.translate(key, prop.getName(), separator, val.toString()));

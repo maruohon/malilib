@@ -50,7 +50,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseGenericConfig<TY
         this.valueAdjustButton = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);
         this.valueAdjustButton.setActionListener(this::onValueAdjustButtonClick);
         this.valueAdjustButton.setCanScrollToClick(true);
-        this.valueAdjustButton.translateAndAddHoverString("malilib.hover.button.plus_minus_tip");
+        this.valueAdjustButton.translateAndAddHoverString("malilibdev.hover.button.plus_minus_tip");
 
         this.sliderToggleButton = GenericButton.create(this::getSliderToggleButtonIcon, this::toggleSlider);
         this.sliderToggleButton.setHoverStringProvider("slider", this::getSliderMessages);
@@ -151,11 +151,11 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseGenericConfig<TY
     {
         if (this.config.allowSlider() == false)
         {
-            return ImmutableList.of(StringUtils.translate("malilib.hover.button.config.text_field.slider_toggle"),
-                                    StringUtils.translate("malilib.hover.button.config.text_field.slider_toggle.not_allowed"));
+            return ImmutableList.of(StringUtils.translate("malilibdev.hover.button.config.text_field.slider_toggle"),
+                                    StringUtils.translate("malilibdev.hover.button.config.text_field.slider_toggle.not_allowed"));
         }
 
-        return ImmutableList.of(StringUtils.translate("malilib.hover.button.config.text_field.slider_toggle"));
+        return ImmutableList.of(StringUtils.translate("malilibdev.hover.button.config.text_field.slider_toggle"));
     }
 
     protected String getCurrentValueAsString()

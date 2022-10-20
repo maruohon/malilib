@@ -48,7 +48,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         this.entryWidgetFactory = entryWidgetFactory;
 
         this.locationDropdownWidget = new DropDownListWidget<>(16, 10, ScreenLocation.VALUES, OptionListConfigValue::getDisplayName);
-        this.createWidgetButton = GenericButton.create(16, "malilib.button.csi_edit.add_csi_widget", this::createInfoRendererWidget);
+        this.createWidgetButton = GenericButton.create(16, "malilibdev.button.csi_edit.add_csi_widget", this::createInfoRendererWidget);
 
         // Unconditionally save here, since we don't track the individual info container widget changes
         this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
@@ -106,7 +106,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 
         if (location == null)
         {
-            MessageDispatcher.error("malilib.message.error.select_screen_location_in_dropdown");
+            MessageDispatcher.error("malilibdev.message.error.select_screen_location_in_dropdown");
             return;
         }
 

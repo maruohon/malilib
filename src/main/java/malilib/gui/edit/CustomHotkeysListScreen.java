@@ -33,10 +33,10 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
     {
         super(10, 74, 20, 80, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
-        this.setTitle("malilib.title.screen.configs.custom_hotkeys", MaLiLibReference.MOD_VERSION);
+        this.setTitle("malilibdev.title.screen.configs.custom_hotkeys", MaLiLibReference.MOD_VERSION);
 
-        this.addHotkeyButton = GenericButton.create(16, "malilib.button.custom_hotkeys.add_hotkey", this::openAddHotkeyScreen);
-        this.addHotkeyButton.translateAndAddHoverString("malilib.hover.button.custom_hotkeys.add_new_hotkey");
+        this.addHotkeyButton = GenericButton.create(16, "malilibdev.button.custom_hotkeys.add_hotkey", this::openAddHotkeyScreen);
+        this.addHotkeyButton.translateAndAddHoverString("malilibdev.hover.button.custom_hotkeys.add_new_hotkey");
         this.screenCloseListener = CustomHotkeyManager.INSTANCE::checkIfDirtyAndSaveAndUpdate;
 
         this.createSwitchModConfigScreenDropDown(MaLiLibReference.MOD_INFO);
@@ -61,11 +61,11 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
 
     protected void openAddHotkeyScreen()
     {
-        String title = "malilib.title.screen.custom_hotkey_create";
+        String title = "malilibdev.title.screen.custom_hotkey_create";
         TextInputScreen screen = new TextInputScreen(title, "", this::openEditHotkeyScreen);
         screen.setParent(this);
-        screen.setLabelText("malilib.label.custom_hotkeys.create.hotkey_name");
-        screen.setInfoText("malilib.info.custom_hotkey.name_immutable");
+        screen.setLabelText("malilibdev.label.custom_hotkeys.create.hotkey_name");
+        screen.setInfoText("malilibdev.info.custom_hotkey.name_immutable");
         BaseScreen.openPopupScreen(screen);
     }
 

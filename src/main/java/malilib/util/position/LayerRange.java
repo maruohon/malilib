@@ -171,7 +171,7 @@ public class LayerRange
 
         if (printMessage)
         {
-            this.sendMessage("malilib.message.info.set_layer_mode_to", mode.getDisplayName());
+            this.sendMessage("malilibdev.message.info.set_layer_mode_to", mode.getDisplayName());
         }
     }
 
@@ -180,7 +180,7 @@ public class LayerRange
         this.axis = axis;
 
         this.listener.updateAll();
-        this.sendMessage("malilib.message.info.set_layer_axis_to", axis.getName());
+        this.sendMessage("malilibdev.message.info.set_layer_axis_to", axis.getName());
     }
 
     public void setPlayerFollowOffset(int offset)
@@ -407,19 +407,19 @@ public class LayerRange
             case SINGLE_LAYER:
             {
                 this.setLayerSingle(this.layerSingle + amount);
-                this.sendMessage("malilib.message.info.set_layer_to", axisName, this.layerSingle);
+                this.sendMessage("malilibdev.message.info.set_layer_to", axisName, this.layerSingle);
                 break;
             }
             case ALL_ABOVE:
             {
                 this.setLayerAbove(this.layerAbove + amount);
-                this.sendMessage("malilib.message.info.moved_min_layer_to", axisName, this.layerAbove);
+                this.sendMessage("malilibdev.message.info.moved_min_layer_to", axisName, this.layerAbove);
                 break;
             }
             case ALL_BELOW:
             {
                 this.setLayerBelow(this.layerBelow + amount);
-                this.sendMessage("malilib.message.info.moved_max_layer_to", axisName, this.layerBelow);
+                this.sendMessage("malilibdev.message.info.moved_max_layer_to", axisName, this.layerBelow);
                 break;
             }
             case LAYER_RANGE:
@@ -463,17 +463,17 @@ public class LayerRange
 
             if (moveMin && moveMax)
             {
-                this.sendMessage("malilib.message.info.moved_layer_range", amount, axisName);
+                this.sendMessage("malilibdev.message.info.moved_layer_range", amount, axisName);
             }
             else
             {
                 if (moveMin)
                 {
-                    this.sendMessage("malilib.message.info.moved_layer_range_min_boundary", amount, axisName);
+                    this.sendMessage("malilibdev.message.info.moved_layer_range_min_boundary", amount, axisName);
                 }
                 else
                 {
-                    this.sendMessage("malilib.message.info.moved_layer_range_max_boundary", amount, axisName);
+                    this.sendMessage("malilibdev.message.info.moved_layer_range_max_boundary", amount, axisName);
                 }
             }
         }

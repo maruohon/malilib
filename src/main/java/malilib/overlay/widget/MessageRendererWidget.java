@@ -31,7 +31,7 @@ public class MessageRendererWidget extends InfoRendererWidget
         this.getBorderSettings().setEnabled(true);
 
         this.padding.setAll(4, 6, 4, 6);
-        this.setName(StringUtils.translate("malilib.label.misc.default_message_renderer"));
+        this.setName(StringUtils.translate("malilibdev.label.misc.default_message_renderer"));
         this.setLineHeight(10);
         this.setMaxWidth(320);
     }

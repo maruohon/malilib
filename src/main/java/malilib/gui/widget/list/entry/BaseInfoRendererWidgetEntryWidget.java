@@ -20,8 +20,8 @@ public class BaseInfoRendererWidgetEntryWidget extends BaseDataListEntryWidget<I
         super(data, constructData);
 
         this.toggleButton = OnOffButton.simpleSlider(20, data::isEnabled, data::toggleEnabled);
-        this.configureButton = GenericButton.create("malilib.button.misc.configure", data::openEditScreen);
-        this.removeButton = GenericButton.create("malilib.button.misc.remove", this::removeInfoRendererWidget);
+        this.configureButton = GenericButton.create("malilibdev.button.misc.configure", data::openEditScreen);
+        this.removeButton = GenericButton.create("malilibdev.button.misc.remove", this::removeInfoRendererWidget);
 
         this.setText(StyledTextLine.of(data.getName()));
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);

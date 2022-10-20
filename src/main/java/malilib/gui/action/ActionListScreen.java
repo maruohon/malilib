@@ -27,19 +27,19 @@ public class ActionListScreen extends BaseActionListScreen
     {
         super(MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
-        this.setTitle("malilib.title.screen.configs.action_list_screen", MaLiLibReference.MOD_VERSION);
+        this.setTitle("malilibdev.title.screen.configs.action_list_screen", MaLiLibReference.MOD_VERSION);
 
         this.userAddedActionTypesDropdown = new DropDownListWidget<>(14, 10, ActionGroup.VALUES_USER_ADDED, ActionGroup::getDisplayName);
         this.userAddedActionTypesDropdown.setSelectedEntry(ActionGroup.USER_ADDED);
         this.userAddedActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
-        this.userAddedActionTypesDropdown.translateAndAddHoverString("malilib.hover.action.action_types_explanation");
+        this.userAddedActionTypesDropdown.translateAndAddHoverString("malilibdev.hover.action.action_types_explanation");
 
-        this.addMacroButton = GenericButton.create(14, "malilib.button.action_list_screen.create_macro", this::openMacroNameInput);
-        this.addMacroButton.translateAndAddHoverString("malilib.hover.button.action_list_screen.create_macro");
+        this.addMacroButton = GenericButton.create(14, "malilibdev.button.action_list_screen.create_macro", this::openMacroNameInput);
+        this.addMacroButton.translateAndAddHoverString("malilibdev.hover.button.action_list_screen.create_macro");
         this.addMacroButton.setEnabledStatusSupplier(this::canCreateMacro);
 
-        this.executeActionButton = GenericButton.create(14, "malilib.button.action_list_screen.execute_action", this::executeSelectedAction);
-        this.executeActionButton.translateAndAddHoverString("malilib.hover.button.action_list_screen.execute_action");
+        this.executeActionButton = GenericButton.create(14, "malilibdev.button.action_list_screen.execute_action", this::executeSelectedAction);
+        this.executeActionButton.translateAndAddHoverString("malilibdev.hover.button.action_list_screen.execute_action");
         this.executeActionButton.setEnabledStatusSupplier(this::canExecuteAction);
 
         this.rightSideListWidget = this.createRightSideActionListWidget();
@@ -119,11 +119,11 @@ public class ActionListScreen extends BaseActionListScreen
 
     protected void openMacroNameInput()
     {
-        String title = StringUtils.translate("malilib.title.screen.create_macro");
+        String title = StringUtils.translate("malilibdev.title.screen.create_macro");
         TextInputScreen screen = new TextInputScreen(title, "", this::openMacroEditScreen);
         screen.setCloseScreenWhenApplied(false);
-        screen.setLabelText("malilib.label.misc.name.colon");
-        screen.setInfoText("malilib.info.action.action_name_immutable");
+        screen.setLabelText("malilibdev.label.misc.name.colon");
+        screen.setInfoText("malilibdev.info.action.action_name_immutable");
         screen.setParent(this);
         BaseScreen.openPopupScreen(screen);
     }

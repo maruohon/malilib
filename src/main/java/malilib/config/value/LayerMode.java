@@ -5,11 +5,11 @@ import malilib.util.StringUtils;
 
 public enum LayerMode implements OptionListConfigValue
 {
-    ALL             ("all",             "malilib.name.layer_mode.all"),
-    SINGLE_LAYER    ("single_layer",    "malilib.name.layer_mode.single_layer"),
-    LAYER_RANGE     ("layer_range",     "malilib.name.layer_mode.layer_range"),
-    ALL_BELOW       ("all_below",       "malilib.name.layer_mode.all_below"),
-    ALL_ABOVE       ("all_above",       "malilib.name.layer_mode.all_above");
+    ALL             ("all",             "malilibdev.name.layer_mode.all"),
+    SINGLE_LAYER    ("single_layer",    "malilibdev.name.layer_mode.single_layer"),
+    LAYER_RANGE     ("layer_range",     "malilibdev.name.layer_mode.layer_range"),
+    ALL_BELOW       ("all_below",       "malilibdev.name.layer_mode.all_below"),
+    ALL_ABOVE       ("all_above",       "malilibdev.name.layer_mode.all_above");
 
     public static final ImmutableList<LayerMode> VALUES = ImmutableList.copyOf(values());
 

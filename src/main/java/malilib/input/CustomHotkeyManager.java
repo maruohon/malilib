@@ -33,7 +33,7 @@ public class CustomHotkeyManager implements HotkeyProvider
     public List<HotkeyCategory> getHotkeysByCategories()
     {
         return ImmutableList.of(new HotkeyCategory(MaLiLibReference.MOD_INFO,
-                                                   "malilib.hotkeys.category.custom", this::getAllHotkeys));
+                                                   "malilibdev.hotkeys.category.custom", this::getAllHotkeys));
     }
 
     public List<CustomHotkeyDefinition> getAllCustomHotkeys()
@@ -47,7 +47,7 @@ public class CustomHotkeyManager implements HotkeyProvider
      */
     public BaseConfigTab getAllCustomHotkeysAsTabForConfigSearch()
     {
-        String name = StringUtils.translate("malilib.screen.tab.custom_hotkeys");
+        String name = StringUtils.translate("malilibdev.screen.tab.custom_hotkeys");
         return new BaseConfigTab(MaLiLibReference.MOD_INFO, name, name, 200,
                                  this.getAllCustomHotkeys(), MaLiLibConfigScreen::create);
     }

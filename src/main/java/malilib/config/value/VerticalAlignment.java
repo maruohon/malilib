@@ -7,9 +7,9 @@ import malilib.util.data.EdgeInt;
 
 public class VerticalAlignment extends BaseOptionListConfigValue
 {
-    public static final VerticalAlignment TOP    = new VerticalAlignment("top",    "malilib.name.vertical_alignment.top",    (h) -> 0, (ch, vh, o) -> o);
-    public static final VerticalAlignment BOTTOM = new VerticalAlignment("bottom", "malilib.name.vertical_alignment.bottom", (h) -> -h, (ch, vh, o) -> vh - ch - o);
-    public static final VerticalAlignment CENTER = new VerticalAlignment("center", "malilib.name.vertical_alignment.center", (h) -> -h / 2, (ch, vh, o) -> vh / 2 - ch / 2 + o);
+    public static final VerticalAlignment TOP    = new VerticalAlignment("top",    "malilibdev.name.vertical_alignment.top",    (h) -> 0, (ch, vh, o) -> o);
+    public static final VerticalAlignment BOTTOM = new VerticalAlignment("bottom", "malilibdev.name.vertical_alignment.bottom", (h) -> -h, (ch, vh, o) -> vh - ch - o);
+    public static final VerticalAlignment CENTER = new VerticalAlignment("center", "malilibdev.name.vertical_alignment.center", (h) -> -h / 2, (ch, vh, o) -> vh / 2 - ch / 2 + o);
 
     public static final ImmutableList<VerticalAlignment> VALUES = ImmutableList.of(TOP, BOTTOM, CENTER);
 

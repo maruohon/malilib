@@ -14,11 +14,11 @@ public class MessageHelpers
 
         if (capitalize)
         {
-            key = value ? "malilib.label.misc.on.caps" : "malilib.label.misc.off.caps";
+            key = value ? "malilibdev.label.misc.on.caps" : "malilibdev.label.misc.off.caps";
         }
         else
         {
-            key = value ? "malilib.label.misc.on" : "malilib.label.misc.off";
+            key = value ? "malilibdev.label.misc.on" : "malilibdev.label.misc.off";
         }
 
         return StringUtils.translate(key);
@@ -30,11 +30,11 @@ public class MessageHelpers
 
         if (capitalize)
         {
-            key = value ? "malilib.label.misc.on.caps_colored" : "malilib.label.misc.off.caps_colored";
+            key = value ? "malilibdev.label.misc.on.caps_colored" : "malilibdev.label.misc.off.caps_colored";
         }
         else
         {
-            key = value ? "malilib.label.misc.on.colored" : "malilib.label.misc.off.colored";
+            key = value ? "malilibdev.label.misc.on.colored" : "malilibdev.label.misc.off.colored";
         }
 
         return StringUtils.translate(key);
@@ -42,25 +42,25 @@ public class MessageHelpers
 
     public static String getTrueFalse(boolean value, boolean capitalize)
     {
-        String key = value ? "malilib.label.misc.true.lower_case" : "malilib.label.misc.false.lower_case";
+        String key = value ? "malilibdev.label.misc.true.lower_case" : "malilibdev.label.misc.false.lower_case";
         return translateAndCapitalize(key, capitalize);
     }
 
     public static String getTrueFalseColored(boolean value, boolean capitalize)
     {
-        String key = value ? "malilib.label.misc.true.lower_case.colored" : "malilib.label.misc.false.lower_case.colored";
+        String key = value ? "malilibdev.label.misc.true.lower_case.colored" : "malilibdev.label.misc.false.lower_case.colored";
         return translateAndCapitalize(key, capitalize);
     }
 
     public static String getYesNo(boolean value, boolean capitalize)
     {
-        String key = value ? "malilib.label.misc.yes" : "malilib.label.misc.no";
+        String key = value ? "malilibdev.label.misc.yes" : "malilibdev.label.misc.no";
         return translateAndCapitalize(key, capitalize);
     }
 
     public static String getYesNoColored(boolean value, boolean capitalize)
     {
-        String key = value ? "malilib.label.misc.yes.colored" : "malilib.label.misc.no.colored";
+        String key = value ? "malilibdev.label.misc.yes.colored" : "malilibdev.label.misc.no.colored";
         return translateAndCapitalize(key, capitalize);
     }
 
@@ -78,14 +78,14 @@ public class MessageHelpers
 
         if (config.hasOverride())
         {
-            String msgKey = newValue ? "malilib.message.info.config_overridden_on" :
-                                       "malilib.message.info.config_overridden_off";
+            String msgKey = newValue ? "malilibdev.message.info.config_overridden_on" :
+                                       "malilibdev.message.info.config_overridden_off";
             message = StringUtils.translate(msgKey, config.getPrettyName());
         }
         else if (config.isLocked())
         {
-            String msgKey = newValue ? "malilib.message.info.config_locked_on" :
-                                       "malilib.message.info.config_locked_off";
+            String msgKey = newValue ? "malilibdev.message.info.config_locked_on" :
+                                       "malilibdev.message.info.config_locked_off";
             message = StringUtils.translate(msgKey, config.getPrettyName());
         }
         else if (messageFactory != null)
@@ -102,8 +102,8 @@ public class MessageHelpers
 
     public static String getBasicBooleanConfigToggleMessage(BooleanContainingConfig<?> config)
     {
-        String msgKey = config.getBooleanValue() ? "malilib.message.info.toggled_config_on" :
-                                                   "malilib.message.info.toggled_config_off";
+        String msgKey = config.getBooleanValue() ? "malilibdev.message.info.toggled_config_on" :
+                                                   "malilibdev.message.info.toggled_config_off";
         return StringUtils.translate(msgKey, config.getPrettyName());
     }
 

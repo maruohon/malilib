@@ -25,17 +25,17 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
         this.widget = widget;
 
         this.useTitleHierarchy = false;
-        this.setTitle("malilib.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
+        this.setTitle("malilibdev.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
 
-        this.nameLabel = new LabelWidget("malilib.label.misc.name.colon");
-        this.nameColorLabel = new LabelWidget("malilib.label.misc.name_color");
-        this.valueColorLabel = new LabelWidget("malilib.label.misc.value_color");
+        this.nameLabel = new LabelWidget("malilibdev.label.misc.name.colon");
+        this.nameColorLabel = new LabelWidget("malilibdev.label.misc.name_color");
+        this.valueColorLabel = new LabelWidget("malilibdev.label.misc.value_color");
 
         this.nameTextFieldWidget = new BaseTextFieldWidget(240, 16, widget.getName());
         this.nameTextFieldWidget.setListener(this.widget::setName);
 
         this.nameResetButton = GenericButton.create(DefaultIcons.RESET_12, this::resetName);
-        this.nameResetButton.translateAndAddHoverString("malilib.hover.button.config.config_status_indicator.reset_name");
+        this.nameResetButton.translateAndAddHoverString("malilibdev.hover.button.config.config_status_indicator.reset_name");
 
         this.nameColorWidget = new ColorIndicatorAndEditWidget(90, 16, this.widget::getNameColor, this.widget::setNameColor);
         this.valueColorWidget = new ColorIndicatorAndEditWidget(90, 16, this.widget::getValueColor, this.widget::setValueColor);

@@ -23,7 +23,7 @@ public class DirectoryCreator implements ResultingStringConsumer
     {
         if (string.isEmpty())
         {
-            MessageDispatcher.error("malilib.message.error.invalid_directory", string);
+            MessageDispatcher.error("malilibdev.message.error.invalid_directory", string);
             return false;
         }
 
@@ -31,14 +31,14 @@ public class DirectoryCreator implements ResultingStringConsumer
 
         if (Files.exists(file))
         {
-            MessageDispatcher.error("malilib.message.error.file_or_directory_already_exists",
+            MessageDispatcher.error("malilibdev.message.error.file_or_directory_already_exists",
                                     file.toAbsolutePath().toString());
             return false;
         }
 
         if (FileUtils.createDirectoriesIfMissing(file) == false)
         {
-            MessageDispatcher.error("malilib.message.error.failed_to_create_directory",
+            MessageDispatcher.error("malilibdev.message.error.failed_to_create_directory",
                                     file.toAbsolutePath().toString());
             return false;
         }
@@ -48,7 +48,7 @@ public class DirectoryCreator implements ResultingStringConsumer
             this.navigator.switchToDirectory(file);
         }
 
-        MessageDispatcher.success("malilib.message.info.directory_created", string);
+        MessageDispatcher.success("malilibdev.message.info.directory_created", string);
 
         return true;
     }

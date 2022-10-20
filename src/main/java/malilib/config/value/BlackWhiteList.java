@@ -136,29 +136,29 @@ public class BlackWhiteList<TYPE>
     public static BlackWhiteList<Item> items(ListType type, ImmutableList<Item> blackList, ImmutableList<Item> whiteList)
     {
         return BlackWhiteList.of(type,
-                                 ItemListConfig.create("malilib.label.list_type.blacklist", blackList),
-                                 ItemListConfig.create("malilib.label.list_type.whitelist", whiteList));
+                                 ItemListConfig.create("malilibdev.label.list_type.blacklist", blackList),
+                                 ItemListConfig.create("malilibdev.label.list_type.whitelist", whiteList));
     }
 
     public static BlackWhiteList<Item> itemNames(ListType type, List<String> blackList, List<String> whiteList)
     {
         return BlackWhiteList.of(type,
-                                 ItemListConfig.fromNames("malilib.label.list_type.blacklist", blackList),
-                                 ItemListConfig.fromNames("malilib.label.list_type.whitelist", whiteList));
+                                 ItemListConfig.fromNames("malilibdev.label.list_type.blacklist", blackList),
+                                 ItemListConfig.fromNames("malilibdev.label.list_type.whitelist", whiteList));
     }
 
     public static BlackWhiteList<Block> blocks(ListType type, ImmutableList<Block> blackList, ImmutableList<Block> whiteList)
     {
         return BlackWhiteList.of(type,
-                                 BlockListConfig.create("malilib.label.list_type.blacklist", blackList),
-                                 BlockListConfig.create("malilib.label.list_type.whitelist", whiteList));
+                                 BlockListConfig.create("malilibdev.label.list_type.blacklist", blackList),
+                                 BlockListConfig.create("malilibdev.label.list_type.whitelist", whiteList));
     }
 
     public static BlackWhiteList<Potion> effects(ListType type, List<String> blackList, List<String> whiteList)
     {
         return BlackWhiteList.of(type,
-                                 StatusEffectListConfig.create("malilib.label.list_type.blacklist", blackList),
-                                 StatusEffectListConfig.create("malilib.label.list_type.whitelist", whiteList),
+                                 StatusEffectListConfig.create("malilibdev.label.list_type.blacklist", blackList),
+                                 StatusEffectListConfig.create("malilibdev.label.list_type.whitelist", whiteList),
                                  Registry.POTION);
     }
 

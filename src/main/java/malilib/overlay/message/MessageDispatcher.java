@@ -185,7 +185,7 @@ public class MessageDispatcher
         if (MaLiLibConfigs.Debug.MESSAGE_KEY_TO_CHAT.getBooleanValue())
         {
             MutableText message = Text.literal(translationKey);
-            MutableText hoverMessage = Text.translatable("malilib.label.message_debug.add_key_to_chat");
+            MutableText hoverMessage = Text.translatable("malilibdev.label.message_debug.add_key_to_chat");
             message.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
             message.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
             GameUtils.getClient().inGameHud.getChatHud().addMessage(message);

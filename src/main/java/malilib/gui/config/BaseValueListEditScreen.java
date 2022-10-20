@@ -75,7 +75,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         listWidget.setSearchBar(searchBar);
         listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(0);
 
-        listWidget.setHeaderWidgetFactory((lw) -> new BaseDataListEditHeaderWidget<>(lw, "malilib.hover.button.list.add_first", this.newEntrySupplier));
+        listWidget.setHeaderWidgetFactory((lw) -> new BaseDataListEditHeaderWidget<>(lw, "malilibdev.hover.button.list.add_first", this.newEntrySupplier));
         listWidget.setSearchBarPositioner((wgt, x, y, w) -> {
             wgt.setPosition(x + 17, y);
             wgt.setWidth(w - 17);

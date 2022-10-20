@@ -80,8 +80,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
 
     protected void createHotkeyCheckBoxes(int x, int y, LayerRange layerRange)
     {
-        String label = "malilib.checkbox.render_layers.hotkey";
-        String hover = "malilib.hover.checkbox.render_layers.hotkey";
+        String label = "malilibdev.checkbox.render_layers.hotkey";
+        String hover = "malilibdev.hover.checkbox.render_layers.hotkey";
 
         CheckBoxWidget cb = new CheckBoxWidget(label, hover, layerRange::getMoveLayerRangeMax, layerRange::setMoveLayerRangeMax);
         cb.setPosition(x, y + 4);
@@ -106,8 +106,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
-            String labelMin = StringUtils.translate("malilib.label.render_layers_screen.layer_min");
-            String labelMax = StringUtils.translate("malilib.label.render_layers_screen.layer_max");
+            String labelMin = StringUtils.translate("malilibdev.label.render_layers_screen.layer_min");
+            String labelMax = StringUtils.translate("malilibdev.label.render_layers_screen.layer_max");
             int w1 = this.addLabel(x, y +  5, 0xFFFFFFFF, labelMax).getWidth();
             int w2 = this.addLabel(x, y + 28, 0xFFFFFFFF, labelMin).getWidth();
 
@@ -115,7 +115,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
         }
         else
         {
-            String label = StringUtils.translate("malilib.label.render_layers_screen.layer");
+            String label = StringUtils.translate("malilibdev.label.render_layers_screen.layer");
             x += this.addLabel(x, y + 5, 0xFFFFFFFF, label).getWidth() + 4;
         }
 
@@ -157,15 +157,15 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
 
         if (this.addPlayerFollowingOptions)
         {
-            String strLabel = "malilib.button.render_layers.follow_player";
+            String strLabel = "malilibdev.button.render_layers.follow_player";
             final OnOffButton button = new OnOffButton(-1, 20, OnOffButton.OnOffStyle.TEXT_ON_OFF, layerRange::shouldFollowPlayer, strLabel);
-            button.translateAndAddHoverString("malilib.hover.button.render_layers.follow_player");
+            button.translateAndAddHoverString("malilibdev.hover.button.render_layers.follow_player");
             button.setPosition(origX, y);
             button.setActionListener(layerRange::toggleShouldFollowPlayer);
             this.addWidget(button);
             y += 24;
 
-            String label = StringUtils.translate("malilib.label.render_layers_screen.player_follow_offset");
+            String label = StringUtils.translate("malilibdev.label.render_layers_screen.player_follow_offset");
             int w = this.addLabel(origX, y + 5, 0xFFFFFFFF, label).getWidth();
 
             final IntegerTextFieldWidget textField = new IntegerTextFieldWidget(40, 18, layerRange.getPlayerFollowOffset());
@@ -253,9 +253,9 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
 
         public enum Type
         {
-            MODE            ("malilib.button.render_layers.layers"),
-            AXIS            ("malilib.button.render_layers.axis"),
-            SET_TO_PLAYER   ("malilib.button.render_layers.set_to_player");
+            MODE            ("malilibdev.button.render_layers.layers"),
+            AXIS            ("malilibdev.button.render_layers.axis"),
+            SET_TO_PLAYER   ("malilibdev.button.render_layers.set_to_player");
 
             private final String translationKey;
 

@@ -38,15 +38,15 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
     {
         this.widgetConsumer = widgetConsumer;
 
-        this.setTitle("malilib.title.screen.create_action_execution_widget");
+        this.setTitle("malilibdev.title.screen.create_action_execution_widget");
         this.useTitleHierarchy = false;
 
-        this.actionLabelWidget = new LabelWidget("malilib.label.action_widgets.action");
-        this.typeLabelWidget = new LabelWidget("malilib.label.misc.type");
-        this.nameLabelWidget = new LabelWidget("malilib.label.misc.name_optional");
-        this.iconLabelWidget = new LabelWidget("malilib.label.actions.action_widget.icon_optional");
-        this.hoverTextLabelWidget = new LabelWidget("malilib.label.misc.hover_text_optional");
-        this.argumentLabelWidget = new LabelWidget("malilib.label.misc.argument");
+        this.actionLabelWidget = new LabelWidget("malilibdev.label.action_widgets.action");
+        this.typeLabelWidget = new LabelWidget("malilibdev.label.misc.type");
+        this.nameLabelWidget = new LabelWidget("malilibdev.label.misc.name_optional");
+        this.iconLabelWidget = new LabelWidget("malilibdev.label.actions.action_widget.icon_optional");
+        this.hoverTextLabelWidget = new LabelWidget("malilibdev.label.misc.hover_text_optional");
+        this.argumentLabelWidget = new LabelWidget("malilibdev.label.misc.argument");
 
         this.actionDropDownWidget = new DropDownListWidget<>(16, 15,
                                                              Registry.ACTION_REGISTRY.getAllActions(),
@@ -65,15 +65,15 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.iconDropDownWidget.setAutomaticWidth(false);
         this.iconDropDownWidget.setWidth(220);
 
-        this.addArgumentCheckbox = new CheckBoxWidget("malilib.button.action_widgets.add_argument",
-                                                      "malilib.hover.action.add_action_execution_widget.add_argument");
+        this.addArgumentCheckbox = new CheckBoxWidget("malilibdev.button.action_widgets.add_argument",
+                                                      "malilibdev.hover.action.add_action_execution_widget.add_argument");
 
         this.nameTextField = new BaseTextFieldWidget(140, 16);
         this.hoverTextTextField = new BaseTextFieldWidget(140, 16);
         this.argumentTextField = new BaseTextFieldWidget(160, 16);
 
-        this.addButton = GenericButton.create("malilib.button.misc.add", this::createActionWidget);
-        this.cancelButton = GenericButton.create("malilib.button.misc.cancel", this::openParentScreen);
+        this.addButton = GenericButton.create("malilibdev.button.misc.add", this::createActionWidget);
+        this.cancelButton = GenericButton.create("malilibdev.button.misc.cancel", this::openParentScreen);
 
         this.backgroundColor = 0xFF101010;
         this.setScreenWidthAndHeight(240, 210);

@@ -54,25 +54,25 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
         // Unconditionally save here, since we don't track the individual info container widget changes
         this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
 
-        this.setTitle("malilib.title.screen.toast_renderer_configuration");
+        this.setTitle("malilibdev.title.screen.toast_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(16, 10, ScreenLocation.VALUES,
                                                                OptionListConfigValue::getDisplayName);
         this.locationDropdownWidget.setSelectedEntry(widget.getScreenLocation());
         this.locationDropdownWidget.setSelectionListener(this::changeWidgetLocation);
 
-        this.nameLabelWidget = new LabelWidget("malilib.label.misc.name.colon");
-        this.defaultLifeTimeLabelWidget = new LabelWidget("malilib.label.misc.default_duration");
-        this.defaultFadeInTimeLabelWidget = new LabelWidget("malilib.label.misc.default_fade_in_time");
-        this.defaultFadeOutTimeLabelWidget = new LabelWidget("malilib.label.misc.default_fade_out_time");
-        this.lineHeightLabelWidget = new LabelWidget("malilib.label.misc.line_height");
-        this.maxWidthLabelWidget = new LabelWidget("malilib.label.misc.max_width");
-        this.messageGapLabelWidget = new LabelWidget("malilib.label.misc.message_gap");
-        this.renderAboveScreenLabelWidget = new LabelWidget("malilib.label.edit_screen.render_above_screen");
-        this.sortIndexLabelWidget = new LabelWidget("malilib.label.misc.sort_index");
-        this.textColorLabelWidget = new LabelWidget("malilib.label.edit_screen.default_text_color");
-        this.zLevelLabelWidget = new LabelWidget("malilib.label.misc.z_level");
-        //this.textScaleLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.misc.text_scale");
+        this.nameLabelWidget = new LabelWidget("malilibdev.label.misc.name.colon");
+        this.defaultLifeTimeLabelWidget = new LabelWidget("malilibdev.label.misc.default_duration");
+        this.defaultFadeInTimeLabelWidget = new LabelWidget("malilibdev.label.misc.default_fade_in_time");
+        this.defaultFadeOutTimeLabelWidget = new LabelWidget("malilibdev.label.misc.default_fade_out_time");
+        this.lineHeightLabelWidget = new LabelWidget("malilibdev.label.misc.line_height");
+        this.maxWidthLabelWidget = new LabelWidget("malilibdev.label.misc.max_width");
+        this.messageGapLabelWidget = new LabelWidget("malilibdev.label.misc.message_gap");
+        this.renderAboveScreenLabelWidget = new LabelWidget("malilibdev.label.edit_screen.render_above_screen");
+        this.sortIndexLabelWidget = new LabelWidget("malilibdev.label.misc.sort_index");
+        this.textColorLabelWidget = new LabelWidget("malilibdev.label.edit_screen.default_text_color");
+        this.zLevelLabelWidget = new LabelWidget("malilibdev.label.misc.z_level");
+        //this.textScaleLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilibdev.label.misc.text_scale");
 
         this.nameTextField = new BaseTextFieldWidget(160, 16, widget.getName());
         this.nameTextField.setListener(widget::setName);
@@ -88,10 +88,10 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
         //this.textScaleEditWidget = new DoubleEditWidget(0, 0, 72, 16, widget.getScale(), 0.25, 20, widget::setScale);
         //this.textScaleEditWidget.setBaseScrollAdjustAmount(0.5);
 
-        this.marginEditButton = GenericButton.create(16, "malilib.label.misc.margin", this::openMarginEditScreen);
+        this.marginEditButton = GenericButton.create(16, "malilibdev.label.misc.margin", this::openMarginEditScreen);
         this.marginEditButton.setHoverStringProvider("tooltip", this.widget.getMargin()::getHoverTooltip);
 
-        this.paddingEditButton = GenericButton.create(16, "malilib.label.misc.padding", this::openPaddingEditScreen);
+        this.paddingEditButton = GenericButton.create(16, "malilibdev.label.misc.padding", this::openPaddingEditScreen);
         this.paddingEditButton.setHoverStringProvider("tooltip", this.widget.getPadding()::getHoverTooltip);
 
         this.renderAboveScreenButton = OnOffButton.simpleSlider(16, this.widget::getRenderAboveScreen, this::toggleRenderAboveScreen);
@@ -213,7 +213,7 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
     protected void openMarginEditScreen()
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getMargin(), false,
-                                                         "malilib.title.screen.edit_margin", "malilib.label.misc.margin");
+                                                         "malilibdev.title.screen.edit_margin", "malilibdev.label.misc.margin");
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }
@@ -221,7 +221,7 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
     protected void openPaddingEditScreen()
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getPadding(), false,
-                                                         "malilib.title.screen.edit_padding", "malilib.label.misc.padding");
+                                                         "malilibdev.title.screen.edit_padding", "malilibdev.label.misc.padding");
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }

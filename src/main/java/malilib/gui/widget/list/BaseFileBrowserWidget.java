@@ -484,18 +484,18 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForNonFile()
     {
-        StyledTextLine textPaste  = StyledTextLine.translate("malilib.label.file_browser.context_menu.paste");
+        StyledTextLine textPaste  = StyledTextLine.translate("malilibdev.label.file_browser.context_menu.paste");
         boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
         return ImmutableList.of(new MenuEntryWidget(textPaste, this::pasteFiles, hasFiles));
     }
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForFile()
     {
-        StyledTextLine textCopy   = StyledTextLine.translate("malilib.label.file_browser.context_menu.copy");
-        StyledTextLine textCut    = StyledTextLine.translate("malilib.label.file_browser.context_menu.cut");
-        StyledTextLine textDelete = StyledTextLine.translate("malilib.label.file_browser.context_menu.delete");
-        StyledTextLine textPaste  = StyledTextLine.translate("malilib.label.file_browser.context_menu.paste");
-        StyledTextLine textRename = StyledTextLine.translate("malilib.label.file_browser.context_menu.rename");
+        StyledTextLine textCopy   = StyledTextLine.translate("malilibdev.label.file_browser.context_menu.copy");
+        StyledTextLine textCut    = StyledTextLine.translate("malilibdev.label.file_browser.context_menu.cut");
+        StyledTextLine textDelete = StyledTextLine.translate("malilibdev.label.file_browser.context_menu.delete");
+        StyledTextLine textPaste  = StyledTextLine.translate("malilibdev.label.file_browser.context_menu.paste");
+        StyledTextLine textRename = StyledTextLine.translate("malilibdev.label.file_browser.context_menu.rename");
         boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
 
         return ImmutableList.of(new MenuEntryWidget(textCopy,   this::copyFiles),
@@ -507,9 +507,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected List<MenuEntryWidget> getSettingsMenuEntries()
     {
-        String sizeKey = this.showFileSize ? "malilib.label.file_browser.context_menu.hide_file_size" : "malilib.label.file_browser.context_menu.show_file_size";
-        String mTimeKey = this.showFileModificationTime ? "malilib.label.file_browser.context_menu.hide_file_mtime" : "malilib.label.file_browser.context_menu.show_file_mtime";
-        String hiddenKey = this.showHiddenFiles ? "malilib.label.file_browser.context_menu.dont_show_hidden_files" : "malilib.label.file_browser.context_menu.show_hidden_files";
+        String sizeKey = this.showFileSize ? "malilibdev.label.file_browser.context_menu.hide_file_size" : "malilibdev.label.file_browser.context_menu.show_file_size";
+        String mTimeKey = this.showFileModificationTime ? "malilibdev.label.file_browser.context_menu.hide_file_mtime" : "malilibdev.label.file_browser.context_menu.show_file_mtime";
+        String hiddenKey = this.showHiddenFiles ? "malilibdev.label.file_browser.context_menu.dont_show_hidden_files" : "malilibdev.label.file_browser.context_menu.show_hidden_files";
         StyledTextLine textShowSize = StyledTextLine.translate(sizeKey);
         StyledTextLine textShowDate = StyledTextLine.translate(mTimeKey);
         StyledTextLine textShowHidden = StyledTextLine.translate(hiddenKey);
@@ -551,9 +551,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     {
         this.storeSelectionAsOperatedOnFiles();
 
-        ConfirmActionScreen screen = new ConfirmActionScreen(320, "malilib.title.screen.confirm_file_deletion",
+        ConfirmActionScreen screen = new ConfirmActionScreen(320, "malilibdev.title.screen.confirm_file_deletion",
                                                              this::executeDeleteFiles,
-                                                             "malilib.label.confirm.file_deletion",
+                                                             "malilibdev.label.confirm.file_deletion",
                                                              this.operatedOnFiles.size());
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openPopupScreen(screen);
@@ -584,13 +584,13 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         String name = FileNameUtils.getFileNameWithoutExtension(originalFileName);
 
         boolean isDir = Files.isDirectory(file);
-        String titleKey = isDir ? "malilib.title.screen.rename_directory" :
-                                  "malilib.title.screen.rename_file";
-        String infoKey = isDir ? "malilib.label.file_browser.rename.info.directory" :
-                                 "malilib.label.file_browser.rename.info.file";
+        String titleKey = isDir ? "malilibdev.title.screen.rename_directory" :
+                                  "malilibdev.title.screen.rename_file";
+        String infoKey = isDir ? "malilibdev.label.file_browser.rename.info.directory" :
+                                 "malilibdev.label.file_browser.rename.info.file";
         TextInputScreen screen = new TextInputScreen(titleKey, name, (n) -> this.renameFile(file, n));
         screen.setInfoText(StyledText.translate(infoKey, originalFileName));
-        screen.setLabelText(StyledText.translate("malilib.label.file_browser.rename.new_name"));
+        screen.setLabelText(StyledText.translate("malilibdev.label.file_browser.rename.new_name"));
         screen.setConfirmListener(task::advance);
         screen.setCancelListener(task::cancel);
         screen.setParent(GuiUtils.getCurrentScreen());
@@ -758,7 +758,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         else if (keyCode == Keys.KEY_N && BaseScreen.isCtrlDown() && BaseScreen.isShiftDown())
         {
             DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this);
-            TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_directory", "", creator);
+            TextInputScreen screen = new TextInputScreen("malilibdev.title.screen.create_directory", "", creator);
             screen.setParent(GuiUtils.getCurrentScreen());
             BaseScreen.openPopupScreen(screen);
             return true;

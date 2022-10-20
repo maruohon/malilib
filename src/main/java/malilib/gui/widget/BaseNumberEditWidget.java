@@ -30,7 +30,7 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
 
         this.valueAdjustButton = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);
         this.valueAdjustButton.setActionListener(this::onValueAdjustButtonClick);
-        this.valueAdjustButton.translateAndAddHoverString("malilib.hover.button.plus_minus_tip");
+        this.valueAdjustButton.translateAndAddHoverString("malilibdev.hover.button.plus_minus_tip");
         this.valueAdjustButton.setCanScrollToClick(true);
 
         this.textFieldWidget = new BaseTextFieldWidget(width, height);

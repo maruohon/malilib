@@ -96,25 +96,25 @@ public class KeybindSettingsWidget extends InteractableWidget
         KeyBindSettings settings = this.keyBind.getSettings();
         KeyBindSettings defaultSettings = this.keyBind.getDefaultSettings();
 
-        lines.add(StringUtils.translate("malilib.hover.advanced_keybind_settings.title"));
+        lines.add(StringUtils.translate("malilibdev.hover.advanced_keybind_settings.title"));
 
-        this.addOptionText(lines, "malilib.label.keybind_settings.activate_on", settings.getActivateOn(), defaultSettings.getActivateOn(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.context", settings.getContext(), defaultSettings.getContext(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.cancel_further", settings.getCancelCondition(), defaultSettings.getCancelCondition(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.activate_on", settings.getActivateOn(), defaultSettings.getActivateOn(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.context", settings.getContext(), defaultSettings.getContext(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.cancel_further", settings.getCancelCondition(), defaultSettings.getCancelCondition(), this::getDisplayString);
 
-        this.addOptionText(lines, "malilib.label.keybind_settings.allow_extra_keys", settings.getAllowExtraKeys(), defaultSettings.getAllowExtraKeys(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.order_sensitive", settings.isOrderSensitive(), defaultSettings.isOrderSensitive(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.exclusive", settings.isExclusive(), defaultSettings.isExclusive(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.first_only", settings.getFirstOnly(), defaultSettings.getFirstOnly(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.priority", settings.getPriority(), defaultSettings.getPriority(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.allow_empty_keybind", settings.getAllowEmpty(), defaultSettings.getAllowEmpty(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.invert_held", settings.getInvertHeld(), defaultSettings.getInvertHeld(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.toggle", settings.isToggle(), defaultSettings.isToggle(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.show_toast", settings.getShowToast(), defaultSettings.getShowToast(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.label.keybind_settings.message_output", settings.getMessageType(), defaultSettings.getMessageType(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.allow_extra_keys", settings.getAllowExtraKeys(), defaultSettings.getAllowExtraKeys(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.order_sensitive", settings.isOrderSensitive(), defaultSettings.isOrderSensitive(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.exclusive", settings.isExclusive(), defaultSettings.isExclusive(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.first_only", settings.getFirstOnly(), defaultSettings.getFirstOnly(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.priority", settings.getPriority(), defaultSettings.getPriority(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.allow_empty_keybind", settings.getAllowEmpty(), defaultSettings.getAllowEmpty(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.invert_held", settings.getInvertHeld(), defaultSettings.getInvertHeld(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.toggle", settings.isToggle(), defaultSettings.isToggle(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.show_toast", settings.getShowToast(), defaultSettings.getShowToast(), this::getDisplayString);
+        this.addOptionText(lines, "malilibdev.label.keybind_settings.message_output", settings.getMessageType(), defaultSettings.getMessageType(), this::getDisplayString);
 
         lines.add("");
-        StringUtils.addTranslatedLines(lines, "malilib.label.keybind_settings.tips");
+        StringUtils.addTranslatedLines(lines, "malilibdev.label.keybind_settings.tips");
 
         return lines;
     }
@@ -127,29 +127,29 @@ public class KeybindSettingsWidget extends InteractableWidget
 
         if (modified)
         {
-            String key = "malilib.label.keybind_settings.name_and_value.modified";
+            String key = "malilibdev.label.keybind_settings.name_and_value.modified";
             String defValStr = displayValueFunction.apply(defaultValue);
             lines.add(StringUtils.translate(key, name, valStr, defValStr));
         }
         else
         {
-            String key = "malilib.label.keybind_settings.name_and_value.default";
+            String key = "malilibdev.label.keybind_settings.name_and_value.default";
             lines.add(StringUtils.translate(key, name, valStr));
         }
     }
 
     protected String getDisplayString(boolean value)
     {
-        return StringUtils.translate(value ? "malilib.label.misc.yes.colored" : "malilib.label.misc.no.colored");
+        return StringUtils.translate(value ? "malilibdev.label.misc.yes.colored" : "malilibdev.label.misc.no.colored");
     }
 
     protected String getDisplayString(OptionListConfigValue value)
     {
-        return StringUtils.translate("malilib.label.keybind_settings.value.option_list", value.getDisplayName());
+        return StringUtils.translate("malilibdev.label.keybind_settings.value.option_list", value.getDisplayName());
     }
 
     protected String getDisplayString(int value)
     {
-        return StringUtils.translate("malilib.label.keybind_settings.value.integer", value);
+        return StringUtils.translate("malilibdev.label.keybind_settings.value.integer", value);
     }
 }

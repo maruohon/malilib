@@ -23,8 +23,8 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         this.strings = ImmutableList.copyOf(strings);
         this.consumer = consumer;
 
-        this.confirmButton = GenericButton.create("malilib.button.misc.ok.caps", this::onConfirm);
-        this.cancelButton = GenericButton.create("malilib.button.misc.cancel", this::openParentScreen);
+        this.confirmButton = GenericButton.create("malilibdev.button.misc.ok.caps", this::onConfirm);
+        this.cancelButton = GenericButton.create("malilibdev.button.misc.cancel", this::openParentScreen);
     }
 
     public void setHasSearch(boolean hasSearch)

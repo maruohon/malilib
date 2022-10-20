@@ -92,16 +92,16 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         int total = this.valueStrings.size();
         int max = Math.min(10, total);
 
-        hoverStrings.add(StringUtils.translate("malilib.hover.button.config_list.total_entries", total));
+        hoverStrings.add(StringUtils.translate("malilibdev.hover.button.config_list.total_entries", total));
 
         for (int i = 0; i < max; ++i)
         {
-            hoverStrings.add(StringUtils.translate("malilib.hover.button.value_list_edit.entry", this.valueStrings.get(i)));
+            hoverStrings.add(StringUtils.translate("malilibdev.hover.button.value_list_edit.entry", this.valueStrings.get(i)));
         }
 
         if (total > max)
         {
-            hoverStrings.add(StringUtils.translate("malilib.hover.button.config_list.more_entries", total - max));
+            hoverStrings.add(StringUtils.translate("malilibdev.hover.button.config_list.more_entries", total - max));
         }
 
         return hoverStrings;

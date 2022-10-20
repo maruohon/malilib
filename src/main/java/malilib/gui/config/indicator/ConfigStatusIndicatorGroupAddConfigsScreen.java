@@ -35,7 +35,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
         this.widget = widget;
         this.useTitleHierarchy = false;
-        this.setTitle("malilib.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
+        this.setTitle("malilibdev.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
 
         List<ModInfo> mods = new ArrayList<>(((ConfigTabRegistryImpl) Registry.CONFIG_TAB).getAllModsWithConfigTabs());
         this.modsDropDownWidget = new DropDownListWidget<>(14, 12, mods, ModInfo::getModName);
@@ -44,7 +44,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
         this.categoriesDropDownWidget = new DropDownListWidget<>(14, 12, Collections.emptyList(), ConfigTab::getDisplayName);
         this.categoriesDropDownWidget.setSelectionListener(this::onCategorySelected);
 
-        this.addEntriesButton = GenericButton.create("malilib.button.csi_edit.add_selected_configs", this::addSelectedConfigs);
+        this.addEntriesButton = GenericButton.create("malilibdev.button.csi_edit.add_selected_configs", this::addSelectedConfigs);
     }
 
     @Override

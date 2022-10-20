@@ -10,11 +10,11 @@ import malilib.util.data.json.JsonUtils;
 
 public class ActionType<T extends NamedAction>
 {
-    public static final ActionType<NamedAction>                SIMPLE          = new ActionType<>("simple",          "malilib.name.action_type.simple",          NamedAction.class,                NamedAction::baseActionFromJson);
-    public static final ActionType<AliasAction>                ALIAS           = new ActionType<>("alias",           "malilib.name.action_type.alias",           AliasAction.class,                AliasAction::aliasActionFromJson);
-    public static final ActionType<MacroAction>                MACRO           = new ActionType<>("macro",           "malilib.name.action_type.macro",           MacroAction.class,                MacroAction::macroActionFromJson);
-    public static final ActionType<ParameterizableNamedAction> PARAMETERIZABLE = new ActionType<>("parameterizable", "malilib.name.action_type.parameterizable", ParameterizableNamedAction.class, ParameterizableNamedAction::parameterizableActionFromJson);
-    public static final ActionType<ParameterizedNamedAction>   PARAMETERIZED   = new ActionType<>("parameterized",   "malilib.name.action_type.parameterized",   ParameterizedNamedAction.class,   ParameterizedNamedAction::parameterizedActionFromJson);
+    public static final ActionType<NamedAction>                SIMPLE          = new ActionType<>("simple",          "malilibdev.name.action_type.simple",          NamedAction.class,                NamedAction::baseActionFromJson);
+    public static final ActionType<AliasAction>                ALIAS           = new ActionType<>("alias",           "malilibdev.name.action_type.alias",           AliasAction.class,                AliasAction::aliasActionFromJson);
+    public static final ActionType<MacroAction>                MACRO           = new ActionType<>("macro",           "malilibdev.name.action_type.macro",           MacroAction.class,                MacroAction::macroActionFromJson);
+    public static final ActionType<ParameterizableNamedAction> PARAMETERIZABLE = new ActionType<>("parameterizable", "malilibdev.name.action_type.parameterizable", ParameterizableNamedAction.class, ParameterizableNamedAction::parameterizableActionFromJson);
+    public static final ActionType<ParameterizedNamedAction>   PARAMETERIZED   = new ActionType<>("parameterized",   "malilibdev.name.action_type.parameterized",   ParameterizedNamedAction.class,   ParameterizedNamedAction::parameterizedActionFromJson);
 
     public static final ImmutableList<ActionType<?>> VALUES = ImmutableList.of(SIMPLE, ALIAS, MACRO, PARAMETERIZABLE, PARAMETERIZED);
 

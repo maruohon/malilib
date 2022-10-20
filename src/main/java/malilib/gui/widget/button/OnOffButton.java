@@ -198,9 +198,9 @@ public class OnOffButton extends GenericButton
 
     public enum OnOffStyle
     {
-        TEXT_ON_OFF     ("malilib.button.on_off.text_on_off.on",     "malilib.button.on_off.text_on_off.off"),
-        TEXT_TRUE_FALSE ("malilib.button.on_off.text_true_false.on", "malilib.button.on_off.text_true_false.off"),
-        SLIDER_ON_OFF   ("malilib.button.on_off.slider_on_off.on",   "malilib.button.on_off.slider_on_off.off");
+        TEXT_ON_OFF     ("malilibdev.button.on_off.text_on_off.on",     "malilibdev.button.on_off.text_on_off.off"),
+        TEXT_TRUE_FALSE ("malilibdev.button.on_off.text_true_false.on", "malilibdev.button.on_off.text_true_false.off"),
+        SLIDER_ON_OFF   ("malilibdev.button.on_off.slider_on_off.on",   "malilibdev.button.on_off.slider_on_off.off");
 
         private final String translationKeyOn;
         private final String translationKeyOff;

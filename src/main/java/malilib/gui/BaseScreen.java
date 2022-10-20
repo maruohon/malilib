@@ -77,7 +77,7 @@ public abstract class BaseScreen extends Screen
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
         this.useCustomScreenScaling = customScale != GuiUtils.getVanillaScreenScale() && customScale > 0;
         this.closeButton = GenericButton.create(DefaultIcons.CLOSE_BUTTON_9, this::closeScreenOrShowParent);
-        this.closeButton.translateAndAddHoverString("malilib.hover.misc.close_screen");
+        this.closeButton.translateAndAddHoverString("malilibdev.hover.misc.close_screen");
         this.closeButton.setPlayClickSound(false);
     }
 

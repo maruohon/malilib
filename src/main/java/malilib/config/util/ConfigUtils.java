@@ -266,7 +266,7 @@ public class ConfigUtils
             copyConfigsIfProfileNotExist(profile);
             loadAllConfigsFromFile();
 
-            MessageDispatcher.success("malilib.message.info.switched_config_profile", profile);
+            MessageDispatcher.success("malilibdev.message.info.switched_config_profile", profile);
 
             return ActionResult.SUCCESS;
         }
@@ -277,7 +277,7 @@ public class ConfigUtils
     public static ActionResult loadAllConfigsFromFileAction(ActionContext ctx)
     {
         loadAllConfigsFromFile();
-        MessageDispatcher.success("malilib.message.info.loaded_all_configs_from_file");
+        MessageDispatcher.success("malilibdev.message.info.loaded_all_configs_from_file");
         return ActionResult.SUCCESS;
     }
 }

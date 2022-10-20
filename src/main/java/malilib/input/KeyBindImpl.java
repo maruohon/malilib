@@ -371,13 +371,13 @@ public class KeyBindImpl implements KeyBind
 
             if (mode == KeybindDisplayMode.KEYS || mode == KeybindDisplayMode.KEYS_ACTIONS)
             {
-                lines.add(StringUtils.translate("malilib.toast.keybind_display.keys", this.getKeysDisplayString()));
+                lines.add(StringUtils.translate("malilibdev.toast.keybind_display.keys", this.getKeysDisplayString()));
             }
 
             if ((mode == KeybindDisplayMode.ACTIONS || mode == KeybindDisplayMode.KEYS_ACTIONS) && this.modInfo != null)
             {
                 String name = StringUtils.translate(this.nameTranslationKey);
-                lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modInfo.getModName(), name));
+                lines.add(StringUtils.translate("malilibdev.toast.keybind_display.action", this.modInfo.getModName(), name));
             }
 
             int displayTimeMs = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue();
@@ -398,14 +398,14 @@ public class KeyBindImpl implements KeyBind
 
             if (callback != null)
             {
-                String key = "malilib.message.debug.input_handling_cancel_by_hotkey_callback";
+                String key = "malilibdev.message.debug.input_handling_cancel_by_hotkey_callback";
                 String className = callback.getClass().getName();
                 MessageDispatcher.generic().console().type(MessageOutput.MESSAGE_OVERLAY)
                         .translate(key, mod, name, keysStr, className);
             }
             else
             {
-                String key = "malilib.message.debug.input_handling_cancel_by_hotkey_without_callback";
+                String key = "malilibdev.message.debug.input_handling_cancel_by_hotkey_without_callback";
                 MessageDispatcher.generic().console().type(MessageOutput.MESSAGE_OVERLAY)
                         .translate(key, mod, name, keysStr);
             }
@@ -570,7 +570,7 @@ public class KeyBindImpl implements KeyBind
 
             if (PRESSED_KEYS.isEmpty())
             {
-                heldKeys = StringUtils.translate("malilib.label.misc.none.brackets");
+                heldKeys = StringUtils.translate("malilibdev.label.misc.none.brackets");
             }
             else
             {
@@ -578,7 +578,7 @@ public class KeyBindImpl implements KeyBind
             }
 
             MessageDispatcher.generic(2000).type(MessageOutput.TOAST).messageMarker("pressed_keys")
-                             .translate("malilib.label.toast.pressed_keys", heldKeys);
+                             .translate("malilibdev.label.toast.pressed_keys", heldKeys);
         }
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())

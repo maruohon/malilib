@@ -45,14 +45,14 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         StyledTextLine nameText = data.getColoredWidgetDisplayName();
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, this.getWidth() - 20, LeftRight.RIGHT, " ..."));
 
-        this.createAliasButton = GenericButton.create(14, "malilib.button.action_list_screen_widget.create_alias",
+        this.createAliasButton = GenericButton.create(14, "malilibdev.button.action_list_screen_widget.create_alias",
                                                       this::openAddAliasScreen);
-        this.createAliasButton.translateAndAddHoverString("malilib.hover.button.create_alias_for_action");
+        this.createAliasButton.translateAndAddHoverString("malilibdev.hover.button.create_alias_for_action");
 
-        this.editButton = GenericButton.create(14, "malilib.button.misc.edit", this::editAction);
+        this.editButton = GenericButton.create(14, "malilibdev.button.misc.edit", this::editAction);
 
         this.removeActionButton = GenericButton.create(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeAction);
-        this.removeActionButton.translateAndAddHoverString("malilib.hover.button.list.remove");
+        this.removeActionButton.translateAndAddHoverString("malilibdev.hover.button.list.remove");
 
         this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFFF0B000);
         this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
@@ -155,9 +155,9 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
 
     protected void openAddAliasScreen()
     {
-        TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_alias_action", "", this::addAlias);
+        TextInputScreen screen = new TextInputScreen("malilibdev.title.screen.create_alias_action", "", this::addAlias);
         screen.setParent(GuiUtils.getCurrentScreen());
-        screen.setLabelText("malilib.label.actions.create_alias.alias_name");
+        screen.setLabelText("malilibdev.label.actions.create_alias.alias_name");
         BaseScreen.openPopupScreen(screen);
     }
 
@@ -173,7 +173,7 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         if (Registry.ACTION_REGISTRY.addAlias(action))
         {
             this.listWidget.refreshEntries();
-            MessageDispatcher.success("malilib.message.info.added_alias_for_action",
+            MessageDispatcher.success("malilibdev.message.info.added_alias_for_action",
                                       aliasName, this.data.getRegistryName());
             return true;
         }

@@ -380,7 +380,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     public static HotkeyProvider getHotkeyProvider()
     {
         return new SimpleHotkeyProvider(MaLiLibReference.MOD_INFO,
-                                        "malilib.hotkeys.category.csi_toggles",
+                                        "malilibdev.hotkeys.category.csi_toggles",
                                         ConfigStatusIndicatorContainerWidget::getToggleHotkeys);
     }
 }

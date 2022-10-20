@@ -22,7 +22,7 @@ public class PopupConfigGroupWidget extends BaseConfigWidget<PopupConfigGroup>
         super(config, constructData, ctx);
 
         this.config = config;
-        this.groupOpenButton = GenericButton.create("malilib.button.config.popup_group.show_configs",
+        this.groupOpenButton = GenericButton.create("malilibdev.button.config.popup_group.show_configs",
                                                     this::openConfigGroupEditScreen);
         this.groupOpenButton.getHoverInfoFactory().setTextLineProvider("config_list", this::getContainedConfigsHoverInfo);
         this.groupOpenButton.getHoverInfoFactory().setDynamic(false);

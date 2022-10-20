@@ -115,7 +115,7 @@ public class ActionRegistry
         }
         else
         {
-            MessageDispatcher.error().console().translate("malilib.message.error.action.action_name_exists", registryName);
+            MessageDispatcher.error().console().translate("malilibdev.message.error.action.action_name_exists", registryName);
         }
 
         return false;

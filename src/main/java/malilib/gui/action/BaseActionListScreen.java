@@ -34,7 +34,7 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         this.allActionTypesDropdown = new DropDownListWidget<>(14, 10, ActionGroup.VALUES, ActionGroup::getDisplayName);
         this.allActionTypesDropdown.setSelectedEntry(ActionGroup.ALL);
         this.allActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
-        this.allActionTypesDropdown.translateAndAddHoverString("malilib.hover.action.action_types_explanation");
+        this.allActionTypesDropdown.translateAndAddHoverString("malilibdev.hover.action.action_types_explanation");
 
         this.leftSideListWidget = this.createLeftSideActionListWidget();
         this.screenCloseListener = this::saveChangesOnScreenClose;
@@ -119,7 +119,7 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         if (data instanceof ParameterizableNamedAction)
         {
             ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(data, constructData);
-            parWidget.setParameterizationButtonHoverText("malilib.hover.button.parameterize_action");
+            parWidget.setParameterizationButtonHoverText("malilibdev.hover.button.parameterize_action");
             widget = parWidget;
         }
         else

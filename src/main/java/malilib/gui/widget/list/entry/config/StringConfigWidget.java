@@ -17,7 +17,7 @@ public class StringConfigWidget extends BaseGenericConfigWidget<String, StringCo
 
         this.textField = new BaseTextFieldWidget(20, 16, this.config.getValue());
         this.textField.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
-        this.textField.translateAndAddHoverString("malilib.hover.config.string.default_value", config.getDefaultValue());
+        this.textField.translateAndAddHoverString("malilibdev.hover.config.string.default_value", config.getDefaultValue());
         this.textField.setShowCursorPosition(true);
 
         this.textField.setListener((str) -> {

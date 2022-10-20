@@ -101,12 +101,12 @@ public class ActionExecutionWidgetManager
         {
             String name = FileNameUtils.generateSimpleSafeFileName(arg);
             INSTANCE.saveWidgetScreenData(name, ActionWidgetScreenData.createEmpty());
-            MessageDispatcher.success("malilib.message.info.action_screen_created_by_name", name);
+            MessageDispatcher.success("malilibdev.message.info.action_screen_created_by_name", name);
             return true;
         }
         else
         {
-            MessageDispatcher.warning("malilib.message.error.action_screen_already_exists_by_name", arg);
+            MessageDispatcher.warning("malilibdev.message.error.action_screen_already_exists_by_name", arg);
             return false;
         }
     }

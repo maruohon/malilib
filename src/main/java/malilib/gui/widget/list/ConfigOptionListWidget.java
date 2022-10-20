@@ -130,12 +130,12 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
                 if (showInternalName)
                 {
                     String configName = configOnTab.getConfig().getName();
-                    return StringUtils.translate("malilib.label.config.mod_category_internal_name",
+                    return StringUtils.translate("malilibdev.label.config.mod_category_internal_name",
                                                  modName, tabName, configName);
                 }
                 else
                 {
-                    return StringUtils.translate("malilib.label.config.mod_category", modName, tabName);
+                    return StringUtils.translate("malilibdev.label.config.mod_category", modName, tabName);
                 }
             }
         }

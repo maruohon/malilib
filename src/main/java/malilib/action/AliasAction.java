@@ -22,7 +22,7 @@ public class AliasAction extends NamedAction
         super(ActionType.ALIAS, alias, action.getNameTranslationKey(), ALIAS_MOD_INFO);
 
         this.baseAction = action;
-        this.coloredDisplayNameTranslationKey = "malilib.label.actions.alias_entry_widget_name";
+        this.coloredDisplayNameTranslationKey = "malilibdev.label.actions.alias_entry_widget_name";
     }
 
     @Override
@@ -51,23 +51,23 @@ public class AliasAction extends NamedAction
     {
         List<StyledTextLine> lines = new ArrayList<>();
 
-        lines.add(StyledTextLine.translate("malilib.hover.action.alias", this.getName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.mod", this.baseAction.getModInfo().getModName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.display_name", this.baseAction.getDisplayName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.action_type", this.type.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.alias", this.getName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.mod", this.baseAction.getModInfo().getModName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.display_name", this.baseAction.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.action_type", this.type.getDisplayName()));
 
         if (this.registryName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover.action.registry_name", this.registryName));
+            lines.add(StyledTextLine.translate("malilibdev.hover.action.registry_name", this.registryName));
         }
 
-        lines.add(StyledTextLine.translate("malilib.hover.action.base_action_name", this.baseAction.getName()));
+        lines.add(StyledTextLine.translate("malilibdev.hover.action.base_action_name", this.baseAction.getName()));
 
         String origRegName = this.baseAction.getRegistryName();
 
         if (origRegName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover.action.base_action_registry_name", origRegName));
+            lines.add(StyledTextLine.translate("malilibdev.hover.action.base_action_registry_name", origRegName));
         }
 
         return lines;
@@ -121,7 +121,7 @@ public class AliasAction extends NamedAction
 
     public static ModInfo createAliasModInfo()
     {
-        return new ModInfo("<alias>", StringUtils.translate("malilib.label.actions.alias_action"));
+        return new ModInfo("<alias>", StringUtils.translate("malilibdev.label.actions.alias_action"));
     }
 
     @Override

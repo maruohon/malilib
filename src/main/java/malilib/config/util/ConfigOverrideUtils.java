@@ -270,7 +270,7 @@ public class ConfigOverrideUtils
         if (overrideCount > 0)
         {
             MaLiLib.debugLog("Applied {} feature overrides", overrideCount);
-            MessageDispatcher.warning(8000).translate("malilib.message.info.config_overrides_applied", overrideCount);
+            MessageDispatcher.warning(8000).translate("malilibdev.message.info.config_overrides_applied", overrideCount);
         }
 
         return overrideCount > 0;

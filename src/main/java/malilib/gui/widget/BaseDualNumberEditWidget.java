@@ -30,8 +30,8 @@ public abstract class BaseDualNumberEditWidget<T, W extends BaseNumberEditWidget
         this.xCoordinateWidget = this.createNumberEditWidget(w, h, initialValue, Coordinate.X);
         this.yCoordinateWidget = this.createNumberEditWidget(w, h, initialValue, Coordinate.Y);
 
-        this.xCoordinateWidget.setLabelText("malilib.label.misc.coordinate.x_colon");
-        this.yCoordinateWidget.setLabelText("malilib.label.misc.coordinate.y_colon");
+        this.xCoordinateWidget.setLabelText("malilibdev.label.misc.coordinate.x_colon");
+        this.yCoordinateWidget.setLabelText("malilibdev.label.misc.coordinate.y_colon");
 
         BooleanSupplier enabledSupplier = this::isEnabled;
         this.xCoordinateWidget.setEnabledStatusSupplier(enabledSupplier);

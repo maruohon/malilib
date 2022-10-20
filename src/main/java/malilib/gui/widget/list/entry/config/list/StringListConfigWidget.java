@@ -20,7 +20,7 @@ public class StringListConfigWidget extends BaseValueListConfigWidget<String, St
     @Override
     protected GenericButton createButton(int width, int height, StringListConfig config, ConfigWidgetContext ctx)
     {
-        String title = StringUtils.translate("malilib.title.screen.string_list_edit", this.config.getDisplayName());
+        String title = StringUtils.translate("malilibdev.title.screen.string_list_edit", this.config.getDisplayName());
 
         return new BaseValueListEditButton<>(width, height, config, this::updateWidgetState,
                                              () -> "", StringListEditEntryWidget::new, title);

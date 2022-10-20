@@ -18,11 +18,11 @@ public class BooleanAndDoubleConfigWidget extends BaseBooleanAndNumberConfigWidg
 
         this.textField.setTextValidator(new DoubleValidator(config.getMinDoubleValue(),
                                                             config.getMaxDoubleValue()));
-        this.textField.translateAndAddHoverString("malilib.hover.config.numeric.range_and_default",
+        this.textField.translateAndAddHoverString("malilibdev.hover.config.numeric.range_and_default",
                                                   config.getMinDoubleValue(),
                                                   config.getMaxDoubleValue(),
                                                   config.getDefaultValue().doubleValue);
-        this.sliderWidget.translateAndAddHoverString("malilib.hover.config.numeric.range_and_default",
+        this.sliderWidget.translateAndAddHoverString("malilibdev.hover.config.numeric.range_and_default",
                                                      config.getMinDoubleValue(),
                                                      config.getMaxDoubleValue(),
                                                      config.getDefaultValue().doubleValue);

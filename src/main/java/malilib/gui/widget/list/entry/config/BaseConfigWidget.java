@@ -36,10 +36,10 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
         @Nullable String ownerLabel = this.getOwnerText(this.originalListIndex);
         this.categoryText = ownerLabel != null ? StyledTextLine.of(ownerLabel) : null;
-        this.nameText = StyledTextLine.translate("malilib.label.config.config_display_name", config.getDisplayName());
-        this.internalNameText = StyledTextLine.translate("malilib.label.config.config_internal_name", config.getName());
+        this.nameText = StyledTextLine.translate("malilibdev.label.config.config_display_name", config.getDisplayName());
+        this.internalNameText = StyledTextLine.translate("malilibdev.label.config.config_internal_name", config.getName());
         this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), this.getHeight(), 0xFFFFFFFF);
-        this.resetButton = GenericButton.create("malilib.button.misc.reset.caps", this::onResetButtonClicked);
+        this.resetButton = GenericButton.create("malilibdev.button.misc.reset.caps", this::onResetButtonClicked);
         this.resetButton.setEnabledStatusSupplier(this::isResetEnabled);
 
         EventListener clickHandler = config.getLabelClickHandler();
@@ -48,7 +48,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
         if (clickHandler != null)
         {
-            comments.add(StringUtils.translate("malilib.hover.config.click_for_more_information"));
+            comments.add(StringUtils.translate("malilibdev.hover.config.click_for_more_information"));
             this.configOwnerAndNameLabelWidget.setClickListener(clickHandler);
             this.configOwnerAndNameLabelWidget.getBorderRenderer()
                     .getHoverSettings().setBorderWidthAndColor(1, 0xFF15D6F0);

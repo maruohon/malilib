@@ -20,11 +20,11 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
     {
         super(10, 74, 20, 80, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
-        this.addIconButton = GenericButton.create(16, "malilib.button.custom_icons.add_icon", this::openAddIconScreen);
+        this.addIconButton = GenericButton.create(16, "malilibdev.button.custom_icons.add_icon", this::openAddIconScreen);
         this.screenCloseListener = Registry.ICON::saveToFileIfDirty;
 
         this.createSwitchModConfigScreenDropDown(MaLiLibReference.MOD_INFO);
-        this.setTitle("malilib.title.screen.configs.custom_icons_list_screen", MaLiLibReference.MOD_VERSION);
+        this.setTitle("malilibdev.title.screen.configs.custom_icons_list_screen", MaLiLibReference.MOD_VERSION);
     }
 
     @Override

@@ -442,8 +442,8 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     public enum Type
     {
-        RECTANGULAR ("malilib.label.action_widgets.type.rectangular", RectangularActionExecutionWidget::new),
-        RADIAL      ("malilib.label.action_widgets.type.radial",      RadialActionExecutionWidget::new);
+        RECTANGULAR ("malilibdev.label.action_widgets.type.rectangular", RectangularActionExecutionWidget::new),
+        RADIAL      ("malilibdev.label.action_widgets.type.radial",      RadialActionExecutionWidget::new);
 
         public static final ImmutableList<Type> VALUES = ImmutableList.copyOf(values());
 

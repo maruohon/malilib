@@ -88,7 +88,7 @@ public class InputDispatcherImpl implements InputDispatcher
     {
         if (MaLiLibConfigs.Debug.INPUT_CANCEL_DEBUG.getBooleanValue())
         {
-            String key = "malilib.message.debug.input_handling_cancel_by_handler";
+            String key = "malilibdev.message.debug.input_handling_cancel_by_handler";
             MessageDispatcher.generic().console().type(MessageOutput.CUSTOM_HOTBAR)
                     .translate(key, handler.getClass().getName());
         }

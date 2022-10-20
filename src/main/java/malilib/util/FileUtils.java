@@ -245,7 +245,7 @@ public class FileUtils
         }
         catch (Exception e)
         {
-            MessageDispatcher.error(8000).console(e).translate("malilib.message.error.failed_to_resolve_file",
+            MessageDispatcher.error(8000).console(e).translate("malilibdev.message.error.failed_to_resolve_file",
                                                                file.toAbsolutePath());
             return false;
         }
@@ -405,7 +405,7 @@ public class FileUtils
         {
             if (Files.exists(destinationFile))
             {
-                String msg = StringUtils.translate("malilib.message.error.failed_to_copy_file.destination_exists",
+                String msg = StringUtils.translate("malilibdev.message.error.failed_to_copy_file.destination_exists",
                                                    sourceFile.toAbsolutePath().toString(),
                                                    destinationFile.toAbsolutePath().toString());
                 messageConsumer.accept(msg);
@@ -419,7 +419,7 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                String msg = StringUtils.translate("malilib.message.error.failed_to_copy_file",
+                String msg = StringUtils.translate("malilibdev.message.error.failed_to_copy_file",
                                                    sourceFile.toAbsolutePath().toString(),
                                                    destinationFile.toAbsolutePath().toString());
                 messageConsumer.accept(msg);
@@ -459,7 +459,7 @@ public class FileUtils
         {
             if (Files.exists(destinationFile))
             {
-                String msg = StringUtils.translate("malilib.message.error.failed_to_move_file.destination_exists",
+                String msg = StringUtils.translate("malilibdev.message.error.failed_to_move_file.destination_exists",
                                                    sourceFile.toAbsolutePath().toString(),
                                                    destinationFile.toAbsolutePath().toString());
                 messageConsumer.accept(msg);
@@ -473,7 +473,7 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                String msg = StringUtils.translate("malilib.message.error.failed_to_move_file",
+                String msg = StringUtils.translate("malilibdev.message.error.failed_to_move_file",
                                                    sourceFile.toAbsolutePath().toString(),
                                                    destinationFile.toAbsolutePath().toString());
                 messageConsumer.accept(msg);
@@ -490,7 +490,7 @@ public class FileUtils
         {
             if (Files.exists(destinationFile))
             {
-                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file.exists",
+                messageConsumer.accept(StringUtils.translate("malilibdev.message.error.failed_to_rename_file.exists",
                                                              sourceFile.toAbsolutePath().toString(),
                                                              destinationFile.toAbsolutePath().toString()));
                 return false;
@@ -502,7 +502,7 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file.exception",
+                messageConsumer.accept(StringUtils.translate("malilibdev.message.error.failed_to_rename_file.exception",
                                                              sourceFile.toAbsolutePath().toString(),
                                                              destinationFile.toAbsolutePath().toString(),
                                                              e.getMessage()));
@@ -516,7 +516,7 @@ public class FileUtils
     {
         if (FileNameUtils.doesFileNameContainIllegalCharacters(newName))
         {
-            String key = "malilib.message.error.illegal_characters_in_file_name";
+            String key = "malilibdev.message.error.illegal_characters_in_file_name";
             messageConsumer.accept(StringUtils.translate(key, newName));
             return false;
         }
@@ -540,13 +540,13 @@ public class FileUtils
             }
             else
             {
-                String key = "malilib.message.error.file_rename.rename_failed";
+                String key = "malilibdev.message.error.file_rename.rename_failed";
                 messageConsumer.accept(StringUtils.translate(key, oldName, newName));
             }
         }
         else
         {
-            String key = "malilib.message.error.failed_to_rename_file.exists";
+            String key = "malilibdev.message.error.failed_to_rename_file.exists";
             messageConsumer.accept(StringUtils.translate(key, oldName, newName));
         }
 
@@ -561,7 +561,7 @@ public class FileUtils
         {
             if (Files.isDirectory(file))
             {
-                String key = "malilib.message.error.failed_to_delete_file_is_dir";
+                String key = "malilibdev.message.error.failed_to_delete_file_is_dir";
                 messageConsumer.accept(StringUtils.translate(key, file.getFileName().toString()));
                 success = false;
                 continue;
@@ -571,14 +571,14 @@ public class FileUtils
             {
                 if (Files.deleteIfExists(file) == false)
                 {
-                    String key = "malilib.message.error.failed_to_delete_file";
+                    String key = "malilibdev.message.error.failed_to_delete_file";
                     messageConsumer.accept(StringUtils.translate(key, file.getFileName().toString()));
                     success = false;
                 }
             }
             catch (Exception e)
             {
-                String key = "malilib.message.error.failed_to_delete_file";
+                String key = "malilibdev.message.error.failed_to_delete_file";
                 messageConsumer.accept(StringUtils.translate(key, file.getFileName().toString()));
                 messageConsumer.accept(e.getMessage());
                 success = false;
