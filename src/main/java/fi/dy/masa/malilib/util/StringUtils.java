@@ -542,7 +542,7 @@ public class StringUtils
 
                 if (world != null)
                 {
-                    name = prefix + name + "_dim" + WorldUtils.getDimensionAsString(world);
+                    name = prefix + name + "_dim" + WorldUtils.getDimensionIdAsString(world);
                 }
             }
         }

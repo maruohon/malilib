@@ -2,9 +2,11 @@ package fi.dy.masa.malilib.util.game;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 
 public class WorldUtils
 {
@@ -13,7 +15,7 @@ public class WorldUtils
         return world.provider.getDimensionType().getId();
     }
 
-    public static String getDimensionAsString(World world)
+    public static String getDimensionIdAsString(World world)
     {
         return String.valueOf(world.provider.getDimensionType().getId());
     }
@@ -36,16 +38,16 @@ public class WorldUtils
     }
 
     @Nullable
-    public static WorldServer getServerWorldForClientWorld(Minecraft mc)
+    public static WorldServer getServerWorldForClientWorld()
     {
-        if (mc.isSingleplayer() && mc.world != null)
-        {
-            IntegratedServer server = mc.getIntegratedServer();
-            return server.getWorld(getDimensionId(mc.world));
-        }
-        else
-        {
-            return null;
-        }
+        World world = GameUtils.getClientWorld();
+        return world != null ? getServerWorldForClientWorld(world) : null;
+    }
+
+    @Nullable
+    public static WorldServer getServerWorldForClientWorld(World world)
+    {
+        MinecraftServer server = GameUtils.getIntegratedServer();
+        return server != null ? server.getWorld(getDimensionId(world)) : null;
     }
 }
