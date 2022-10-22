@@ -66,9 +66,19 @@ public class PositionUtils
         return blockPosToLong(x, y, z);
     }
 
-    public static ChunkPos chunkPosFromLong(long posLong)
+    public static int getChunkPosX(long chunkPosLong)
     {
-        return new ChunkPos((int) posLong, (int) (posLong >> 32));
+        return (int) chunkPosLong;
+    }
+
+    public static int getChunkPosZ(long chunkPosLong)
+    {
+        return (int) (chunkPosLong >> 32);
+    }
+
+    public static ChunkPos chunkPosFromLong(long chunkPosLong)
+    {
+        return new ChunkPos(getChunkPosX(chunkPosLong), getChunkPosZ(chunkPosLong));
     }
 
     public static BlockPos getMinCorner(BlockPos pos1, BlockPos pos2)
@@ -185,19 +195,19 @@ public class PositionUtils
     }
 
     /**
-     * Returns the closest block position directly infront of the
+     * Returns the closest block position directly in front of the
      * given entity that is not colliding with it.
      */
-    public static BlockPos getPositionInfrontOfEntity(Entity entity)
+    public static BlockPos getPositionInFrontOfEntity(Entity entity)
     {
-        return getPositionInfrontOfEntity(entity, 60);
+        return getPositionInFrontOfEntity(entity, 60);
     }
 
     /**
-     * Returns the closest block position directly infront of the
+     * Returns the closest block position directly in front of the
      * given entity that is not colliding with it.
      */
-    public static BlockPos getPositionInfrontOfEntity(Entity entity, float verticalThreshold)
+    public static BlockPos getPositionInFrontOfEntity(Entity entity, float verticalThreshold)
     {
         double x = EntityWrap.getX(entity);
         double y = EntityWrap.getY(entity);
@@ -214,8 +224,8 @@ public class PositionUtils
             return new BlockPos(x, Math.ceil(entity.getEntityBoundingBox().maxY), z);
         }
 
-        y = Math.floor(y + entity.getEyeHeight());
         double width = entity.width;
+        y = Math.floor(y + entity.getEyeHeight());
 
         switch (entity.getHorizontalFacing())
         {
