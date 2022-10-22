@@ -195,6 +195,11 @@ public class UtilityActions
                     }
                 }
 
+                if (modes.isEmpty())
+                {
+                    return ActionResult.FAIL;
+                }
+
                 NetworkPlayerInfo info = ctx.getClient().getConnection().getPlayerInfo(ctx.getPlayer().getGameProfile().getId());
                 int index = info != null ? modes.indexOf(info.getGameType()) : -1;
 
