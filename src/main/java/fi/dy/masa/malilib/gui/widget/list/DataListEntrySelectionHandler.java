@@ -17,6 +17,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
     protected final Supplier<List<DATATYPE>> dataListSupplier;
 
     @Nullable protected Set<DATATYPE> selectedEntries;
+    @Nullable protected Collection<DATATYPE> selectedEntriesOnCreate;
     @Nullable protected SelectionListener<DATATYPE> selectionListener;
     @Nullable protected DATATYPE lastSelectedEntry;
     protected boolean allowMultiSelection;
@@ -337,5 +338,19 @@ public class DataListEntrySelectionHandler<DATATYPE>
         }
 
         return selectedEntries;
+    }
+
+    protected void selectEntries()
+    {
+        if (this.selectedEntriesOnCreate != null)
+        {
+            this.setSelectedEntries(this.selectedEntriesOnCreate);
+            this.selectedEntriesOnCreate = null;
+        }
+    }
+
+    public void setEntriesOnCreate(Collection<DATATYPE> entries)
+    {
+        this.selectedEntriesOnCreate = entries;
     }
 }

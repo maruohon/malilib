@@ -380,6 +380,14 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
     }
 
+    protected void selectEntries()
+    {
+        if (this.selectionHandler != null)
+        {
+            this.selectionHandler.selectEntries();
+        }
+    }
+
     protected void addNonFilteredContents(List<DATATYPE> entries)
     {
         this.filteredDataList.addAll(entries);

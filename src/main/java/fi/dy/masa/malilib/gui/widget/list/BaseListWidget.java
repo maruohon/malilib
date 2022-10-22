@@ -677,6 +677,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     {
         this.reAddFilteredEntries();
         this.onEntriesRefreshed();
+        this.selectEntries();
         this.notifyListWidgetFactory();
         this.reCreateListEntryWidgets();
     }
@@ -686,6 +687,10 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     }
 
     protected void reAddFilteredEntries()
+    {
+    }
+
+    protected void selectEntries()
     {
     }
 
