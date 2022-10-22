@@ -9,6 +9,7 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.RayTraceResult;
@@ -59,6 +60,11 @@ public class GameUtils
         return getClient().getConnection();
     }
 
+    public static GameSettings getOptions()
+    {
+        return getClient().gameSettings;
+    }
+
     /**
      * @return The camera entity, if it's not null, otherwise returns the client player entity.
      */
@@ -96,7 +102,12 @@ public class GameUtils
 
     public static int getRenderDistanceChunks()
     {
-        return getClient().gameSettings.renderDistanceChunks;
+        return getOptions().renderDistanceChunks;
+    }
+
+    public static int getVanillaOptionsScreenScale()
+    {
+        return GameUtils.getOptions().guiScale;
     }
 
     public static boolean isSinglePlayer()
@@ -152,7 +163,7 @@ public class GameUtils
     {
         public static boolean hideGui()
         {
-            return getClient().gameSettings.hideGUI;
+            return getOptions().hideGUI;
         }
     }
 }

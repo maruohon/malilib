@@ -73,7 +73,7 @@ public abstract class BaseScreen extends GuiScreen
     public BaseScreen()
     {
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
-        this.useCustomScreenScaling = customScale != this.mc.gameSettings.guiScale && customScale > 0;
+        this.useCustomScreenScaling = customScale != GameUtils.getVanillaOptionsScreenScale() && customScale > 0;
         this.closeButton = GenericButton.create(DefaultIcons.CLOSE_BUTTON_9, this::closeScreenOrShowParent);
         this.closeButton.translateAndAddHoverString("malilib.hover.misc.close_screen");
         this.closeButton.setPlayClickSound(false);
@@ -161,7 +161,7 @@ public abstract class BaseScreen extends GuiScreen
         if (currentValue != this.customScreenScale)
         {
             boolean oldUseCustomScale = this.useCustomScreenScaling;
-            this.useCustomScreenScaling = currentValue > 0 && currentValue != this.mc.gameSettings.guiScale;
+            this.useCustomScreenScaling = currentValue > 0 && currentValue != GameUtils.getVanillaOptionsScreenScale();
             this.customScreenScale = currentValue;
 
             if ((oldUseCustomScale || this.useCustomScreenScaling) && currentValue > 0)
@@ -477,7 +477,7 @@ public abstract class BaseScreen extends GuiScreen
 
         if (this.useCustomScreenScaling)
         {
-            RenderUtils.setupScaledScreenRendering(RenderUtils.getVanillaScreenScale());
+            RenderUtils.setupScaledScreenRendering(GuiUtils.getVanillaScreenScale());
         }
     }
 

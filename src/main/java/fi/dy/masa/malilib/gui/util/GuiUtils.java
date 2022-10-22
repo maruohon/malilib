@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
 import org.lwjgl.input.Mouse;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -36,6 +37,21 @@ public class GuiUtils
     {
         ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
         return sr.getScaledHeight();
+    }
+
+    public static int getVanillaScreenScale()
+    {
+        Minecraft mc = GameUtils.getClient();
+        int scale = Math.min(getDisplayWidth() / 320, getDisplayHeight() / 240);
+        scale = Math.min(scale, GameUtils.getVanillaOptionsScreenScale());
+        scale = Math.max(scale, 1);
+
+        if (mc.isUnicode() && (scale & 0x1) != 0 && scale > 1)
+        {
+            scale -= 1;
+        }
+
+        return scale;
     }
 
     public static int getDisplayWidth()
@@ -241,7 +257,7 @@ public class GuiUtils
 
             final GuiScreen currentScreen = getCurrentScreen();
 
-            if (GameUtils.getClient().gameSettings.chatLinksPrompt)
+            if (GameUtils.getOptions().chatLinksPrompt)
             {
                 //BaseScreen.openGui(new ConfirmActionScreen(320, "", () -> openWebLink(uri), getCurrentScreen(), ""));
                 BaseScreen.openScreen(new GuiConfirmOpenLink((result, id) -> {

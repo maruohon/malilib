@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.game.wrap.GameUtils;
 import fi.dy.masa.malilib.util.game.wrap.ItemWrap;
 
 public class ItemRenderUtils
@@ -55,7 +56,7 @@ public class ItemRenderUtils
             return;
         }
 
-        List<String> list = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        List<String> list = stack.getTooltip(mc.player, GameUtils.getOptions().advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
 
         for (int i = 0; i < list.size(); ++i)
         {

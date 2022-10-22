@@ -125,12 +125,11 @@ public class TextRenderer implements IResourceManagerReloadListener
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
     {
-        Minecraft mc = GameUtils.getClient();
-        this.unicode = mc.isUnicode();
+        this.unicode = GameUtils.getClient().isUnicode();
 
-        if (mc.gameSettings.anaglyph != this.anaglyph)
+        if (GameUtils.getOptions().anaglyph != this.anaglyph)
         {
-            this.anaglyph = mc.gameSettings.anaglyph;
+            this.anaglyph = GameUtils.getOptions().anaglyph;
             this.setColorCodes(this.anaglyph);
         }
 

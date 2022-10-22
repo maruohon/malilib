@@ -97,13 +97,12 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            Minecraft mc = ctx.getClient();
-            mc.gameSettings.showDebugInfo = ! mc.gameSettings.showDebugInfo;
+            GameUtils.getOptions().showDebugInfo = ! GameUtils.getOptions().showDebugInfo;
 
-            if (mc.gameSettings.showDebugInfo == false)
+            if (GameUtils.getOptions().showDebugInfo == false)
             {
-                mc.gameSettings.showDebugProfilerChart = false;
-                mc.gameSettings.showLagometer = false;
+                GameUtils.getOptions().showDebugProfilerChart = false;
+                GameUtils.getOptions().showLagometer = false;
             }
             return ActionResult.SUCCESS;
         }
@@ -114,12 +113,11 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            Minecraft mc = ctx.getClient();
-            mc.gameSettings.showDebugProfilerChart = ! mc.gameSettings.showDebugProfilerChart;
-            boolean state = mc.gameSettings.showDebugProfilerChart;
+            GameUtils.getOptions().showDebugProfilerChart = ! GameUtils.getOptions().showDebugProfilerChart;
+            boolean state = GameUtils.getOptions().showDebugProfilerChart;
             if (arg.equalsIgnoreCase("on")) state = true;
             else if (arg.equalsIgnoreCase("off")) state = false;
-            mc.gameSettings.showDebugInfo = state;
+            GameUtils.getOptions().showDebugInfo = state;
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -129,12 +127,11 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            Minecraft mc = ctx.getClient();
-            mc.gameSettings.showLagometer = ! mc.gameSettings.showLagometer;
-            boolean state = mc.gameSettings.showLagometer;
+            GameUtils.getOptions().showLagometer = ! GameUtils.getOptions().showLagometer;
+            boolean state = GameUtils.getOptions().showLagometer;
             if (arg.equalsIgnoreCase("on")) state = true;
             else if (arg.equalsIgnoreCase("off")) state = false;
-            mc.gameSettings.showDebugInfo = state;
+            GameUtils.getOptions().showDebugInfo = state;
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
