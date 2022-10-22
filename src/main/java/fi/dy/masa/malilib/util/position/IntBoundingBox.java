@@ -27,6 +27,36 @@ public class IntBoundingBox
         this.maxZ = maxZ;
     }
 
+    public int getMinX()
+    {
+        return this.minX;
+    }
+
+    public int getMinY()
+    {
+        return this.minY;
+    }
+
+    public int getMinZ()
+    {
+        return this.minZ;
+    }
+
+    public int getMaxX()
+    {
+        return this.maxX;
+    }
+
+    public int getMaxY()
+    {
+        return this.maxY;
+    }
+
+    public int getMaxZ()
+    {
+        return this.maxZ;
+    }
+
     public boolean containsPos(Vec3i pos)
     {
         return pos.getX() >= this.minX &&

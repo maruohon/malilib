@@ -17,34 +17,7 @@ public enum Quadrant
 
     public static Quadrant getQuadrant(int x, int z, Vec3d center)
     {
-        // West
-        if (x <= center.x)
-        {
-            // North
-            if (z <= center.z)
-            {
-                return NORTH_WEST;
-            }
-            // South
-            else
-            {
-                return SOUTH_WEST;
-            }
-        }
-        // East
-        else
-        {
-            // North
-            if (z <= center.z)
-            {
-                return NORTH_EAST;
-            }
-            // South
-            else
-            {
-                return SOUTH_EAST;
-            }
-        }
+        return getQuadrant((double) x, (double) z, center);
     }
 
     public static Quadrant getQuadrant(double x, double z, Vec3d center)

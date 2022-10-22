@@ -600,7 +600,7 @@ public class LayerRange
         return false;
     }
 
-    public boolean intersects(SubChunkPos pos)
+    public boolean intersects(ChunkSectionPos pos)
     {
         switch (this.axis)
         {

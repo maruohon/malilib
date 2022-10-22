@@ -4,29 +4,29 @@ import java.util.Comparator;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
-public class SubChunkPos extends Vec3i
+public class ChunkSectionPos extends Vec3i
 {
-    public SubChunkPos(BlockPos pos)
+    public ChunkSectionPos(BlockPos pos)
     {
         this(pos.getX() >> 4, pos.getY() >> 4, pos.getZ() >> 4);
     }
 
-    public SubChunkPos(int x, int y, int z)
+    public ChunkSectionPos(int x, int y, int z)
     {
         super(x, y, z);
     }
 
-    public static class DistanceComparator implements Comparator<SubChunkPos>
+    public static class DistanceComparator implements Comparator<ChunkSectionPos>
     {
-        private final SubChunkPos referencePosition;
+        private final ChunkSectionPos referencePosition;
 
-        public DistanceComparator(SubChunkPos referencePosition)
+        public DistanceComparator(ChunkSectionPos referencePosition)
         {
             this.referencePosition = referencePosition;
         }
 
         @Override
-        public int compare(SubChunkPos pos1, SubChunkPos pos2)
+        public int compare(ChunkSectionPos pos1, ChunkSectionPos pos2)
         {
             int x = this.referencePosition.getX();
             int y = this.referencePosition.getY();
