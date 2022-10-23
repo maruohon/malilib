@@ -130,6 +130,11 @@ public class StyledTextSegment
         return new StyledTextSegment(this.texture, style, this.glyphs, this.displayText, this.originalString);
     }
 
+    public StyledTextSegment withoutStyle()
+    {
+        return this.withStyle(TextStyle.DEFAULT);
+    }
+
     @Override
     public String toString()
     {

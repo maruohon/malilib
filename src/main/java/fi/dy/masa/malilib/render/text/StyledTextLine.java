@@ -41,13 +41,12 @@ public class StyledTextLine
     }
 
     /**
-     * Returns a sub line of this text Line.
      * @param startIndex the inclusive start index of the sub line
      * @param endIndex the exclusive end index of the sub line
-     * @return
+     * @return a slice of this text line between the given indices
      */
     @Nullable
-    public StyledTextLine getSubLine(int startIndex, int endIndex)
+    public StyledTextLine slice(int startIndex, int endIndex)
     {
         if (startIndex < 0 || startIndex >= this.glyphCount || endIndex <= startIndex)
         {
@@ -104,11 +103,20 @@ public class StyledTextLine
         return new StyledTextLine(ImmutableList.copyOf(segments));
     }
 
+    /**
+     * @return the style from the last text segment
+     */
     public TextStyle getLastStyle()
     {
         return this.segments.isEmpty() ? TextStyle.DEFAULT : this.segments.get(this.segments.size() - 1).style;
     }
 
+    /**
+     * @return a copy of the text with the given style set as the starting style.
+     * Any text segments can override properties of the starting style.
+     * The way this works is that the style from each segment is merged to the starting style
+     * to produce the final style for each segment.
+     */
     public StyledTextLine withStartingStyle(TextStyle style)
     {
         ImmutableList.Builder<StyledTextSegment> builder = ImmutableList.builder();
@@ -119,6 +127,29 @@ public class StyledTextLine
         }
 
         return new StyledTextLine(builder.build());
+    }
+
+    /**
+     * @return a copy of the text with the given style forced to each segment
+     */
+    public StyledTextLine withStyle(TextStyle style)
+    {
+        ArrayList<StyledTextSegment> segments = new ArrayList<>(this.segments.size());
+
+        for (StyledTextSegment segment : this.segments)
+        {
+            segments.add(segment.withStyle(style));
+        }
+
+        return new StyledTextLine(ImmutableList.copyOf(segments));
+    }
+
+    /**
+     * @return a copy of the text without a style (or rather with the default style)
+     */
+    public StyledTextLine withoutStyle()
+    {
+        return this.withStyle(TextStyle.DEFAULT);
     }
 
     @Override

@@ -105,7 +105,7 @@ public class StyledTextUtils
 
             endIndex += 1; // The endIndex is exclusive in the getSubLine() method
 
-            StyledTextLine subLine = line.getSubLine(lineStartIndex, endIndex);
+            StyledTextLine subLine = line.slice(lineStartIndex, endIndex);
 
             if (subLine == null || subLine.glyphCount == 0)
             {
@@ -261,6 +261,6 @@ public class StyledTextUtils
             endIndex = getLastGlyphIndexWithinWidth(0, usableWidth, line) + 1;
         }
 
-        return line.getSubLine(startIndex, endIndex).append(StyledTextLine.of(clampIndicator, line.getLastStyle()));
+        return line.slice(startIndex, endIndex).append(StyledTextLine.of(clampIndicator, line.getLastStyle()));
     }
 }
