@@ -56,7 +56,7 @@ sourceSets {
 	}
 }
 
-group = config.group + "." + config.mod_id // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = config.mod_id // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = config.mod_file_name + '-' + config.minecraft_version_out
 version = project.minecraft.mod_version
 
