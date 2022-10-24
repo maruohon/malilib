@@ -20,21 +20,13 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'maven-publish'
 
-ext.configFile = file "build.properties"
-
-configFile.withReader {
-	def prop = new Properties()
-	prop.load(it)
-	project.ext.config = new ConfigSlurper().parse prop
-}
-
 minecraft {
-	version = config.minecraft_version
-	mappings = config.mappings_version
+	version = project.minecraft_version
+	mappings = project.mappings_version
 	runDir = 'minecraft'
 	makeObfSourceJar = false
 
-	ext.mod_version = config.mod_version
+	ext.mod_version = project.mod_version
 
 	if (mod_version.endsWith('-dev')) {
 		mod_version = mod_version + "." + new Date().format('yyyyMMdd.HHmmss')
@@ -52,12 +44,12 @@ compileJava {
 
 sourceSets {
 	main {
-		ext.refMap = 'mixins.' + config.mod_id + '.refmap.json'
+		ext.refMap = 'mixins.' + project.mod_id + '.refmap.json'
 	}
 }
 
-group = config.mod_id // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = config.mod_file_name + '-' + config.minecraft_version_out
+group = project.mod_id // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = project.mod_file_name + '-' + project.minecraft_version_out
 version = project.minecraft.mod_version
 
 /**
@@ -65,17 +57,17 @@ version = project.minecraft.mod_version
  */
 litemod {
 	json {
-		name = config.mod_id
-		displayName = config.mod_name
-		mcversion = config.minecraft_version
-		version = config.mod_version
-		author = config.author
+		name = project.mod_id
+		displayName = project.mod_name
+		mcversion = project.minecraft_version
+		version = project.minecraft.mod_version
+		author = project.author
 
 		// Uncomment any of the following lines and fill in your own details as required
 		//dependsOn = [ 'modid', 'othermod' ]
 		//requiredAPIs = [ 'someapi' ]
 		//tweakClass = 'name.of.tweaker.here'
-		mixinConfigs = [ 'mixins.' + config.mod_id + '.json' ]
+		mixinConfigs = [ 'mixins.' + project.mod_id + '.json' ]
 	}
 }
 
@@ -96,7 +88,7 @@ jar {
 	manifest.mainAttributes (
 		'Built-By': System.properties['user.name'],
 		'Created-By': System.properties['java.vm.version'] + " (" + System.properties['java.vm.vendor'] + ")",
-		'Implementation-Title': config.mod_id,
+		'Implementation-Title': project.mod_id,
 		'Implementation-Version': project.version
 	)
 	*/
@@ -116,14 +108,14 @@ processResources
 
 	// this will ensure that this task is redone when the versions change.
 	inputs.property "mod_version", project.minecraft.mod_version
-	inputs.property "minecraft_version", project.config.minecraft_version
+	inputs.property "minecraft_version", project.minecraft_version
 
 	// replace stuff in mcmod.info, nothing else
 	from(sourceSets.main.resources.srcDirs) {
 		include 'mcmod.info'
 				
 		// replace version and mcversion
-		expand 'mod_version': project.minecraft.mod_version, 'minecraft_version': project.config.minecraft_version
+		expand 'mod_version': project.minecraft.mod_version, 'minecraft_version': project.minecraft_version
 	}
 	  
 	// copy everything else, thats not the mcmod.info
