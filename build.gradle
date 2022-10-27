@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '1.0-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -24,6 +24,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${config.mappings_version}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${config.fabric_loader_version}"
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
+	implementation("org.joml:joml:1.10.5")
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	//modImplementation "net.fabricmc.fabric-api:fabric-api:" + config.fabric_version

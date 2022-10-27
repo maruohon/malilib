@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.interfaces;
 import java.util.function.Supplier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 
 public interface IRenderer
 {

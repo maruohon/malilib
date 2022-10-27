@@ -39,10 +39,10 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 import net.minecraft.util.math.random.LocalRandom;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -751,8 +751,8 @@ public class RenderUtils
         globalStack.push();
         globalStack.translate(x - cx, y - cy, z - cz);
 
-        Quaternion rot = Vec3f.POSITIVE_Y.getDegreesQuaternion(-yaw);
-        rot.hamiltonProduct(Vec3f.POSITIVE_X.getDegreesQuaternion(pitch));
+        Quaternionf rot = new Quaternionf().fromAxisAngleDeg(0,1,0,-yaw);
+        rot.mul(new Quaternionf().fromAxisAngleDeg(1,0,0,pitch));
         globalStack.multiply(rot);
 
         globalStack.scale(-scale, -scale, scale);
@@ -803,7 +803,7 @@ public class RenderUtils
         }
 
         Matrix4f modelMatrix = new Matrix4f();
-        modelMatrix.loadIdentity();
+        modelMatrix.identity();
 
         for (String line : text)
         {
@@ -1005,23 +1005,23 @@ public class RenderUtils
         switch (side)
         {
             case DOWN:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f - playerFacing.asRotation()));
-                matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90f));
+                matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(0,1,0, 180f - playerFacing.asRotation()));
+                matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(1,0,0, 90f));
                 break;
             case UP:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f - playerFacing.asRotation()));
-                matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90f));
+                matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(0,1,0, 180f - playerFacing.asRotation()));
+                matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(1,0,0, -90f));
                 break;
             case NORTH:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f));
+                matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(0,1,0, 180f));
                 break;
             case SOUTH:
                 break;
             case WEST:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-90f));
+                matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(0,1,0, -90f));
                 break;
             case EAST:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90f));
+                matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(0,1,0, 90f));
                 break;
         }
 
@@ -1162,8 +1162,8 @@ public class RenderUtils
 
         setupGuiTransform(x, y, model.hasDepth(), zLevel);
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
-        matrixStack.multiply(new Quaternion(Vec3f.POSITIVE_X, 30, true));
-        matrixStack.multiply(new Quaternion(Vec3f.POSITIVE_Y, 225, true));
+        matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(1,0,0, 30));
+        matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(0,1,0, 225));
         matrixStack.scale(0.625f, 0.625f, 0.625f);
 
         renderModel(model, state);
