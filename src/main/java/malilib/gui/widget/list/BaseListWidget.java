@@ -124,8 +124,8 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         super.reAddSubWidgets();
 
         this.addWidget(this.scrollBar);
-        this.addWidgetIfNotNull(this.getSearchBarWidget());
-        this.addWidgetIfNotNull(this.headerWidget);
+        this.addWidget(this.getSearchBarWidget());
+        this.addWidget(this.headerWidget);
     }
 
     @Override

@@ -28,18 +28,19 @@ public class ContainerWidget extends InteractableWidget
         this.subWidgets.clear();
     }
 
-    public <T extends InteractableWidget> T addWidget(T widget)
+    /**
+     * Adds the widget if it's not null, and then returns it
+     */
+    @Nullable
+    public <T extends InteractableWidget> T addWidget(@Nullable T widget)
     {
-        this.subWidgets.add(widget);
-        this.onSubWidgetAdded(widget);
+        if (widget != null)
+        {
+            this.subWidgets.add(widget);
+            this.onSubWidgetAdded(widget);
+        }
 
         return widget;
-    }
-
-    @Nullable
-    public <T extends InteractableWidget> T addWidgetIfNotNull(@Nullable T widget)
-    {
-        return widget != null ? this.addWidget(widget) : null;
     }
 
     /**

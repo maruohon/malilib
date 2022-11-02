@@ -55,7 +55,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     {
         super.reAddSubWidgets();
 
-        this.addWidgetIfNotNull(this.labelWidget);
+        this.addWidget(this.labelWidget);
 
         if (this.useAddButton)
         {

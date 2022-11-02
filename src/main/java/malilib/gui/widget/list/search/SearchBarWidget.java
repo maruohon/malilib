@@ -58,7 +58,7 @@ public class SearchBarWidget extends ContainerWidget
     {
         super.reAddSubWidgets();
 
-        this.addWidgetIfNotNull(this.searchToggleButton);
+        this.addWidget(this.searchToggleButton);
 
         if (this.isSearchOpen())
         {

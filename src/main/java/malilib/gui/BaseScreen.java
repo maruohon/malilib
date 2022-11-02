@@ -765,11 +765,33 @@ public abstract class BaseScreen extends GuiScreen
         return this;
     }
 
-    public <T extends InteractableWidget> T addWidget(T widget)
+    /**
+     * Adds the widget if it's not null, and then returns it
+     */
+    @Nullable
+    public <T extends InteractableWidget> T addWidget(@Nullable T widget)
     {
-        this.widgets.add(widget);
-        widget.setTaskQueue(this::addTask);
-        widget.onWidgetAdded(this.z);
+        if (widget != null)
+        {
+            this.widgets.add(widget);
+            widget.setTaskQueue(this::addTask);
+            widget.onWidgetAdded(this.z);
+        }
+
+        return widget;
+    }
+
+    /**
+     * Only adds the widget if the condition boolean is true.
+     * This is just a small convenience helper to reduce the if-statement clutter in some cases
+     */
+    public <T extends InteractableWidget> T addWidgetIf(T widget, boolean condition)
+    {
+        if (condition)
+        {
+            this.addWidget(widget);
+        }
+
         return widget;
     }
 

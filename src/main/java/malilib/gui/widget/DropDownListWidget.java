@@ -114,7 +114,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         super.reAddSubWidgets();
 
-        this.addWidgetIfNotNull(this.currentEntryBarWidget);
+        this.addWidget(this.currentEntryBarWidget);
         this.addWidgetIf(this.openCloseButton, this.useCurrentEntryBar == false);
 
         if (this.isOpen())
@@ -797,7 +797,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         public void reAddSubWidgets()
         {
             super.reAddSubWidgets();
-            this.addWidgetIfNotNull(this.iconWidget);
+            this.addWidget(this.iconWidget);
         }
 
         @Override
