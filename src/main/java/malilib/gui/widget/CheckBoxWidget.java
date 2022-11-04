@@ -76,6 +76,15 @@ public class CheckBoxWidget extends InteractableWidget
     }
 
     public CheckBoxWidget(@Nullable String translationKey,
+                          @Nullable String hoverInfoKey,
+                          BooleanStorage booleanStorage)
+    {
+        this(translationKey, hoverInfoKey, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON);
+
+        this.setBooleanStorage(booleanStorage);
+    }
+
+    public CheckBoxWidget(@Nullable String translationKey,
                           BooleanSupplier booleanSupplier,
                           BooleanConsumer booleanConsumer)
     {
@@ -114,21 +123,24 @@ public class CheckBoxWidget extends InteractableWidget
         return this;
     }
 
-    public void setBooleanStorage(BooleanStorage storage)
+    public CheckBoxWidget setBooleanStorage(BooleanStorage storage)
     {
         this.setBooleanStorage(storage::getBooleanValue, storage::setBooleanValue);
+        return this;
     }
 
-    public void setBooleanStorage(BooleanSupplier booleanSupplier, BooleanConsumer booleanConsumer)
+    public CheckBoxWidget setBooleanStorage(BooleanSupplier booleanSupplier, BooleanConsumer booleanConsumer)
     {
         this.booleanSupplier = booleanSupplier;
         this.booleanConsumer = booleanConsumer;
         this.updateCheckBoxState();
+        return this;
     }
 
-    public void setListener(@Nullable BooleanConsumer listener)
+    public CheckBoxWidget setListener(@Nullable BooleanConsumer listener)
     {
         this.listener = listener;
+        return this;
     }
 
     public boolean isSelected()
