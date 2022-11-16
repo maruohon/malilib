@@ -33,7 +33,7 @@ public class TextFieldWrapper<T extends GuiTextFieldGeneric>
 
     public void setFocused(boolean isFocused)
     {
-        this.textField.setFocused(isFocused);
+        this.textField.setTextFieldFocused(isFocused);
     }
 
     public void onGuiClosed()
