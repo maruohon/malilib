@@ -66,7 +66,7 @@ public class WidgetDropDownList<T> extends WidgetBase
 
         TextFieldListener listener = new TextFieldListener(this);
         this.searchBar = new TextFieldWrapper<>(new GuiTextFieldGeneric(x + 1, y - 18, this.width - 2, 16, this.textRenderer), listener);
-        this.searchBar.getTextField().setFocused(true);
+        this.searchBar.getTextField().setTextFieldFocused(true);
 
         this.updateFilteredEntries();
     }

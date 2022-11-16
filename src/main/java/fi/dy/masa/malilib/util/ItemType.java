@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.util;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registries;
 
 
 /**

@@ -51,7 +51,7 @@ public class WidgetSearchBar extends WidgetBase
 
         if (this.searchOpen)
         {
-            this.searchBox.setFocused(true);
+            this.searchBox.setTextFieldFocused(true);
         }
     }
 
@@ -88,7 +88,7 @@ public class WidgetSearchBar extends WidgetBase
                 }
 
                 this.searchOpen = false;
-                this.searchBox.setFocused(false);
+                this.searchBox.setTextFieldFocused(false);
                 return true;
             }
         }
@@ -109,7 +109,7 @@ public class WidgetSearchBar extends WidgetBase
         else if (SharedConstants.isValidChar(charIn))
         {
             this.searchOpen = true;
-            this.searchBox.setFocused(true);
+            this.searchBox.setTextFieldFocused(true);
             this.searchBox.setText("");
             this.searchBox.charTyped(charIn, modifiers);
 

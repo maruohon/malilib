@@ -28,7 +28,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         int width = Math.min(maxTextLength * 10, 240);
         this.textField = new GuiTextFieldGeneric(this.dialogLeft + 12, this.dialogTop + 40, width, 20, this.textRenderer);
         this.textField.setMaxLength(maxTextLength);
-        this.textField.setFocused(true);
+        this.textField.setTextFieldFocused(true);
         this.textField.setText(this.originalText);
         this.setZOffset(1);
     }
@@ -42,8 +42,6 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         x += this.createButton(x, y, ButtonType.OK) + 2;
         x += this.createButton(x, y, ButtonType.RESET) + 2;
         this.createButton(x, y, ButtonType.CANCEL);
-
-        this.mc.keyboard.setRepeatEvents(true);
     }
 
     protected int createButton(int x, int y, ButtonType type)
@@ -167,7 +165,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             else if (this.type == ButtonType.RESET)
             {
                 this.gui.textField.setText(this.gui.originalText);
-                this.gui.textField.setFocused(true);
+                this.gui.textField.setTextFieldFocused(true);
             }
         }
     }

@@ -102,7 +102,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
                 if (textField.isFocused())
                 {
                     currentIndex = i;
-                    textField.setFocused(false);
+                    textField.setTextFieldFocused(false);
                     break;
                 }
             }
@@ -120,7 +120,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
                     newIndex = size - 1;
                 }
 
-                this.textFields.get(newIndex).getTextField().setFocused(true);
+                this.textFields.get(newIndex).getTextField().setTextFieldFocused(true);
                 this.applyPendingModifications();
 
                 return true;
@@ -140,7 +140,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
             if (textField.isFocused())
             {
-                textField.setFocused(false);
+                textField.setTextFieldFocused(false);
                 break;
             }
         }

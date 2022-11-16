@@ -71,11 +71,6 @@ public class GuiTextFieldGeneric extends TextFieldWidget
     {
         boolean wasFocused = this.isFocused();
         super.setFocused(isFocusedIn);
-
-        if (this.isFocused() != wasFocused)
-        {
-            MinecraftClient.getInstance().keyboard.setRepeatEvents(this.isFocused());
-        }
     }
 
     public int getCursorPosition()

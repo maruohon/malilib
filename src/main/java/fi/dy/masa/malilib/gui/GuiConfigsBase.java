@@ -113,14 +113,6 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     }
 
     @Override
-    public void initGui()
-    {
-        super.initGui();
-
-        this.client.keyboard.setRepeatEvents(true);
-    }
-
-    @Override
     public void removed()
     {
         if (this.getListWidget().wereConfigsModified())
@@ -129,8 +121,6 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
             this.onSettingsChanged();
             this.getListWidget().clearConfigsModifiedFlag();
         }
-
-        this.client.keyboard.setRepeatEvents(false);
     }
 
     protected void onSettingsChanged()
