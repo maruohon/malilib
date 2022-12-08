@@ -46,8 +46,6 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         x += buttonWidth + 10;
 
         this.createButton(x, y, buttonWidth, ButtonType.CANCEL);
-
-        this.mc.keyboard.setRepeatEvents(true);
     }
 
     public void setTextColor(int textColor)

@@ -42,8 +42,6 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         x += this.createButton(x, y, ButtonType.OK) + 2;
         x += this.createButton(x, y, ButtonType.RESET) + 2;
         this.createButton(x, y, ButtonType.CANCEL);
-
-        this.mc.keyboard.setRepeatEvents(true);
     }
 
     protected int createButton(int x, int y, ButtonType type)

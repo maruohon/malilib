@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -66,16 +65,11 @@ public class GuiTextFieldGeneric extends TextFieldWidget
                mouseY >= this.y && mouseY < this.y + this.height;
     }
 
+    // Make public
     @Override
     public void setFocused(boolean isFocusedIn)
     {
-        boolean wasFocused = this.isFocused();
         super.setFocused(isFocusedIn);
-
-        if (this.isFocused() != wasFocused)
-        {
-            MinecraftClient.getInstance().keyboard.setRepeatEvents(this.isFocused());
-        }
     }
 
     public int getCursorPosition()
