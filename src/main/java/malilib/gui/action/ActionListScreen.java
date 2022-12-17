@@ -1,6 +1,6 @@
 package malilib.gui.action;
 
-import java.util.Set;
+import java.util.Collection;
 import com.google.common.collect.ImmutableList;
 
 import malilib.MaLiLibConfigScreen;
@@ -100,12 +100,12 @@ public class ActionListScreen extends BaseActionListScreen
 
     protected boolean canCreateMacro()
     {
-        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntries().isEmpty() == false;
+        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntryCount() > 0;
     }
 
     protected boolean canExecuteAction()
     {
-        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntries().size() == 1;
+        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntryCount() == 1;
     }
 
     protected void executeSelectedAction()
@@ -131,7 +131,7 @@ public class ActionListScreen extends BaseActionListScreen
 
     protected boolean openMacroEditScreen(String macroName)
     {
-        Set<NamedAction> actions = this.leftSideListWidget.getSelectedEntries();
+        Collection<NamedAction> actions = this.leftSideListWidget.getSelectedEntries();
         MacroAction macro = new MacroAction(macroName, ImmutableList.copyOf(actions));
 
         if (Registry.ACTION_REGISTRY.addMacro(macro))

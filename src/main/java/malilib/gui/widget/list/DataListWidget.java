@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -32,10 +31,10 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected SortDirection sortDirection = SortDirection.ASCENDING;
     protected EntryFilter<DATATYPE> entryFilter;
     protected Function<DATATYPE, List<String>> entrySearchStringFunction = (e) -> Collections.singletonList(e.toString());
+    @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
     @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> headerWidgetFactory;
     @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> defaultHeaderWidgetFactory;
     @Nullable protected DataListEntryWidgetFactory<DATATYPE> dataListEntryWidgetFactory;
-    @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
     @Nullable protected ListEntryWidgetInitializer<DATATYPE> widgetInitializer;
     @Nullable protected Supplier<List<DataColumn<DATATYPE>>> columnSupplier;
     @Nullable protected DataColumn<DATATYPE> activeSortColumn;
@@ -254,10 +253,10 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return handler != null ? handler.getLastSelectedEntry() : null;
     }
 
-    public Set<DATATYPE> getSelectedEntries()
+    public List<DATATYPE> getSelectedEntries()
     {
         DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
-        return handler != null ? handler.getSelectedEntries() : Collections.emptySet();
+        return handler != null ? handler.getSelectedEntries() : Collections.emptyList();
     }
 
     @Nullable

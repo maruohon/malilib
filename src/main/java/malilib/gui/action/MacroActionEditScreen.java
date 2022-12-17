@@ -1,6 +1,7 @@
 package malilib.gui.action;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -104,12 +105,12 @@ public class MacroActionEditScreen extends BaseActionListScreen
 
     protected boolean canAddActions()
     {
-        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntries().isEmpty() == false;
+        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntryCount() > 0;
     }
 
     protected void addSelectedActions()
     {
-        Set<NamedAction> selectedActions = this.leftSideListWidget.getSelectedEntries();
+        Collection<NamedAction> selectedActions = this.leftSideListWidget.getSelectedEntries();
 
         if (selectedActions.isEmpty() == false)
         {

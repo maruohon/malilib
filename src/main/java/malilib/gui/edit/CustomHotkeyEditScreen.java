@@ -1,8 +1,8 @@
 package malilib.gui.edit;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
@@ -95,12 +95,12 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
 
     protected boolean canAddActions()
     {
-        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntries().isEmpty() == false;
+        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntryCount() > 0;
     }
 
     protected void addSelectedActions()
     {
-        Set<NamedAction> selectedActions = this.leftSideListWidget.getSelectedEntries();
+        Collection<NamedAction> selectedActions = this.leftSideListWidget.getSelectedEntries();
 
         if (selectedActions.isEmpty() == false)
         {

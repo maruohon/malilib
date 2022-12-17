@@ -1,12 +1,12 @@
 package malilib.gui.widget.list;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.AbstractIntCollection;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
@@ -17,7 +17,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
     protected final IntOpenHashSet selectedEntryIndices = new IntOpenHashSet();
     protected final Supplier<List<DATATYPE>> dataListSupplier;
 
-    @Nullable protected Set<DATATYPE> selectedEntries;
+    @Nullable protected List<DATATYPE> selectedEntries;
     @Nullable protected SelectionListener<DATATYPE> selectionListener;
     @Nullable protected DATATYPE lastSelectedEntry;
     protected boolean allowMultiSelection;
@@ -90,7 +90,12 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return this.lastSelectedEntry;
     }
 
-    public Set<DATATYPE> getSelectedEntries()
+    public List<DATATYPE> getDataList()
+    {
+        return this.dataListSupplier.get();
+    }
+
+    public List<DATATYPE> getSelectedEntries()
     {
         if (this.selectedEntries == null)
         {
@@ -100,14 +105,19 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return this.selectedEntries;
     }
 
-    public Set<Integer> getSelectedEntryIndices()
+    public IntOpenHashSet getSelectedEntryIndices()
     {
         return this.selectedEntryIndices;
     }
 
+    public int getSelectedEntryCount()
+    {
+        return this.selectedEntryIndices.size();
+    }
+
     public int getListSize()
     {
-        return this.dataListSupplier.get().size();
+        return this.getDataList().size();
     }
 
     public boolean isEntrySelected(@Nullable DATATYPE entry)
@@ -117,7 +127,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
             return false;
         }
 
-        Set<DATATYPE> selectedEntries = this.getSelectedEntries();
+        Collection<DATATYPE> selectedEntries = this.getSelectedEntries();
         return this.allowMultiSelection ? selectedEntries.contains(entry) : entry.equals(this.getLastSelectedEntry());
     }
 
@@ -126,59 +136,89 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return this.allowMultiSelection ? this.selectedEntryIndices.contains(listIndex) : listIndex == this.lastSelectedEntryIndex;
     }
 
+    /**
+     * Selects exactly one entry, if the given entry is not null and can be found on the list.
+     * If the given entry is null, then the selection is cleared.
+     */
     public void setSelectedEntry(@Nullable DATATYPE entry)
     {
         if (entry != null)
         {
-            int index = this.dataListSupplier.get().indexOf(entry);
-
-            if (index >= 0)
-            {
-                this.setSelectedEntry(index);
-            }
+            int index = this.getDataList().indexOf(entry);
+            this.setSelectedEntryByIndex(index);
+        }
+        else
+        {
+            this.clearSelection();
         }
     }
 
-    public void setSelectedEntry(int listIndex)
+    /**
+     * Selects exactly one entry, if the given index is valid, otherwise the selection is cleared.
+     */
+    public void setSelectedEntryByIndex(int listIndex)
     {
-        IntArrayList list = new IntArrayList();
-        list.add(listIndex);
-        this.setSelectedEntriesByIndices(list);
+        this.clearSelection();
+
+        if (listIndex >= 0 && listIndex < this.getListSize())
+        {
+            this.selectedEntryIndices.add(listIndex);
+        }
     }
 
     /**
      * Set the selected entries by finding their indices from the list.
-     * Note that this will only select the first occurrence of each entry.
+     * Note that this will only select the first occurrence of each entry if selectAllMatches is false,
+     * and it will select all occurrences if it's true.
      * If the backing list contains multiple identical entries, and you want to select
-     * more than one of them, then you need to use the
-     * {@link #setSelectedEntriesByIndices(it.unimi.dsi.fastutil.ints.IntArrayList)} method instead.
+     * more than one but not all of a given equal-considered entry, then you need to use the
+     * {@link #setSelectedEntriesByIndices(it.unimi.dsi.fastutil.ints.AbstractIntCollection)}
+     * method instead to select them by the indices.
      */
-    public void setSelectedEntries(Collection<DATATYPE> entries)
+    public void setSelectedEntries(Collection<DATATYPE> entries, boolean selectAllMatches)
     {
         this.clearSelection();
 
-        List<DATATYPE> list = this.dataListSupplier.get();
+        List<DATATYPE> list = this.getDataList();
         ObjectOpenHashSet<DATATYPE> set = new ObjectOpenHashSet<>(list);
+        final int size = list.size();
 
         for (DATATYPE e : entries)
         {
-            if (set.contains(e))
+            if (set.contains(e) == false)
             {
-                int index = list.indexOf(e);
+                continue;
+            }
 
-                if (index >= 0)
+            int index = list.indexOf(e);
+
+            if (index >= 0)
+            {
+                this.selectedEntryIndices.add(index);
+
+                if (selectAllMatches)
                 {
-                    this.selectedEntryIndices.add(index);
+                    for (int i = index + 1; i < size; ++i)
+                    {
+                        if (Objects.equals(list.get(i), e))
+                        {
+                            this.selectedEntryIndices.add(i);
+                        }
+                    }
                 }
             }
         }
     }
 
-    public void setSelectedEntriesByIndices(IntArrayList indices)
+    /**
+     * Sets the selection to the given list of indices (for any indices on the list that are in the valid range).
+     * The old selection is cleared first.
+     */
+    public void setSelectedEntriesByIndices(AbstractIntCollection indices)
     {
         this.clearSelection();
 
-        int listSize = this.dataListSupplier.get().size();
+        int listSize = this.getListSize();
 
         for (int index : indices)
         {
@@ -246,7 +286,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
             this.clearSelection();
         }
 
-        List<DATATYPE> dataList = this.dataListSupplier.get();
+        List<DATATYPE> dataList = this.getDataList();
         boolean validIndex = listIndex >= 0 && listIndex < dataList.size();
         boolean unselect = validIndex == false ||
                            listIndex == this.lastSelectedEntryIndex ||
@@ -318,10 +358,10 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return false;
     }
 
-    protected Set<DATATYPE> rebuildSelectedEntries()
+    protected List<DATATYPE> rebuildSelectedEntries()
     {
-        Set<DATATYPE> selectedEntries = new HashSet<>();
-        List<DATATYPE> dataList = this.dataListSupplier.get();
+        List<DATATYPE> selectedEntries = new ArrayList<>();
+        List<DATATYPE> dataList = this.getDataList();
         final int size = dataList.size();
 
         for (int index : this.selectedEntryIndices)

@@ -468,7 +468,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         if (listIndex >= 0 && handler.isEntrySelected(listIndex) == false)
         {
             handler.clearSelection();
-            handler.setSelectedEntry(listIndex);
+            handler.setSelectedEntryByIndex(listIndex);
         }
 
         List<MenuEntryWidget> entries = new ArrayList<>(listIndex >= 0 ?
