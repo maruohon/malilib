@@ -10,7 +10,6 @@ import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -105,7 +104,7 @@ public class OverlayRendererContainer
         if (this.canRender == false)
         {
             // Don't render before the player has been placed in the actual proper position,
-            // otherwise some of the renderers mess up.
+            // otherwise some renderers will mess up.
             // The magic 8.5, 65, 8.5 comes from the ClientWorld constructor
             if (System.nanoTime() - this.loginTime >= 5000000000L ||
                 EntityWrap.getX(cameraEntity) != 8.5 ||
@@ -141,19 +140,17 @@ public class OverlayRendererContainer
         this.checkVideoSettings();
         this.countActive = 0;
 
-        Minecraft mc = GameUtils.getClient();
-
         for (BaseOverlayRenderer renderer : this.enabledRenderers)
         {
             GameUtils.profilerPush(() -> renderer.getClass().getName());
 
-            if (renderer.shouldRender(mc))
+            if (renderer.shouldRender())
             {
-                if (renderer.needsUpdate(entity, mc))
+                if (renderer.needsUpdate(entity))
                 {
                     renderer.setLastUpdatePos(EntityWrap.getEntityBlockPos(entity));
                     renderer.setUpdatePosition(cameraPos);
-                    renderer.update(cameraPos, entity, mc);
+                    renderer.update(cameraPos, entity);
                 }
 
                 ++this.countActive;
@@ -189,13 +186,12 @@ public class OverlayRendererContainer
             double cx = cameraPos.x;
             double cy = cameraPos.y;
             double cz = cameraPos.z;
-            Minecraft mc = GameUtils.getClient();
 
             for (BaseOverlayRenderer renderer : this.enabledRenderers)
             {
                 GameUtils.profilerPush(() -> renderer.getClass().getName());
 
-                if (renderer.shouldRender(mc))
+                if (renderer.shouldRender())
                 {
                     Vec3d updatePos = renderer.getUpdatePosition();
                     GlStateManager.pushMatrix();

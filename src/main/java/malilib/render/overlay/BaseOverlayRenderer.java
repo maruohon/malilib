@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -84,18 +83,18 @@ public abstract class BaseOverlayRenderer
     public abstract Path getSaveFile(boolean isDimensionChangeOnly);
 
     /**
-     * Should this renderer draw anything at the moment, ie. is it enabled for example
+     * Should this renderer draw anything at the moment, i.e. is it enabled for example
      */
-    public abstract boolean shouldRender(Minecraft mc);
+    public abstract boolean shouldRender();
 
     /**
      * @return true, if this renderer should get re-drawn/updated
      */
-    public abstract boolean needsUpdate(Entity entity, Minecraft mc);
+    public abstract boolean needsUpdate(Entity entity);
 
     /**
      * Update the renderer (draw again to the buffers). This method is called
-     * when {@link BaseOverlayRenderer#needsUpdate(Entity, Minecraft)} returns true.
+     * when {@link BaseOverlayRenderer#needsUpdate(Entity)} returns true.
      * 
      * @param cameraPos The position of the camera when the method is called.
      *                  The camera position should be subtracted from any world coordinates for the vertex positions.
@@ -104,7 +103,7 @@ public abstract class BaseOverlayRenderer
      *                  and the camera position during the draw() call.
      * @param entity The current camera entity
      */
-    public abstract void update(Vec3d cameraPos, Entity entity, Minecraft mc);
+    public abstract void update(Vec3d cameraPos, Entity entity);
 
     protected void preRender()
     {
