@@ -10,7 +10,6 @@ import malilib.gui.BaseScreen;
 import malilib.gui.TextInputScreen;
 import malilib.gui.action.MacroActionEditScreen;
 import malilib.gui.icon.DefaultIcons;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.entry.BaseOrderableListEditEntryWidget;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
@@ -157,9 +156,8 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     protected void openAddAliasScreen()
     {
         TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_alias_action", "", this::addAlias);
-        screen.setParent(GuiUtils.getCurrentScreen());
         screen.setLabelText("malilib.label.actions.create_alias.alias_name");
-        BaseScreen.openPopupScreen(screen);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
     }
 
     protected boolean addAlias(String aliasName)

@@ -646,8 +646,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                                                      ActionExecutionWidgetManager::createActionWidgetScreen);
         screen.setInfoText(StyledText.translate("malilib.info.action.create_action_widget_screen.name_is_final"));
         screen.setLabelText(StyledText.translate("malilib.label.misc.name.colon"));
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openPopupScreen(screen);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
     }
 
     public static ActionResult openActionWidgetScreen(ActionContext ctx, String arg)
@@ -657,8 +656,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         if (data != null)
         {
             MaLiLibConfigs.Internal.PREVIOUS_ACTION_WIDGET_SCREEN.setValue(arg);
-            ActionWidgetScreen screen = new ActionWidgetScreen(arg, data);
-            BaseScreen.openScreen(screen);
+            BaseScreen.openScreen(new ActionWidgetScreen(arg, data));
             return ActionResult.SUCCESS;
         }
         else

@@ -404,7 +404,7 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void openParentScreen()
     {
-        openScreen(this.parent);
+        openScreen(this.getParent());
     }
 
     protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY,
@@ -930,11 +930,10 @@ public abstract class BaseScreen extends GuiScreen
         return true;
     }
 
-    public static boolean openScreenWithParent(@Nullable BaseScreen screen)
+    public static boolean openScreenWithParent(BaseScreen screen)
     {
         screen.setParent(GuiUtils.getCurrentScreen());
-        GameUtils.getClient().displayGuiScreen(screen);
-        return true;
+        return openScreen(screen);
     }
 
     public static ActionResult openScreenAction(@Nullable GuiScreen screen)
@@ -965,6 +964,12 @@ public abstract class BaseScreen extends GuiScreen
         screen.setShouldRenderParent(shouldRenderParent);
         screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
         return openScreen(screen);
+    }
+
+    public static boolean openPopupScreenWithCurrentScreenAsParent(BaseScreen screen)
+    {
+        screen.setParent(GuiUtils.getCurrentScreen());
+        return openPopupScreen(screen, true);
     }
 
     public static void applyCustomScreenScaleChange()

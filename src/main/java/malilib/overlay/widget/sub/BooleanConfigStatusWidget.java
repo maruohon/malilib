@@ -8,7 +8,6 @@ import malilib.config.option.BooleanConfig;
 import malilib.gui.BaseScreen;
 import malilib.gui.config.indicator.BooleanConfigStatusIndicatorEditScreen;
 import malilib.gui.icon.DefaultIcons;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.button.OnOffButton;
 import malilib.render.ShapeRenderUtils;
@@ -72,9 +71,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     @Override
     public void openEditScreen()
     {
-        BooleanConfigStatusIndicatorEditScreen<?> screen = new BooleanConfigStatusIndicatorEditScreen<>(this);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(new BooleanConfigStatusIndicatorEditScreen<>(this));
     }
 
     @Override

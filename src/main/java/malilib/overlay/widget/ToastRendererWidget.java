@@ -12,7 +12,6 @@ import malilib.config.value.HorizontalAlignment;
 import malilib.config.value.ScreenLocation;
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.overlay.ToastRendererWidgetEditScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import malilib.overlay.message.MessageDispatcher;
@@ -304,9 +303,7 @@ public class ToastRendererWidget extends InfoRendererWidget
     @Override
     public void openEditScreen()
     {
-        ToastRendererWidgetEditScreen screen = new ToastRendererWidgetEditScreen(this);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(new ToastRendererWidgetEditScreen(this));
     }
 
     @Override

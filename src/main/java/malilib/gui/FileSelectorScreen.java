@@ -123,14 +123,14 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 
             if (this.fileConsumer.applyAsBoolean(dir.resolve(name)))
             {
-                openScreen(this.getParent());
+                this.openParentScreen();
             }
         }
         else if (entry != null && entry.getType() == BaseFileBrowserWidget.DirectoryEntryType.FILE)
         {
             if (this.fileConsumer.applyAsBoolean(entry.getFullPath()))
             {
-                openScreen(this.getParent());
+                this.openParentScreen();
             }
         }
         else

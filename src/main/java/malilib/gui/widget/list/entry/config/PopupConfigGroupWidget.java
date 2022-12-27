@@ -52,8 +52,7 @@ public class PopupConfigGroupWidget extends BaseConfigWidget<PopupConfigGroup>
         screen.setScreenWidth(Math.max(520, GuiUtils.getScaledWindowWidth() - 80));
         screen.setConfigs(this.config.getConfigs());
         screen.setTitle(this.config.getDisplayName());
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openPopupScreen(screen);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
     }
 
     protected List<StyledTextLine> getContainedConfigsHoverInfo()

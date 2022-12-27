@@ -4,7 +4,6 @@ import malilib.config.value.OptionListConfigValue;
 import malilib.config.value.ScreenLocation;
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.EdgeIntEditScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.ColorIndicatorWidget;
 import malilib.gui.widget.DoubleEditWidget;
@@ -214,15 +213,13 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getMargin(), false,
                                                          "malilib.title.screen.edit_margin", "malilib.label.misc.margin");
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(screen);
     }
 
     protected void openPaddingEditScreen()
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getPadding(), false,
                                                          "malilib.title.screen.edit_padding", "malilib.label.misc.padding");
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(screen);
     }
 }

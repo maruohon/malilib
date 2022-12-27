@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import malilib.MaLiLibReference;
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.overlay.MessageRendererWidgetEditScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import malilib.overlay.message.Message;
@@ -59,9 +58,7 @@ public class MessageRendererWidget extends InfoRendererWidget
     @Override
     public void openEditScreen()
     {
-        MessageRendererWidgetEditScreen screen = new MessageRendererWidgetEditScreen(this);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(new MessageRendererWidgetEditScreen(this));
     }
 
     public void clearMessages()

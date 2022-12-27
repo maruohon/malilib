@@ -22,7 +22,6 @@ import malilib.gui.BaseScreen;
 import malilib.gui.config.ConfigTab;
 import malilib.gui.config.indicator.ConfigStatusIndicatorGroupEditScreen;
 import malilib.gui.config.indicator.ConfigStatusWidgetFactory;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import malilib.input.ActionResult;
@@ -114,9 +113,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     @Override
     public void openEditScreen()
     {
-        ConfigStatusIndicatorGroupEditScreen screen = new ConfigStatusIndicatorGroupEditScreen(this);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(new ConfigStatusIndicatorGroupEditScreen(this));
     }
 
     @Override

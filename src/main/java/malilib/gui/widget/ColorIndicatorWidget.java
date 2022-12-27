@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import malilib.config.option.ColorConfig;
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.ColorEditorHSVScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.render.ShapeRenderUtils;
 import malilib.util.data.Color4f;
@@ -47,9 +46,7 @@ public class ColorIndicatorWidget extends InteractableWidget
         if (this.config == null || this.config.isLocked() == false)
         {
             int originalColor = this.valueSupplier.getAsInt();
-            ColorEditorHSVScreen screen = new ColorEditorHSVScreen(originalColor, this.valueConsumer);
-            screen.setParent(GuiUtils.getCurrentScreen());
-            BaseScreen.openPopupScreen(screen);
+            BaseScreen.openPopupScreenWithCurrentScreenAsParent(new ColorEditorHSVScreen(originalColor, this.valueConsumer));
         }
     }
 

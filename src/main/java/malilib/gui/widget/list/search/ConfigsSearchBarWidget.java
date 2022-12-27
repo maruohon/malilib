@@ -14,7 +14,6 @@ import malilib.gui.ConfirmActionScreen;
 import malilib.gui.config.ConfigSearchInfo;
 import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.icon.MultiIcon;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.DropDownListWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.button.KeyBindConfigButton;
@@ -225,8 +224,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         String title = "malilib.title.screen.confirm_config_reset";
         String message = "malilib.label.confirm.selected_configs_reset";
         ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240, title, this.configResetter, message);
-        confirmScreen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openPopupScreen(confirmScreen);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(confirmScreen);
     }
 
     public static class Scope extends BaseOptionListConfigValue

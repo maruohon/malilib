@@ -8,7 +8,6 @@ import malilib.MaLiLibReference;
 import malilib.config.value.OptionListConfigValue;
 import malilib.gui.BaseScreen;
 import malilib.gui.config.KeybindSettingsScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.input.CancelCondition;
 import malilib.input.KeyBind;
@@ -39,9 +38,7 @@ public class KeybindSettingsWidget extends InteractableWidget
     {
         if (mouseButton == 0)
         {
-            KeybindSettingsScreen screen = new KeybindSettingsScreen(this.keyBind, this.keyBindName);
-            screen.setParent(GuiUtils.getCurrentScreen());
-            BaseScreen.openPopupScreen(screen);
+            BaseScreen.openPopupScreenWithCurrentScreenAsParent(new KeybindSettingsScreen(this.keyBind, this.keyBindName));
 
             return true;
         }

@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.EdgeIntEditScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
@@ -38,8 +37,7 @@ public class QuadColorIndicatorWidget extends InteractableWidget
         String title = "malilib.title.screen.edit_edge_colors";
         String centerStr = "malilib.label.misc.colors";
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.colorStorage, true, title, centerStr);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openPopupScreen(screen);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
     }
 
     @Override

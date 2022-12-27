@@ -14,7 +14,6 @@ import malilib.gui.config.BaseConfigTab;
 import malilib.gui.config.ConfigTab;
 import malilib.gui.config.indicator.BaseConfigStatusIndicatorEditScreen;
 import malilib.gui.config.indicator.ConfigStatusWidgetFactory;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.overlay.widget.BaseOverlayWidget;
 import malilib.registry.Registry;
@@ -128,9 +127,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
 
     public void openEditScreen()
     {
-        BaseConfigStatusIndicatorEditScreen<?> screen = new BaseConfigStatusIndicatorEditScreen<>(this);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(new BaseConfigStatusIndicatorEditScreen<>(this));
     }
 
     public abstract void updateState(boolean force);

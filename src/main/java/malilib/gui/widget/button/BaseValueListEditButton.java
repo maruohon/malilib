@@ -11,7 +11,6 @@ import malilib.config.option.list.ValueListConfig;
 import malilib.gui.BaseScreen;
 import malilib.gui.config.BaseValueListEditScreen;
 import malilib.gui.config.BaseValueListEditScreen.ValueListEditEntryWidgetFactory;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.DropDownListWidget.IconWidgetFactory;
 import malilib.gui.widget.list.entry.BaseValueListEditEntryWidget;
 import malilib.listener.EventListener;
@@ -77,9 +76,7 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
 
     protected void openEditScreen()
     {
-        BaseScreen screen = this.createScreen();
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openPopupScreen(screen);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(this.createScreen());
     }
 
     protected String getCurrentDisplayString()

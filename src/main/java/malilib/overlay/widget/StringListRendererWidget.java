@@ -8,7 +8,6 @@ import malilib.MaLiLibReference;
 import malilib.config.value.ScreenLocation;
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.overlay.StringListRendererWidgetEditScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import malilib.render.ShapeRenderUtils;
@@ -112,9 +111,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     @Override
     public void openEditScreen()
     {
-        StringListRendererWidgetEditScreen screen = new StringListRendererWidgetEditScreen(this);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(new StringListRendererWidgetEditScreen(this));
     }
 
     /**

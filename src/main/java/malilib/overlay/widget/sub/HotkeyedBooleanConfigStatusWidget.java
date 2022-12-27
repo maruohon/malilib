@@ -9,7 +9,6 @@ import malilib.config.option.BooleanConfig;
 import malilib.config.option.HotkeyedBooleanConfig;
 import malilib.gui.BaseScreen;
 import malilib.gui.config.indicator.HotkeyedBooleanConfigStatusIndicatorEditScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.input.KeyBind;
 import malilib.render.text.StyledTextLine;
@@ -66,9 +65,7 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
     @Override
     public void openEditScreen()
     {
-        HotkeyedBooleanConfigStatusIndicatorEditScreen screen = new HotkeyedBooleanConfigStatusIndicatorEditScreen(this);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(new HotkeyedBooleanConfigStatusIndicatorEditScreen(this));
     }
 
     @Override

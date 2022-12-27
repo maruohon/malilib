@@ -6,7 +6,6 @@ import malilib.action.MacroAction;
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.CustomHotkeyEditScreen;
 import malilib.gui.edit.CustomHotkeysListScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.KeybindSettingsWidget;
 import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
@@ -109,8 +108,6 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
     protected void editHotkey()
     {
-        CustomHotkeyEditScreen screen = new CustomHotkeyEditScreen(this.data);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreenWithParent(new CustomHotkeyEditScreen(this.data));
     }
 }

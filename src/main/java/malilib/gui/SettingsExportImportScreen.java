@@ -212,8 +212,7 @@ public class SettingsExportImportScreen extends TextInputScreen
 
     protected void readFromFile()
     {
-        FileSelectorScreen screen = this.createFileSelectorScreen(this::setStringFromFile);
-        openScreen(screen);
+        openScreen(this.createFileSelectorScreen(this::setStringFromFile));
     }
 
     protected void writeToFile()

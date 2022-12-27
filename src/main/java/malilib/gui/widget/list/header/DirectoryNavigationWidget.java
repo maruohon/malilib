@@ -14,7 +14,6 @@ import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.FileBrowserIconProvider;
 import malilib.gui.icon.FileBrowserIconProvider.FileBrowserIconType;
 import malilib.gui.icon.MultiIcon;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.DropDownListWidget;
 import malilib.gui.widget.InfoIconWidget;
@@ -91,8 +90,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             {
                 DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this.navigator);
                 TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_directory", "", creator);
-                screen.setParent(GuiUtils.getCurrentScreen());
-                BaseScreen.openPopupScreen(screen);
+                BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
             }
         });
 

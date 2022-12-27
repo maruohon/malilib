@@ -9,7 +9,6 @@ import malilib.config.option.BaseGenericConfig;
 import malilib.gui.BaseScreen;
 import malilib.gui.DirectorySelectorScreen;
 import malilib.gui.config.ConfigWidgetContext;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.util.FileUtils;
@@ -86,10 +85,7 @@ public abstract class BaseFileConfigWidget<T, CFG extends BaseGenericConfig<T>> 
     {
         Path rootDir = FileUtils.getRootDirectory();
         Path dir = this.getDirectoryFromConfig(rootDir);
-
-        BaseScreen browserScreen = this.createScreen(dir, rootDir);
-        browserScreen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(browserScreen);
+        BaseScreen.openScreenWithParent(this.createScreen(dir, rootDir));
     }
 
     protected boolean onPathSelected(Path file)

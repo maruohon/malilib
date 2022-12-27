@@ -6,7 +6,6 @@ import java.util.List;
 import malilib.config.option.list.BlackWhiteListConfig;
 import malilib.gui.BaseScreen;
 import malilib.gui.config.BlackWhiteListEditScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.listener.EventListener;
 import malilib.util.StringUtils;
 import malilib.util.restriction.UsageRestriction.ListType;
@@ -30,9 +29,7 @@ public class BlackWhiteListEditButton extends GenericButton
 
     protected void openEditScreen()
     {
-        BlackWhiteListEditScreen<?> screen = new BlackWhiteListEditScreen<>(this.config, this.saveListener);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openPopupScreen(screen);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(new BlackWhiteListEditScreen<>(this.config, this.saveListener));
     }
 
     protected String getCurrentDisplayString()

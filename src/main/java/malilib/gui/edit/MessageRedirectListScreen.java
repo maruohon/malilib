@@ -78,8 +78,7 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
 
     public static ActionResult openMessageRedirectListScreenAction(ActionContext ctx)
     {
-        MessageRedirectListScreen screen = new MessageRedirectListScreen();
-        BaseScreen.openScreen(screen);
+        BaseScreen.openScreen(new MessageRedirectListScreen());
         return ActionResult.SUCCESS;
     }
 }

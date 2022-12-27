@@ -26,7 +26,7 @@ public class DirectorySelectorScreen extends FileSelectorScreen
     {
         if (this.fileConsumer.applyAsBoolean(this.getListWidget().getCurrentDirectory()))
         {
-            openScreen(this.getParent());
+            this.openParentScreen();
         }
     }
 }

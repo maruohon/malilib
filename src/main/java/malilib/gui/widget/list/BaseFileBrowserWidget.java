@@ -25,7 +25,6 @@ import malilib.gui.ConfirmActionScreen;
 import malilib.gui.TextInputScreen;
 import malilib.gui.icon.DefaultFileBrowserIconProvider;
 import malilib.gui.icon.FileBrowserIconProvider;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.MenuEntryWidget;
 import malilib.gui.widget.MenuWidget;
 import malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
@@ -556,8 +555,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                                              this::executeDeleteFiles,
                                                              "malilib.label.confirm.file_deletion",
                                                              this.operatedOnFiles.size());
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openPopupScreen(screen);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
     }
 
     protected boolean executeDeleteFiles()
@@ -594,9 +592,8 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         screen.setLabelText(StyledText.translate("malilib.label.file_browser.rename.new_name"));
         screen.setConfirmListener(task::advance);
         screen.setCancelListener(task::cancel);
-        screen.setParent(GuiUtils.getCurrentScreen());
 
-        BaseScreen.openPopupScreen(screen);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
     }
 
     protected boolean renameFile(Path file, String newName)
@@ -760,8 +757,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         {
             DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this);
             TextInputScreen screen = new TextInputScreen("malilib.title.screen.create_directory", "", creator);
-            screen.setParent(GuiUtils.getCurrentScreen());
-            BaseScreen.openPopupScreen(screen);
+            BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
             return true;
         }
 

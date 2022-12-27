@@ -81,7 +81,7 @@ public class ConfirmActionScreen extends BaseScreen
 
     protected void onConfirm()
     {
-        BaseScreen.openScreen(this.getParent());
+        this.openParentScreen();
 
         if (this.confirmListener != null)
         {
@@ -91,7 +91,7 @@ public class ConfirmActionScreen extends BaseScreen
 
     protected void onCancel()
     {
-        BaseScreen.openScreen(this.getParent());
+        this.openParentScreen();
 
         if (this.cancelListener != null)
         {
