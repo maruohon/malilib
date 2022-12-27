@@ -15,7 +15,7 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
 {
     protected final ArrayList<ConfigInfo> configs = new ArrayList<>();
     protected final ModInfo modInfo;
-    @Nullable protected KeybindEditingScreen keyBindEditingScreen;
+    @Nullable protected KeybindEditScreen keyBindEditScreen;
     protected int elementsWidth = 200;
 
     public BaseConfigGroupEditScreen(ModInfo modInfo, @Nullable EventListener saveListener)
@@ -55,9 +55,9 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     }
 
     @Nullable
-    protected KeybindEditingScreen getKeybindEditingScreen()
+    protected KeybindEditScreen getKeybindEditingScreen()
     {
-        return this.keyBindEditingScreen;
+        return this.keyBindEditScreen;
     }
 
     @Override

@@ -9,11 +9,11 @@ import malilib.gui.widget.list.ConfigOptionListWidget;
 public class ConfigWidgetContext
 {
     protected final Supplier<ConfigOptionListWidget<? extends ConfigInfo>> listWidgetSupplier;
-    @Nullable protected final KeybindEditingScreen keyBindScreen;
+    @Nullable protected final KeybindEditScreen keyBindScreen;
     protected final int nestingLevel;
 
     public ConfigWidgetContext(Supplier<ConfigOptionListWidget<? extends ConfigInfo>> listWidgetSupplier,
-                               @Nullable KeybindEditingScreen keyBindScreen,
+                               @Nullable KeybindEditScreen keyBindScreen,
                                int nestingLevel)
     {
         this.listWidgetSupplier = listWidgetSupplier;
@@ -27,7 +27,7 @@ public class ConfigWidgetContext
     }
 
     @Nullable
-    public KeybindEditingScreen getKeybindEditingScreen()
+    public KeybindEditScreen getKeybindEditingScreen()
     {
         return this.keyBindScreen;
     }

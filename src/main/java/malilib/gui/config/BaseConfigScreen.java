@@ -19,7 +19,7 @@ import malilib.listener.EventListener;
 import malilib.registry.Registry;
 import malilib.util.data.ModInfo;
 
-public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements ConfigScreen, KeybindEditingScreen
+public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements ConfigScreen, KeybindEditScreen
 {
     protected final ModInfo modInfo;
     @Nullable protected EventListener configSaveListener;

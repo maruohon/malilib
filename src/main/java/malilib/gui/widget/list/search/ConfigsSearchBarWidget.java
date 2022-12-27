@@ -12,7 +12,7 @@ import malilib.config.value.OptionListConfigValue;
 import malilib.gui.BaseScreen;
 import malilib.gui.ConfirmActionScreen;
 import malilib.gui.config.ConfigSearchInfo;
-import malilib.gui.config.KeybindEditingScreen;
+import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.icon.MultiIcon;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.DropDownListWidget;
@@ -46,7 +46,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
                                   EventListener configScopeChangeListener,
                                   MultiIcon iconSearch,
                                   EventListener configResetter,
-                                  KeybindEditingScreen screen)
+                                  KeybindEditScreen screen)
     {
         super(width - 160, 14, searchInputChangeListener, openCloseListener, iconSearch);
 

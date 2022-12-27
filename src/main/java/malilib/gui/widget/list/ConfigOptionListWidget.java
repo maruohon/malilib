@@ -13,7 +13,7 @@ import malilib.config.option.ConfigInfo;
 import malilib.gui.config.ConfigOptionWidgetFactory;
 import malilib.gui.config.ConfigTab;
 import malilib.gui.config.ConfigWidgetContext;
-import malilib.gui.config.KeybindEditingScreen;
+import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
@@ -86,7 +86,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
                this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY;
     }
 
-    public void addConfigSearchBarWidget(KeybindEditingScreen screen)
+    public void addConfigSearchBarWidget(KeybindEditScreen screen)
     {
         this.configsSearchBarWidget = new ConfigsSearchBarWidget(this.getWidth(), 32,
                                                                  this::onSearchBarTextChanged,

@@ -7,7 +7,7 @@ import malilib.config.value.OptionListConfigValue;
 import malilib.config.value.ScreenLocation;
 import malilib.gui.BaseListScreen;
 import malilib.gui.BaseScreen;
-import malilib.gui.config.KeybindEditingScreen;
+import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.edit.EdgeIntEditScreen;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.BaseTextFieldWidget;
@@ -28,7 +28,7 @@ import malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import malilib.registry.Registry;
 import malilib.render.text.MultiLineTextRenderSettings;
 
-public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>> implements KeybindEditingScreen
+public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>> implements KeybindEditScreen
 {
     protected final ConfigStatusIndicatorContainerWidget widget;
     protected final DropDownListWidget<ScreenLocation> locationDropdownWidget;

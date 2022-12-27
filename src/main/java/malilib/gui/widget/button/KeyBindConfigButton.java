@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 import malilib.MaLiLibConfigs;
-import malilib.gui.config.KeybindEditingScreen;
+import malilib.gui.config.KeybindEditScreen;
 import malilib.input.Hotkey;
 import malilib.input.HotkeyCategory;
 import malilib.input.KeyBind;
@@ -19,7 +19,7 @@ import malilib.util.StringUtils;
 
 public class KeyBindConfigButton extends GenericButton
 {
-    @Nullable protected final KeybindEditingScreen host;
+    @Nullable protected final KeybindEditScreen host;
     @Nullable protected EventListener valueChangeListener;
     protected final KeyBind keyBind;
     protected final IntArrayList newKeys = new IntArrayList();
@@ -29,7 +29,7 @@ public class KeyBindConfigButton extends GenericButton
     protected boolean selected;
     protected boolean updateImmediately;
 
-    public KeyBindConfigButton(int width, int height, KeyBind keyBind, @Nullable KeybindEditingScreen host)
+    public KeyBindConfigButton(int width, int height, KeyBind keyBind, @Nullable KeybindEditScreen host)
     {
         super(width, height);
 

@@ -11,7 +11,7 @@ import malilib.MaLiLibReference;
 import malilib.gui.BaseListScreen;
 import malilib.gui.BaseScreen;
 import malilib.gui.TextInputScreen;
-import malilib.gui.config.KeybindEditingScreen;
+import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.button.KeyBindConfigButton;
@@ -25,7 +25,7 @@ import malilib.input.KeyBindImpl;
 import malilib.input.KeyBindSettings;
 import malilib.input.Keys;
 
-public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditingScreen
+public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditScreen
 {
     protected final GenericButton addHotkeyButton;
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
