@@ -13,6 +13,7 @@ import malilib.gui.widget.button.BooleanConfigButton;
 import malilib.gui.widget.button.OptionListConfigButton;
 import malilib.input.KeyBind;
 import malilib.input.KeyBindSettingsConfigs;
+import malilib.util.StringUtils;
 
 public class KeybindSettingsScreen extends BaseScreen
 {
@@ -33,7 +34,7 @@ public class KeybindSettingsScreen extends BaseScreen
         this.useTitleHierarchy = false;
         this.configs = new KeyBindSettingsConfigs(keybind, this::initScreen);
         this.configList = this.configs.getConfigList();
-        this.labelWidth = this.getMaxDisplayNameLength(this.configList);
+        this.labelWidth = StringUtils.getMaxStringRenderWidthOfObjects(this.configList, BaseConfigOption::getPrettyName);
         this.configWidth = 120;
         this.screenCloseListener = this::saveSettings;
 
@@ -64,18 +65,6 @@ public class KeybindSettingsScreen extends BaseScreen
             this.createLabelAndConfigWidget(x, y, this.labelWidth, this.configWidth, config);
             y += 18;
         }
-    }
-
-    public int getMaxDisplayNameLength(List<BaseConfigOption<?>> configs)
-    {
-        int width = 0;
-
-        for (BaseConfigOption<?> config : configs)
-        {
-            width = Math.max(width, this.getStringWidth(config.getPrettyName()));
-        }
-
-        return width;
     }
 
     protected void createLabelAndConfigWidget(int x, int y, int labelWidth, int configWidth, BaseConfigOption<?> config)

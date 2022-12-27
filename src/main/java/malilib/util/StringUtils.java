@@ -185,6 +185,18 @@ public class StringUtils
         return width;
     }
 
+    public static <T> int getMaxStringRenderWidthOfObjects(List<T> list, Function<T, String> translator)
+    {
+        int width = 0;
+
+        for (T item : list)
+        {
+            width = Math.max(width, getStringWidth(translator.apply(item)));
+        }
+
+        return width;
+    }
+
     public static void addTranslatedLines(List<String> linesOut, String translationKey)
     {
         String[] parts = translate(translationKey).split("\\\\n");
