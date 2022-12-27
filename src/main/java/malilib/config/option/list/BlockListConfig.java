@@ -3,6 +3,7 @@ package malilib.config.option.list;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.Block;
@@ -21,7 +22,7 @@ public class BlockListConfig extends ValueListConfig<Block>
     public BlockListConfig(String name, ImmutableList<Block> defaultValues,
                            Function<Block, String> toStringConverter,
                            Function<String, Block> fromStringConverter,
-                           String commentTranslationKey, Object... commentArgs)
+                           @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
     }

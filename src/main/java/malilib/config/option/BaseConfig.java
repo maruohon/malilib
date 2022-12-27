@@ -22,7 +22,7 @@ public abstract class BaseConfig extends CommonDescription implements ConfigInfo
         this(name, name, name);
     }
 
-    public BaseConfig(String name, String commentTranslationKey, Object... commentArgs)
+    public BaseConfig(String name, @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, name, commentTranslationKey, commentArgs);
     }

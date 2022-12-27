@@ -13,7 +13,7 @@ public class BaseDualValueConfig<T> extends BaseGenericConfig<T>
         this(name, defaultValue, name);
     }
 
-    public BaseDualValueConfig(String name, T defaultValue, String commentTranslationKey, Object... commentArgs)
+    public BaseDualValueConfig(String name, T defaultValue, @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, commentTranslationKey, commentArgs);
     }

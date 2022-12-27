@@ -1,5 +1,6 @@
 package malilib.config.option.list;
 
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 public class StringListConfig extends ValueListConfig<String>
@@ -10,7 +11,7 @@ public class StringListConfig extends ValueListConfig<String>
     }
 
     public StringListConfig(String name, ImmutableList<String> defaultValue,
-                            String commentTranslationKey, Object... commentArgs)
+                            @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, (v) -> v, (s) -> s, commentTranslationKey, commentArgs);
     }

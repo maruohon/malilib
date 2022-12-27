@@ -21,7 +21,7 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
     public StatusEffectListConfig(String name, ImmutableList<Potion> defaultValues,
                                   Function<Potion, String> toStringConverter,
                                   Function<String, Potion> fromStringConverter,
-                                  String commentTranslationKey, Object... commentArgs)
+                                  @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
     }

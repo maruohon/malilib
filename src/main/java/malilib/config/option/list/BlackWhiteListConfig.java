@@ -1,5 +1,7 @@
 package malilib.config.option.list;
 
+import javax.annotation.Nullable;
+
 import malilib.config.option.BaseGenericConfig;
 import malilib.config.value.BlackWhiteList;
 
@@ -11,13 +13,13 @@ public class BlackWhiteListConfig<TYPE> extends BaseGenericConfig<BlackWhiteList
     }
 
     public BlackWhiteListConfig(String name, BlackWhiteList<TYPE> defaultValue,
-                                String commentTranslationKey, Object... commentArgs)
+                                @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, name, commentTranslationKey, commentArgs);
     }
 
     public BlackWhiteListConfig(String name, BlackWhiteList<TYPE> defaultValue, String prettyName,
-                                String commentTranslationKey, Object... commentArgs)
+                                @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, name, prettyName, commentTranslationKey, commentArgs);
     }

@@ -14,13 +14,13 @@ public abstract class BaseBooleanAndNumberConfig<T> extends BaseSliderConfig<T> 
     }
 
     public BaseBooleanAndNumberConfig(String name, T defaultValue,
-                                      String commentTranslationKey, Object... commentArgs)
+                                      @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, false, commentTranslationKey, commentArgs);
     }
 
     public BaseBooleanAndNumberConfig(String name, T defaultValue, boolean sliderActive,
-                                      String commentTranslationKey, Object... commentArgs)
+                                      @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, sliderActive, commentTranslationKey, commentArgs);
     }

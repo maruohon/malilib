@@ -2,6 +2,7 @@ package malilib.config.group;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import malilib.MaLiLibConfigs;
@@ -28,7 +29,7 @@ public abstract class BaseConfigGroup extends CommonDescription implements Confi
     }
 
     public BaseConfigGroup(ModInfo modInfo, String name, String nameTranslationKey,
-                           String commentTranslationKey, Object... commentArgs)
+                           @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, modInfo);
 

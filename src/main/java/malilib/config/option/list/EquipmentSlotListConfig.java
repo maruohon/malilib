@@ -25,7 +25,7 @@ public class EquipmentSlotListConfig extends ValueListConfig<EntityEquipmentSlot
     public EquipmentSlotListConfig(String name, ImmutableList<EntityEquipmentSlot> defaultValues,
                                    Function<EntityEquipmentSlot, String> toStringConverter,
                                    Function<String, EntityEquipmentSlot> fromStringConverter,
-                                   String commentTranslationKey, Object... commentArgs)
+                                   @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
     }

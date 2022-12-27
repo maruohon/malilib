@@ -20,7 +20,7 @@ public class IdentifierListConfig extends ValueListConfig<ResourceLocation>
     public IdentifierListConfig(String name, ImmutableList<ResourceLocation> defaultValues,
                                 Function<ResourceLocation, String> toStringConverter,
                                 Function<String, ResourceLocation> fromStringConverter,
-                                String commentTranslationKey, Object... commentArgs)
+                                @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
     }

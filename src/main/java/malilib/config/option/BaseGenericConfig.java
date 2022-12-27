@@ -22,7 +22,7 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
 
     public BaseGenericConfig(String name,
                              T defaultValue,
-                             String commentTranslationKey, Object... commentArgs)
+                             @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, name, name, commentTranslationKey, commentArgs);
     }
@@ -31,7 +31,7 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
                              T defaultValue,
                              String nameTranslationKey,
                              String prettyNameTranslationKey,
-                             String commentTranslationKey, Object... commentArgs)
+                             @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, nameTranslationKey, prettyNameTranslationKey, commentTranslationKey, commentArgs);
 

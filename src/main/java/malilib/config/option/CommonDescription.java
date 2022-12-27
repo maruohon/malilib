@@ -58,7 +58,7 @@ public abstract class CommonDescription implements BaseInfo
     @Override
     public Optional<String> getComment()
     {
-        if (this.commentTranslationKey != null)
+        if (org.apache.commons.lang3.StringUtils.isBlank(this.commentTranslationKey) == false)
         {
             return Optional.of(StringUtils.translate(this.commentTranslationKey, this.commentArgs));
         }

@@ -25,7 +25,7 @@ public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOp
         this(name, name, name, name);
     }
 
-    public BaseConfigOption(String name, String commentTranslationKey, Object... commentArgs)
+    public BaseConfigOption(String name, @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, name, name, commentTranslationKey, commentArgs);
     }

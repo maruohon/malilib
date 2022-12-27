@@ -1,5 +1,6 @@
 package malilib.config.option;
 
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import malilib.util.data.Color4f;
@@ -15,7 +16,7 @@ public class DualColorConfig extends BaseGenericConfig<Pair<Color4f, Color4f>>
     }
 
     public DualColorConfig(String name, String defaultValue1, String defaultValue2,
-                           String commentTranslationKey, Object... commentArgs)
+                           @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, Pair.of(Color4f.fromString(defaultValue1), Color4f.fromString(defaultValue2)),
               commentTranslationKey, commentArgs);

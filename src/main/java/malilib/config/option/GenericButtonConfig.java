@@ -18,7 +18,7 @@ public class GenericButtonConfig extends BaseConfig
     }
 
     public GenericButtonConfig(String name, String buttonTextTranslationKey, Int2BooleanFunction buttonListener,
-                               String commentTranslationKey, Object... commentArgs)
+                               @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, commentTranslationKey, commentArgs);
 
@@ -27,7 +27,8 @@ public class GenericButtonConfig extends BaseConfig
     }
 
     public GenericButtonConfig(String name, String buttonTextTranslationKey, Int2BooleanFunction buttonListener,
-                               String nameTranslationKey, @Nullable String commentTranslationKey, Object... commentArgs)
+                               String nameTranslationKey,
+                               @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, nameTranslationKey, commentTranslationKey, commentArgs);
 

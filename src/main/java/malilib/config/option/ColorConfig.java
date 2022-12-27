@@ -1,5 +1,7 @@
 package malilib.config.option;
 
+import javax.annotation.Nullable;
+
 import malilib.util.data.Color4f;
 
 public class ColorConfig extends BaseGenericConfig<Color4f>
@@ -10,7 +12,7 @@ public class ColorConfig extends BaseGenericConfig<Color4f>
     }
 
     public ColorConfig(String name, String defaultValue,
-                       String commentTranslationKey, Object... commentArgs)
+                       @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, Color4f.fromString(defaultValue), commentTranslationKey, commentArgs);
     }

@@ -1,5 +1,7 @@
 package malilib.config.option;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.util.math.MathHelper;
 
 import malilib.MaLiLib;
@@ -17,7 +19,7 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
         this(name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, name);
     }
 
-    public IntegerConfig(String name, int defaultValue, String commentTranslationKey)
+    public IntegerConfig(String name, int defaultValue, @Nullable String commentTranslationKey)
     {
         this(name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, commentTranslationKey);
     }
@@ -28,14 +30,14 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
     }
 
     public IntegerConfig(String name, int defaultValue, int minValue, int maxValue,
-                         String commentTranslationKey, Object... commentArgs)
+                         @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, minValue, maxValue, false, commentTranslationKey, commentArgs);
     }
 
     public IntegerConfig(String name, int defaultValue,
                          int minValue, int maxValue, boolean sliderActive,
-                         String commentTranslationKey, Object... commentArgs)
+                         @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, sliderActive, commentTranslationKey, commentArgs);
 

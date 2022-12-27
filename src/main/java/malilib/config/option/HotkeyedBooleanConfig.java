@@ -29,14 +29,14 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     }
 
     public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey,
-                                 String commentTranslationKey, Object... commentArgs)
+                                 @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, defaultHotkey, StringUtils.splitCamelCase(name),
              commentTranslationKey, commentArgs);
     }
 
     public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey,
-                                 String prettyName, String commentTranslationKey, Object... commentArgs)
+                                 String prettyName, @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, defaultHotkey, KeyBindSettings.INGAME_DEFAULT,
              prettyName, commentTranslationKey, commentArgs);
@@ -44,7 +44,7 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
 
     public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey,
                                  KeyBindSettings settings, String prettyName,
-                                 String commentTranslationKey, Object... commentArgs)
+                                 @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, prettyName, commentTranslationKey, commentArgs);
 

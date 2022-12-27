@@ -3,6 +3,8 @@ package malilib.config.option;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import malilib.listener.EventListener;
 
 public class BooleanConfig extends BaseGenericConfig<Boolean> implements BooleanContainingConfig<Boolean>
@@ -16,13 +18,13 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
     }
 
     public BooleanConfig(String name, boolean defaultValue,
-                         String commentTranslationKey, Object... commentArgs)
+                         @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, name, commentTranslationKey, commentArgs);
     }
 
     public BooleanConfig(String name, boolean defaultValue, String prettyNameTranslationKey,
-                         String commentTranslationKey, Object... commentArgs)
+                         @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, name, prettyNameTranslationKey, commentTranslationKey, commentArgs);
 

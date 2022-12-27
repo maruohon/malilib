@@ -1,5 +1,7 @@
 package malilib.config.option;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.util.math.MathHelper;
 
 import malilib.MaLiLib;
@@ -18,7 +20,7 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
     }
 
     public DoubleConfig(String name, double defaultValue,
-                        String commentTranslationKey, Object... commentArgs)
+                        @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, -10000, 10000, commentTranslationKey, commentArgs);
     }
@@ -31,14 +33,14 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
 
     public DoubleConfig(String name, double defaultValue,
                         double minValue, double maxValue,
-                        String commentTranslationKey, Object... commentArgs)
+                        @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, minValue, maxValue, false, commentTranslationKey, commentArgs);
     }
 
     public DoubleConfig(String name, double defaultValue,
                         double minValue, double maxValue, boolean sliderActive,
-                        String commentTranslationKey, Object... commentArgs)
+                        @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, sliderActive, commentTranslationKey, commentArgs);
 

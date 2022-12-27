@@ -2,6 +2,7 @@ package malilib.config.option;
 
 import java.util.Collection;
 import java.util.HashSet;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -19,13 +20,13 @@ public class OptionListConfig<T extends OptionListConfigValue> extends BaseGener
     }
 
     public OptionListConfig(String name, T defaultValue, ImmutableList<T> allValues,
-                            String commentTranslationKey, Object... commentArgs)
+                            @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultValue, allValues, name, commentTranslationKey, commentArgs);
     }
 
     public OptionListConfig(String name, T defaultValue, ImmutableList<T> allValues, String prettyName,
-                            String commentTranslationKey, Object... commentArgs)
+                            @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, name, prettyName, commentTranslationKey, commentArgs);
 

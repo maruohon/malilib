@@ -26,7 +26,7 @@ public class ValueListConfig<TYPE> extends BaseGenericConfig<ImmutableList<TYPE>
     public ValueListConfig(String name, ImmutableList<TYPE> defaultValues,
                            Function<TYPE, String> toStringConverter,
                            Function<String, TYPE> fromStringConverter,
-                           String commentTranslationKey, Object... commentArgs)
+                           @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValues, commentTranslationKey, commentArgs);
 

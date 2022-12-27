@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import javax.annotation.Nullable;
+
 import malilib.config.option.BooleanAndFileConfig.BooleanAndFile;
 
 public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> implements BooleanContainingConfig<BooleanAndFile>
@@ -14,7 +16,7 @@ public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> impl
     }
 
     public BooleanAndFileConfig(String name, boolean defaultBooleanValue, Path defaultDirectory,
-                                String commentTranslationKey, Object... commentArgs)
+                                @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, new BooleanAndFile(defaultBooleanValue, defaultDirectory), commentTranslationKey, commentArgs);
     }

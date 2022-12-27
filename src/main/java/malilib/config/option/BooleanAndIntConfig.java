@@ -2,6 +2,8 @@ package malilib.config.option;
 
 import java.util.StringJoiner;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.util.math.MathHelper;
 
 import malilib.MaLiLib;
@@ -30,14 +32,14 @@ public class BooleanAndIntConfig extends BaseBooleanAndNumberConfig<BooleanAndIn
 
     public BooleanAndIntConfig(String name, boolean defaultBoolean, int defaultInt,
                                int minValue, int maxValue,
-                               String commentTranslationKey, Object... commentArgs)
+                               @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this(name, defaultBoolean, defaultInt, minValue, maxValue, false, commentTranslationKey, commentArgs);
     }
 
     public BooleanAndIntConfig(String name, boolean defaultBoolean, int defaultInt,
                                int minValue, int maxValue, boolean sliderActive,
-                               String commentTranslationKey, Object... commentArgs)
+                               @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, new BooleanAndInt(defaultBoolean, defaultInt), sliderActive, commentTranslationKey, commentArgs);
 

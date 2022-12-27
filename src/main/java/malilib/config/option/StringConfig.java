@@ -1,5 +1,7 @@
 package malilib.config.option;
 
+import javax.annotation.Nullable;
+
 public class StringConfig extends BaseGenericConfig<String>
 {
     public StringConfig(String name, String defaultValue)
@@ -8,7 +10,7 @@ public class StringConfig extends BaseGenericConfig<String>
     }
 
     public StringConfig(String name, String defaultValue,
-                        String commentTranslationKey, Object... commentArgs)
+                        @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValue, commentTranslationKey, commentArgs);
     }
