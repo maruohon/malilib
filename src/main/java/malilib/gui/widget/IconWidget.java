@@ -10,13 +10,14 @@ public class IconWidget extends InteractableWidget
 {
     protected boolean doHighlight;
     protected boolean enabled;
-    protected int iconWidth;
-    protected int iconHeight;
+    protected int maxIconWidth;
+    protected int maxIconHeight;
 
-    public IconWidget(Icon icon)
+    public IconWidget(@Nullable Icon icon)
     {
         super(-1, -1);
 
+        this.iconOffset.setCenterVertically(false);
         this.setIcon(icon);
     }
 
@@ -44,8 +45,8 @@ public class IconWidget extends InteractableWidget
     {
         super.updateSize();
 
-        this.iconWidth = this.getWidth() - this.getNonContentWidth();
-        this.iconHeight = this.getHeight() - this.getNonContentHeight();
+        this.maxIconWidth = this.getWidth() - this.getNonContentWidth();
+        this.maxIconHeight = this.getHeight() - this.getNonContentHeight();
     }
 
     @Override
@@ -83,8 +84,8 @@ public class IconWidget extends InteractableWidget
         {
             int iconWidth = icon.getWidth();
             int iconHeight = icon.getHeight();
-            int maxIconWidth = this.iconWidth;
-            int maxIconHeight = this.iconHeight;
+            int maxIconWidth = this.maxIconWidth;
+            int maxIconHeight = this.maxIconHeight;
 
             if (iconWidth > maxIconWidth || iconHeight > maxIconHeight)
             {

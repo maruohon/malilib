@@ -459,8 +459,6 @@ public class BaseWidget
                               this::getNonContentWidth,
                               this::clampToMaxWidth,
                               this::setWidthNoUpdate);
-
-        this.setWidthNoUpdate(this.clampToMaxWidth(this.getWidth()));
     }
 
     public void updateHeight()
@@ -470,8 +468,6 @@ public class BaseWidget
                               this::getNonContentHeight,
                               this::clampToMaxHeight,
                               this::setHeightNoUpdate);
-
-        this.setHeightNoUpdate(this.clampToMaxHeight(this.getHeight()));
     }
 
     public void updateWidgetState()
@@ -805,8 +801,8 @@ public class BaseWidget
     {
         if (automaticSizeChecker.getAsBoolean())
         {
-            int extraSize = extraSizeSupplier.getAsInt();
             int contentSize = contentSizeSupplier.getAsInt();
+            int extraSize = extraSizeSupplier.getAsInt();
             int size = sizeClamper.applyAsInt(contentSize + extraSize);
             sizeSetter.accept(size);
         }
