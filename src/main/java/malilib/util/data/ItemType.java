@@ -1,11 +1,10 @@
 package malilib.util.data;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 
 import malilib.util.game.wrap.ItemWrap;
+import malilib.util.game.wrap.RegistryUtils;
 
 /**
  * A wrapper around ItemStack, that implements hashCode() and equals().
@@ -116,14 +115,14 @@ public class ItemType
     {
         if (this.checkNbt())
         {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
+            String id = RegistryUtils.getItemIdStr(this.stack.getItem());
             NBTTagCompound tag = ItemWrap.getTag(this.stack);
-            return rl.toString() + "@" + this.stack.getMetadata() + (tag != null ? tag.toString() : "");
+            return (id != null ? id : "<null>") + "@" + this.stack.getMetadata() + (tag != null ? tag.toString() : "");
         }
         else
         {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
-            return rl.toString() + "@" + this.stack.getMetadata();
+            String id = RegistryUtils.getItemIdStr(this.stack.getItem());
+            return (id != null ? id : "<null>") + "@" + this.stack.getMetadata();
         }
     }
 }

@@ -16,12 +16,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
@@ -33,7 +29,6 @@ import malilib.util.data.Identifier;
 import malilib.util.data.LeftRight;
 import malilib.util.game.WorldUtils;
 import malilib.util.game.wrap.GameUtils;
-import malilib.util.game.wrap.ItemWrap;
 
 public class StringUtils
 {
@@ -578,21 +573,6 @@ public class StringUtils
         }
 
         return str.replace(':', '_');
-    }
-
-    public static String getStackString(ItemStack stack)
-    {
-        if (ItemWrap.notEmpty(stack))
-        {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
-            NBTTagCompound tag = ItemWrap.getTag(stack);
-
-            return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
-                    rl != null ? rl.toString() : "null", stack.getMetadata(), stack.getDisplayName(),
-                    tag != null ? tag.toString() : "<no NBT>", stack);
-        }
-
-        return "<empty>";
     }
 
     public static String getPrettyFileSizeText(long fileSize, int decimalPlaces)

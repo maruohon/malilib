@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.Block;
 
-import malilib.util.game.BlockUtils;
+import malilib.util.game.wrap.RegistryUtils;
 
 public class BlockListConfig extends ValueListConfig<Block>
 {
@@ -46,7 +46,7 @@ public class BlockListConfig extends ValueListConfig<Block>
 
         for (String name : blockNames)
         {
-            Block block = BlockUtils.getBlockByRegistryName(name);
+            Block block = RegistryUtils.getBlockByIdStr(name);
 
             if (block != null)
             {
@@ -59,6 +59,6 @@ public class BlockListConfig extends ValueListConfig<Block>
 
     public static BlockListConfig create(String cfgName, ImmutableList<Block> blocks)
     {
-        return new BlockListConfig(cfgName, blocks, BlockUtils::getBlockRegistryName, BlockUtils::getBlockByRegistryName);
+        return new BlockListConfig(cfgName, blocks, RegistryUtils::getBlockIdStr, RegistryUtils::getBlockByIdStr);
     }
 }

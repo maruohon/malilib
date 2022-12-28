@@ -22,80 +22,17 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 
 import malilib.render.text.StyledTextLine;
 import malilib.util.StringUtils;
+import malilib.util.data.Identifier;
 import malilib.util.game.wrap.NbtWrap;
+import malilib.util.game.wrap.RegistryUtils;
 
 public class BlockUtils
 {
-    private static final ResourceLocation DUMMY = new ResourceLocation("-", "-");
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
-
-    public static String getBlockRegistryName(Block block)
-    {
-        try
-        {
-            return Block.REGISTRY.getNameForObject(block).toString();
-        }
-        catch (Exception e)
-        {
-            return "?";
-        }
-    }
-
-    public static String getBlockRegistryName(IBlockState state)
-    {
-        try
-        {
-            return Block.REGISTRY.getNameForObject(state.getBlock()).toString();
-        }
-        catch (Exception e)
-        {
-            return "?";
-        }
-    }
-
-    public static ResourceLocation getBlockIdentifier(IBlockState state)
-    {
-        try
-        {
-            return Block.REGISTRY.getNameForObject(state.getBlock());
-        }
-        catch (Exception e)
-        {
-            return DUMMY;
-        }
-    }
-
-    @Nullable
-    public static Block getBlockByRegistryName(String name)
-    {
-        try
-        {
-            return Block.REGISTRY.getObject(new ResourceLocation(name));
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-
-    public static List<Block> getSortedBlockList()
-    {
-        List<Block> blocks = new ArrayList<>();
-
-        for (Block block : Block.REGISTRY)
-        {
-            blocks.add(block);
-        }
-
-        blocks.sort(Comparator.comparing(BlockUtils::getBlockRegistryName));
-
-        return blocks;
-    }
 
     /**
      * Parses the provided string into the full block state.<br>
@@ -104,13 +41,13 @@ public class BlockUtils
      */
     public static Optional<IBlockState> getBlockStateFromString(String str)
     {
-        int index = str.indexOf("["); // [f=b]
+        int index = str.indexOf("["); // [prop=value]
         String blockName = index != -1 ? str.substring(0, index) : str;
-        ResourceLocation id = new ResourceLocation(blockName);
+        Identifier id = new Identifier(blockName);
 
         if (Block.REGISTRY.containsKey(id))
         {
-            Block block = Block.REGISTRY.getObject(id);
+            Block block = RegistryUtils.getBlockById(id);
             IBlockState state = block.getDefaultState();
 
             if (index != -1 && str.length() > (index + 4) && str.charAt(str.length() - 1) == ']')

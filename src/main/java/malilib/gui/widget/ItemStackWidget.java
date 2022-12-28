@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 
 import malilib.gui.util.ScreenContext;
 import malilib.render.ItemRenderUtils;
-import malilib.util.game.ItemUtils;
 import malilib.util.game.wrap.ItemWrap;
 
 public class ItemStackWidget extends BaseModelWidget
@@ -48,10 +47,5 @@ public class ItemStackWidget extends BaseModelWidget
         widget.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xFF505050);
         widget.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, 0xFF505050);
         return widget;
-    }
-
-    public static String getItemDisplayName(Item item)
-    {
-        return ItemUtils.getItemRegistryName(item);
     }
 }

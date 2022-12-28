@@ -8,13 +8,13 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.item.Item;
 
-import malilib.util.game.ItemUtils;
+import malilib.util.game.wrap.RegistryUtils;
 
 public class ItemListConfig extends ValueListConfig<Item>
 {
     public ItemListConfig(String name, ImmutableList<Item> defaultValues)
     {
-        this(name, defaultValues, ItemUtils::getItemRegistryName, ItemUtils::getItemByRegistryName);
+        this(name, defaultValues, RegistryUtils::getItemIdStr, RegistryUtils::getItemByIdStr);
     }
 
     public ItemListConfig(String name, ImmutableList<Item> defaultValues,
@@ -51,7 +51,7 @@ public class ItemListConfig extends ValueListConfig<Item>
 
         for (String name : itemNames)
         {
-            Item item = ItemUtils.getItemByRegistryName(name);
+            Item item = RegistryUtils.getItemByIdStr(name);
 
             if (item != null)
             {
@@ -64,6 +64,6 @@ public class ItemListConfig extends ValueListConfig<Item>
 
     public static ItemListConfig create(String cfgName, ImmutableList<Item> items)
     {
-        return new ItemListConfig(cfgName, items, ItemUtils::getItemRegistryName, ItemUtils::getItemByRegistryName);
+        return new ItemListConfig(cfgName, items, RegistryUtils::getItemIdStr, RegistryUtils::getItemByIdStr);
     }
 }

@@ -1,51 +1,25 @@
 package malilib.util.game;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import javax.annotation.Nullable;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import malilib.util.game.wrap.ItemWrap;
+import malilib.util.game.wrap.RegistryUtils;
 
 public class ItemUtils
 {
-    public static String getItemRegistryName(Item item)
+    public static String getStackString(ItemStack stack)
     {
-        try
+        if (ItemWrap.notEmpty(stack))
         {
-            return Item.REGISTRY.getNameForObject(item).toString();
-        }
-        catch (Exception e)
-        {
-            return "?";
-        }
-    }
+            String id = RegistryUtils.getItemIdStr(stack.getItem());
+            NBTTagCompound tag = ItemWrap.getTag(stack);
 
-    @Nullable
-    public static Item getItemByRegistryName(String name)
-    {
-        try
-        {
-            return Item.REGISTRY.getObject(new ResourceLocation(name));
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-
-    public static List<Item> getSortedItemList()
-    {
-        List<Item> items = new ArrayList<>();
-
-        for (Item item : Item.REGISTRY)
-        {
-            items.add(item);
+            return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
+                                 id != null ? id : "null", stack.getMetadata(), stack.getDisplayName(),
+                                 tag != null ? tag.toString() : "<no NBT>", stack);
         }
 
-        items.sort(Comparator.comparing(ItemUtils::getItemRegistryName));
-
-        return items;
+        return "<empty>";
     }
 }
