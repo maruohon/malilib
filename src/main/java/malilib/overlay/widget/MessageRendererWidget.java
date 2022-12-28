@@ -27,7 +27,7 @@ public class MessageRendererWidget extends InfoRendererWidget
 
         this.shouldSerialize = true;
         this.getBackgroundSettings().setEnabled(true);
-        this.getBackgroundSettings().setColor(0xC0000000);
+        this.getBackgroundSettings().setColor(0xF0000000);
         this.getBorderSettings().setEnabled(true);
 
         this.padding.setAll(4, 6, 4, 6);
