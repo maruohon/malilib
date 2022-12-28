@@ -103,16 +103,6 @@ public class InventoryUtils
         return container.inventorySlots;
     }
 
-    public static Container getPlayerInventoryContainer()
-    {
-        return GameUtils.getClientPlayer().inventoryContainer;
-    }
-
-    public static InventoryPlayer getPlayerInventory()
-    {
-        return GameUtils.getClientPlayer().inventory;
-    }
-
     /**
      * Finds an empty slot in the player inventory.
      * Armor slots are not valid for this method.
@@ -271,6 +261,7 @@ public class InventoryUtils
     public static boolean swapItemToMainHand(ItemStack stackReference, boolean ignoreNbt)
     {
         EntityPlayer player = GameUtils.getClientPlayer();
+        InventoryPlayer inventory = GameUtils.getPlayerInventory();
 
         // Already holding the requested item
         if (areStacksEqual(stackReference, player.getHeldItemMainhand(), ignoreNbt))
@@ -278,7 +269,6 @@ public class InventoryUtils
             return false;
         }
 
-        InventoryPlayer inventory = getPlayerInventory();
 
         if (GameUtils.isCreativeMode())
         {
@@ -288,12 +278,12 @@ public class InventoryUtils
         }
         else
         {
-            int slot = findPlayerInventorySlotWithItem(getPlayerInventoryContainer(), stackReference, true);
+            int slot = findPlayerInventorySlotWithItem(GameUtils.getPlayerInventoryContainer(), stackReference, true);
 
             if (slot != -1)
             {
                 int currentHotbarSlot = inventory.currentItem;
-                clickSlot(getPlayerInventoryContainer(), slot, currentHotbarSlot, ClickType.SWAP);
+                clickSlot(GameUtils.getPlayerInventoryContainer(), slot, currentHotbarSlot, ClickType.SWAP);
                 return true;
             }
         }
@@ -311,11 +301,11 @@ public class InventoryUtils
                                       int threshold,
                                       boolean allowHotbar)
     {
+        InventoryPlayer inventory = GameUtils.getPlayerInventory();
+        Container container = GameUtils.getPlayerInventoryContainer();
         final ItemStack stackHand = player.getHeldItem(hand);
         final int count = stackHand.getCount();
         final int max = stackHand.getMaxStackSize();
-        Container container = getPlayerInventoryContainer();
-        InventoryPlayer inventory = getPlayerInventory();
 
         if (ItemWrap.notEmpty(stackHand) &&
             player.openContainer == container &&

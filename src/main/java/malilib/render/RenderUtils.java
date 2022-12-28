@@ -501,7 +501,7 @@ public class RenderUtils
 
             drawBuffer();
 
-            MapData mapdata = Items.FILLED_MAP.getMapData(stack, GameUtils.getClient().world);
+            MapData mapdata = Items.FILLED_MAP.getMapData(stack, GameUtils.getClientWorld());
 
             if (mapdata != null)
             {

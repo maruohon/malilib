@@ -26,8 +26,10 @@ public class WorldUtils
      * Best name. Returns the integrated server world for the current dimension
      * in single player, otherwise just the client world.
      */
-    public static World getBestWorld(Minecraft mc)
+    public static World getBestWorld()
     {
+        Minecraft mc = GameUtils.getClient();
+
         if (mc.isSingleplayer() && mc.world != null)
         {
             IntegratedServer server = mc.getIntegratedServer();

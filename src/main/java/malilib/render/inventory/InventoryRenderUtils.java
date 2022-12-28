@@ -13,7 +13,6 @@ import net.minecraft.block.BlockFurnace;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -90,7 +89,7 @@ public class InventoryRenderUtils
 
                 if (ItemWrap.notEmpty(stack) && pos != null)
                 {
-                    ItemRenderUtils.renderStackAt(stack, x + pos.x, y + pos.y, z, 1f, GameUtils.getClient());
+                    ItemRenderUtils.renderStackAt(stack, x + pos.x, y + pos.y, z, 1f);
                 }
             }
         }
@@ -334,7 +333,7 @@ public class InventoryRenderUtils
 
             if (ItemWrap.notEmpty(stack))
             {
-                ItemRenderUtils.renderStackAt(stack, x, y, z, 1f, GameUtils.getClient());
+                ItemRenderUtils.renderStackAt(stack, x, y, z, 1f);
             }
 
             if (++slotOnRow >= slotsPerRow)
@@ -483,17 +482,18 @@ public class InventoryRenderUtils
     }
 
     @Nullable
-    public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory(Minecraft mc)
+    public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory()
     {
-        World world = WorldUtils.getBestWorld(mc);
+        World world = WorldUtils.getBestWorld();
+        EntityPlayer clientPlayer = GameUtils.getClientPlayer();
 
         // We need to get the player from the server world,
         // so that the player itself won't be included in the ray trace
-        EntityPlayer player = world.getPlayerEntityByUUID(mc.player.getUniqueID());
+        EntityPlayer player = world.getPlayerEntityByUUID(clientPlayer.getUniqueID());
 
         if (player == null)
         {
-            player = mc.player;
+            player = clientPlayer;
         }
 
         RayTraceUtils.RayTraceFluidHandling fluidHandling = RayTraceUtils.RayTraceFluidHandling.NONE;

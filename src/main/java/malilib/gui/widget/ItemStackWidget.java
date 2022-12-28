@@ -37,7 +37,7 @@ public class ItemStackWidget extends BaseModelWidget
     {
         if (ItemWrap.notEmpty(this.stack))
         {
-            ItemRenderUtils.renderStackAt(this.stack, x, y, z, this.scale, this.mc);
+            ItemRenderUtils.renderStackAt(this.stack, x, y, z, this.scale);
         }
     }
 

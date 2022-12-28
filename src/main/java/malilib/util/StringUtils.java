@@ -15,7 +15,6 @@ import com.mumfrey.liteloader.core.LiteLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.TextComponentString;
@@ -145,12 +144,12 @@ public class StringUtils
         return true;
     }
 
-    public static void sendOpenFileChatMessage(ICommandSender sender, String messageKey, Path file)
+    public static void sendOpenFileChatMessage(String messageKey, Path file)
     {
         TextComponentString name = new TextComponentString(file.getFileName().toString());
         name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString()));
         name.getStyle().setUnderlined(Boolean.TRUE);
-        sender.sendMessage(new TextComponentTranslation(messageKey, name));
+        GameUtils.getClientPlayer().sendMessage(new TextComponentTranslation(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -547,7 +546,7 @@ public class StringUtils
             }
             else
             {
-                World world = GameUtils.getClient().world;
+                World world = GameUtils.getClientWorld();
 
                 if (world != null)
                 {

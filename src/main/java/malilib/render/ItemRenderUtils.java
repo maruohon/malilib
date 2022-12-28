@@ -14,7 +14,7 @@ import malilib.util.game.wrap.ItemWrap;
 
 public class ItemRenderUtils
 {
-    public static void renderStackAt(ItemStack stack, int x, int y, float z, float scale, Minecraft mc)
+    public static void renderStackAt(ItemStack stack, int x, int y, float z, float scale)
     {
         if (stack == null || ItemWrap.isEmpty(stack))
         {
@@ -32,6 +32,7 @@ public class ItemRenderUtils
         GlStateManager.disableLighting();
         RenderUtils.enableGuiItemLighting();
 
+        Minecraft mc = GameUtils.getClient();
         RenderItem itemRenderer = mc.getRenderItem();
         float oldZ = itemRenderer.zLevel;
 
@@ -51,14 +52,14 @@ public class ItemRenderUtils
         GlStateManager.popMatrix();
     }
 
-    public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack, Minecraft mc)
+    public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack)
     {
         if (stack == null || ItemWrap.isEmpty(stack))
         {
             return;
         }
 
-        List<String> list = stack.getTooltip(mc.player, GameUtils.getOptions().advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        List<String> list = stack.getTooltip(GameUtils.getClientPlayer(), GameUtils.getOptions().advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
 
         for (int i = 0; i < list.size(); ++i)
         {

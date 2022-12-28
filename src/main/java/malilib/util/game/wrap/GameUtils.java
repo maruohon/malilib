@@ -12,6 +12,9 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -44,6 +47,27 @@ public class GameUtils
         return getClient().player;
     }
 
+    @Nullable
+    public static InventoryPlayer getPlayerInventory()
+    {
+        EntityPlayer player = getClient().player;
+        return player != null ? player.inventory : null;
+    }
+
+    @Nullable
+    public static Container getPlayerInventoryContainer()
+    {
+        EntityPlayer player = getClient().player;
+        return player != null ? player.inventoryContainer : null;
+    }
+
+    @Nullable
+    public static Container getCurrentInventoryContainer()
+    {
+        EntityPlayer player = getClient().player;
+        return player != null ? player.openContainer : null;
+    }
+
     public static PlayerControllerMP getInteractionManager()
     {
         return getClient().playerController;
@@ -64,6 +88,16 @@ public class GameUtils
     public static GameSettings getOptions()
     {
         return getClient().gameSettings;
+    }
+
+    public static void sendCommand(String command)
+    {
+        EntityPlayerSP player = getClientPlayer();
+
+        if (player != null)
+        {
+            player.sendChatMessage(command);
+        }
     }
 
     /**
