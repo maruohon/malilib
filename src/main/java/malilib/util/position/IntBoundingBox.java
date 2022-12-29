@@ -12,6 +12,8 @@ import malilib.MaLiLib;
 
 public class IntBoundingBox
 {
+    public static final IntBoundingBox ORIGIN = new IntBoundingBox(0, 0, 0, 0, 0, 0);
+
     public final int minX;
     public final int minY;
     public final int minZ;
@@ -59,7 +61,7 @@ public class IntBoundingBox
         return this.maxZ;
     }
 
-    public boolean containsPos(Vec3i pos)
+    public boolean contains(Vec3i pos)
     {
         return pos.getX() >= this.minX &&
                pos.getX() <= this.maxX &&
@@ -128,6 +130,24 @@ public class IntBoundingBox
     }
 
     @Nullable
+    public IntBoundingBox createIntersectingBox(IntBoundingBox other)
+    {
+        if (this.intersects(other))
+        {
+            int minX = Math.max(this.minX, other.minX);
+            int minY = Math.max(this.minY, other.minY);
+            int minZ = Math.max(this.minZ, other.minZ);
+            int maxX = Math.min(this.maxX, other.maxX);
+            int maxY = Math.min(this.maxY, other.maxY);
+            int maxZ = Math.min(this.maxZ, other.maxZ);
+
+            return new IntBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+        }
+
+        return null;
+    }
+
+    @Nullable
     public static IntBoundingBox fromJson(JsonArray arr)
     {
         if (arr.size() == 6)
@@ -181,7 +201,7 @@ public class IntBoundingBox
         }
         else
         {
-            return new IntBoundingBox(0, 0, 0, 0, 0, 0);
+            return IntBoundingBox.ORIGIN;
         }
     }
 
