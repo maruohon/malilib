@@ -398,6 +398,14 @@ public class JsonUtils
         }
     }
 
+    public static void addStringIfNotNull(JsonObject obj, String name, @Nullable String value)
+    {
+        if (value != null)
+        {
+            obj.addProperty(name, value);
+        }
+    }
+
     public static boolean hasBlockPos(JsonObject obj, String name)
     {
         return blockPosFromJson(obj, name) != null;
@@ -441,6 +449,14 @@ public class JsonUtils
         if (pos != null)
         {
             consumer.accept(pos);
+        }
+    }
+
+    public static void writeBlockPosIfNotNull(JsonObject obj, String name, @Nullable BlockPos pos)
+    {
+        if (pos != null)
+        {
+            obj.add(name, blockPosToJson(pos));
         }
     }
 
