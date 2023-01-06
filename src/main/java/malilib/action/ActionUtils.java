@@ -246,7 +246,7 @@ public class ActionUtils
 
     public static void readActionsFromList(JsonObject obj, String arrayName, Consumer<NamedAction> consumer)
     {
-        JsonUtils.readArrayElementsIfObjects(obj, arrayName, (o) -> loadActionFrom(o, consumer));
+        JsonUtils.getArrayElementsIfObjects(obj, arrayName, (o) -> loadActionFrom(o, consumer));
     }
 
     public static void loadActionFrom(JsonObject obj, Consumer<NamedAction> consumer)

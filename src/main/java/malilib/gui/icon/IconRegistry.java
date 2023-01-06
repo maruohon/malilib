@@ -141,7 +141,7 @@ public class IconRegistry
         this.dirty = false;
 
         JsonObject obj = el.getAsJsonObject();
-        JsonUtils.readArrayElementsIfExists(obj, "custom_icons", this::readAndAddIcon);
+        JsonUtils.getArrayElementsIfExists(obj, "custom_icons", this::readAndAddIcon);
     }
 
     protected void readAndAddIcon(JsonElement el)

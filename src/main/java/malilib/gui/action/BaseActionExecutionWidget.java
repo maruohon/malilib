@@ -410,15 +410,15 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         this.setActionWidgetHoverText(JsonUtils.getString(obj, "hover_text"));
 
-        JsonUtils.readObjectIfExists(obj, "text_settings", this.getTextSettings()::fromJson);
-        JsonUtils.readIntegerIfExists(obj, "bg_color", this.getBackgroundRenderer().getNormalSettings()::setColor);
-        JsonUtils.readIntegerIfExists(obj, "bg_color_hover", this.getBackgroundRenderer().getHoverSettings()::setColor);
-        JsonUtils.readObjectIfExists(obj, "text_offset", this.textOffset::fromJson);
-        JsonUtils.readObjectIfExists(obj, "icon_offset", this.iconOffset::fromJson);
-        JsonUtils.readFloatIfExists(obj, "icon_scale_x", (v) -> this.iconScaleX = v);
-        JsonUtils.readFloatIfExists(obj, "icon_scale_y", (v) -> this.iconScaleY = v);
-        JsonUtils.readObjectIfExists(obj, "border_normal", this.getBorderRenderer().getNormalSettings()::fromJson);
-        JsonUtils.readObjectIfExists(obj, "border_hover", this.getBorderRenderer().getHoverSettings()::fromJson);
+        JsonUtils.getObjectIfExists(obj, "text_settings", this.getTextSettings()::fromJson);
+        JsonUtils.getIntegerIfExists(obj, "bg_color", this.getBackgroundRenderer().getNormalSettings()::setColor);
+        JsonUtils.getIntegerIfExists(obj, "bg_color_hover", this.getBackgroundRenderer().getHoverSettings()::setColor);
+        JsonUtils.getObjectIfExists(obj, "text_offset", this.textOffset::fromJson);
+        JsonUtils.getObjectIfExists(obj, "icon_offset", this.iconOffset::fromJson);
+        JsonUtils.getFloatIfExists(obj, "icon_scale_x", (v) -> this.iconScaleX = v);
+        JsonUtils.getFloatIfExists(obj, "icon_scale_y", (v) -> this.iconScaleY = v);
+        JsonUtils.getObjectIfExists(obj, "border_normal", this.getBorderRenderer().getNormalSettings()::fromJson);
+        JsonUtils.getObjectIfExists(obj, "border_hover", this.getBorderRenderer().getHoverSettings()::fromJson);
 
         this.actions.clear();
         ActionUtils.readActionsFromList(obj, "actions", this.actions::add);

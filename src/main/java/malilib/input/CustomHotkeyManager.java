@@ -131,7 +131,7 @@ public class CustomHotkeyManager implements HotkeyProvider
         if (el.isJsonObject())
         {
             JsonObject obj = el.getAsJsonObject();
-            JsonUtils.readArrayElementsIfExists(obj, "hotkeys", this::readAndAddHotkey);
+            JsonUtils.getArrayElementsIfExists(obj, "hotkeys", this::readAndAddHotkey);
         }
     }
 

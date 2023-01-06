@@ -159,10 +159,10 @@ public abstract class BaseOverlayWidget extends BaseWidget
     public void fromJson(JsonObject obj)
     {
         this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", true);
-        JsonUtils.readBooleanIfExists(obj, "auto_width", v -> this.automaticWidth = v);
-        JsonUtils.readIntegerIfExists(obj, "max_width", this::setMaxWidth);
-        JsonUtils.readIntegerIfExists(obj, "width", this::setWidth);
-        JsonUtils.readArrayIfExists(obj, "padding", this.padding::fromJson);
-        JsonUtils.readArrayIfExists(obj, "margin", this.margin::fromJson);
+        JsonUtils.getBooleanIfExists(obj, "auto_width", v -> this.automaticWidth = v);
+        JsonUtils.getIntegerIfExists(obj, "max_width", this::setMaxWidth);
+        JsonUtils.getIntegerIfExists(obj, "width", this::setWidth);
+        JsonUtils.getArrayIfExists(obj, "padding", this.padding::fromJson);
+        JsonUtils.getArrayIfExists(obj, "margin", this.margin::fromJson);
     }
 }

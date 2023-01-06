@@ -77,7 +77,7 @@ public class MarkerManager<T>
         if (el.isJsonArray())
         {
             JsonArray arr = el.getAsJsonArray();
-            JsonUtils.readArrayElements(arr, this::readMarkerFromJsonElement);
+            JsonUtils.getArrayElements(arr, this::readMarkerFromJsonElement);
         }
     }
 

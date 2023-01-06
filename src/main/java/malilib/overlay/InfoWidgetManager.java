@@ -103,7 +103,7 @@ public class InfoWidgetManager
         }
 
         JsonObject obj = el.getAsJsonObject();
-        JsonUtils.readArrayElementsIfExists(obj, "info_widgets", this::readAndAddWidget);
+        JsonUtils.getArrayElementsIfExists(obj, "info_widgets", this::readAndAddWidget);
 
         // This causes all the widgets to get re-fetched immediately
         Registry.INFO_OVERLAY.tick();

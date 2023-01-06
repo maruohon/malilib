@@ -242,9 +242,9 @@ public class ActionRegistry
     {
         this.clearUserAddedActions();
 
-        JsonUtils.readArrayElementsIfObjects(el, "parameterized", (o) -> this.addParameterizedAction(ParameterizedNamedAction.parameterizedActionFromJson(o)));
-        JsonUtils.readArrayElementsIfObjects(el, "macros", (o) -> this.addMacro(MacroAction.macroActionFromJson(o)));
-        JsonUtils.readArrayElementsIfObjects(el, "aliases", (o) -> this.addAlias(AliasAction.aliasActionFromJson(o)));
+        JsonUtils.getArrayElementsIfObjects(el, "parameterized", (o) -> this.addParameterizedAction(ParameterizedNamedAction.parameterizedActionFromJson(o)));
+        JsonUtils.getArrayElementsIfObjects(el, "macros", (o) -> this.addMacro(MacroAction.macroActionFromJson(o)));
+        JsonUtils.getArrayElementsIfObjects(el, "aliases", (o) -> this.addAlias(AliasAction.aliasActionFromJson(o)));
 
         this.dirty = false;
     }
