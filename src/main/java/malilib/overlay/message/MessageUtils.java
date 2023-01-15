@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import malilib.MaLiLibConfigs;
 import malilib.action.ActionContext;
 import malilib.config.option.BooleanContainingConfig;
+import malilib.config.option.HotkeyedBooleanConfig;
 import malilib.config.value.ScreenLocation;
 import malilib.input.ActionResult;
 import malilib.input.Hotkey;
@@ -131,6 +132,23 @@ public class MessageUtils
         if (org.apache.commons.lang3.StringUtils.isBlank(msg) == false)
         {
             MessageDispatcher.generic(5000).type(type).send(msg);
+        }
+    }
+
+    public static void printErrorMessageIfConfigDisabled(HotkeyedBooleanConfig config, String messageKey)
+    {
+        printErrorMessageIfConfigDisabled(8000, config, messageKey);
+    }
+
+    public static void printErrorMessageIfConfigDisabled(int durationMs, HotkeyedBooleanConfig config, String messageKey)
+    {
+        if (config.getBooleanValue() == false)
+        {
+            String configName = config.getName();
+            String hotkeyName = config.getName();
+            String hotkeyVal = config.getKeyBind().getKeysDisplayString();
+
+            MessageDispatcher.error(durationMs).translate(messageKey, configName, hotkeyName, hotkeyVal);
         }
     }
 

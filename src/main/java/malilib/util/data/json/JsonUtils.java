@@ -23,6 +23,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -406,6 +408,14 @@ public class JsonUtils
         }
     }
 
+    public static void addElementIfNotNull(JsonObject obj, String name, @Nullable JsonElement el)
+    {
+        if (el != null)
+        {
+            obj.add(name, el);
+        }
+    }
+
     public static boolean hasBlockPos(JsonObject obj, String name)
     {
         return getBlockPos(obj, name) != null;
@@ -555,6 +565,38 @@ public class JsonUtils
         {
             consumer.accept(vec);
         }
+    }
+
+    public static Rotation getRotation(JsonObject obj, String name)
+    {
+        String str = getString(obj, name);
+
+        if (str != null)
+        {
+            try
+            {
+                return Rotation.valueOf(str);
+            }
+            catch (Exception ignore) {}
+        }
+
+        return Rotation.NONE;
+    }
+
+    public static Mirror getMirror(JsonObject obj, String name)
+    {
+        String str = getString(obj, name);
+
+        if (str != null)
+        {
+            try
+            {
+                return Mirror.valueOf(str);
+            }
+            catch (Exception ignore) {}
+        }
+
+        return Mirror.NONE;
     }
 
     public static JsonArray stringListAsArray(List<String> list)
