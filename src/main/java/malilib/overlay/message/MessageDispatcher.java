@@ -2,6 +2,7 @@ package malilib.overlay.message;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
@@ -234,9 +235,14 @@ public class MessageDispatcher
 
     public void printToConsole(StyledText text)
     {
+        this.printToConsole(text.lines);
+    }
+
+    public void printToConsole(List<StyledTextLine> lines)
+    {
         if (this.consoleMessageConsumer != null)
         {
-            for (StyledTextLine line : text.lines)
+            for (StyledTextLine line : lines)
             {
                 this.consoleMessageConsumer.accept(line.displayText);
             }

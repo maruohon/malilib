@@ -1,5 +1,6 @@
 package malilib.overlay.message;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ import malilib.overlay.widget.InfoRendererWidget;
 import malilib.overlay.widget.MessageRendererWidget;
 import malilib.overlay.widget.ToastRendererWidget;
 import malilib.registry.Registry;
+import malilib.render.text.StyledText;
 import malilib.util.StringUtils;
 
 public class MessageUtils
@@ -135,12 +137,9 @@ public class MessageUtils
         }
     }
 
-    public static void printErrorMessageIfConfigDisabled(HotkeyedBooleanConfig config, String messageKey)
-    {
-        printErrorMessageIfConfigDisabled(8000, config, messageKey);
-    }
-
-    public static void printErrorMessageIfConfigDisabled(int durationMs, HotkeyedBooleanConfig config, String messageKey)
+    public static void getErrorMessageIfConfigDisabled(HotkeyedBooleanConfig config,
+                                                       String translationKey,
+                                                       Consumer<StyledText> consumer)
     {
         if (config.getBooleanValue() == false)
         {
@@ -148,8 +147,23 @@ public class MessageUtils
             String hotkeyName = config.getName();
             String hotkeyVal = config.getKeyBind().getKeysDisplayString();
 
-            MessageDispatcher.error(durationMs).translate(messageKey, configName, hotkeyName, hotkeyVal);
+            consumer.accept(StyledText.translate(translationKey, configName, hotkeyName, hotkeyVal));
         }
+    }
+
+    public static void printErrorMessageIfConfigDisabled(HotkeyedBooleanConfig config, String messageKey)
+    {
+        printErrorMessageIfConfigDisabled(8000, config, messageKey);
+    }
+
+    public static void printErrorMessageIfConfigDisabled(int durationMs, HotkeyedBooleanConfig config, String messageKey)
+    {
+        printErrorMessageIfConfigDisabled(MessageDispatcher.error(durationMs), config, messageKey);
+    }
+
+    public static void printErrorMessageIfConfigDisabled(MessageDispatcher dispatcher, HotkeyedBooleanConfig config, String translationKey)
+    {
+        getErrorMessageIfConfigDisabled(config, translationKey, dispatcher::send);
     }
 
     public static ActionResult addMessageAction(ActionContext ctx, String msg)

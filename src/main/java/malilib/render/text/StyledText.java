@@ -48,6 +48,28 @@ public class StyledText
         return this.renderWidth;
     }
 
+    public StyledText append(List<StyledTextLine> lines)
+    {
+        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
+
+        builder.addAll(this.lines);
+        builder.addAll(lines);
+
+        return new StyledText(builder.build());
+    }
+
+    public StyledText append(int blankLinesBefore, List<StyledTextLine> lines, int blankLinesAfter)
+    {
+        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
+
+        builder.addAll(this.lines);
+        for (int i = 0; i < blankLinesBefore; ++i) { builder.add(StyledTextLine.EMPTY); }
+        builder.addAll(lines);
+        for (int i = 0; i < blankLinesAfter; ++i) { builder.add(StyledTextLine.EMPTY); }
+
+        return new StyledText(builder.build());
+    }
+
     @Override
     public String toString()
     {
