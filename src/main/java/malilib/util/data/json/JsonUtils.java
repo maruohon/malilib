@@ -624,19 +624,19 @@ public class JsonUtils
         return list;
     }
 
-    public static void getObjectIfExists(JsonElement el, String arrayName, Consumer<JsonObject> objectConsumer)
+    public static void getObjectIfExists(JsonElement el, String objectName, Consumer<JsonObject> objectConsumer)
     {
         if (el.isJsonObject() == false)
         {
             return;
         }
 
-        JsonObject obj = el.getAsJsonObject();
+        JsonObject parentObj = el.getAsJsonObject();
 
-        if (hasObject(obj, arrayName))
+        if (hasObject(parentObj, objectName))
         {
-            JsonObject arr = obj.get(arrayName).getAsJsonObject();
-            objectConsumer.accept(arr);
+            JsonObject obj = parentObj.get(objectName).getAsJsonObject();
+            objectConsumer.accept(obj);
         }
     }
 
