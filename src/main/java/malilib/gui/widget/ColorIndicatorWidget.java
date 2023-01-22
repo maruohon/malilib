@@ -5,6 +5,7 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 
 import malilib.config.option.ColorConfig;
+import malilib.config.option.ConfigOption;
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.ColorEditorHSVScreen;
 import malilib.gui.util.ScreenContext;
@@ -15,7 +16,7 @@ public class ColorIndicatorWidget extends InteractableWidget
 {
     protected final IntSupplier valueSupplier;
     protected final IntConsumer valueConsumer;
-    @Nullable protected ColorConfig config;
+    @Nullable protected ConfigOption<?> config;
 
     public ColorIndicatorWidget(int width, int height, int color, IntConsumer consumer)
     {
@@ -38,16 +39,21 @@ public class ColorIndicatorWidget extends InteractableWidget
         String color = Color4f.getHexColorString(valueSupplier.getAsInt());
         this.translateAndAddHoverString("malilib.hover.config.open_color_editor", color);
 
-        this.setClickListener(this::openColorEditorScreen);
+        this.setClickListener(this::openColorEditorScreenIfConfigNotLocked);
     }
 
-    protected void openColorEditorScreen()
+    protected void openColorEditorScreenIfConfigNotLocked()
     {
         if (this.config == null || this.config.isLocked() == false)
         {
-            int originalColor = this.valueSupplier.getAsInt();
-            BaseScreen.openPopupScreenWithCurrentScreenAsParent(new ColorEditorHSVScreen(originalColor, this.valueConsumer));
+            BaseScreen.openPopupScreenWithCurrentScreenAsParent(this.createColorEditorScreen());
         }
+    }
+
+    protected BaseScreen createColorEditorScreen()
+    {
+        int originalColor = this.valueSupplier.getAsInt();
+        return new ColorEditorHSVScreen(originalColor, this.valueConsumer);
     }
 
     @Override

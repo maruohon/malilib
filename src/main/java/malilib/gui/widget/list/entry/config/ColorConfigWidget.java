@@ -4,12 +4,13 @@ import malilib.config.option.ColorConfig;
 import malilib.gui.config.ConfigWidgetContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.ColorIndicatorWidget;
+import malilib.gui.widget.InteractableWidget;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.util.data.Color4f;
 
 public class ColorConfigWidget extends BaseGenericConfigWidget<Color4f, ColorConfig>
 {
-    protected final ColorIndicatorWidget colorIndicatorWidget;
+    protected final InteractableWidget colorIndicatorWidget;
     protected final BaseTextFieldWidget textField;
     protected final String initialStringValue;
 
@@ -20,13 +21,7 @@ public class ColorConfigWidget extends BaseGenericConfigWidget<Color4f, ColorCon
         super(config, constructData, ctx);
 
         this.initialStringValue = this.initialValue.toString();
-
-        this.colorIndicatorWidget = new ColorIndicatorWidget(18, 18, this.config, (newValue) -> {
-            this.config.setValueFromInt(newValue);
-            this.updateWidgetState();
-        });
-        this.colorIndicatorWidget.getHoverInfoFactory()
-                .setStringListProvider("locked", this.config::getLockAndOverrideMessages, 110);
+        this.colorIndicatorWidget = this.createColorIndicatorWidget();
 
         this.textField = new BaseTextFieldWidget(70, 16, this.config.getStringValue());
         this.textField.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
@@ -83,5 +78,18 @@ public class ColorConfigWidget extends BaseGenericConfigWidget<Color4f, ColorCon
         {
             this.config.setValueFromString(text);
         }
+    }
+
+    protected void onColorSet(int newColor)
+    {
+        this.config.setValueFromInt(newColor);
+        this.updateWidgetState();
+    }
+
+    protected InteractableWidget createColorIndicatorWidget()
+    {
+        InteractableWidget widget = new ColorIndicatorWidget(18, 18, this.config, this::onColorSet);
+        widget.getHoverInfoFactory().setStringListProvider("locked", this.config::getLockAndOverrideMessages, 110);
+        return widget;
     }
 }
