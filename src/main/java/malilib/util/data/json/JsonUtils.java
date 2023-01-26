@@ -38,6 +38,14 @@ public class JsonUtils
 {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    public static void copyPropertyIfExists(JsonObject srcObj, JsonObject dstObj, String name)
+    {
+        if (srcObj.has(name))
+        {
+            dstObj.add(name, deepCopy(srcObj.get(name)));
+        }
+    }
+
     @Nullable
     public static JsonObject getNestedObject(JsonObject parent, String key, boolean create)
     {
