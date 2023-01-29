@@ -408,6 +408,22 @@ public class JsonUtils
         }
     }
 
+    public static void addIfNotEqual(JsonObject obj, String name, Rotation value, Rotation excludeValue)
+    {
+        if (value != excludeValue)
+        {
+            obj.addProperty(name, value.name());
+        }
+    }
+
+    public static void addIfNotEqual(JsonObject obj, String name, Mirror value, Mirror excludeValue)
+    {
+        if (value != excludeValue)
+        {
+            obj.addProperty(name, value.name());
+        }
+    }
+
     public static void addStringIfNotNull(JsonObject obj, String name, @Nullable String value)
     {
         if (value != null)
