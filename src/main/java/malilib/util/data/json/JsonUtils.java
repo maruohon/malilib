@@ -715,13 +715,22 @@ public class JsonUtils
         }
     }
 
+    /**
+     * Writes the given values to a JsonArray, using the given serializer. Note that
+     * the serializer is allowed to return null for a given value - in that case that value is skipped.
+     */
     public static <T> JsonArray toArray(Collection<T> values, Function<T, JsonElement> elementSerializer)
     {
         JsonArray arr = new JsonArray();
 
         for (T value : values)
         {
-            arr.add(elementSerializer.apply(value));
+            JsonElement el = elementSerializer.apply(value);
+
+            if (el != null)
+            {
+                arr.add(el);
+            }
         }
 
         return arr;
