@@ -175,7 +175,7 @@ malilib.hover.item_tooltip_lines=§7%s
 malilib.hover.macro_action_export_import_screen.append_overwrite=- Append = add the actions from the imported macro to the end of the current actions in the macro\n- Overwrite = replace all the actions in the macro with the imported actions
 malilib.hover.macro_edit_screen.add_actions=Add the selected actions to the macro
 malilib.hover.misc.close_screen=Close the screen
-malilib.hover.misc.hold_shift_for_info=§oHold <c=ff0>Shift</c> for more information§r
+malilib.hover.misc.hold_shift_for_info=§oHold <c=ff0>Shift</c> for information§r
 malilib.hover.toast_renderer.entry_name=%s (§b%s§r)
 
 malilib.info.action.create_action_widget_screen.name_is_final=§eNote:§r The name can't be changed later!\n§8(Except by renaming the corresponding save file manually.)§r\n\nThe name is only visible/used as the argument to the action to open the action screen. (And usually it would be set as the argument to the action in a parameterized action to be able to quickly/easily open the screen without typing in the name.)\n\nThe name should also be safe for a file name (it will also be automatically adjusted to be all lower case with underscores), as it will be the name of the file where the screen settings/configuration is saved.

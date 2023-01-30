@@ -29,6 +29,7 @@ public abstract class InteractableWidget extends BackgroundWidget
     @Nullable protected ImmutableList<StyledTextLine> hoverHelp;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
+    protected String hoverHelpTranslationKey = "malilib.hover.misc.hold_shift_for_info";
     protected boolean canInteract = true;
     protected boolean enabled = true;
     protected boolean enabledLast = true;
@@ -246,7 +247,7 @@ public abstract class InteractableWidget extends BackgroundWidget
     {
         if (this.hoverHelp == null)
         {
-            this.hoverHelp = StyledText.translate("malilib.hover.misc.hold_shift_for_info").lines;
+            this.hoverHelp = StyledText.translate(this.hoverHelpTranslationKey).lines;
         }
 
         return this.hoverHelp;
@@ -267,6 +268,12 @@ public abstract class InteractableWidget extends BackgroundWidget
     public OrderedStringListFactory getHoverInfoFactory()
     {
         return this.hoverInfoFactory;
+    }
+
+    public void setHoverHelpTranslationKey(String hoverHelpTranslationKey)
+    {
+        this.hoverHelpTranslationKey = hoverHelpTranslationKey;
+        this.hoverHelp = null;
     }
 
     public void setHoverInfoFactory(OrderedStringListFactory hoverInfoFactory)
