@@ -23,13 +23,18 @@ public class ConfirmActionScreen extends BaseScreen
                                EventListener confirmListener,
                                String messageKey, Object... args)
     {
-        this(width, titleKey, confirmListener, null, messageKey, args);
+        this(width, titleKey, confirmListener, null,
+             "malilib.button.misc.confirm.colored",
+             "malilib.button.misc.cancel.colored",
+             messageKey, args);
     }
 
     public ConfirmActionScreen(int width,
                                String titleKey,
                                EventListener confirmListener,
                                @Nullable EventListener cancelListener,
+                               String confirmButtonTranslationKey,
+                               String cancelButtonTranslationKey,
                                String messageKey, Object... args)
     {
         this.confirmListener = confirmListener;
@@ -41,8 +46,8 @@ public class ConfirmActionScreen extends BaseScreen
         ImmutableList<StyledTextLine> messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translate(messageKey, args).lines, width - 30);
         this.labelWidget = new LabelWidget(0xFFC0C0C0, messageLines);
 
-        this.confirmButton = GenericButton.create("malilib.button.misc.confirm.colored", this::onConfirm);
-        this.cancelButton = GenericButton.create("malilib.button.misc.cancel.colored", this::onCancel);
+        this.confirmButton = GenericButton.create(confirmButtonTranslationKey, this::onConfirm);
+        this.cancelButton = GenericButton.create(cancelButtonTranslationKey, this::onCancel);
 
         this.setTitle(titleKey);
         this.setScreenWidthAndHeight(width, 50 + StyledTextUtils.getRenderHeight(messageLines));
