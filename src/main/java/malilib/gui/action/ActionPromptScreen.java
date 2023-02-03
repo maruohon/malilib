@@ -251,7 +251,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
     public static ActionResult openActionPromptScreen(ActionContext ctx)
     {
-        BaseScreen.openScreen(new ActionPromptScreen());
+        BaseScreen.openPopupScreen(new ActionPromptScreen());
         return ActionResult.SUCCESS;
     }
 }
