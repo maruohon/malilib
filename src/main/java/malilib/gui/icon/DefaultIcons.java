@@ -35,8 +35,13 @@ public class DefaultIcons
 
     public static final BaseMultiIcon INFO_11                       = register(new BaseMultiIcon( 81,   0, 11, 11));
     public static final BaseMultiIcon EXCLAMATION_11                = register(new BaseMultiIcon( 81,  11, 11, 11));
-    public static final BaseMultiIcon CHECKMARK_OFF                 = register(new BaseMultiIcon( 81,  22, 11, 11));
-    public static final BaseMultiIcon CHECKMARK_ON                  = register(new BaseMultiIcon( 81,  33, 11, 11));
+    public static final BaseMultiIcon CHECKMARK_LIGHT_OFF           = register(new BaseMultiIcon( 81,  22, 11, 11));
+    public static final BaseMultiIcon CHECKMARK_LIGHT_ON            = register(new BaseMultiIcon( 81,  33, 11, 11));
+    public static final BaseMultiIcon CHECKMARK_DARK_OFF            = register(new BaseMultiIcon( 81,  44, 11, 11));
+    public static final BaseMultiIcon CHECKMARK_DARK_ON_VARIANT_1   = register(new BaseMultiIcon( 81,  55, 11, 11));
+    public static final BaseMultiIcon CHECKMARK_DARK_ON_VARIANT_2   = register(new BaseMultiIcon( 81,  66, 11, 11));
+    public static final BaseMultiIcon CHECKMARK_DARK_ON_VARIANT_3   = register(new BaseMultiIcon( 81,  77, 11, 11));
+    public static final BaseMultiIcon CHECKMARK_DARK_ON_VARIANT_4   = register(new BaseMultiIcon( 81,  88, 11, 11));
 
     public static final BaseMultiIcon FILE_BROWSER_DIR              = register(new BaseMultiIcon(114,   0, 12, 12));
     public static final BaseMultiIcon FILE_BROWSER_DIR_ROOT         = register(new BaseMultiIcon(114,  12, 12, 12));
