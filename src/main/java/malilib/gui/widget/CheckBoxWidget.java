@@ -33,26 +33,14 @@ public class CheckBoxWidget extends InteractableWidget
                           MultiIcon iconUnchecked,
                           MultiIcon iconChecked)
     {
-        this(translationKey, iconUnchecked, iconChecked);
-
-        if (hoverInfoKey != null)
-        {
-            this.translateAndAddHoverString(hoverInfoKey);
-        }
-    }
-
-    public CheckBoxWidget(@Nullable String translationKey,
-                          MultiIcon iconUnchecked,
-                          MultiIcon iconChecked)
-    {
         super(0, 0);
 
         this.iconUnchecked = iconUnchecked;
         this.iconChecked = iconChecked;
         this.textOffset.setYOffset(2);
 
-        this.booleanConsumer = this::setBooleanValue;
-        this.booleanSupplier = this::getBooleanValue;
+        this.booleanConsumer = this::setInternalBooleanValue;
+        this.booleanSupplier = this::getInternalBooleanValue;
 
         if (StringUtils.isBlank(translationKey) == false)
         {
@@ -65,32 +53,18 @@ public class CheckBoxWidget extends InteractableWidget
         this.setHeight(textWidth > 0 ? Math.max(this.getFontHeight(), ih) : ih);
 
         this.updateCheckBoxState();
-    }
 
-    public CheckBoxWidget(@Nullable String translationKey,
-                          BooleanStorage booleanStorage)
-    {
-        this(translationKey, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON);
-
-        this.setBooleanStorage(booleanStorage);
+        if (hoverInfoKey != null)
+        {
+            this.translateAndAddHoverString(hoverInfoKey);
+        }
     }
 
     public CheckBoxWidget(@Nullable String translationKey,
                           @Nullable String hoverInfoKey,
                           BooleanStorage booleanStorage)
     {
-        this(translationKey, hoverInfoKey, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON);
-
-        this.setBooleanStorage(booleanStorage);
-    }
-
-    public CheckBoxWidget(@Nullable String translationKey,
-                          BooleanSupplier booleanSupplier,
-                          BooleanConsumer booleanConsumer)
-    {
-        this(translationKey, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON);
-
-        this.setBooleanStorage(booleanSupplier, booleanConsumer);
+        this(translationKey, hoverInfoKey, booleanStorage::getBooleanValue, booleanStorage::setBooleanValue);
     }
 
     public CheckBoxWidget(@Nullable String translationKey,
@@ -153,6 +127,11 @@ public class CheckBoxWidget extends InteractableWidget
         this.setSelected(selected, true);
     }
 
+    public int getIconWidth()
+    {
+        return this.iconUnchecked.getWidth();
+    }
+
     @Override
     public void updateWidgetState()
     {
@@ -191,12 +170,12 @@ public class CheckBoxWidget extends InteractableWidget
         this.setIcon(icon);
     }
 
-    protected void setBooleanValue(boolean value)
+    protected void setInternalBooleanValue(boolean value)
     {
         this.currentValue = value;
     }
 
-    protected boolean getBooleanValue()
+    protected boolean getInternalBooleanValue()
     {
         return this.currentValue;
     }

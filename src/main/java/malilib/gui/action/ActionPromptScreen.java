@@ -11,7 +11,6 @@ import malilib.action.ActionList;
 import malilib.action.NamedAction;
 import malilib.gui.BaseListScreen;
 import malilib.gui.BaseScreen;
-import malilib.gui.icon.DefaultIcons;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.CheckBoxWidget;
 import malilib.gui.widget.DropDownListWidget;
@@ -57,7 +56,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         this.searchDisplayNameCheckBoxWidget.setListener((v) -> this.updateFilteredList());
 
         int screenWidth = 320;
-        this.searchTextField = new BaseTextFieldWidget(screenWidth - DefaultIcons.CHECKMARK_OFF.getWidth(), 16);
+        this.searchTextField = new BaseTextFieldWidget(screenWidth - this.rememberSearchCheckBoxWidget.getIconWidth(), 16);
         this.searchTextField.setListener(this::updateFilteredList);
         this.searchTextField.setUpdateListenerAlways(true);
 
@@ -97,7 +96,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
     {
         super.updateWidgetPositions();
 
-        int x = this.getRight() - DefaultIcons.CHECKMARK_OFF.getWidth();
+        int x = this.getRight() - this.rememberSearchCheckBoxWidget.getIconWidth();
         int y = this.y;
         this.rememberSearchCheckBoxWidget.setPosition(x, y);
         this.fuzzySearchCheckBoxWidget.setPosition(x, y + 11);
