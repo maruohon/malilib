@@ -49,12 +49,12 @@ public class GuiTextFieldGeneric extends TextFieldWidget
         return this.y;
     }
 
-    public void setX(int x)
+    public void method_46421(int x)
     {
         this.x = x;
     }
 
-    public void setY(int y)
+    public void method_46419(int y)
     {
         this.y = y;
     }

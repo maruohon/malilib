@@ -76,8 +76,8 @@ public class WidgetDropDownList<T> extends WidgetBase
     {
         super.setPosition(x, y);
 
-        this.searchBar.getTextField().setX(x + 1);
-        this.searchBar.getTextField().setY(y - 18);
+        this.searchBar.getTextField().method_46421(x + 1);
+        this.searchBar.getTextField().method_46419(y - 18);
     }
 
     protected int getRequiredWidth(int width, List<T> entries, MinecraftClient mc)

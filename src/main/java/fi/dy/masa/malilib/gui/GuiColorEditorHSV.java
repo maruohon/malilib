@@ -507,7 +507,6 @@ public class GuiColorEditorHSV extends GuiDialogBase
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        RenderSystem.disableTexture();
         RenderUtils.setupBlend();
 
         RenderUtils.color(1, 1, 1, 1);
@@ -613,7 +612,6 @@ public class GuiColorEditorHSV extends GuiDialogBase
         tessellator.draw();
 
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 
     public static void renderGradientColorBar(int x, int y, float z, int width, int height, int colorStart, int colorEnd, BufferBuilder buffer)
