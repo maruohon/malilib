@@ -10,8 +10,9 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 
 import malilib.gui.icon.DefaultIcons;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.util.ScreenContext;
+import malilib.gui.widget.IconWidget;
 import malilib.gui.widget.InteractableWidget;
 import malilib.listener.EventListener;
 import malilib.render.text.StyledTextLine;
@@ -23,11 +24,11 @@ import malilib.util.data.LeftRight;
 public class GenericButton extends InteractableWidget
 {
     @Nullable protected ButtonActionListener actionListener;
-    @Nullable protected Supplier<MultiIcon> buttonIconSupplier;
+    @Nullable protected Supplier<Icon> buttonIconSupplier;
     @Nullable protected Supplier<String> displayStringSupplier;
-    @Nullable protected MultiIcon buttonIcon;
+    @Nullable protected Icon buttonIcon;
     @Nullable protected String fullDisplayString;
-    protected MultiIcon backgroundIcon = DefaultIcons.BUTTON_BACKGROUND;
+    protected Icon backgroundIcon = DefaultIcons.BUTTON_BACKGROUND;
     protected LeftRight iconAlignment = LeftRight.LEFT;
     protected boolean canScrollToClick;
     protected boolean playClickSound = true;
@@ -96,7 +97,7 @@ public class GenericButton extends InteractableWidget
      * The buttonIconSupplier takes precedence over a possible fixed icon,
      * and will in fact override the value.
      */
-    public GenericButton setButtonIconSupplier(@Nullable Supplier<MultiIcon> buttonIconSupplier)
+    public GenericButton setButtonIconSupplier(@Nullable Supplier<Icon> buttonIconSupplier)
     {
         this.buttonIconSupplier = buttonIconSupplier;
         this.updateButtonState();
@@ -136,7 +137,7 @@ public class GenericButton extends InteractableWidget
         return this;
     }
 
-    public GenericButton setBackgroundIcon(MultiIcon icon)
+    public GenericButton setBackgroundIcon(Icon icon)
     {
         this.backgroundIcon = icon;
         return this;
@@ -169,7 +170,7 @@ public class GenericButton extends InteractableWidget
      * Sets the button icon. Note that if a buttonIconSupplier
      * has been set, then that will overwrite this value.
      */
-    public GenericButton setButtonIcon(@Nullable MultiIcon buttonIcon)
+    public GenericButton setButtonIcon(@Nullable Icon buttonIcon)
     {
         this.buttonIcon = buttonIcon;
         this.updateButtonState();
@@ -307,7 +308,7 @@ public class GenericButton extends InteractableWidget
 
     protected int getMaxDisplayStringWidth()
     {
-        MultiIcon icon = this.buttonIcon;
+        Icon icon = this.buttonIcon;
         int totalWidth = this.automaticWidth ? 8192 : this.getWidth();
         int usedWidth = this.padding.getHorizontalTotal();
 
@@ -377,7 +378,7 @@ public class GenericButton extends InteractableWidget
     {
         int textX = super.getTextPositionX(x, usableWidth, this.text.renderWidth);
 
-        MultiIcon icon = this.buttonIcon;
+        Icon icon = this.buttonIcon;
 
         if (this.iconAlignment == LeftRight.LEFT && icon != null &&
             this.textOffset.getCenterHorizontally() == false)
@@ -412,12 +413,13 @@ public class GenericButton extends InteractableWidget
     protected void renderButtonBackgroundIcon(int x, int y, float z, int width, int height,
                                               boolean hovered, ScreenContext ctx)
     {
-        this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height, this.isEnabled(), hovered);
+        this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height,
+                                                IconWidget.getVariantIndex(this.isEnabled(), hovered));
     }
 
     protected void renderIcon(int x, int y, float z, int width, int height, boolean hovered, ScreenContext ctx)
     {
-        MultiIcon icon = this.buttonIcon;
+        Icon icon = this.buttonIcon;
 
         if (icon != null)
         {
@@ -428,7 +430,7 @@ public class GenericButton extends InteractableWidget
             int offY = iconYOffset > 0 ? iconYOffset : (height - icon.getHeight()) / 2;
             int ix = leftAligned ? x + offX : x + width - iconWidth - offX;
 
-            icon.renderAt(ix, y + offY, z + 0.125f, this.isEnabled(), hovered);
+            icon.renderAt(ix, y + offY, z + 0.125f, IconWidget.getVariantIndex(this.isEnabled(), hovered));
         }
     }
 
@@ -514,7 +516,7 @@ public class GenericButton extends InteractableWidget
         return button;
     }
 
-    public static GenericButton create(int width, int height, MultiIcon icon)
+    public static GenericButton create(int width, int height, Icon icon)
     {
         GenericButton button = new GenericButton(width, height);
         button.getPadding().setAll(0);
@@ -524,12 +526,12 @@ public class GenericButton extends InteractableWidget
         return button;
     }
 
-    public static GenericButton create(MultiIcon icon)
+    public static GenericButton create(Icon icon)
     {
         return create(icon.getWidth(), icon.getHeight(), icon);
     }
 
-    public static GenericButton create(int height, String translationKey, MultiIcon icon)
+    public static GenericButton create(int height, String translationKey, Icon icon)
     {
         GenericButton button = new GenericButton(-1, height);
         button.fullDisplayString = StringUtils.translate(translationKey);
@@ -541,19 +543,19 @@ public class GenericButton extends InteractableWidget
         return button;
     }
 
-    public static GenericButton create(String translationKey, MultiIcon icon)
+    public static GenericButton create(String translationKey, Icon icon)
     {
         return create(20, translationKey, icon);
     }
 
-    public static GenericButton create(MultiIcon icon, EventListener actionListener)
+    public static GenericButton create(Icon icon, EventListener actionListener)
     {
         GenericButton button = create(icon);
         button.setActionListener(actionListener);
         return button;
     }
 
-    public static GenericButton create(@Nullable Supplier<MultiIcon> iconSupplier, EventListener actionListener)
+    public static GenericButton create(@Nullable Supplier<Icon> iconSupplier, EventListener actionListener)
     {
         GenericButton button = new GenericButton(-1, -1);
         button.getPadding().setAll(0);

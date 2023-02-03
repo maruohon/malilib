@@ -1,6 +1,7 @@
 package malilib.gui.widget.list.entry;
 
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
+import malilib.gui.widget.IconWidget;
 import malilib.render.ShapeRenderUtils;
 
 public abstract class SortableListEntryWidget<DATATYPE> extends BaseDataListEntryWidget<DATATYPE>
@@ -45,7 +46,7 @@ public abstract class SortableListEntryWidget<DATATYPE> extends BaseDataListEntr
         return -1;
     }
 
-    protected void renderColumnHeader(int mouseX, int mouseY, MultiIcon iconNatural, MultiIcon iconReverse)
+    protected void renderColumnHeader(int mouseX, int mouseY, Icon iconNatural, Icon iconReverse)
     {
         int mouseOverColumn = this.getMouseOverColumn(mouseX, mouseY);
         int sortColumn = this.getCurrentSortColumn();
@@ -54,8 +55,8 @@ public abstract class SortableListEntryWidget<DATATYPE> extends BaseDataListEntr
         int y = this.getY();
         int height = this.getHeight();
 
-        MultiIcon icon = reverse ? iconReverse : iconNatural;
-        icon.renderAt(iconX, y + 3, this.getZ(), true, sortColumn == mouseOverColumn);
+        Icon icon = reverse ? iconReverse : iconNatural;
+        icon.renderAt(iconX, y + 3, this.getZ(), IconWidget.getVariantIndex(true, sortColumn == mouseOverColumn));
 
         for (int i = 0; i < this.getColumnCount(); ++i)
         {

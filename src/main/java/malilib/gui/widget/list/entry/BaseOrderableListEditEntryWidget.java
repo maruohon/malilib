@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.icon.DefaultIcons;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
@@ -169,7 +169,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     {
     }
 
-    protected MultiIcon getIconForButton(ButtonType type)
+    protected Icon getIconForButton(ButtonType type)
     {
         switch (type)
         {

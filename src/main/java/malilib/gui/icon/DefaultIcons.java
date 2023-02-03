@@ -6,102 +6,116 @@ import malilib.util.data.Identifier;
 
 public class DefaultIcons
 {
-    public static final BaseMultiIcon EMPTY                         = register(new BaseMultiIcon(  0,   0,  0,  0));
-    public static final BaseMultiIcon SMALL_ARROW_UP                = register(new BaseMultiIcon(  0,   0,  8,  8));
-    public static final BaseMultiIcon SMALL_ARROW_DOWN              = register(new BaseMultiIcon(  0,   8,  8,  8));
-    public static final BaseMultiIcon SMALL_ARROW_RIGHT             = register(new BaseMultiIcon(  0,  16,  8,  8));
-    public static final BaseMultiIcon SMALL_ARROW_LEFT              = register(new BaseMultiIcon(  0,  24,  8,  8));
-    public static final BaseMultiIcon MEDIUM_ARROW_RIGHT            = register(new BaseMultiIcon(  0,  32,  8,  8));
-    public static final BaseMultiIcon MEDIUM_ARROW_LEFT             = register(new BaseMultiIcon(  0,  40,  8,  8));
-    public static final BaseMultiIcon THIN_DOUBLE_ARROW_LEFT        = register(new BaseMultiIcon(  0,  48,  8,  8));
-    public static final BaseMultiIcon SMALL_DOUBLE_ARROW_LEFT       = register(new BaseMultiIcon(  0,  56,  8,  8));
-    public static final BaseMultiIcon RADIO_BUTTON_UNSELECTED       = register(new BaseMultiIcon(  0,  64,  8,  8));
-    public static final BaseMultiIcon RADIO_BUTTON_SELECTED         = register(new BaseMultiIcon(  0,  72,  8,  8));
-    public static final BaseMultiIcon GROUP_EXPAND_PLUS             = register(new BaseMultiIcon(  0,  80,  8,  8));
-    public static final BaseMultiIcon GROUP_COLLAPSE_MINUS          = register(new BaseMultiIcon(  0,  88,  8,  8));
+    public static final BaseIcon EMPTY                          = register(  0,   0,  0,  0);
+    public static final BaseIcon SMALL_ARROW_UP                 = register(  0,   0,  8,  8);
+    public static final BaseIcon SMALL_ARROW_DOWN               = register(  0,   8,  8,  8);
+    public static final BaseIcon SMALL_ARROW_RIGHT              = register(  0,  16,  8,  8);
+    public static final BaseIcon SMALL_ARROW_LEFT               = register(  0,  24,  8,  8);
+    public static final BaseIcon MEDIUM_ARROW_RIGHT             = register(  0,  32,  8,  8);
+    public static final BaseIcon MEDIUM_ARROW_LEFT              = register(  0,  40,  8,  8);
+    public static final BaseIcon THIN_DOUBLE_ARROW_LEFT         = register(  0,  48,  8,  8);
+    public static final BaseIcon SMALL_DOUBLE_ARROW_LEFT        = register(  0,  56,  8,  8);
+    public static final BaseIcon RADIO_BUTTON_UNSELECTED        = register(  0,  64,  8,  8);
+    public static final BaseIcon RADIO_BUTTON_SELECTED          = register(  0,  72,  8,  8);
+    public static final BaseIcon GROUP_EXPAND_PLUS              = register(  0,  80,  8,  8);
+    public static final BaseIcon GROUP_COLLAPSE_MINUS           = register(  0,  88,  8,  8);
 
-    public static final BaseMultiIcon LIGHT_GREEN_OFF               = register(new BaseMultiIcon( 40, 194,  8,  8, 0, 0));
-    public static final BaseMultiIcon LIGHT_GREEN_ON                = register(new BaseMultiIcon( 40, 202,  8,  8, 0, 0));
-    public static final BaseMultiIcon LIGHT_RED_OFF                 = register(new BaseMultiIcon( 40, 210,  8,  8, 0, 0));
-    public static final BaseMultiIcon LIGHT_RED_ON                  = register(new BaseMultiIcon( 40, 218,  8,  8, 0, 0));
+    public static final BaseIcon LIGHT_GREEN_OFF                = register( 40, 194,  8,  8, 0, 0);
+    public static final BaseIcon LIGHT_GREEN_ON                 = register( 40, 202,  8,  8, 0, 0);
+    public static final BaseIcon LIGHT_RED_OFF                  = register( 40, 210,  8,  8, 0, 0);
+    public static final BaseIcon LIGHT_RED_ON                   = register( 40, 218,  8,  8, 0, 0);
 
-    public static final BaseMultiIcon LOCK_UNLOCKED                 = register(new BaseMultiIcon( 24,   0,  9,  9, 0, 0));
-    public static final BaseMultiIcon LOCK_LOCKED                   = register(new BaseMultiIcon( 33,   0,  9,  9, 0, 0));
-    public static final BaseMultiIcon LIST_ADD_PLUS_9               = register(new BaseMultiIcon( 24,   9,  9,  9));
-    public static final BaseMultiIcon LIST_REMOVE_MINUS_9           = register(new BaseMultiIcon( 24,  18,  9,  9));
-    public static final BaseMultiIcon CLOSE_BUTTON_9                = register(new BaseMultiIcon( 24,  27,  9,  9));
+    public static final BaseIcon LOCK_UNLOCKED                  = register( 24,   0,  9,  9, 0, 0);
+    public static final BaseIcon LOCK_LOCKED                    = register( 33,   0,  9,  9, 0, 0);
+    public static final BaseIcon LIST_ADD_PLUS_9                = register( 24,   9,  9,  9);
+    public static final BaseIcon LIST_REMOVE_MINUS_9            = register( 24,  18,  9,  9);
+    public static final BaseIcon CLOSE_BUTTON_9                 = register( 24,  27,  9,  9);
 
-    public static final BaseMultiIcon BTN_PLUSMINUS_10              = register(new BaseMultiIcon( 51,   0, 10, 10));
+    public static final BaseIcon BTN_PLUSMINUS_10               = register( 51,   0, 10, 10);
 
-    public static final BaseMultiIcon INFO_11                       = register(new BaseMultiIcon( 81,   0, 11, 11));
-    public static final BaseMultiIcon EXCLAMATION_11                = register(new BaseMultiIcon( 81,  11, 11, 11));
-    public static final BaseMultiIcon CHECKMARK_LIGHT_OFF           = register(new BaseMultiIcon( 81,  22, 11, 11));
-    public static final BaseMultiIcon CHECKMARK_LIGHT_ON            = register(new BaseMultiIcon( 81,  33, 11, 11));
-    public static final BaseMultiIcon CHECKMARK_DARK_OFF            = register(new BaseMultiIcon( 81,  44, 11, 11));
-    public static final BaseMultiIcon CHECKMARK_DARK_ON_VARIANT_1   = register(new BaseMultiIcon( 81,  55, 11, 11));
-    public static final BaseMultiIcon CHECKMARK_DARK_ON_VARIANT_2   = register(new BaseMultiIcon( 81,  66, 11, 11));
-    public static final BaseMultiIcon CHECKMARK_DARK_ON_VARIANT_3   = register(new BaseMultiIcon( 81,  77, 11, 11));
-    public static final BaseMultiIcon CHECKMARK_DARK_ON_VARIANT_4   = register(new BaseMultiIcon( 81,  88, 11, 11));
+    public static final BaseIcon INFO_11                        = register( 81,   0, 11, 11);
+    public static final BaseIcon EXCLAMATION_11                 = register( 81,  11, 11, 11);
+    public static final BaseIcon CHECKMARK_LIGHT_OFF            = register( 81,  22, 11, 11);
+    public static final BaseIcon CHECKMARK_LIGHT_ON             = register( 81,  33, 11, 11);
+    public static final BaseIcon CHECKMARK_DARK_OFF             = register( 81,  44, 11, 11);
+    public static final BaseIcon CHECKMARK_DARK_ON_VARIANT_1    = register( 81,  55, 11, 11);
+    public static final BaseIcon CHECKMARK_DARK_ON_VARIANT_2    = register( 81,  66, 11, 11);
+    public static final BaseIcon CHECKMARK_DARK_ON_VARIANT_3    = register( 81,  77, 11, 11);
+    public static final BaseIcon CHECKMARK_DARK_ON_VARIANT_4    = register( 81,  88, 11, 11);
 
-    public static final BaseMultiIcon FILE_BROWSER_DIR              = register(new BaseMultiIcon(114,   0, 12, 12));
-    public static final BaseMultiIcon FILE_BROWSER_DIR_ROOT         = register(new BaseMultiIcon(114,  12, 12, 12));
-    public static final BaseMultiIcon FILE_BROWSER_DIR_UP           = register(new BaseMultiIcon(114,  24, 12, 12));
-    public static final BaseMultiIcon FILE_BROWSER_CREATE_DIR       = register(new BaseMultiIcon(114,  36, 12, 12));
-    public static final BaseMultiIcon SEARCH                        = register(new BaseMultiIcon(114,  48, 12, 12));
-    public static final BaseMultiIcon RESET_12                      = register(new BaseMultiIcon(114,  60, 12, 12));
+    public static final BaseIcon FILE_BROWSER_DIR               = register(114,   0, 12, 12);
+    public static final BaseIcon FILE_BROWSER_DIR_ROOT          = register(114,  12, 12, 12);
+    public static final BaseIcon FILE_BROWSER_DIR_UP            = register(114,  24, 12, 12);
+    public static final BaseIcon FILE_BROWSER_CREATE_DIR        = register(114,  36, 12, 12);
+    public static final BaseIcon SEARCH                         = register(114,  48, 12, 12);
+    public static final BaseIcon RESET_12                       = register(114,  60, 12, 12);
 
-    public static final BaseMultiIcon ARROW_UP                      = register(new BaseMultiIcon(150,   0, 13, 13));
-    public static final BaseMultiIcon ARROW_DOWN                    = register(new BaseMultiIcon(150,  13, 13, 13));
-    public static final BaseMultiIcon ARROW_RIGHT                   = register(new BaseMultiIcon(150,  26, 13, 13));
-    public static final BaseMultiIcon ARROW_LEFT                    = register(new BaseMultiIcon(150,  39, 13, 13));
-    public static final BaseMultiIcon LIST_ADD_PLUS_13              = register(new BaseMultiIcon(150,  52, 13, 13));
-    public static final BaseMultiIcon LIST_REMOVE_MINUS_13          = register(new BaseMultiIcon(150,  65, 13, 13));
+    public static final BaseIcon ARROW_UP                       = register(150,   0, 13, 13);
+    public static final BaseIcon ARROW_DOWN                     = register(150,  13, 13, 13);
+    public static final BaseIcon ARROW_RIGHT                    = register(150,  26, 13, 13);
+    public static final BaseIcon ARROW_LEFT                     = register(150,  39, 13, 13);
+    public static final BaseIcon LIST_ADD_PLUS_13               = register(150,  52, 13, 13);
+    public static final BaseIcon LIST_REMOVE_MINUS_13           = register(150,  65, 13, 13);
 
-    public static final BaseMultiIcon BTN_PLUSMINUS_14              = register(new BaseMultiIcon(189,   0, 14, 14));
+    public static final BaseIcon BTN_PLUSMINUS_14               = register(189,   0, 14, 14);
 
-    public static final BaseMultiIcon BTN_SLIDER                    = register(new BaseMultiIcon(195, 104, 16, 16));
-    public static final BaseMultiIcon BTN_TXTFIELD                  = register(new BaseMultiIcon(195, 120, 16, 16));
-    public static final BaseMultiIcon BTN_PLUSMINUS_16              = register(new BaseMultiIcon(195, 136, 16, 16));
+    public static final BaseIcon BTN_SLIDER                     = register(195, 104, 16, 16);
+    public static final BaseIcon BTN_TXTFIELD                   = register(195, 120, 16, 16);
+    public static final BaseIcon BTN_PLUSMINUS_16               = register(195, 136, 16, 16);
 
-    public static final BaseMultiIcon INFO_ICON_18                  = register(new BaseMultiIcon( 40, 176, 18, 18));
+    public static final BaseIcon INFO_ICON_18                   = register( 40, 176, 18, 18);
 
-    public static final BaseMultiIcon SLIDER_RED                    = register(new BaseMultiIcon(114,  96,  6, 40));
-    public static final BaseMultiIcon SLIDER_GREEN                  = register(new BaseMultiIcon(132,  96,  6, 40));
+    public static final BaseIcon SLIDER_RED                     = register(114,  96,  6, 40);
+    public static final BaseIcon SLIDER_GREEN                   = register(132,  96,  6, 40);
 
 
-    public static final BaseMultiIcon BUTTON_BACKGROUND             = register(new BaseMultiIcon( 56, 196, 200, 20, 0, 20));
+    public static final BaseIcon BUTTON_BACKGROUND              = register( 56, 196, 200, 20, 0, 20);
 
-    public static final BaseIcon TOAST_BACKGROUND                   = register(new BaseIcon(0, 0, 256, 128, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/toasts.png")));
+    public static final BaseIcon TOAST_BACKGROUND                   = register(  0,   0, 256, 128, "textures/gui/toasts.png");
 
-    public static final BaseIcon INV_BACKGROUND_EMPTY_13_X_13       = register(new BaseIcon(  0,   0, 248, 248, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_empty_13x13.png")));
-    public static final BaseIcon INV_BACKGROUND_GENERIC_54          = register(new BaseIcon(  0,   0, 176, 122, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png")));
+    public static final BaseIcon INV_BACKGROUND_EMPTY_13_X_13       = register(  0,   0, 248, 248, "textures/gui/inventory_background_empty_13x13.png");
+    public static final BaseIcon INV_BACKGROUND_GENERIC_54          = register(  0,   0, 176, 122, "textures/gui/inventory_background_generic_54.png");
 
-    public static final BaseIcon INV_BACKGROUND_BREWING_STAND       = register(new BaseIcon(128, 183, 117,  73, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_DROPPER             = register(new BaseIcon(176,   0,  68,  68, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_FURNACE             = register(new BaseIcon(  0, 188,  96,  68, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_GENERIC_27          = register(new BaseIcon(  0,   0, 176,  68, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_HOPPER              = register(new BaseIcon(  0,  68, 104,  32, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_HORSE_EQUIPMENT     = register(new BaseIcon( 96, 206,  32,  50, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_HORSE_INVENTORY     = register(new BaseIcon(103, 102, 105,  68, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_LIVING_ENTITY       = register(new BaseIcon(  0, 102,  53,  86, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_BACKGROUND_VILLAGER_INV        = register(new BaseIcon( 53, 102,  50,  86, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_BACKGROUND_BREWING_STAND       = register(128, 183, 117,  73, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_BACKGROUND_DROPPER             = register(176,   0,  68,  68, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_BACKGROUND_FURNACE             = register(  0, 188,  96,  68, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_BACKGROUND_GENERIC_27          = register(  0,   0, 176,  68, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_BACKGROUND_HOPPER              = register(  0,  68, 104,  32, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_BACKGROUND_HORSE_EQUIPMENT     = register( 96, 206,  32,  50, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_BACKGROUND_HORSE_INVENTORY     = register(103, 102, 105,  68, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_BACKGROUND_LIVING_ENTITY       = register(  0, 102,  53,  86, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_BACKGROUND_VILLAGER_INV        = register( 53, 102,  50,  86, "textures/gui/inventory_background_misc.png");
 
-    public static final BaseIcon INV_BACKGROUND_14_SLOTS_HORIZONTAL = register(new BaseIcon(  4, 238, 252,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png")));
-    public static final BaseIcon INV_BACKGROUND_14_SLOTS_VERTICAL   = register(new BaseIcon(238,   4,  18, 252, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png")));
+    public static final BaseIcon INV_BACKGROUND_14_SLOTS_HORIZONTAL = register(  4, 238, 252,  18, "textures/gui/inventory_background_generic_54.png");
+    public static final BaseIcon INV_BACKGROUND_14_SLOTS_VERTICAL   = register(238,   4,  18, 252, "textures/gui/inventory_background_generic_54.png");
 
-    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_HEAD      = register(new BaseIcon(104,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_CHEST     = register(new BaseIcon(122,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_LEGS      = register(new BaseIcon(140,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_BOOTS     = register(new BaseIcon(158,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_EQUIPMENT_SHIELD          = register(new BaseIcon(176,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_HEAD      = register(104,  68,  18,  18, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_CHEST     = register(122,  68,  18,  18, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_LEGS      = register(140,  68,  18,  18, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_BOOTS     = register(158,  68,  18,  18, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_SLOT_EQUIPMENT_SHIELD          = register(176,  68,  18,  18, "textures/gui/inventory_background_misc.png");
 
-    public static final BaseIcon INV_SLOT_HORSE_ARMOR               = register(new BaseIcon(194,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_HORSE_SADDLE              = register(new BaseIcon(212,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
-    public static final BaseIcon INV_SLOT_LLAMA_CARPET              = register(new BaseIcon(230,  68,  18,  18, new Identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png")));
+    public static final BaseIcon INV_SLOT_HORSE_ARMOR               = register(194,  68,  18,  18, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_SLOT_HORSE_SADDLE              = register(212,  68,  18,  18, "textures/gui/inventory_background_misc.png");
+    public static final BaseIcon INV_SLOT_LLAMA_CARPET              = register(230,  68,  18,  18, "textures/gui/inventory_background_misc.png");
+
+    private static BaseIcon register(int u, int v, int w, int h)
+    {
+        return register(u, v, w, h, w, 0);
+    }
+
+    private static BaseIcon register(int u, int v, int w, int h, int variantOffU, int variantOffV)
+    {
+        return register(new BaseIcon(u, v, w, h, variantOffU, variantOffV));
+    }
+
+    private static BaseIcon register(int u, int v, int w, int h, String texture)
+    {
+        return register(new BaseIcon(u, v, w, h, 0, 0, new Identifier(MaLiLibReference.MOD_ID, texture)));
+    }
 
     public static <T extends Icon> T register(T icon)
     {
-        Registry.ICON.registerModIcon(icon);
-        return icon;
+        return Registry.ICON.registerModIcon(icon);
     }
 }

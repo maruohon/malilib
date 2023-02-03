@@ -5,10 +5,8 @@ import javax.annotation.Nullable;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.icon.BaseIcon;
-import malilib.gui.icon.BaseMultiIcon;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
-import malilib.gui.icon.MultiIcon;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.IntegerEditWidget;
@@ -56,11 +54,6 @@ public class CustomIconEditScreen extends BaseScreen
     }
 
     public CustomIconEditScreen(Icon icon, Consumer<Icon> iconConsumer)
-    {
-        this(icon, iconConsumer, 0, 0);
-    }
-
-    public CustomIconEditScreen(MultiIcon icon, Consumer<Icon> iconConsumer)
     {
         this(icon, iconConsumer,
              icon.getVariantU(1) - icon.getU(),
@@ -207,19 +200,10 @@ public class CustomIconEditScreen extends BaseScreen
     {
         if (this.hasValidData())
         {
-            if (this.isMultiIcon())
-            {
-                return new BaseMultiIcon(this.u, this.v, this.iconWidth, this.iconHeight,
-                                         this.variantOffsetU, this.variantOffsetV,
-                                         this.textureSheetWidth, this.textureSheetHeight,
-                                         this.texture);
-            }
-            else
-            {
-                return new BaseIcon(this.u, this.v, this.iconWidth, this.iconHeight,
-                                    this.textureSheetWidth, this.textureSheetHeight,
-                                    this.texture);
-            }
+            return new BaseIcon(this.u, this.v, this.iconWidth, this.iconHeight,
+                                this.variantOffsetU, this.variantOffsetV,
+                                this.textureSheetWidth, this.textureSheetHeight,
+                                this.texture);
         }
 
         return null;
@@ -230,11 +214,6 @@ public class CustomIconEditScreen extends BaseScreen
         return this.texture != null &&
                this.iconWidth > 0 && this.iconHeight > 0 &&
                this.textureSheetWidth > 0 && this.textureSheetHeight > 0;
-    }
-
-    protected boolean isMultiIcon()
-    {
-        return this.variantOffsetU != 0 || this.variantOffsetV != 0;
     }
 
     protected void setTextureName(String str)

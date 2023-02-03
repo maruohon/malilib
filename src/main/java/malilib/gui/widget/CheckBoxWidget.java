@@ -6,15 +6,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
-import malilib.gui.icon.MultiIcon;
 import malilib.render.text.StyledTextLine;
 import malilib.util.data.BooleanConsumer;
 import malilib.util.data.BooleanStorage;
 
 public class CheckBoxWidget extends InteractableWidget
 {
-    protected final MultiIcon iconUnchecked;
-    protected final MultiIcon iconChecked;
+    protected final Icon iconUnchecked;
+    protected final Icon iconChecked;
     @Nullable protected BooleanConsumer listener;
     protected BooleanSupplier booleanSupplier;
     protected BooleanConsumer booleanConsumer;
@@ -30,8 +29,8 @@ public class CheckBoxWidget extends InteractableWidget
 
     public CheckBoxWidget(@Nullable String translationKey,
                           @Nullable String hoverInfoKey,
-                          MultiIcon iconUnchecked,
-                          MultiIcon iconChecked)
+                          Icon iconUnchecked,
+                          Icon iconChecked)
     {
         super(0, 0);
 

@@ -7,7 +7,7 @@ import java.util.Date;
 import javax.annotation.Nullable;
 
 import malilib.gui.icon.FileBrowserIconProvider;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.InteractableWidget;
@@ -67,7 +67,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         this.getBorderRenderer().getHoverSettings().setEnabled(true);
 
         int textXOffset = 3;
-        @Nullable MultiIcon icon = iconProvider != null ? iconProvider.getIconForEntry(entry) : null;
+        @Nullable Icon icon = iconProvider != null ? iconProvider.getIconForEntry(entry) : null;
 
         if (icon != null)
         {

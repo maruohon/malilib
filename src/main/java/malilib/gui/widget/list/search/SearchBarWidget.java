@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 
 import malilib.config.value.HorizontalAlignment;
 import malilib.gui.BaseScreen;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.ContainerWidget;
 import malilib.gui.widget.button.GenericButton;
@@ -43,7 +43,7 @@ public class SearchBarWidget extends ContainerWidget
                            int height,
                            EventListener searchInputChangeListener,
                            @Nullable EventListener openCloseListener,
-                           MultiIcon toggleButtonIcon)
+                           Icon toggleButtonIcon)
     {
         this(width, height, searchInputChangeListener, openCloseListener);
 

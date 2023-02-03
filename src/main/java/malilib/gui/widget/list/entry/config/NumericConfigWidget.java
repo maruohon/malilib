@@ -9,7 +9,7 @@ import malilib.config.option.BaseGenericConfig;
 import malilib.config.option.SliderConfig;
 import malilib.gui.config.ConfigWidgetContext;
 import malilib.gui.icon.DefaultIcons;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.SliderWidget;
 import malilib.gui.widget.button.GenericButton;
@@ -143,7 +143,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseGenericConfig<TY
         this.reAddSubWidgets();
     }
 
-    protected MultiIcon getSliderToggleButtonIcon()
+    protected Icon getSliderToggleButtonIcon()
     {
         return this.config.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
     }

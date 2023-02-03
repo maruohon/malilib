@@ -104,4 +104,21 @@ public class IconWidget extends InteractableWidget
             icon.renderScaledAt(x, y, z + 0.025f, iconWidth, iconHeight);
         }
     }
+
+    /**
+     * Returns the icon variant index to use for the given status of the icon.
+     * By default, a disabled icon is at index 0.
+     * An enabled, non-hovered icon is at index 1.
+     * An enabled, hovered icon is at index 2.
+     * Thus, the hover status has no effect for disabled icons.
+     */
+    public static int getVariantIndex(boolean enabled, boolean hovered)
+    {
+        if (enabled == false)
+        {
+            return 0;
+        }
+
+        return hovered ? 2 : 1;
+    }
 }

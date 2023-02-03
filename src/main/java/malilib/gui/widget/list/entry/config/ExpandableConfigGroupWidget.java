@@ -7,7 +7,7 @@ import malilib.config.group.ExpandableConfigGroup;
 import malilib.config.option.ConfigInfo;
 import malilib.gui.config.ConfigWidgetContext;
 import malilib.gui.icon.DefaultIcons;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.widget.IconWidget;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.render.text.StyledTextLine;
@@ -42,12 +42,12 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         this.plusMinusIconWidget.setRenderHoverChecker(this::isHoveredForRender);
     }
 
-    protected MultiIcon getArrowIcon()
+    protected Icon getArrowIcon()
     {
         return this.config.isExpanded() ? DefaultIcons.ARROW_DOWN : DefaultIcons.ARROW_RIGHT;
     }
 
-    protected MultiIcon getPlusMinusIcon()
+    protected Icon getPlusMinusIcon()
     {
         return this.config.isExpanded() ? DefaultIcons.GROUP_COLLAPSE_MINUS : DefaultIcons.GROUP_EXPAND_PLUS;
     }

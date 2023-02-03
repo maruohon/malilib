@@ -10,7 +10,7 @@ import malilib.config.value.LayerMode;
 import malilib.gui.BaseScreen;
 import malilib.gui.BaseTabbedScreen;
 import malilib.gui.icon.DefaultIcons;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.listener.IntegerTextFieldListener;
 import malilib.gui.tab.ScreenTab;
 import malilib.gui.widget.BaseTextFieldWidget;
@@ -49,7 +49,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
 
     protected abstract LayerRange getLayerRange();
 
-    protected MultiIcon getValueAdjustButtonIcon()
+    protected Icon getValueAdjustButtonIcon()
     {
         return DefaultIcons.BTN_PLUSMINUS_16;
     }
@@ -121,7 +121,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
             x += this.addLabel(x, y + 5, 0xFFFFFFFF, label).getWidth() + 4;
         }
 
-        MultiIcon valueAdjustIcon = this.getValueAdjustButtonIcon();
+        Icon valueAdjustIcon = this.getValueAdjustButtonIcon();
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
@@ -205,7 +205,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
         }
     }
 
-    protected void createValueAdjustButton(int x, int y, boolean isSecondValue, LayerRange layerRange, MultiIcon icon)
+    protected void createValueAdjustButton(int x, int y, boolean isSecondValue, LayerRange layerRange, Icon icon)
     {
         LayerMode layerMode = layerRange.getLayerMode();
         ButtonListenerChangeValue listener = new ButtonListenerChangeValue(layerMode, layerRange, isSecondValue, this);

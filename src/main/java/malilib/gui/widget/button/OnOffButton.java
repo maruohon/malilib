@@ -9,8 +9,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
-import malilib.gui.icon.MultiIcon;
 import malilib.gui.util.ScreenContext;
+import malilib.gui.widget.IconWidget;
 import malilib.listener.EventListener;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
@@ -20,8 +20,8 @@ public class OnOffButton extends GenericButton
 {
     @Nullable protected final String translationKey;
     protected final BooleanSupplier valueStatusSupplier;
-    protected MultiIcon iconOn;
-    protected MultiIcon iconOff;
+    protected Icon iconOn;
+    protected Icon iconOff;
     protected OnOffStyle style;
 
     /**
@@ -150,16 +150,16 @@ public class OnOffButton extends GenericButton
 
     public static void renderOnOffSlider(int x, int y, float z, int width, int height,
                                          boolean state, boolean enabled, boolean hovered,
-                                         MultiIcon iconOn, MultiIcon iconOff,
+                                         Icon iconOn, Icon iconOff,
                                          ScreenContext ctx)
     {
-        MultiIcon icon = state ? iconOn : iconOff;
+        Icon icon = state ? iconOn : iconOff;
 
         int iconWidth = icon.getWidth();
         int iconHeight1 = height / 2 - 1;
         int iconHeight2 = (height & 0x1) != 0 ? iconHeight1 + 1 : iconHeight1; // Account for odd height
         int sliderX = state ? x + width - iconWidth - 1 : x + 1;
-        int variantIndex = icon.getVariantIndex(enabled, hovered);
+        int variantIndex = IconWidget.getVariantIndex(enabled, hovered);
         int u = icon.getVariantU(variantIndex);
         int v1 = icon.getVariantV(variantIndex);
         int v2 = v1 + icon.getHeight() - iconHeight2;

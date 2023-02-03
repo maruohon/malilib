@@ -8,7 +8,6 @@ import com.google.gson.JsonPrimitive;
 import malilib.config.value.HorizontalAlignment;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
-import malilib.gui.icon.MultiIcon;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseWidget;
 import malilib.render.text.StyledText;
@@ -117,7 +116,7 @@ public class ToastWidget extends BaseWidget
         this.addText(text, displayTimeMs);
     }
 
-    public void setBackgroundTexture(MultiIcon backgroundTexture)
+    public void setBackgroundTexture(Icon backgroundTexture)
     {
         this.backgroundTexture = backgroundTexture;
     }

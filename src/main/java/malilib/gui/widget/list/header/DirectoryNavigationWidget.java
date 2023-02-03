@@ -13,7 +13,7 @@ import malilib.gui.TextInputScreen;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.FileBrowserIconProvider;
 import malilib.gui.icon.FileBrowserIconProvider.FileBrowserIconType;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.DropDownListWidget;
 import malilib.gui.widget.InfoIconWidget;
@@ -161,12 +161,12 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.reAddSubWidgets();
     }
 
-    public MultiIcon getNavBarIconRoot(boolean isOpen)
+    public Icon getNavBarIconRoot(boolean isOpen)
     {
         return this.iconProvider.getIcon(isOpen ? FileBrowserIconType.NAVBAR_ROOT_PATH_OPEN : FileBrowserIconType.NAVBAR_ROOT_PATH_CLOSED);
     }
 
-    public MultiIcon getNavBarIconSubDirectories(boolean isOpen)
+    public Icon getNavBarIconSubDirectories(boolean isOpen)
     {
         return this.iconProvider.getIcon(isOpen ? FileBrowserIconType.NAVBAR_SUBDIRS_OPEN : FileBrowserIconType.NAVBAR_SUBDIRS_CLOSED);
     }

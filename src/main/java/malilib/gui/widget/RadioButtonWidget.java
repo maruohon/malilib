@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import malilib.gui.icon.DefaultIcons;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.list.SelectionListener;
@@ -18,8 +18,8 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
     protected final ImmutableList<T> options;
     protected final ImmutableList<StyledTextLine> displayStrings;
     protected final int textWidth;
-    protected MultiIcon iconSelected = DefaultIcons.RADIO_BUTTON_SELECTED;
-    protected MultiIcon iconUnselected = DefaultIcons.RADIO_BUTTON_UNSELECTED;
+    protected Icon iconSelected = DefaultIcons.RADIO_BUTTON_SELECTED;
+    protected Icon iconUnselected = DefaultIcons.RADIO_BUTTON_UNSELECTED;
     protected int entryHeight;
     protected int selectedTextColor = 0xFFFFFFFF;
     protected int unselectedTextColor = 0xFFB0B0B0;
@@ -64,7 +64,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
         this.unselectedTextColor = unselectedTextColor;
     }
 
-    public void setIcons(MultiIcon iconSelected, MultiIcon iconUnselected)
+    public void setIcons(Icon iconSelected, Icon iconUnselected)
     {
         this.iconSelected = iconSelected;
         this.iconUnselected = iconUnselected;
@@ -78,7 +78,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
 
     protected void updateSizes()
     {
-        MultiIcon icon = this.iconUnselected;
+        Icon icon = this.iconUnselected;
         int iconWidth = icon != null ? icon.getWidth() + 3 : 0;
         int iconHeight = icon != null ? icon.getHeight() : 0;
 
@@ -148,7 +148,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
         for (int i = 0; i < count; ++i)
         {
             final boolean entrySelected = this.selectedEntry == this.options.get(i);
-            final MultiIcon icon = entrySelected ? this.iconSelected : this.iconUnselected;
+            final Icon icon = entrySelected ? this.iconSelected : this.iconUnselected;
             int textOffsetX = 0;
 
             if (icon != null)
@@ -157,7 +157,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
                 int iconHeight = icon.getHeight();
                 int iconY = y + (this.entryHeight - iconHeight) / 2;
                 boolean entryHovered = hovered && GuiUtils.isMouseInRegion(mouseX, mouseY, wx, y, width, this.entryHeight);
-                icon.renderAt(x, iconY, z, true, entryHovered);
+                icon.renderAt(x, iconY, z, IconWidget.getVariantIndex(true, entryHovered));
             }
 
             final int textY = y + 1 + (this.entryHeight - this.getLineHeight()) / 2;

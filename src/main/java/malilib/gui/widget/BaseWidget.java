@@ -709,7 +709,7 @@ public class BaseWidget
             x = this.getIconPositionX(x, usableWidth, icon.getWidth());
             y = this.getIconPositionY(y, usableHeight, icon.getHeight());
 
-            icon.renderAt(x, y, z + 0.0125f, true, false);
+            icon.renderAt(x, y, z + 0.0125f, 0);
         }
     }
 

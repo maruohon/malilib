@@ -4,7 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import malilib.gui.icon.DefaultIcons;
-import malilib.gui.icon.MultiIcon;
+import malilib.gui.icon.Icon;
 import malilib.gui.widget.button.GenericButton;
 import malilib.render.text.StyledText;
 
@@ -26,7 +26,7 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         super(width, height);
 
         this.labelWidget = new LabelWidget();
-        Supplier<MultiIcon> supplier = () -> this.sliderActive ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
+        Supplier<Icon> supplier = () -> this.sliderActive ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
         this.sliderToggleButton = GenericButton.create(supplier, this::toggleSliderActive);
 
         this.valueAdjustButton = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);

@@ -100,7 +100,7 @@ public class SliderWidget extends InteractableWidget
         int sx = x + 2 + (int) (relPos * usableWidth);
         boolean enabled = this.isEnabled();
         boolean hovered = GuiUtils.isMouseInRegion(ctx.mouseX, ctx.mouseY, sx, y, sw, height);
-        DefaultIcons.BUTTON_BACKGROUND.renderFourSplicedAt(sx, y, z, sw, height, enabled, hovered);
+        DefaultIcons.BUTTON_BACKGROUND.renderFourSplicedAt(sx, y, z, sw, height, IconWidget.getVariantIndex(enabled, hovered));
 
         int textColor = enabled ? 0xFFFFFFA0 : 0xFF909090;
         this.renderTextLine(x, y, z, textColor, this.callback.getDisplayText(), ctx);

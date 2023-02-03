@@ -27,22 +27,26 @@ public class IconRegistry
     protected boolean dirty;
     protected boolean needsRebuild = true;
 
-    public void registerModIcon(Icon icon)
+    public <T extends Icon> T registerModIcon(T icon)
     {
         if (this.modIcons.contains(icon) == false)
         {
             this.modIcons.add(icon);
             this.needsRebuild = true;
         }
+
+        return icon;
     }
 
-    public void registerUserIcon(Icon icon)
+    public <T extends Icon> T registerUserIcon(T icon)
     {
         if (this.userIcons.contains(icon) == false)
         {
             this.userIcons.add(icon);
             this.markDirty();
         }
+
+        return icon;
     }
 
     public void unregisterModIcon(Icon icon)
@@ -146,7 +150,7 @@ public class IconRegistry
 
     protected void readAndAddIcon(JsonElement el)
     {
-        Icon icon = Icon.fromJson(el);
+        BaseIcon icon = BaseIcon.fromJson(el);
 
         if (icon != null && this.userIcons.contains(icon) == false)
         {

@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableList;
 import malilib.MaLiLibConfigs;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
-import malilib.gui.icon.MultiIcon;
 import malilib.gui.util.ElementOffset;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
@@ -93,7 +92,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.searchTextField.setFocused(true);
         this.searchTextField.setColorFocused(0xFFFFFF20);
 
-        this.openCloseButton = GenericButton.create((Supplier<MultiIcon>) null, this::toggleOpen);
+        this.openCloseButton = GenericButton.create((Supplier<Icon>) null, this::toggleOpen);
         this.openCloseButton.setPlayClickSound(false);
 
         // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
@@ -355,7 +354,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         return super.onCharTyped(charIn, modifiers);
     }
 
-    public void setNoEntryBar(int buttonX, int buttonY, Supplier<MultiIcon> iconSupplier)
+    public void setNoEntryBar(int buttonX, int buttonY, Supplier<Icon> iconSupplier)
     {
         this.useCurrentEntryBar = false;
         this.currentEntryBarWidget = null;

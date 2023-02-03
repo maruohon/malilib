@@ -1,13 +1,10 @@
 package malilib.gui.icon;
 
-import javax.annotation.Nullable;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.util.data.Identifier;
-import malilib.util.data.json.JsonUtils;
 
 public interface Icon
 {
@@ -30,6 +27,16 @@ public interface Icon
      * @return the texture pixel v-coordinate (y-coordinate) of this icon's top left corner
      */
     int getV();
+
+    /**
+     * @return the u-coordinate for the given icon variant
+     */
+    int getVariantU(int variantIndex);
+
+    /**
+     * @return the v-coordinate for the given icon variant
+     */
+    int getVariantV(int variantIndex);
 
     /**
      * @return the texture sheet width this icon is on
@@ -57,36 +64,40 @@ public interface Icon
     Identifier getTexture();
 
     /**
-     * Renders the icon at the given location, possibly using an icon variant chosen
-     * by the given enabled and hover status arguments.
-     */
-    default void renderAt(int x, int y, float z, boolean enabled, boolean hovered)
-    {
-        this.renderAt(x, y, z);
-    }
-
-    /**
      * Renders this icon at the given position
      */
     default void renderAt(int x, int y, float z)
     {
-        this.renderScaledAt(x, y, z, this.getWidth(), this.getHeight());
+        this.renderScaledAt(x, y, z, this.getWidth(), this.getHeight(), 0);
     }
 
     /**
-     * Renders a possibly scaled/stretched version of this icon, with the given rendered width and height,
-     * possibly using an icon variant chosen by the given enabled and hover status arguments.
+     * Renders the icon at the given location, using the given icon variant index.
+     * The variant index is basically an offset from the base UV location.
+     * The implementation can define where and how the position is offset
+     * from the base location.
      */
-    default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight,
-                                boolean enabled, boolean hovered)
+    default void renderAt(int x, int y, float z, int variantIndex)
     {
-        this.renderScaledAt(x, y, z, renderWidth, renderHeight);
+        this.renderScaledAt(x, y, z, this.getWidth(), this.getHeight(), variantIndex);
     }
 
      /**
      * Renders a possibly scaled/stretched version of this icon, with the given rendered width and height
      */
     default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight)
+    {
+        this.renderScaledAt(x, y, z, renderWidth, renderHeight, 0);
+    }
+
+    /**
+     * Renders a possibly scaled/stretched version of this icon, with the given
+     * rendered width and height, using the given icon variant index.
+     * The variant index is basically an offset from the base UV location.
+     * The implementation can define where and how the position is offset
+     * from the base location.
+     */
+    default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight, int variantIndex)
     {
         int width = this.getWidth();
         int height = this.getHeight();
@@ -96,8 +107,8 @@ public interface Icon
             return;
         }
 
-        int u = this.getU();
-        int v = this.getV();
+        int u = this.getVariantU(variantIndex);
+        int v = this.getVariantV(variantIndex);
         float pw = this.getTexturePixelWidth();
         float ph = this.getTexturePixelHeight();
 
@@ -144,10 +155,10 @@ public interface Icon
      */
     default void renderFourSplicedAt(int x, int y, float z, int width, int height)
     {
-        this.renderFourSplicedAt(x, y, z, this.getU(), this.getV(), width, height);
+        this.renderFourSplicedAt(x, y, z, width, height, 0);
     }
 
-    default void renderFourSplicedAt(int x, int y, float z, int u, int v, int width, int height)
+    default void renderFourSplicedAt(int x, int y, float z, int width, int height, int variantIndex)
     {
         int textureWidth = this.getWidth();
         int textureHeight = this.getHeight();
@@ -157,6 +168,8 @@ public interface Icon
             return;
         }
 
+        int u = this.getVariantU(variantIndex);
+        int v = this.getVariantV(variantIndex);
         int w1 = width / 2;
         int w2 = (width & 0x1) != 0 ? w1 + 1 : w1;
         int h1 = height / 2;
@@ -176,58 +189,5 @@ public interface Icon
         ShapeRenderUtils.renderTexturedRectangle(x + w1, y + h1, z, uRight, vBottom, w2, h2, pw, ph); // bottom right
     }
 
-    default JsonObject toJson()
-    {
-        JsonObject obj = new JsonObject();
-
-        obj.addProperty("texture", this.getTexture().toString());
-        obj.addProperty("u", this.getU());
-        obj.addProperty("v", this.getV());
-        obj.addProperty("w", this.getWidth());
-        obj.addProperty("h", this.getHeight());
-        obj.addProperty("tw", this.getTextureSheetWidth());
-        obj.addProperty("th", this.getTextureSheetHeight());
-
-        return obj;
-    }
-
-    @Nullable
-    static Icon fromJson(JsonElement el)
-    {
-        if (el.isJsonObject() == false)
-        {
-            return null;
-        }
-
-        JsonObject obj = el.getAsJsonObject();
-        String textureName = JsonUtils.getStringOrDefault(obj, "texture", null);
-
-        if (textureName == null)
-        {
-            return null;
-        }
-
-        int u = JsonUtils.getIntegerOrDefault(obj, "u", 0);
-        int v = JsonUtils.getIntegerOrDefault(obj, "v", 0);
-        int w = JsonUtils.getIntegerOrDefault(obj, "w", 0);
-        int h = JsonUtils.getIntegerOrDefault(obj, "h", 0);
-        int tw = JsonUtils.getIntegerOrDefault(obj, "tw", 0);
-        int th = JsonUtils.getIntegerOrDefault(obj, "th", 0);
-        int vu = JsonUtils.getIntegerOrDefault(obj, "var_u", 0);
-        int vv = JsonUtils.getIntegerOrDefault(obj, "var_v", 0);
-
-        if (w > 0 && h > 0 && tw > 0 && th > 0)
-        {
-            Identifier texture = new Identifier(textureName);
-
-            if (vu != 0 || vv != 0)
-            {
-                return new BaseMultiIcon(u, v, w, h, vu, vv, tw, th, texture);
-            }
-
-            return new BaseIcon(u, v, w, h, tw, th, texture);
-        }
-
-        return null;
-    }
+    JsonObject toJson();
 }

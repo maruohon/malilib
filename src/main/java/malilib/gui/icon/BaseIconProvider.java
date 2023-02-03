@@ -3,12 +3,12 @@ package malilib.gui.icon;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
-public class BaseMultiIconProvider<T> implements MultiIconProvider<T>
+public class BaseIconProvider<T> implements IconProvider<T>
 {
     protected final int expectedWidth;
-    protected final ImmutableMap<T, MultiIcon> icons;
+    protected final ImmutableMap<T, Icon> icons;
 
-    public BaseMultiIconProvider(int expectedWidth, ImmutableMap<T, MultiIcon> icons)
+    public BaseIconProvider(int expectedWidth, ImmutableMap<T, Icon> icons)
     {
         this.expectedWidth = expectedWidth;
         this.icons = icons;
@@ -22,7 +22,7 @@ public class BaseMultiIconProvider<T> implements MultiIconProvider<T>
 
     @Nullable
     @Override
-    public MultiIcon getIconFor(T entry)
+    public Icon getIconFor(T entry)
     {
         return this.icons.get(entry);
     }

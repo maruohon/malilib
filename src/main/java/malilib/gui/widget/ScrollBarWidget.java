@@ -7,7 +7,6 @@ import net.minecraft.util.math.MathHelper;
 import malilib.gui.BaseScreen;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
-import malilib.gui.icon.MultiIcon;
 import malilib.gui.util.ScreenContext;
 import malilib.listener.EventListener;
 import malilib.render.RenderUtils;
@@ -16,8 +15,8 @@ import malilib.render.ShapeRenderUtils;
 public class ScrollBarWidget extends InteractableWidget
 {
     @Nullable protected final Icon barTexture;
-    @Nullable protected MultiIcon arrowTextureUp;
-    @Nullable protected MultiIcon arrowTextureDown;
+    @Nullable protected Icon arrowTextureUp;
+    @Nullable protected Icon arrowTextureDown;
     @Nullable protected EventListener changeListener;
     protected boolean mouseOver = false;
     protected boolean dragging = false;
@@ -76,7 +75,7 @@ public class ScrollBarWidget extends InteractableWidget
      * @param iconDown
      * @return
      */
-    public ScrollBarWidget setArrowTextures(@Nullable MultiIcon iconUp, @Nullable MultiIcon iconDown)
+    public ScrollBarWidget setArrowTextures(@Nullable Icon iconUp, @Nullable Icon iconDown)
     {
         this.arrowTextureUp = iconUp;
         this.arrowTextureDown = iconDown;
@@ -322,8 +321,8 @@ public class ScrollBarWidget extends InteractableWidget
 
             if (useArrows)
             {
-                this.arrowTextureUp.renderAt(x, y, z, false, this.isMouseOverUpArrow(mouseX, mouseY));
-                this.arrowTextureDown.renderAt(x, y + this.getHeight() - downArH, z, false, this.isMouseOverDownArrow(mouseX, mouseY));
+                this.arrowTextureUp.renderAt(x, y, z, IconWidget.getVariantIndex(true, this.isMouseOverUpArrow(mouseX, mouseY)));
+                this.arrowTextureDown.renderAt(x, y + this.getHeight() - downArH, z, IconWidget.getVariantIndex(true, this.isMouseOverDownArrow(mouseX, mouseY)));
             }
 
             if (this.barTexture != null && barHeight >= 4)
