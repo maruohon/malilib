@@ -32,12 +32,12 @@ public interface Icon
     int getV();
 
     /**
-     * @return the texture sheet width this icons is on
+     * @return the texture sheet width this icon is on
      */
     int getTextureSheetWidth();
 
     /**
-     * @return the texture sheet height this icons is on
+     * @return the texture sheet height this icon is on
      */
     int getTextureSheetHeight();
 

@@ -52,7 +52,7 @@ public class CustomIconEditScreen extends BaseScreen
 
     public CustomIconEditScreen(Consumer<Icon> iconConsumer)
     {
-        this(DefaultIcons.INFO_ICON_11, iconConsumer);
+        this(DefaultIcons.INFO_11, iconConsumer);
     }
 
     public CustomIconEditScreen(Icon icon, Consumer<Icon> iconConsumer)

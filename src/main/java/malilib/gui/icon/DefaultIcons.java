@@ -33,8 +33,8 @@ public class DefaultIcons
 
     public static final BaseMultiIcon BTN_PLUSMINUS_10              = register(new BaseMultiIcon( 51,   0, 10, 10));
 
-    public static final BaseMultiIcon INFO_ICON_11                  = register(new BaseMultiIcon( 81,   0, 11, 11));
-    public static final BaseMultiIcon EXCLAMATION                   = register(new BaseMultiIcon( 81,  11, 11, 11));
+    public static final BaseMultiIcon INFO_11                       = register(new BaseMultiIcon( 81,   0, 11, 11));
+    public static final BaseMultiIcon EXCLAMATION_11                = register(new BaseMultiIcon( 81,  11, 11, 11));
     public static final BaseMultiIcon CHECKMARK_OFF                 = register(new BaseMultiIcon( 81,  22, 11, 11));
     public static final BaseMultiIcon CHECKMARK_ON                  = register(new BaseMultiIcon( 81,  33, 11, 11));
 
