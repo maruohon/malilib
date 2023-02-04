@@ -38,13 +38,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
                                      @Nullable ScreenTab defaultTab)
     {
         super(screenId, screenTabs, defaultTab);
-    }
-
-    @Override
-    protected void initScreen()
-    {
-        super.initScreen();
-        this.createLayerEditControls(this.x + this.controlsStartX, this.y + this.controlsStartY, this.getLayerRange());
+        this.addPostInitListener(this::createDefaultLayerEditControls);
     }
 
     protected abstract LayerRange getLayerRange();
@@ -52,6 +46,11 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
     protected Icon getValueAdjustButtonIcon()
     {
         return DefaultIcons.BTN_PLUSMINUS_16;
+    }
+
+    protected void createDefaultLayerEditControls()
+    {
+        this.createLayerEditControls(this.x + this.controlsStartX, this.y + this.controlsStartY, this.getLayerRange());
     }
 
     protected void createLayerEditControls(int x, int y, LayerRange layerRange)

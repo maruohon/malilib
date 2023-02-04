@@ -94,6 +94,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         this.gridEnabledButton = OnOffButton.simpleSlider(16, () -> this.gridEnabled, this::toggleGridEnabled);
         this.gridEditWidget = new IntegerEditWidget(40, 16, this.gridSize, 1, 256, this::setGridSize);
 
+        this.addPreScreenCloseListener(this::onPreScreenClose);
         this.readData(data);
     }
 
@@ -171,22 +172,6 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
             this.addWidgetButton.setPosition(x, y);
         }
-    }
-
-    @Override
-    protected void onScreenClosed()
-    {
-        if (this.dirty ||
-            this.closeScreenOnExecute != this.data.closeScreenOnExecute ||
-            this.closeScreenOnKeyRelease != this.data.closeScreenOnKeyRelease)
-        {
-            ActionWidgetScreenData data = this.getCurrentData();
-            ActionExecutionWidgetManager.INSTANCE.saveWidgetScreenData(this.name, data);
-        }
-
-        this.clearActionWidgetContainerData();
-
-        super.onScreenClosed();
     }
 
     @Override
@@ -356,6 +341,19 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                 this.selectedWidgets.add(widget);
             }
         }
+    }
+
+    protected void onPreScreenClose()
+    {
+        if (this.dirty ||
+            this.closeScreenOnExecute != this.data.closeScreenOnExecute ||
+            this.closeScreenOnKeyRelease != this.data.closeScreenOnKeyRelease)
+        {
+            ActionWidgetScreenData data = this.getCurrentData();
+            ActionExecutionWidgetManager.INSTANCE.saveWidgetScreenData(this.name, data);
+        }
+
+        this.clearActionWidgetContainerData();
     }
 
     @Nullable

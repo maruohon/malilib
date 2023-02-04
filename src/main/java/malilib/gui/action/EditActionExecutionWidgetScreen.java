@@ -140,8 +140,8 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.hoveredBorderColorEditWidget       = new ColorIndicatorAndEditWidget(90, 16, widget.getBorderRenderer().getHoverSettings().getColor());
 
         this.backgroundColor = 0xFF101010;
-        this.screenCloseListener = this::applyValues;
 
+        this.addPreScreenCloseListener(this::applyValues);
         this.centerOnScreen();
     }
 

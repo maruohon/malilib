@@ -48,9 +48,6 @@ public class MessageRendererWidgetEditScreen extends BaseScreen
         this.widget = widget;
         this.useTitleHierarchy = false;
 
-        // Unconditionally save here, since we don't track the individual info container widget changes
-        this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
-
         this.setTitle("malilib.title.screen.message_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(16, 10, ScreenLocation.VALUES,
@@ -93,6 +90,9 @@ public class MessageRendererWidgetEditScreen extends BaseScreen
         this.textColorWidget       = new ColorIndicatorWidget(16, 16, textSettings::getTextColor, textSettings::setTextColor);
         this.backgroundColorWidget = new ColorIndicatorWidget(16, 16, bgSettings::getColor, bgSettings::setColor);
         this.borderColorWidget     = new QuadColorIndicatorWidget(16, 16, borderSettings.getColor());
+
+        // Unconditionally save here, since we don't track the individual info container widget changes
+        this.addPreScreenCloseListener(Registry.INFO_WIDGET_MANAGER::saveToFile);
     }
 
     @Override

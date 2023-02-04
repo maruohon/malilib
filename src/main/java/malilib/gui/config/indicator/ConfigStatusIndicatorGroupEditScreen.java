@@ -107,20 +107,9 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         KeyBind keyBind = widget.getHotkey().getKeyBind();
         this.keybindButton = new KeyBindConfigButton(120, 20, keyBind, this);
         this.settingsWidget = new KeybindSettingsWidget(keyBind, widget.getHotkey().getDisplayName());
-    }
 
-    @Override
-    protected void initScreen()
-    {
-        super.initScreen();
-
-        this.marginEditButton.updateHoverStrings();
-        this.paddingEditButton.updateHoverStrings();
-
-        this.marginEditButton.updateHoverStrings();
-        this.paddingEditButton.updateHoverStrings();
-
-        this.getListWidget().refreshEntries();
+        this.addPostInitListener(this::updateHoverStrings);
+        this.addPreScreenCloseListener(this::applyChanges);
     }
 
     @Override
@@ -213,15 +202,6 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     }
 
     @Override
-    protected void onScreenClosed()
-    {
-        this.widget.setStatusIndicatorWidgets(this.getListWidget().getNonFilteredDataList());
-        Registry.HOTKEY_MANAGER.updateUsedKeys();
-
-        super.onScreenClosed();
-    }
-
-    @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (this.activeKeyBindButton != null)
@@ -249,6 +229,21 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         }
 
         return false;
+    }
+
+    protected void applyChanges()
+    {
+        this.widget.setStatusIndicatorWidgets(this.getListWidget().getNonFilteredDataList());
+        Registry.HOTKEY_MANAGER.updateUsedKeys();
+    }
+
+    protected void updateHoverStrings()
+    {
+        this.marginEditButton.updateHoverStrings();
+        this.paddingEditButton.updateHoverStrings();
+
+        this.marginEditButton.updateHoverStrings();
+        this.paddingEditButton.updateHoverStrings();
     }
 
     protected void changeWidgetLocation(ScreenLocation location)

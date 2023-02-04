@@ -101,8 +101,8 @@ public class CustomIconEditScreen extends BaseScreen
 
         this.backgroundColor = 0xF0000000;
         this.renderBorder = true;
-        this.screenCloseListener = this::createAndApplyIcon;
 
+        this.addPreScreenCloseListener(this::createAndApplyIcon);
         this.setScreenWidthAndHeight(300, 272);
         this.centerOnScreen();
     }

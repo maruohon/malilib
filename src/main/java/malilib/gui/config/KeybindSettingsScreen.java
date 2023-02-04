@@ -36,8 +36,8 @@ public class KeybindSettingsScreen extends BaseScreen
         this.configList = this.configs.getConfigList();
         this.labelWidth = StringUtils.getMaxStringRenderWidthOfObjects(this.configList, BaseConfigOption::getPrettyName);
         this.configWidth = 120;
-        this.screenCloseListener = this::saveSettings;
 
+        this.addPreScreenCloseListener(this::saveSettings);
         this.setTitle("malilib.title.screen.keybind_settings.advanced", this.keybindName);
 
         int totalWidth = this.labelWidth + this.configWidth + 30;

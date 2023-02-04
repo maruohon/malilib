@@ -24,7 +24,6 @@ import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.input.ActionResult;
 import malilib.input.Keys;
-import malilib.listener.EventListener;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.text.StyledTextLine;
@@ -38,9 +37,11 @@ public abstract class BaseScreen extends GuiScreen
     protected final Minecraft mc = GameUtils.getClient();
     protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
     protected final List<Runnable> tasks = new ArrayList<>();
+    protected final List<Runnable> preInitListeners = new ArrayList<>();
+    protected final List<Runnable> postInitListeners = new ArrayList<>();
+    protected final List<Runnable> preScreenCloseListeners = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
     private String titleString = "";
-    @Nullable protected EventListener screenCloseListener;
     @Nullable protected StyledTextLine titleText;
     @Nullable private GuiScreen parent;
     @Nullable protected InteractableWidget hoveredWidget;
@@ -121,19 +122,29 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void initScreen()
     {
+        for (Runnable listener : this.preInitListeners)
+        {
+            listener.run();
+        }
+
         this.reAddActiveWidgets();
         this.updateWidgetPositions();
         Keyboard.enableRepeatEvents(true);
+
+        for (Runnable listener : this.postInitListeners)
+        {
+            listener.run();
+        }
     }
 
     protected void onScreenClosed()
     {
-        Keyboard.enableRepeatEvents(false);
-
-        if (this.screenCloseListener != null)
+        for (Runnable listener : this.preScreenCloseListeners)
         {
-            this.screenCloseListener.onEvent();
+            listener.run();
         }
+
+        Keyboard.enableRepeatEvents(false);
     }
 
     protected void onScreenResolutionSet(int width, int height)
@@ -359,6 +370,21 @@ public abstract class BaseScreen extends GuiScreen
         }
 
         return this;
+    }
+
+    public void addPreInitListener(Runnable listener)
+    {
+        this.preInitListeners.add(listener);
+    }
+
+    public void addPostInitListener(Runnable listener)
+    {
+        this.postInitListeners.add(listener);
+    }
+
+    public void addPreScreenCloseListener(Runnable listener)
+    {
+        this.preScreenCloseListeners.add(listener);
     }
 
     public void setRenderBorder(boolean renderBorder)

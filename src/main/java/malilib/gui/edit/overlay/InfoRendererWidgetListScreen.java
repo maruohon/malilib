@@ -51,22 +51,12 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         this.locationDropdownWidget = new DropDownListWidget<>(16, 10, ScreenLocation.VALUES, OptionListConfigValue::getDisplayName);
         this.createWidgetButton = GenericButton.create(16, "malilib.button.csi_edit.add_csi_widget", this::createInfoRendererWidget);
 
+
+        this.addPreInitListener(this::setListPosition);
         // Unconditionally save here, since we don't track the individual info container widget changes
-        this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
+        this.addPreScreenCloseListener(Registry.INFO_WIDGET_MANAGER::saveToFile);
 
         this.createSwitchModConfigScreenDropDown(MaLiLibReference.MOD_INFO);
-    }
-
-    @Override
-    protected void initScreen()
-    {
-        if (this.canCreateNewWidgets == false)
-        {
-            this.totalListMarginY = 56;
-            this.updateListPosition(10, 52);
-        }
-
-        super.initScreen();
     }
 
     @Override
@@ -74,11 +64,8 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
     {
         super.reAddActiveWidgets();
 
-        if (this.canCreateNewWidgets)
-        {
-            this.addWidget(this.locationDropdownWidget);
-            this.addWidget(this.createWidgetButton);
-        }
+        this.addWidgetIf(this.locationDropdownWidget, this.canCreateNewWidgets);
+        this.addWidgetIf(this.createWidgetButton, this.canCreateNewWidgets);
     }
 
     @Override
@@ -91,6 +78,15 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 
         this.locationDropdownWidget.setPosition(x, y);
         this.createWidgetButton.setPosition(this.locationDropdownWidget.getRight() + 4, y);
+    }
+
+    protected void setListPosition()
+    {
+        if (this.canCreateNewWidgets == false)
+        {
+            this.totalListMarginY = 56;
+            this.updateListPosition(10, 52);
+        }
     }
 
     protected void createInfoRendererWidget()

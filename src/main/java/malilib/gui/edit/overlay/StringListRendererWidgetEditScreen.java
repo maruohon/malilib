@@ -50,9 +50,6 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         this.widget = widget;
         this.useTitleHierarchy = false;
 
-        // Unconditionally save here, since we don't track the individual info container widget changes
-        this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
-
         this.setTitle("malilib.title.screen.string_list_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(16, 10, ScreenLocation.VALUES,
@@ -100,6 +97,9 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         this.textColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getTextColor, textSettings::setTextColor);
         this.backgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getBackgroundColor, textSettings::setBackgroundColor);
         this.oddBackgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getOddRowBackgroundColor, textSettings::setOddRowBackgroundColor);
+
+        // Unconditionally save here, since we don't track the individual info container widget changes
+        this.addPreScreenCloseListener(Registry.INFO_WIDGET_MANAGER::saveToFile);
     }
 
     @Override

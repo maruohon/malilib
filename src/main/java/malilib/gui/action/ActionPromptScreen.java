@@ -60,6 +60,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         this.searchTextField.setListener(this::updateFilteredList);
         this.searchTextField.setUpdateListenerAlways(true);
 
+        this.addPreScreenCloseListener(this::saveSearchText);
         this.setScreenWidthAndHeight(screenWidth, 132);
     }
 
@@ -108,15 +109,12 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         this.searchTextField.setPosition(this.x, y + 17);
     }
 
-    @Override
-    protected void onScreenClosed()
+    protected void saveSearchText()
     {
         if (MaLiLibConfigs.Generic.ACTION_PROMPT_REMEMBER_SEARCH.getBooleanValue())
         {
             MaLiLibConfigs.Internal.ACTION_PROMPT_SEARCH_TEXT.setValue(this.searchTextField.getText());
         }
-
-        super.onScreenClosed();
     }
 
     @Override

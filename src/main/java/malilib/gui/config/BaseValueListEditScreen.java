@@ -44,11 +44,11 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         this.screenWidth = 400;
         this.screenHeight = GuiUtils.getScaledWindowHeight() - 60;
 
+        this.addPreScreenCloseListener(this::saveValue);
         this.setTitle(title);
     }
 
-    @Override
-    protected void onScreenClosed()
+    protected void saveValue()
     {
         if (this.config.isLocked() == false)
         {
@@ -59,8 +59,6 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
                 this.saveListener.onEvent();
             }
         }
-
-        super.onScreenClosed();
     }
 
     @Override

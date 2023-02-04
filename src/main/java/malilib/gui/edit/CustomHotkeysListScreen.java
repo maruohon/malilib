@@ -38,8 +38,8 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
 
         this.addHotkeyButton = GenericButton.create(16, "malilib.button.custom_hotkeys.add_hotkey", this::openAddHotkeyScreen);
         this.addHotkeyButton.translateAndAddHoverString("malilib.hover.button.custom_hotkeys.add_new_hotkey");
-        this.screenCloseListener = CustomHotkeyManager.INSTANCE::checkIfDirtyAndSaveAndUpdate;
 
+        this.addPreScreenCloseListener(CustomHotkeyManager.INSTANCE::checkIfDirtyAndSaveAndUpdate);
         this.createSwitchModConfigScreenDropDown(MaLiLibReference.MOD_INFO);
     }
 

@@ -68,6 +68,7 @@ public class ColorEditorHSVScreen extends BaseScreen
         this.useTitleHierarchy = false;
 
         this.setTitle("malilib.title.screen.color_editor");
+        this.addPreScreenCloseListener(() -> this.valueConsumer.accept(this.color));
         this.setScreenWidthAndHeight(300, 180);
         this.centerOnScreen();
     }
@@ -167,14 +168,6 @@ public class ColorEditorHSVScreen extends BaseScreen
         this.addWidget(textField);
 
         return this.heightSlider + this.gapSlider;
-    }
-
-    @Override
-    protected void onScreenClosed()
-    {
-        this.valueConsumer.accept(this.color);
-
-        super.onScreenClosed();
     }
 
     @Override

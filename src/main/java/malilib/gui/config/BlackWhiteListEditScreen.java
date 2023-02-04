@@ -1,28 +1,29 @@
 package malilib.gui.config;
 
+import javax.annotation.Nullable;
+
 import malilib.config.option.ConfigInfo;
 import malilib.config.option.OptionListConfig;
 import malilib.config.option.list.BlackWhiteListConfig;
 import malilib.config.option.list.ValueListConfig;
 import malilib.config.value.BlackWhiteList;
 import malilib.gui.widget.list.ConfigOptionListWidget;
-import malilib.listener.EventListener;
 import malilib.util.restriction.UsageRestriction.ListType;
 
 public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
 {
     protected final BlackWhiteListConfig<TYPE> config;
-    protected final EventListener externalSaveListener;
     protected final OptionListConfig<ListType> typeConfig;
     protected final ValueListConfig<TYPE> blackListConfig;
     protected final ValueListConfig<TYPE> whiteListConfig;
+    @Nullable protected final Runnable saveListener;
 
-    public BlackWhiteListEditScreen(BlackWhiteListConfig<TYPE> config, EventListener saveListener)
+    public BlackWhiteListEditScreen(BlackWhiteListConfig<TYPE> config, @Nullable Runnable saveListener)
     {
-        super(config.getModInfo(), saveListener);
+        super(config.getModInfo(), null);
 
         this.config = config;
-        this.externalSaveListener = saveListener;
+        this.saveListener = saveListener;
         this.setTitle("malilib.title.screen.black_white_list_edit", config.getDisplayName());
 
         // Initialize them to the default value so that the reset button is active when they differ from the default value,
@@ -42,7 +43,7 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
         this.configs.add(this.blackListConfig);
         this.configs.add(this.whiteListConfig);
 
-        this.setSaveListener(this::saveConfigChanges);
+        this.addPreScreenCloseListener(this::saveConfigChanges);
     }
 
     protected void saveConfigChanges()
@@ -56,7 +57,11 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
                                                              old.getToStringConverter(),
                                                              old.getFromStringConverter());
             this.config.setValue(list);
-            this.externalSaveListener.onEvent();
+
+            if (this.saveListener != null)
+            {
+                this.saveListener.run();
+            }
         }
     }
 

@@ -36,19 +36,17 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         this.modInfo = modInfo;
         this.shouldRestoreScrollbarPosition = MaLiLibConfigs.Generic.REMEMBER_CONFIG_TAB_SCROLL_POSITIONS.getBooleanValue();
 
+        this.addPreScreenCloseListener(this::saveConfigsOnScreenClose);
         this.createSwitchModConfigScreenDropDown(modInfo);
         this.setTitle(titleKey, args);
     }
 
-    @Override
-    protected void onScreenClosed()
+    protected void saveConfigsOnScreenClose()
     {
         if (((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveIfDirty())
         {
             this.onSettingsChanged();
         }
-
-        super.onScreenClosed();
     }
 
     @Override

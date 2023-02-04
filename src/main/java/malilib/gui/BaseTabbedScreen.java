@@ -39,6 +39,8 @@ public abstract class BaseTabbedScreen extends BaseScreen
         this.screenId = screenId;
         this.defaultTab = defaultTab;
         this.screenTabs = screenTabs;
+
+        this.addPreScreenCloseListener(this::saveScreenState);
     }
 
     @Override
@@ -62,8 +64,7 @@ public abstract class BaseTabbedScreen extends BaseScreen
         }
     }
 
-    @Override
-    protected void onScreenClosed()
+    protected void saveScreenState()
     {
         if (this.tabButtonContainerWidget != null)
         {
@@ -71,8 +72,6 @@ public abstract class BaseTabbedScreen extends BaseScreen
         }
 
         this.saveScrollBarPositionForCurrentTab();
-
-        super.onScreenClosed();
     }
 
     @Override

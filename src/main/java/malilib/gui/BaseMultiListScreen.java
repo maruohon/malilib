@@ -20,28 +20,8 @@ public class BaseMultiListScreen extends BaseTabbedScreen
         super(screenId, screenTabs, defaultTab);
 
         this.shouldCreateTabButtons = screenTabs.isEmpty() == false;
-    }
-
-    @Override
-    protected void initScreen()
-    {
-        super.initScreen();
-
-        for (BaseListWidget listWidget : this.listWidgets)
-        {
-            listWidget.refreshEntries();
-        }
-    }
-
-    @Override
-    protected void onScreenClosed()
-    {
-        for (BaseListWidget listWidget : this.listWidgets)
-        {
-            listWidget.onScreenClosed();
-        }
-
-        super.onScreenClosed();
+        this.addPostInitListener(this::refreshListWidgets);
+        this.addPreScreenCloseListener(this::closeListWidgets);
     }
 
     @Override
@@ -58,6 +38,22 @@ public class BaseMultiListScreen extends BaseTabbedScreen
         widget.initListWidget();
 
         this.listWidgets.add(widget);
+    }
+
+    protected void refreshListWidgets()
+    {
+        for (BaseListWidget listWidget : this.listWidgets)
+        {
+            listWidget.refreshEntries();
+        }
+    }
+
+    protected void closeListWidgets()
+    {
+        for (BaseListWidget listWidget : this.listWidgets)
+        {
+            listWidget.onScreenClosed();
+        }
     }
 
     @Override

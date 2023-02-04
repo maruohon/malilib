@@ -47,13 +47,8 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
         this.textField = new BaseTextFieldWidget(240, 20, this.originalText);
         this.textField.setFocused(true);
-    }
 
-    @Override
-    protected void initScreen()
-    {
-        this.updateHeight();
-        super.initScreen();
+        this.addPreInitListener(this::updateHeight);
     }
 
     @Override

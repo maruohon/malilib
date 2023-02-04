@@ -6,16 +6,15 @@ import java.util.List;
 import malilib.config.option.list.BlackWhiteListConfig;
 import malilib.gui.BaseScreen;
 import malilib.gui.config.BlackWhiteListEditScreen;
-import malilib.listener.EventListener;
 import malilib.util.StringUtils;
 import malilib.util.restriction.UsageRestriction.ListType;
 
 public class BlackWhiteListEditButton extends GenericButton
 {
     protected final BlackWhiteListConfig<?> config;
-    protected final EventListener saveListener;
+    protected final Runnable saveListener;
 
-    public BlackWhiteListEditButton(int width, int height, BlackWhiteListConfig<?> config, EventListener saveListener)
+    public BlackWhiteListEditButton(int width, int height, BlackWhiteListConfig<?> config, Runnable saveListener)
     {
         super(width, height);
 

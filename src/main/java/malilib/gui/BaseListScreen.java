@@ -34,21 +34,9 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
         this.totalListMarginY = totalListMarginY;
         this.shouldCreateTabButtons = screenTabs.isEmpty() == false;
 
+        this.addPostInitListener(() -> this.getListWidget().refreshEntries());
+        this.addPreScreenCloseListener(() -> this.getListWidget().onScreenClosed());
         this.setListPosition(listX, listY);
-    }
-
-    @Override
-    protected void initScreen()
-    {
-        super.initScreen();
-        this.getListWidget().refreshEntries();
-    }
-
-    @Override
-    protected void onScreenClosed()
-    {
-        this.getListWidget().onScreenClosed();
-        super.onScreenClosed();
     }
 
     @Override

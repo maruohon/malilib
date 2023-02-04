@@ -50,9 +50,6 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
         this.widget = widget;
         this.useTitleHierarchy = false;
 
-        // Unconditionally save here, since we don't track the individual info container widget changes
-        this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
-
         this.setTitle("malilib.title.screen.toast_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(16, 10, ScreenLocation.VALUES,
@@ -97,6 +94,9 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
 
         final TextRenderSettings textSettings = widget.getTextSettings();
         this.textColorEditWidget = new ColorIndicatorWidget(16, 16, textSettings::getTextColor, textSettings::setTextColor);
+
+        // Unconditionally save here, since we don't track the individual info container widget changes
+        this.addPreScreenCloseListener(Registry.INFO_WIDGET_MANAGER::saveToFile);
     }
 
     @Override
