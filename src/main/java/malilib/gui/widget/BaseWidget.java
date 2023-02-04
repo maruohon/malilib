@@ -49,6 +49,7 @@ public class BaseWidget
     private float z;
     private int height;
     private int width;
+    protected float zOffset;
 
     protected TextRenderer textRenderer;
     @Nullable protected Icon icon;
@@ -118,6 +119,11 @@ public class BaseWidget
     public float getZ()
     {
         return this.z;
+    }
+
+    public float getZOffset()
+    {
+        return this.zOffset;
     }
 
     public int getRight()
@@ -253,6 +259,11 @@ public class BaseWidget
     public void setZ(float z)
     {
         this.z = z;
+    }
+
+    public void setZOffset(float zOffset)
+    {
+        this.zOffset = zOffset;
     }
 
     public void setPosition(int x, int y)
@@ -715,26 +726,27 @@ public class BaseWidget
 
     public void render(ScreenContext ctx)
     {
-        this.renderAt(this.x, this.y, this.z, ctx);
+        this.renderAt(this.x, this.y, this.z + this.zOffset, ctx);
     }
 
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         int color = this.getTextSettings().getTextColor();
+
         this.renderIcon(x, y, z, ctx);
         this.renderText(x, y, z, color, ctx);
     }
 
     public void renderAtOffset(int xOffset, int yOffset, float zOffset, ScreenContext ctx)
     {
-        this.renderAt(this.x + xOffset, this.y + yOffset, this.z + zOffset, ctx);
+        this.renderAt(this.x + xOffset, this.y + yOffset, this.z + this.zOffset + zOffset, ctx);
     }
 
     public void renderDebug(boolean hovered, ScreenContext ctx)
     {
-        int x = this.getX();
-        int y = this.getY();
-        float z = this.getZ();
+        int x = this.x;
+        int y = this.y;
+        float z = this.z + this.zOffset;
 
         this.renderDebug(x, y, z, hovered, ctx);
     }
