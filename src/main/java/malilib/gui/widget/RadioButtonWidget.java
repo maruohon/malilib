@@ -13,7 +13,7 @@ import malilib.gui.widget.list.SelectionListener;
 import malilib.render.RenderUtils;
 import malilib.render.text.StyledTextLine;
 
-public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
+public class RadioButtonWidget<T> extends InteractableWidget
 {
     protected final ImmutableList<T> options;
     protected final ImmutableList<StyledTextLine> displayStrings;

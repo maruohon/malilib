@@ -11,7 +11,12 @@ public class StyledTextUtils
 {
     public static int getRenderHeight(List<StyledTextLine> lines)
     {
-        return lines.size() * TextRenderer.INSTANCE.getLineHeight();
+        return getRenderHeight(lines, TextRenderer.INSTANCE.getLineHeight());
+    }
+
+    public static int getRenderHeight(List<StyledTextLine> lines, int lineHeight)
+    {
+        return Math.max(0, lines.size() - 1) * lineHeight + TextRenderer.INSTANCE.getFontHeight();
     }
 
     public static int getMaxTextRenderWidth(List<StyledTextLine> lines)

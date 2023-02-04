@@ -271,7 +271,11 @@ public abstract class BaseScreen extends GuiScreen
     protected void reAddActiveWidgets()
     {
         this.clearElements();
+        this.addScreenCloseButtonIfEnabled();
+    }
 
+    protected void addScreenCloseButtonIfEnabled()
+    {
         if (this.addCloseButton && this.closeButton != null)
         {
             this.addWidget(this.closeButton);
