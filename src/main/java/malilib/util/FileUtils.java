@@ -322,6 +322,44 @@ public class FileUtils
         return list;
     }
 
+    /**
+     * @param fileNameFormatString the format string for {@link String#format(String, Object... args)}.
+     *                             A single int argument will ne given to the format call.
+     * @return the first unused file name within the directory {@code dir}, using a running number,
+     *         starting from {@code startNumber}.
+     */
+    public static Path getUnusedFileName(Path dir, String fileNameFormatString, int startNumber)
+    {
+        int id = startNumber;
+        Path file;
+
+        do
+        {
+            String name = String.format(fileNameFormatString, id);
+            file = dir.resolve(name);
+            ++id;
+        } while (Files.exists(file));
+
+        return file;
+    }
+
+    /**
+     * @return the relative path of {@code file} to the containing upper directory {@code dir}.
+     * If {@code file} is not within the path to {@code dir}, then null is returned.
+     */
+    @Nullable
+    public static String getRelativePath(Path dir, Path file)
+    {
+        try
+        {
+            return dir.relativize(file).toString();
+        }
+        catch (Exception ignore)
+        {
+            return null;
+        }
+    }
+
     public static List<Path> getSubDirectories(Path dir)
     {
         return getDirectoryContents(dir, FileUtils::isRegularDirectory, true);

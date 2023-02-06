@@ -56,6 +56,16 @@ public class FileNameUtils
         return i > 0 ? name.substring(0, i) : name;
     }
 
+    /**
+     * Adds {@param extension} to the end of {@param name},
+     * if {@param name} doesn't already end with {@param extension}.
+     * Note that dot is not added, it should be part of {@param extension}.
+     */
+    public static String addExtensionIfNotExists(String name, String extension)
+    {
+        return name.endsWith(extension) ? name : name + extension;
+    }
+
     public static String generateSimpleSafeFileName(String name)
     {
         boolean endsInUnderscore = name.length() >= 1 && name.charAt(name.length() - 1) == '_';
