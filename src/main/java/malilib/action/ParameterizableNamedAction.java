@@ -36,7 +36,7 @@ public class ParameterizableNamedAction extends NamedAction
     {
         TextInputScreen screen = new TextInputScreen("malilib.title.screen.provide_arguments_for_action",
                                                      this::executeWithArgument);
-        BaseScreen.openScreen(screen);
+        BaseScreen.openPopupScreen(screen);
 
         return ActionResult.SUCCESS;
     }
