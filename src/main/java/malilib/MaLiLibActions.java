@@ -37,6 +37,7 @@ public class MaLiLibActions
         register("dropHeldStack", UtilityActions::dropHeldStack);
         register("runCommand", UtilityActions::runVanillaCommand);
         register("sendChatMessage", UtilityActions::sendChatMessage);
+        register("setPlayerFractionalXZ", UtilityActions::setPlayerFractionalXZ);
         register("setPlayerPitch", UtilityActions::setPlayerPitch);
         register("setPlayerYaw", UtilityActions::setPlayerYaw);
         register("setSelectedHotbarSlot", UtilityActions::setSelectedHotbarSlot);

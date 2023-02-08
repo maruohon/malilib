@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -40,6 +41,35 @@ public class UtilityActions
         {
             ctx.getPlayer().sendChatMessage(arg);
             return ActionResult.SUCCESS;
+        }
+        return ActionResult.FAIL;
+    }
+
+    public static ActionResult setPlayerFractionalXZ(ActionContext ctx, String arg)
+    {
+        EntityPlayer player = ctx.getPlayer();
+
+        if (player != null)
+        {
+            try
+            {
+                String[] args = arg.split(" ");
+
+                if (args.length == 2)
+                {
+                    double fx = Math.abs(Double.parseDouble(args[0])) % 1.0;
+                    double fz = Math.abs(Double.parseDouble(args[1])) % 1.0;
+                    double px = MathHelper.floor(EntityWrap.getX(player));
+                    double pz = MathHelper.floor(EntityWrap.getZ(player));
+                    double x = px < 0.0 ? px + 1.0 - fx : px + fx;
+                    double z = pz < 0.0 ? pz + 1.0 - fz : pz + fz;
+                    player.setLocationAndAngles(x, EntityWrap.getY(player), z,
+                                                EntityWrap.getYaw(player), EntityWrap.getPitch(player));
+                }
+
+                return ActionResult.SUCCESS;
+            }
+            catch (Exception ignore) {}
         }
         return ActionResult.FAIL;
     }
