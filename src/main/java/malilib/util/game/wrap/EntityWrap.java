@@ -1,6 +1,9 @@
 package malilib.util.game.wrap;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -101,5 +104,20 @@ public class EntityWrap
     public static void setPitch(Entity entity, float pitch)
     {
         entity.rotationPitch = pitch;
+    }
+
+    public static ItemStack getMainHandItem(EntityLivingBase entity)
+    {
+        return getHeldItem(entity, EnumHand.MAIN_HAND);
+    }
+
+    public static ItemStack getOffHandItem(EntityLivingBase entity)
+    {
+        return getHeldItem(entity, EnumHand.OFF_HAND);
+    }
+
+    public static ItemStack getHeldItem(EntityLivingBase entity, EnumHand hand)
+    {
+        return entity.getHeldItem(hand);
     }
 }
