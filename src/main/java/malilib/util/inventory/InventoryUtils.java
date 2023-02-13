@@ -23,6 +23,14 @@ import malilib.util.game.wrap.ItemWrap;
 public class InventoryUtils
 {
     /**
+     * Check whether the items are identical, ignoring the durability of damageable items, and the stack size and NBT data
+     */
+    public static boolean areItemsEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
+    {
+        return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2);
+    }
+
+    /**
      * Check whether the stacks are identical otherwise, but ignoring the stack size
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
@@ -46,7 +54,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) &&
+        return areItemsEqualIgnoreDurability(stack1, stack2) &&
                ItemStack.areItemStackTagsEqual(stack1, stack2);
     }
 
@@ -56,11 +64,44 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2, boolean ignoreNbt)
     {
-        return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) &&
+        return areItemsEqualIgnoreDurability(stack1, stack2) &&
                (ignoreNbt || ItemStack.areItemStackTagsEqual(stack1, stack2));
     }
 
+    public static ItemStack getCursorStack()
+    {
+        InventoryPlayer inv = GameUtils.getPlayerInventory();
+        return inv != null ? inv.getItemStack() : ItemStack.EMPTY;
+    }
+
+    public static boolean isHotbarSlot(int slot)
+    {
+        return InventoryPlayer.isHotbar(slot);
+    }
+
+    public static boolean isHotbarSlotIndex(int slot)
+    {
+        return slot >= 36 && slot < 45;
+    }
+
+    public static int getSelectedHotbarSlot()
+    {
+        InventoryPlayer inv = GameUtils.getPlayerInventory();
+        return inv != null ? inv.currentItem : 0;
+    }
+
+    public static void setSelectedHotbarSlot(int slotNumber)
+    {
+        InventoryPlayer inv = GameUtils.getPlayerInventory();
+
+        if (inv != null && isHotbarSlot(slotNumber))
+        {
+            inv.currentItem = slotNumber;
+        }
+    }
+
     /**
+     * 
      * Swaps the stack from the slot <b>slotNum</b> to the given hotbar slot <b>hotbarSlot</b>
      */
     public static void swapSlots(Container container, int slotNum, int hotbarSlot)
@@ -269,11 +310,12 @@ public class InventoryUtils
             return false;
         }
 
+        int currentHotbarSlot = getSelectedHotbarSlot();
 
         if (GameUtils.isCreativeMode())
         {
             inventory.setPickedItemStack(stackReference.copy());
-            GameUtils.getInteractionManager().sendSlotPacket(stackReference.copy(), 36 + inventory.currentItem);
+            GameUtils.getInteractionManager().sendSlotPacket(stackReference.copy(), 36 + currentHotbarSlot);
             return true;
         }
         else
@@ -282,7 +324,6 @@ public class InventoryUtils
 
             if (slot != -1)
             {
-                int currentHotbarSlot = inventory.currentItem;
                 clickSlot(GameUtils.getPlayerInventoryContainer(), slot, currentHotbarSlot, ClickType.SWAP);
                 return true;
             }
@@ -301,19 +342,18 @@ public class InventoryUtils
                                       int threshold,
                                       boolean allowHotbar)
     {
-        InventoryPlayer inventory = GameUtils.getPlayerInventory();
         Container container = GameUtils.getPlayerInventoryContainer();
-        final ItemStack stackHand = player.getHeldItem(hand);
-        final int count = stackHand.getCount();
-        final int max = stackHand.getMaxStackSize();
+        final ItemStack handStack = player.getHeldItem(hand);
+        final int count = handStack.getCount();
+        final int max = handStack.getMaxStackSize();
 
-        if (ItemWrap.notEmpty(stackHand) &&
-            player.openContainer == container &&
-            ItemWrap.isEmpty(inventory.getItemStack()) &&
+        if (ItemWrap.notEmpty(handStack) &&
+            GameUtils.getCurrentInventoryContainer() == container &&
+            ItemWrap.isEmpty(getCursorStack()) &&
             (count <= threshold && count < max))
         {
             int endSlot = allowHotbar ? 44 : 35;
-            int currentMainHandSlot = inventory.currentItem + 36;
+            int currentMainHandSlot = getSelectedHotbarSlot() + 36;
             int currentSlot = hand == EnumHand.MAIN_HAND ? currentMainHandSlot : 45;
 
             for (int slotNum = 9; slotNum <= endSlot; ++slotNum)
@@ -326,7 +366,7 @@ public class InventoryUtils
                 Slot slot = container.getSlot(slotNum);
                 ItemStack stackSlot = slot.getStack();
 
-                if (areStacksEqual(stackSlot, stackHand))
+                if (areStacksEqual(stackSlot, handStack))
                 {
                     // If all the items from the found slot can fit into the current
                     // stack in hand, then left click, otherwise right click to split the stack
@@ -407,7 +447,7 @@ public class InventoryUtils
 
     public static void clickSlot(Container container, int slotNum, int mouseButton, ClickType clickType)
     {
-        if (slotNum >= 0 && slotNum < getSlotCount(container))
+        if (GameUtils.getClientPlayer() != null && slotNum >= 0 && slotNum < getSlotCount(container))
         {
             GameUtils.getInteractionManager().windowClick(container.windowId, slotNum, mouseButton,
                                                           clickType, GameUtils.getClientPlayer());

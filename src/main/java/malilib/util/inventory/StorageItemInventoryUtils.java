@@ -38,11 +38,32 @@ public class StorageItemInventoryUtils
     }
 
     /**
+     * @return true if the given shulker box item contains the given item
+     */
+    public static boolean doesShulkerBoxContainItem(ItemStack shulkerBoxStack, ItemStack itemToFind)
+    {
+        DefaultedList<ItemStack> items = getNonEmptyStoredItems(shulkerBoxStack);
+
+        if (items.size() > 0)
+        {
+            for (ItemStack item : items)
+            {
+                if (InventoryUtils.areStacksEqual(item, itemToFind))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Returns the list of items currently stored in the given Shulker Box
      * (or other storage item with the same NBT data structure).
      * Does not keep empty slots.
      */
-    public static DefaultedList<ItemStack> getStoredItemsNonEmpty(ItemStack stackIn)
+    public static DefaultedList<ItemStack> getNonEmptyStoredItems(ItemStack stackIn)
     {
         NBTTagCompound nbt = ItemWrap.getTag(stackIn);
 
@@ -107,7 +128,7 @@ public class StorageItemInventoryUtils
      */
     public static Object2IntOpenHashMap<ItemType> getStoredItemCounts(ItemStack stackIn)
     {
-        DefaultedList<ItemStack> items = getStoredItemsNonEmpty(stackIn);
+        DefaultedList<ItemStack> items = getNonEmptyStoredItems(stackIn);
         return InventoryUtils.getInventoryItemCounts(new ListBackedInventoryView(items));
     }
 

@@ -73,6 +73,11 @@ public class GameUtils
         return getClient().playerController;
     }
 
+    public static double getPlayerReachDistance()
+    {
+        return getInteractionManager().getBlockReachDistance();
+    }
+
     @Nullable
     public static MinecraftServer getIntegratedServer()
     {

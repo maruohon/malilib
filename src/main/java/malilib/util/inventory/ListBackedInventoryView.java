@@ -22,7 +22,7 @@ public class ListBackedInventoryView implements InventoryView
 
     public ListBackedInventoryView(List<ItemStack> itemsIn)
     {
-        this.items = itemsIn;
+        this.items = new ArrayList<>(itemsIn);
     }
 
     @Override
