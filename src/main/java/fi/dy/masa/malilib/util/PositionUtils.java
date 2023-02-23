@@ -32,11 +32,11 @@ public class PositionUtils
         switch (type)
         {
             case X:
-                return new BlockPos(valueIn.getX() + amount, valueIn.getY()         , valueIn.getZ()         );
+                return BlockPos.method_49637(valueIn.getX() + amount, valueIn.getY()         , valueIn.getZ()         );
             case Y:
-                return new BlockPos(valueIn.getX()         , valueIn.getY() + amount, valueIn.getZ()         );
+                return BlockPos.method_49637(valueIn.getX()         , valueIn.getY() + amount, valueIn.getZ()         );
             case Z:
-                return new BlockPos(valueIn.getX()         , valueIn.getY()         , valueIn.getZ() + amount);
+                return BlockPos.method_49637(valueIn.getX()         , valueIn.getY()         , valueIn.getZ() + amount);
         }
 
         return valueIn;
@@ -62,11 +62,11 @@ public class PositionUtils
         switch (type)
         {
             case X:
-                return new BlockPos(newValue      , valueIn.getY(), valueIn.getZ());
+                return BlockPos.method_49637(newValue      , valueIn.getY(), valueIn.getZ());
             case Y:
-                return new BlockPos(valueIn.getX(), newValue      , valueIn.getZ());
+                return BlockPos.method_49637(valueIn.getX(), newValue      , valueIn.getZ());
             case Z:
-                return new BlockPos(valueIn.getX(), valueIn.getY(), newValue      );
+                return BlockPos.method_49637(valueIn.getX(), valueIn.getY(), newValue      );
         }
 
         return valueIn;
@@ -74,7 +74,7 @@ public class PositionUtils
 
     public static BlockPos getEntityBlockPos(Entity entity)
     {
-        return new BlockPos(Math.floor(entity.getX()), Math.floor(entity.getY()), Math.floor(entity.getZ()));
+        return BlockPos.method_49637(Math.floor(entity.getX()), Math.floor(entity.getY()), Math.floor(entity.getZ()));
     }
 
     /**
@@ -132,7 +132,7 @@ public class PositionUtils
         double y = entity.getY();
         double z = entity.getZ();
         double w = entity.getWidth();
-        BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = BlockPos.method_49637(x, y, z);
 
         if (entity.getPitch() >= verticalThreshold)
         {
@@ -140,7 +140,7 @@ public class PositionUtils
         }
         else if (entity.getPitch() <= -verticalThreshold)
         {
-            return new BlockPos(x, Math.ceil(entity.getBoundingBox().maxY), z);
+            return BlockPos.method_49637(x, Math.ceil(entity.getBoundingBox().maxY), z);
         }
 
         y = Math.floor(y + entity.getStandingEyeHeight());
@@ -148,13 +148,13 @@ public class PositionUtils
         switch (entity.getHorizontalFacing())
         {
             case EAST:
-                return new BlockPos((int) Math.ceil( x + w / 2),     (int) y, (int) Math.floor(z));
+                return BlockPos.method_49637((int) Math.ceil( x + w / 2),     (int) y, (int) Math.floor(z));
             case WEST:
-                return new BlockPos((int) Math.floor(x - w / 2) - 1, (int) y, (int) Math.floor(z));
+                return BlockPos.method_49637((int) Math.floor(x - w / 2) - 1, (int) y, (int) Math.floor(z));
             case SOUTH:
-                return new BlockPos((int) Math.floor(x), (int) y, (int) Math.ceil( z + w / 2)    );
+                return BlockPos.method_49637((int) Math.floor(x), (int) y, (int) Math.ceil( z + w / 2)    );
             case NORTH:
-                return new BlockPos((int) Math.floor(x), (int) y, (int) Math.floor(z - w / 2) - 1);
+                return BlockPos.method_49637((int) Math.floor(x), (int) y, (int) Math.floor(z - w / 2) - 1);
             default:
         }
 
