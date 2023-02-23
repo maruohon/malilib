@@ -11,6 +11,7 @@ public class GuiTextFieldGeneric extends TextFieldWidget
     protected int y;
     protected int width;
     protected int height;
+    protected int zLevel;
 
     public GuiTextFieldGeneric(int x, int y, int width, int height, TextRenderer textRenderer)
     {
@@ -94,17 +95,17 @@ public class GuiTextFieldGeneric extends TextFieldWidget
 
     public GuiTextFieldGeneric setZLevel(int zLevel)
     {
-        this.setZOffset(zLevel);
+        this.zLevel = zLevel;
         return this;
     }
 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        if (this.getZOffset() != 0)
+        if (this.zLevel != 0)
         {
             matrixStack.push();
-            matrixStack.translate(0, 0, this.getZOffset());
+            matrixStack.translate(0, 0, this.zLevel);
 
             super.render(matrixStack, mouseX, mouseY, partialTicks);
 
