@@ -198,6 +198,31 @@ public class InventoryUtils
         return getSlotNumberOrDefault(findSlot(container, slotTest, reverse), -1);
     }
 
+    /**
+     * 
+     * Finds a slot with a shulker box with an identical item to <b>stackReference</b>
+     * from the regular player inventory, ignoring the durability of damageable items
+     * and optionally ignoring NBT data.
+     * Does not allow crafting or armor slots or the off-hand slot.
+     * @param reverse if true, then the slots are iterated in reverse order
+     * @return the slot number, or -1 if none were found
+     */
+    public static int findPlayerInventorySlotWithShulkerBoxWithItem(Container container,
+                                                                    ItemStack stackReference,
+                                                                    boolean ignoreNbt,
+                                                                    boolean reverse)
+    {
+        if ((container instanceof ContainerPlayer) == false)
+        {
+            return -1;
+        }
+
+        Predicate<Slot> slotTest = (slot) -> isRegularInventorySlot(slot, false) &&
+                                             StorageItemInventoryUtils.doesSlotContainShulkerBoxWithItem(slot, stackReference, ignoreNbt);
+
+        return getSlotNumberOrDefault(findSlot(container, slotTest, reverse), -1);
+    }
+
     public static int getSlotNumberOrDefault(@Nullable Slot slot, int defaultSlotNumber)
     {
         return slot != null ? getSlotId(slot) : defaultSlotNumber;

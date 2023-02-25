@@ -4,6 +4,9 @@ import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 
+import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -40,7 +43,9 @@ public class StorageItemInventoryUtils
     /**
      * @return true if the given shulker box item contains the given item
      */
-    public static boolean doesShulkerBoxContainItem(ItemStack shulkerBoxStack, ItemStack itemToFind)
+    public static boolean doesShulkerBoxContainItem(ItemStack shulkerBoxStack,
+                                                    ItemStack itemToFind,
+                                                    boolean ignoreNbt)
     {
         DefaultedList<ItemStack> items = getNonEmptyStoredItems(shulkerBoxStack);
 
@@ -48,11 +53,25 @@ public class StorageItemInventoryUtils
         {
             for (ItemStack item : items)
             {
-                if (InventoryUtils.areStacksEqual(item, itemToFind))
+                if (InventoryUtils.areStacksEqual(item, itemToFind, ignoreNbt))
                 {
                     return true;
                 }
             }
+        }
+
+        return false;
+    }
+
+    public static boolean doesSlotContainShulkerBoxWithItem(Slot slot, ItemStack referenceStack, boolean ignoreNbt)
+    {
+        ItemStack stack = slot.getStack();
+
+        if (ItemWrap.isEmpty(stack) == false &&
+            stack.getItem() instanceof ItemBlock &&
+            ((ItemBlock) stack.getItem()).getBlock() instanceof BlockShulkerBox)
+        {
+            return StorageItemInventoryUtils.doesShulkerBoxContainItem(stack, referenceStack, ignoreNbt);
         }
 
         return false;
