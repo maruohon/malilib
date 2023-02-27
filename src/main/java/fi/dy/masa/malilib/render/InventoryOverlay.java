@@ -482,9 +482,8 @@ public class InventoryOverlay
 
     public static void renderStackAt(ItemStack stack, float x, float y, float scale, MinecraftClient mc)
     {
-        MatrixStack matrixStack = RenderSystem.getModelViewStack();
-        matrixStack.push();
-        matrixStack.translate(x, y, 100.f);
+        MatrixStack matrixStack = new MatrixStack();
+        matrixStack.translate(x, y, 0.f);
         matrixStack.scale(scale, scale, 1);
 
         RenderUtils.enableDiffuseLightingGui3D();
@@ -495,7 +494,6 @@ public class InventoryOverlay
         RenderUtils.color(1f, 1f, 1f, 1f);
         mc.getItemRenderer().renderGuiItemOverlay(matrixStack, mc.textRenderer, stack, 0, 0, null);
 
-        matrixStack.pop();
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
