@@ -186,7 +186,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
     protected void addConfigsHavingStatusWidgetFactory(ConfigTab tab, Consumer<ConfigOnTab> consumer)
     {
-        tab.getTabbedExpandedConfigs((c) -> this.addConfigIfHasStatusWidgetFactory(c, consumer));
+        tab.offerTabbedExpandedConfigs((c) -> this.addConfigIfHasStatusWidgetFactory(c, consumer));
     }
 
     protected void addConfigIfHasStatusWidgetFactory(ConfigOnTab cfg, Consumer<ConfigOnTab> consumer)

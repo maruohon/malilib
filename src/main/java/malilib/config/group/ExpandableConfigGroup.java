@@ -1,11 +1,11 @@
 package malilib.config.group;
 
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import malilib.config.option.ConfigInfo;
-import malilib.config.option.NestedConfig;
+import malilib.gui.config.ConfigTab;
+import malilib.util.data.ConfigOnTab;
 import malilib.util.data.ModInfo;
 
 public class ExpandableConfigGroup extends BaseConfigGroup
@@ -35,15 +35,14 @@ public class ExpandableConfigGroup extends BaseConfigGroup
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <C extends ConfigInfo> void addNestedOptionsToList(List<C> list, int nestingLevel)
+    public void addNestedOptionsToList(List<ConfigOnTab> list, ConfigTab tab, int nestingLevel, boolean expandAlways)
     {
-        if (this.isExpanded)
+        if (this.isExpanded || expandAlways)
         {
             for (ConfigInfo config : this.getConfigs())
             {
-                list.add((C) new NestedConfig(config, nestingLevel));
-                config.addNestedOptionsToList(list, nestingLevel + 1);
+                list.add(new ConfigOnTab(tab, config, nestingLevel));
+                config.addNestedOptionsToList(list, tab, nestingLevel + 1, expandAlways);
             }
         }
     }

@@ -8,13 +8,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import malilib.MaLiLibConfigScreen;
 import malilib.MaLiLibReference;
 import malilib.config.util.ConfigUtils;
-import malilib.gui.config.BaseConfigTab;
 import malilib.registry.Registry;
 import malilib.util.BackupUtils;
-import malilib.util.StringUtils;
 import malilib.util.data.json.JsonUtils;
 
 public class CustomHotkeyManager implements HotkeyProvider
@@ -40,17 +37,6 @@ public class CustomHotkeyManager implements HotkeyProvider
     public List<CustomHotkeyDefinition> getAllCustomHotkeys()
     {
         return this.hotkeys;
-    }
-
-    /**
-     * Note: This is only intended to be used for the config search stuff, which needs
-     * the configs to be wrapped in a tab to get the owning mod and category from it
-     */
-    public BaseConfigTab getAllCustomHotkeysAsTabForConfigSearch()
-    {
-        String name = StringUtils.translate("malilib.screen.tab.custom_hotkeys");
-        return new BaseConfigTab(MaLiLibReference.MOD_INFO, name, name, 200,
-                                 this.getAllCustomHotkeys(), MaLiLibConfigScreen::create);
     }
 
     public void addCustomHotkey(CustomHotkeyDefinition hotkey)

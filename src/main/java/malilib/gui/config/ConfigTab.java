@@ -12,39 +12,47 @@ import malilib.util.data.ModInfo;
 public interface ConfigTab extends ScreenTab
 {
     /**
-     * Returns the ModInfo of the mod this tab belongs to.<br>
-     * Used on the config screens when showing options from multiple categories
-     * or all mods, and also used by the config status indicator widgets.
-     * @return
+     * @return the ModInfo of the mod this tab belongs to.
+     *         Used on the config screens when showing options from multiple categories
+     *         or from all mods, and also used by the config status indicator widgets.
      */
     ModInfo getModInfo();
 
     /**
-     * Returns the width of the config option edit widgets on the config screen.
-     * This is used for nicely aligned positioning of the reset button after the edit widgets.
-     * @return
+     * @return the width of the config option edit widgets on the config screen.
+     *         This is used for nicely aligned positioning of the reset button after the edit widgets.
      */
     int getConfigWidgetsWidth();
 
     /**
-     * Returns the list of config options included on this tab.
-     * @return
+     * @return the list of all configs on this tab, without expanding any config groups
      */
     List<? extends ConfigInfo> getConfigs();
 
-    /**
-     * Returns a full list of configs on this tab, including the configs from
-     * any possible nested expandable/collapsible config groups.
-     * @return
-     */
-    default List<? extends ConfigInfo> getExpandedConfigs()
+    default List<ConfigOnTab> getTabbedConfigs()
     {
-        ArrayList<ConfigInfo> expandedList = new ArrayList<>();
+        ArrayList<ConfigOnTab> list = new ArrayList<>();
 
         for (ConfigInfo config : this.getConfigs())
         {
-            expandedList.add(config);
-            config.addNestedOptionsToList(expandedList, 1);
+            list.add(new ConfigOnTab(this, config, 0));
+        }
+
+        return list;
+    }
+
+    /**
+     * @return a full list of configs on this tab, including the configs from
+     *         any possible nested expandable/collapsible config groups
+     */
+    default List<ConfigOnTab> getTabbedExpandedConfigs()
+    {
+        ArrayList<ConfigOnTab> expandedList = new ArrayList<>();
+
+        for (ConfigInfo config : this.getConfigs())
+        {
+            expandedList.add(new ConfigOnTab(this, config, 0));
+            config.addNestedOptionsToList(expandedList, this, 1, true);
         }
 
         return expandedList;
@@ -54,13 +62,9 @@ public interface ConfigTab extends ScreenTab
      * Returns a full list of configs on this tab, including the configs from
      * any possible nested expandable/collapsible config groups, wrapped in
      * ConfigOnTab to include the tab information, which includes the owning mod.
-     * @param configConsumer
      */
-    default void getTabbedExpandedConfigs(Consumer<ConfigOnTab> configConsumer)
+    default void offerTabbedExpandedConfigs(Consumer<ConfigOnTab> configConsumer)
     {
-        for (ConfigInfo config : this.getExpandedConfigs())
-        {
-            configConsumer.accept(new ConfigOnTab(this, config));
-        }
+        this.getTabbedExpandedConfigs().forEach(configConsumer);
     }
 }

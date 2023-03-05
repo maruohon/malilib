@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
+import malilib.gui.config.ConfigTab;
 import malilib.listener.EventListener;
+import malilib.util.data.ConfigOnTab;
 
 public interface ConfigInfo extends BaseInfo
 {
@@ -35,8 +37,11 @@ public interface ConfigInfo extends BaseInfo
      * If this config contains any nested options, adds the nested options to the provided list.
      * This is intended for config groups which are currently open/expanded, to add their
      * contained nested options to the list for the config screen.
+     * @param nestingLevel the current nesting level on the config screen
+     * @param expandAlways if true, then the nested configs should be added
+     *                     even if the config is not in an expanded/open state
      */
-    default <C extends ConfigInfo> void addNestedOptionsToList(List<C> list, int nestingLevel)
+    default void addNestedOptionsToList(List<ConfigOnTab> list, ConfigTab tab, int nestingLevel, boolean expandAlways)
     {
         // NO-OP
     }

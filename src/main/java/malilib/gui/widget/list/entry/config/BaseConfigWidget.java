@@ -3,10 +3,10 @@ package malilib.gui.widget.list.entry.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 
 import malilib.MaLiLibConfigs;
 import malilib.config.option.ConfigInfo;
+import malilib.gui.config.ConfigTab;
 import malilib.gui.config.ConfigWidgetContext;
 import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
@@ -15,6 +15,7 @@ import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.listener.EventListener;
 import malilib.render.text.StyledTextLine;
 import malilib.util.StringUtils;
+import malilib.util.data.ConfigOnTab;
 
 public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataListEntryWidget<CFG>
 {
@@ -24,7 +25,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     protected final LabelWidget configOwnerAndNameLabelWidget;
     protected final StyledTextLine nameText;
     protected final StyledTextLine internalNameText;
-    @Nullable protected final StyledTextLine categoryText;
+    protected final StyledTextLine categoryText;
 
     public BaseConfigWidget(CFG config,
                             DataListEntryWidgetData constructData,
@@ -35,8 +36,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.config = config;
         this.ctx = ctx;
 
-        @Nullable String ownerLabel = this.getOwnerText(this.originalListIndex);
-        this.categoryText = ownerLabel != null ? StyledTextLine.of(ownerLabel) : null;
+        String ownerLabel = this.getOwnerText();
+        this.categoryText = StyledTextLine.of(ownerLabel);
         this.nameText = StyledTextLine.translate("malilib.label.config.config_display_name", config.getDisplayName());
         this.internalNameText = StyledTextLine.translate("malilib.label.config.config_internal_name", config.getName());
         this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), this.getHeight(), 0xFFFFFFFF);
@@ -77,13 +78,13 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     {
         super.updateSubWidgetPositions();
 
-        int nesting = this.getNestingOffset(this.ctx.getNestingLevel());
+        int nesting = this.getNestingOffset(this.ctx.getConfigOnTab().getNestingLevel());
         boolean showCategory = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
 
         this.configOwnerAndNameLabelWidget.setPosition(this.getX(), this.getY());
         this.configOwnerAndNameLabelWidget.getPadding().setLeft(nesting + 4);
 
-        if (showCategory && this.categoryText != null)
+        if (showCategory)
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(2);
             this.configOwnerAndNameLabelWidget.setLabelStyledTextLines(this.nameText, this.categoryText);
@@ -122,10 +123,9 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         return this.ctx.getListWidget().getShowInternalConfigName();
     }
 
-    @Nullable
-    protected String getOwnerText(int originalListIndex)
+    protected String getOwnerText()
     {
-        return this.ctx.getListWidget().getModNameAndCategory(originalListIndex, this.shouldShowInternalName());
+        return getOwnerText(this.ctx.getConfigOnTab(), this.shouldShowInternalName());
     }
 
     protected int getElementWidth()
@@ -150,8 +150,26 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
     protected int getElementsStartPosition()
     {
-        int nestingLevel = this.ctx.getNestingLevel();
+        int nestingLevel = this.ctx.getConfigOnTab().getNestingLevel();
         int offset = this.getNestingOffset(nestingLevel);
         return this.getX() + this.getMaxLabelWidth() + offset + 10;
+    }
+
+    public static String getOwnerText(ConfigOnTab configOnTab, boolean shouldShowInternalName)
+    {
+        ConfigTab tab = configOnTab.getTab();
+        String modName = tab.getModInfo().getModName();
+        String tabName = tab.getDisplayName();
+
+        if (shouldShowInternalName)
+        {
+            String configName = configOnTab.getConfig().getName();
+            return StringUtils.translate("malilib.label.config.mod_category_internal_name",
+                                         modName, tabName, configName);
+        }
+        else
+        {
+            return StringUtils.translate("malilib.label.config.mod_category", modName, tabName);
+        }
     }
 }

@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
+import malilib.MaLiLibConfigScreen;
 import malilib.config.option.ConfigInfo;
 import malilib.gui.BaseListScreen;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.list.ConfigOptionListWidget;
+import malilib.util.data.ConfigOnTab;
 import malilib.util.data.ModInfo;
 
-public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>>
+public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWidget>
 {
     protected final ArrayList<ConfigInfo> configs = new ArrayList<>();
     protected final ModInfo modInfo;
@@ -41,9 +43,19 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
         this.configs.addAll(configs);
     }
 
-    protected List<? extends ConfigInfo> getConfigs()
+    protected List<ConfigOnTab> getConfigs()
     {
-        return this.configs;
+        ArrayList<ConfigOnTab> list = new ArrayList<>();
+        ConfigTab tab = new BaseConfigTab(ModInfo.NO_MOD, "fake", "Fake", 200,
+                                          this.configs, scr -> scr instanceof BaseConfigScreen,
+                                          MaLiLibConfigScreen::create);
+
+        for (ConfigInfo cfg : this.configs)
+        {
+            list.add(new ConfigOnTab(tab, cfg));
+        }
+
+        return list;
     }
 
     protected int getElementsWidth()
@@ -58,9 +70,10 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     }
 
     @Override
-    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget()
+    protected ConfigOptionListWidget createListWidget()
     {
-        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this.getKeybindEditingScreen(), 0);
-        return ConfigOptionListWidget.createWithExpandedGroups(this::getElementsWidth, this.modInfo, this::getConfigs, ctx);
+        return ConfigOptionListWidget.createWithExpandedGroups(this::getElementsWidth,
+                                                               this.modInfo, this::getConfigs,
+                                                               this.getKeybindEditingScreen());
     }
 }

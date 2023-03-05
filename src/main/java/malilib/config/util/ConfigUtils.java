@@ -180,13 +180,12 @@ public class ConfigUtils
 
         for (ConfigTab tab : tabs)
         {
-            ModInfo mod = tab.getModInfo();
-            String modCategory = mod.getModId() + "." + tab.getName() + ".";
+            String modCategory = tab.getModInfo().getModId() + "." + tab.getName() + ".";
 
-            for (ConfigInfo config : tab.getExpandedConfigs())
+            for (ConfigOnTab config : tab.getTabbedExpandedConfigs())
             {
-                String id = modCategory + config.getName();
-                map.put(id, new ConfigOnTab(tab, config));
+                String id = modCategory + config.getConfig().getName();
+                map.put(id, config);
             }
         }
 

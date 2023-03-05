@@ -7,11 +7,18 @@ public class ConfigOnTab
 {
     protected final ConfigTab tab;
     protected final ConfigInfo config;
+    protected final int nestingLevel;
 
     public ConfigOnTab(ConfigTab tab, ConfigInfo config)
     {
+        this(tab, config, 0);
+    }
+
+    public ConfigOnTab(ConfigTab tab, ConfigInfo config, int nestingLevel)
+    {
         this.tab = tab;
         this.config = config;
+        this.nestingLevel = nestingLevel;
     }
 
     public ConfigTab getTab()
@@ -22,6 +29,11 @@ public class ConfigOnTab
     public ConfigInfo getConfig()
     {
         return this.config;
+    }
+
+    public int getNestingLevel()
+    {
+        return this.nestingLevel;
     }
 
     public String getConfigPath()

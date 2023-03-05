@@ -78,7 +78,7 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         int tx = this.plusMinusIconWidget.getRight();
         this.configOwnerAndNameLabelWidget.setX(tx);
 
-        int labelLeftPadding = this.getNestingOffset(this.ctx.getNestingLevel()) + 5;
+        int labelLeftPadding = this.getNestingOffset(this.ctx.getConfigOnTab().getNestingLevel()) + 5;
         this.configOwnerAndNameLabelWidget.getPadding().setLeft(labelLeftPadding);
     }
 

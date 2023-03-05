@@ -1,44 +1,49 @@
 package malilib.gui.widget.list;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
+import malilib.MaLiLibConfigScreen;
 import malilib.MaLiLibConfigs;
+import malilib.MaLiLibReference;
 import malilib.config.option.ConfigInfo;
+import malilib.gui.config.BaseConfigTab;
 import malilib.gui.config.ConfigOptionWidgetFactory;
 import malilib.gui.config.ConfigTab;
 import malilib.gui.config.ConfigWidgetContext;
 import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.icon.DefaultIcons;
+import malilib.gui.widget.list.entry.BaseListEntryWidget;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import malilib.gui.widget.list.entry.config.BaseConfigWidget;
 import malilib.gui.widget.list.search.ConfigsSearchBarWidget;
-import malilib.gui.widget.list.search.ConfigsSearchBarWidget.Scope;
 import malilib.input.CustomHotkeyManager;
 import malilib.registry.Registry;
 import malilib.util.StringUtils;
 import malilib.util.data.ConfigOnTab;
 import malilib.util.data.ModInfo;
 
-public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget<C>
+public class ConfigOptionListWidget extends DataListWidget<ConfigOnTab>
 {
-    protected final Map<Scope, List<ConfigOnTab>> cachedConfigs = new HashMap<>();
-    protected final ModInfo modInfo;
+    /*
+    protected final Map<ConfigTab, List<ConfigOnTab>> cachedConfigsPerTab = new HashMap<>();
+    protected final List<ConfigOnTab> cachedConfigsAllCategories = new ArrayList<>();
+    protected final List<ConfigOnTab> cachedConfigsAllMods = new ArrayList<>();
+    */
     protected final IntSupplier defaultElementWidthSupplier;
+    protected final ModInfo modInfo;
     @Nullable protected ConfigsSearchBarWidget configsSearchBarWidget;
     protected boolean showInternalConfigName;
     protected int maxLabelWidth;
 
     protected ConfigOptionListWidget(IntSupplier defaultElementWidthSupplier,
                                      ModInfo modInfo,
-                                     Supplier<List<C>> entrySupplier,
-                                     ConfigWidgetContext ctx)
+                                     Supplier<List<ConfigOnTab>> entrySupplier,
+                                     @Nullable KeybindEditScreen keybindEditScreen)
     {
         super(entrySupplier, true);
 
@@ -47,8 +52,8 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.allowKeyboardNavigation = true;
         this.showInternalConfigName = MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
 
-        this.setDataListEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
-        this.setEntryFilterStringFunction(ConfigInfo::getSearchStrings);
+        this.setDataListEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory(this, keybindEditScreen));
+        this.setEntryFilterStringFunction(cot -> cot.getConfig().getSearchStrings());
         this.getBorderRenderer().getNormalSettings().setBorderWidth(0);
 
         this.listPosition.setTop(0);
@@ -107,49 +112,19 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
     protected void resetFilteredConfigsToDefaults()
     {
-        for (C config : this.filteredDataList)
+        for (ConfigOnTab configWrapper : this.filteredDataList)
         {
-            config.resetToDefault();
+            configWrapper.getConfig().resetToDefault();
         }
 
         this.refreshEntries();
     }
 
-    @Nullable
-    public String getModNameAndCategory(int listIndex, boolean showInternalName)
-    {
-        if (this.configsSearchBarWidget != null)
-        {
-            List<ConfigOnTab> configs = this.cachedConfigs.get(this.configsSearchBarWidget.getCurrentScope());
-
-            if (configs != null && listIndex < configs.size())
-            {
-                ConfigOnTab configOnTab = configs.get(listIndex);
-                ConfigTab tab = configOnTab.getTab();
-                String modName = tab.getModInfo().getModName();
-                String tabName = tab.getDisplayName();
-
-                if (showInternalName)
-                {
-                    String configName = configOnTab.getConfig().getName();
-                    return StringUtils.translate("malilib.label.config.mod_category_internal_name",
-                                                 modName, tabName, configName);
-                }
-                else
-                {
-                    return StringUtils.translate("malilib.label.config.mod_category", modName, tabName);
-                }
-            }
-        }
-
-        return null;
-    }
-
     @Override
-    protected boolean entryMatchesFilter(C entry, List<String> searchTerms)
+    protected boolean entryMatchesFilter(ConfigOnTab entry, List<String> searchTerms)
     {
         return super.entryMatchesFilter(entry, searchTerms) &&
-               (this.configsSearchBarWidget == null || this.configsSearchBarWidget.passesFilter(entry));
+               (this.configsSearchBarWidget == null || this.configsSearchBarWidget.passesFilter(entry.getConfig()));
     }
 
     @Override
@@ -157,94 +132,108 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     {
         super.onEntriesRefreshed();
 
-        List<C> list = this.getNonFilteredDataList();
-        final int size = list.size();
+        List<ConfigOnTab> list = this.getNonFilteredDataList();
         boolean showCategory = this.isShowingOptionsFromOtherCategories();
         int maxLabelWidth = 0;
 
-        for (int i = 0; i < size; ++i)
+        for (ConfigOnTab configWrapper : list)
         {
-            ConfigInfo config = list.get(i);
-            int width = this.getEntryNameColumnWidth(i, config, showCategory, this.showInternalConfigName);
+            int width = this.getEntryNameColumnWidth(configWrapper, showCategory, this.showInternalConfigName);
             maxLabelWidth = Math.max(maxLabelWidth, width);
         }
 
         this.maxLabelWidth = maxLabelWidth;
     }
 
-    protected int getEntryNameColumnWidth(int listIndex, ConfigInfo config,
+    protected int getEntryNameColumnWidth(ConfigOnTab configWrapper,
                                           boolean showCategory, boolean showInternalName)
     {
         int labelWidth = 0;
 
         if (showCategory)
         {
-            String str = this.getModNameAndCategory(listIndex, showInternalName);
+            String str = BaseConfigWidget.getOwnerText(configWrapper, showInternalName);
             labelWidth = this.getStringWidth(str);
         }
 
         if (showInternalName)
         {
-            labelWidth = Math.max(labelWidth, this.getStringWidth(config.getName()));
+            labelWidth = Math.max(labelWidth, this.getStringWidth(configWrapper.getConfig().getName()));
         }
 
         // The +10 here compensates for the left padding of the label widgets,
         // which is used because of the hover border used for the labels of configs with a click handler
-        return Math.max(labelWidth, this.getStringWidth(config.getDisplayName())) + 10;
+        return Math.max(labelWidth, this.getStringWidth(configWrapper.getConfig().getDisplayName())) + 10;
     }
 
     @Override
-    public ArrayList<C> getNonFilteredDataList()
+    public ArrayList<ConfigOnTab> getNonFilteredDataList()
     {
-        if (this.configsSearchBarWidget != null &&
-            this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
+        if (this.configsSearchBarWidget != null && this.configsSearchBarWidget.isSearchOpen())
         {
             ConfigsSearchBarWidget.Scope scope = this.configsSearchBarWidget.getCurrentScope();
-            return this.getAndCacheConfigsFromScope(scope);
+            boolean expanded = this.configsSearchBarWidget.hasFilter();
+            return new ArrayList<>(this.getConfigsForScope(scope, expanded));
         }
 
         return super.getNonFilteredDataList();
     }
 
-    protected ArrayList<C> getAndCacheConfigsFromScope(ConfigsSearchBarWidget.Scope scope)
+    protected List<ConfigOnTab> getConfigsForScope(ConfigsSearchBarWidget.Scope scope, boolean expanded)
     {
-        List<ConfigOnTab> configsInScope = this.cachedConfigs.get(scope);
-
-        if (configsInScope == null)
+        if (scope == ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
         {
-            configsInScope = new ArrayList<>();
+            return expanded ? getExpandedConfigs(this.entrySupplier.get(), expanded) : this.entrySupplier.get();
+        }
 
-            if (scope == ConfigsSearchBarWidget.Scope.ALL_MODS)
+        if (scope == ConfigsSearchBarWidget.Scope.ALL_CATEGORIES)
+        {
+            Supplier<List<ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabProviderFor(this.modInfo);
+
+            if (tabProvider != null)
             {
-                List<ConfigTab> allModTabs = Registry.CONFIG_TAB.getAllRegisteredConfigTabs();
-                allModTabs.add(CustomHotkeyManager.INSTANCE.getAllCustomHotkeysAsTabForConfigSearch());
-                final List<ConfigOnTab> tmpList = configsInScope;
-                allModTabs.forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
+                final ArrayList<ConfigOnTab> tmpList = new ArrayList<>();
+
+                if (expanded)
+                {
+                    tabProvider.get().forEach(tab -> tab.offerTabbedExpandedConfigs(tmpList::add));
+                }
+                else
+                {
+                    tabProvider.get().forEach(tab -> tmpList.addAll(tab.getTabbedConfigs()));
+                }
+
+                return tmpList;
+            }
+        }
+
+        if (scope == ConfigsSearchBarWidget.Scope.ALL_MODS)
+        {
+            List<ConfigTab> allModTabs = Registry.CONFIG_TAB.getAllRegisteredConfigTabs();
+            allModTabs.add(this.getAllCustomHotkeysAsTab());
+            final ArrayList<ConfigOnTab> tmpList = new ArrayList<>();
+
+            if (expanded)
+            {
+                allModTabs.forEach(tab -> tab.offerTabbedExpandedConfigs(tmpList::add));
             }
             else
             {
-                Supplier<List<ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabProviderFor(this.modInfo);
-
-                if (tabProvider != null)
-                {
-                    final List<ConfigOnTab> tmpList = configsInScope;
-                    tabProvider.get().forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
-                }
+                allModTabs.forEach(tab -> tmpList.addAll(tab.getTabbedConfigs()));
             }
 
-            this.cachedConfigs.put(scope, configsInScope);
+            return tmpList;
         }
 
-        ArrayList<C> list = new ArrayList<>();
+        return super.getNonFilteredDataList();
+    }
 
-        for (ConfigOnTab cfg : configsInScope)
-        {
-            @SuppressWarnings("unchecked")
-            C c = (C) cfg.getConfig();
-            list.add(c);
-        }
-
-        return list;
+    protected BaseConfigTab getAllCustomHotkeysAsTab()
+    {
+        String name = StringUtils.translate("malilib.screen.tab.custom_hotkeys");
+        return new BaseConfigTab(MaLiLibReference.MOD_INFO, name, name, 200,
+                                 CustomHotkeyManager.INSTANCE.getAllCustomHotkeys(),
+                                 MaLiLibConfigScreen::create);
     }
 
     /**
@@ -252,50 +241,61 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
      */
     public void clearConfigSearchCache()
     {
-        this.cachedConfigs.clear();
+        /*
+        this.cachedConfigsAllMods.clear();
+        this.cachedConfigsAllCategories.clear();
+        this.cachedConfigsPerTab.clear();
+        */
     }
 
-    public static <C extends ConfigInfo>
-    ConfigOptionListWidget<C> createWithExpandedGroups(IntSupplier defaultElementWidthSupplier,
-                                                       ModInfo modInfo,
-                                                       Supplier<List<C>> entrySupplier,
-                                                       ConfigWidgetContext ctx)
+    public static ConfigOptionListWidget createWithExpandedGroups(IntSupplier defaultElementWidthSupplier,
+                                                                  ModInfo modInfo,
+                                                                  Supplier<List<ConfigOnTab>> entrySupplier,
+                                                                  @Nullable KeybindEditScreen keybindEditScreen)
     {
-        Supplier<List<C>> supplier = createUnNestingConfigSupplier(entrySupplier);
-        return new ConfigOptionListWidget<>(defaultElementWidthSupplier, modInfo, supplier, ctx);
+        Supplier<List<ConfigOnTab>> supplier = createUnNestingConfigSupplier(entrySupplier);
+        return new ConfigOptionListWidget(defaultElementWidthSupplier, modInfo, supplier, keybindEditScreen);
     }
 
-    public static <C extends ConfigInfo> Supplier<List<C>> createUnNestingConfigSupplier(Supplier<List<C>> entrySupplier)
+    public static
+    Supplier<List<ConfigOnTab>> createUnNestingConfigSupplier(Supplier<List<ConfigOnTab>> entrySupplier)
     {
-        return () -> {
-            List<C> originalList = entrySupplier.get();
-            ArrayList<C> expandedList = new ArrayList<>();
-
-            for (C config : originalList)
-            {
-                expandedList.add(config);
-                config.addNestedOptionsToList(expandedList, 1);
-            }
-
-            return expandedList;
-        };
+        return () -> getExpandedConfigs(entrySupplier.get(), false);
     }
 
-    public static class ConfigOptionListEntryWidgetFactory<C extends ConfigInfo> implements DataListEntryWidgetFactory<C>
+    public static ArrayList<ConfigOnTab> getExpandedConfigs(List<ConfigOnTab> listIn, boolean expandAlways)
     {
-        protected final ConfigWidgetContext ctx;
+        ArrayList<ConfigOnTab> expandedList = new ArrayList<>();
 
-        public ConfigOptionListEntryWidgetFactory(ConfigWidgetContext ctx)
+        for (ConfigOnTab configWrapper : listIn)
         {
-            this.ctx = ctx;
+            expandedList.add(configWrapper);
+            configWrapper.getConfig().addNestedOptionsToList(expandedList, configWrapper.getTab(), 1, expandAlways);
+        }
+
+        return expandedList;
+    }
+
+    public static class ConfigOptionListEntryWidgetFactory implements DataListEntryWidgetFactory<ConfigOnTab>
+    {
+        protected final ConfigOptionListWidget listWidget;
+        @Nullable protected final KeybindEditScreen keybindScreen;
+
+        public ConfigOptionListEntryWidgetFactory(ConfigOptionListWidget listWidget,
+                                                  @Nullable KeybindEditScreen keybindScreen)
+        {
+            this.listWidget = listWidget;
+            this.keybindScreen = keybindScreen;
         }
 
         @Override
         @Nullable
-        public BaseConfigWidget<? extends ConfigInfo> createWidget(C config, DataListEntryWidgetData constructData)
+        public BaseListEntryWidget createWidget(ConfigOnTab configWrapper, DataListEntryWidgetData constructData)
         {
-            ConfigOptionWidgetFactory<C> factory = Registry.CONFIG_WIDGET.getWidgetFactory(config);
-            return factory.create(config, constructData, this.ctx);
+            ConfigInfo config = configWrapper.getConfig();
+            ConfigOptionWidgetFactory<ConfigInfo> factory = Registry.CONFIG_WIDGET.getWidgetFactory(config);
+            ConfigWidgetContext ctx = new ConfigWidgetContext(configWrapper, this.listWidget, this.keybindScreen);
+            return factory.create(config, constructData, ctx);
         }
     }
 }

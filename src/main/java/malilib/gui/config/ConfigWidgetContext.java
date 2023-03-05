@@ -1,44 +1,38 @@
 package malilib.gui.config;
 
-import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
-import malilib.config.option.ConfigInfo;
 import malilib.gui.widget.list.ConfigOptionListWidget;
+import malilib.util.data.ConfigOnTab;
 
 public class ConfigWidgetContext
 {
-    protected final Supplier<ConfigOptionListWidget<? extends ConfigInfo>> listWidgetSupplier;
+    protected final ConfigOnTab configOnTab;
+    protected final ConfigOptionListWidget listWidget;
     @Nullable protected final KeybindEditScreen keyBindScreen;
-    protected final int nestingLevel;
 
-    public ConfigWidgetContext(Supplier<ConfigOptionListWidget<? extends ConfigInfo>> listWidgetSupplier,
-                               @Nullable KeybindEditScreen keyBindScreen,
-                               int nestingLevel)
+    public ConfigWidgetContext(ConfigOnTab configOnTab,
+                               ConfigOptionListWidget listWidget,
+                               @Nullable KeybindEditScreen keyBindScreen)
     {
-        this.listWidgetSupplier = listWidgetSupplier;
+        this.configOnTab = configOnTab;
+        this.listWidget = listWidget;
         this.keyBindScreen = keyBindScreen;
-        this.nestingLevel = nestingLevel;
     }
 
-    public ConfigOptionListWidget<? extends ConfigInfo> getListWidget()
+    public ConfigOnTab getConfigOnTab()
     {
-        return this.listWidgetSupplier.get();
+        return this.configOnTab;
+    }
+
+    public ConfigOptionListWidget getListWidget()
+    {
+        return this.listWidget;
     }
 
     @Nullable
     public KeybindEditScreen getKeybindEditingScreen()
     {
         return this.keyBindScreen;
-    }
-
-    public int getNestingLevel()
-    {
-        return this.nestingLevel;
-    }
-
-    public ConfigWidgetContext withNestingLevel(int nestingLevel)
-    {
-        return new ConfigWidgetContext(this.listWidgetSupplier, this.keyBindScreen, nestingLevel);
     }
 }

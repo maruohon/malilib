@@ -2,7 +2,6 @@ package malilib.gui.config;
 
 import javax.annotation.Nullable;
 
-import malilib.config.option.ConfigInfo;
 import malilib.config.option.OptionListConfig;
 import malilib.config.option.list.BlackWhiteListConfig;
 import malilib.config.option.list.ValueListConfig;
@@ -66,9 +65,9 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
     }
 
     @Override
-    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget()
+    protected ConfigOptionListWidget createListWidget()
     {
-        ConfigOptionListWidget<? extends ConfigInfo> listWidget = super.createListWidget();
+        ConfigOptionListWidget listWidget = super.createListWidget();
         listWidget.setShowInternalConfigName(false);
         return listWidget;
     }

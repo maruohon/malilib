@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import malilib.MaLiLibConfigs;
 import malilib.config.ConfigManagerImpl;
-import malilib.config.option.ConfigInfo;
 import malilib.gui.BaseListScreen;
 import malilib.gui.BaseScreen;
 import malilib.gui.tab.ScreenTab;
@@ -17,9 +16,10 @@ import malilib.gui.widget.list.ConfigOptionListWidget;
 import malilib.input.Keys;
 import malilib.listener.EventListener;
 import malilib.registry.Registry;
+import malilib.util.data.ConfigOnTab;
 import malilib.util.data.ModInfo;
 
-public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements ConfigScreen, KeybindEditScreen
+public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget> implements KeybindEditScreen
 {
     protected final ModInfo modInfo;
     @Nullable protected EventListener configSaveListener;
@@ -119,20 +119,6 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         return this;
     }
 
-    @Override
-    public List<? extends ConfigInfo> getConfigs()
-    {
-        ScreenTab tab = this.getCurrentTab();
-
-        if (tab instanceof ConfigTab)
-        {
-            return ((ConfigTab) tab).getConfigs();
-        }
-
-        return Collections.emptyList();
-    }
-
-    @Override
     public ModInfo getModInfo()
     {
         return this.modInfo;
@@ -156,7 +142,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
             tabButton.updateButtonState();
         }
 
-        ConfigOptionListWidget<?> listWidget = this.getListWidget();
+        ConfigOptionListWidget listWidget = this.getListWidget();
 
         if (listWidget != null)
         {
@@ -174,28 +160,33 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         }
     }
 
-    @Override
-    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget()
+    public List<ConfigOnTab> getConfigs()
     {
-        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this, 0);
-        ConfigOptionListWidget<? extends ConfigInfo> widget = ConfigOptionListWidget.createWithExpandedGroups(
-                this::getDefaultConfigElementWidth, this.modInfo, this::getConfigs, ctx);
+        ScreenTab tab = this.getCurrentTab();
 
-        widget.addConfigSearchBarWidget(this);
+        if (tab instanceof ConfigTab)
+        {
+            return ((ConfigTab) tab).getTabbedConfigs();
+        }
 
-        return widget;
+        return Collections.emptyList();
+    }
+
+    @Override
+    protected ConfigOptionListWidget createListWidget()
+    {
+        ConfigOptionListWidget listWidget = ConfigOptionListWidget.createWithExpandedGroups(
+                this::getDefaultConfigElementWidth, this.modInfo, this::getConfigs, this);
+
+        listWidget.addConfigSearchBarWidget(this);
+
+        return listWidget;
     }
 
     @Override
     protected void clearElements()
     {
         super.clearElements();
-        this.clearOptions();
-    }
-
-    @Override
-    public void clearOptions()
-    {
         this.setActiveKeyBindButton(null);
     }
 
