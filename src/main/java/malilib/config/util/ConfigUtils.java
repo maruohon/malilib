@@ -100,16 +100,6 @@ public class ConfigUtils
     }
 
     /**
-     * @return The full list of config options for the given list of configs from a config tab.
-     * The normal base list gets appended with any possible extra options that an extension mod
-     * wants to show on the same tab with the parent mod's config options.
-     */
-    public static List<? extends ConfigInfo> getExtendedList(List<? extends ConfigInfo> baseList)
-    {
-        return Registry.CONFIG_TAB_EXTENSION.getExtendedList(baseList, MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS.getBooleanValue());
-    }
-
-    /**
      * Removes the given configs from the given list,
      * and returns them as an expandable config group.
      */

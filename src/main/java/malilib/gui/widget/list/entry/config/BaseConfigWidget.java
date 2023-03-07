@@ -158,7 +158,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     public static String getOwnerText(ConfigOnTab configOnTab, boolean shouldShowInternalName)
     {
         ConfigTab tab = configOnTab.getTab();
-        String modName = tab.getModInfo().getModName();
+        String modName = configOnTab.getConfig().getModInfo().getModName();
         String tabName = tab.getDisplayName();
 
         if (shouldShowInternalName)

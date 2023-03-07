@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import malilib.MaLiLibConfigs;
 import malilib.config.option.ConfigInfo;
+import malilib.config.util.ConfigUtils;
 import malilib.gui.tab.ScreenTab;
+import malilib.registry.Registry;
 import malilib.util.data.ConfigOnTab;
 import malilib.util.data.ModInfo;
 
@@ -25,15 +28,42 @@ public interface ConfigTab extends ScreenTab
     int getConfigWidgetsWidth();
 
     /**
-     * @return the list of all configs on this tab, without expanding any config groups
+     * @return the list of all "tab-owned base configs" on this tab (= without extension mod-added configs),
+     *         without expanding any config groups
      */
     List<? extends ConfigInfo> getConfigs();
+
+    /**
+     * @return The full list of configs on this tab, possibly sorted by their display name,
+     *         if enabled in the malilib configs.
+     *         The normal mod-owned base list gets appended with any possible extra options that extension mods
+     *         want to show on the same tab with the parent mod's config options.
+     */
+    default List<ConfigInfo> getExtendedSortedConfigList()
+    {
+        ArrayList<ConfigInfo> list = new ArrayList<>(this.getConfigs());
+        List<ConfigInfo> extensionConfigs = Registry.CONFIG_TAB_EXTENSION.getExtensionConfigsForTab(this);
+
+        if (MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS.getBooleanValue())
+        {
+            ConfigUtils.sortConfigsByDisplayName(extensionConfigs);
+        }
+
+        list.addAll(extensionConfigs);
+
+        if (MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME.getBooleanValue())
+        {
+            ConfigUtils.sortConfigsByDisplayName(list);
+        }
+
+        return list;
+    }
 
     default List<ConfigOnTab> getTabbedConfigs()
     {
         ArrayList<ConfigOnTab> list = new ArrayList<>();
 
-        for (ConfigInfo config : this.getConfigs())
+        for (ConfigInfo config : this.getExtendedSortedConfigList())
         {
             list.add(new ConfigOnTab(this, config, 0));
         }
@@ -49,7 +79,7 @@ public interface ConfigTab extends ScreenTab
     {
         ArrayList<ConfigOnTab> expandedList = new ArrayList<>();
 
-        for (ConfigInfo config : this.getConfigs())
+        for (ConfigInfo config : this.getExtendedSortedConfigList())
         {
             expandedList.add(new ConfigOnTab(this, config, 0));
             config.addNestedOptionsToList(expandedList, this, 1, true);
