@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -108,6 +109,31 @@ public class EntityWrap
     public static void setPitch(Entity entity, float pitch)
     {
         entity.rotationPitch = pitch;
+    }
+
+    public static EnumFacing getClosestHorizontalLookingDirection(Entity entity)
+    {
+        return EnumFacing.fromAngle(EntityWrap.getYaw(entity));
+    }
+
+    /**
+     * @param verticalThreshold The pitch rotation angle over which the up or down direction is preferred over the horizontal directions
+     * @return the closest direction the entity is currently looking at.
+     */
+    public static EnumFacing getClosestLookingDirection(Entity entity, float verticalThreshold)
+    {
+        float pitch = EntityWrap.getPitch(entity);
+
+        if (pitch > verticalThreshold)
+        {
+            return EnumFacing.DOWN;
+        }
+        else if (-pitch > verticalThreshold)
+        {
+            return EnumFacing.UP;
+        }
+
+        return getClosestHorizontalLookingDirection(entity);
     }
 
     public static ItemStack getMainHandItem(EntityLivingBase entity)
