@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 import malilib.MaLiLib;
-import malilib.overlay.message.MessageDispatcher;
+import malilib.config.value.FileWriteType;
 import malilib.util.game.wrap.GameUtils;
 
 public class FileUtils
@@ -227,56 +227,45 @@ public class FileUtils
         return false;
     }
 
-    public static boolean writeDataToFile(final Path file, Consumer<BufferedWriter> dataWriter)
+    public static boolean writeDataToFile(final Path file, Consumer<BufferedWriter> dataWriter, FileWriteType writeType)
     {
         Path dir = file.getParent();
-        Path realPath = file;
 
         if (FileUtils.createDirectoriesIfMissing(dir) == false)
         {
             return false;
         }
 
-        try
-        {
-            if (Files.exists(file))
-            {
-                realPath = file.toRealPath();
-            }
-        }
-        catch (Exception e)
-        {
-            MessageDispatcher.error(8000).console(e).translate("malilib.message.error.failed_to_resolve_file",
-                                                               file.toAbsolutePath());
-            return false;
-        }
-
-        try
+        if (writeType == FileWriteType.NORMAL_WRITE || Files.isSymbolicLink(file))
         {
             // Don't replace/override symbolic links, but just write to the pointed file directly
-            if (Files.isSymbolicLink(file))
+            return writeDataToExactFile(file, dataWriter);
+        }
+
+        if (writeType == FileWriteType.TEMP_AND_RENAME)
+        {
+            // First write to a separate temporary file, and then rename it over the old file
+            Path fileTmp = dir.resolve(file.getFileName() + ".tmp");
+
+            if (Files.exists(fileTmp))
             {
-                BufferedWriter writer = Files.newBufferedWriter(realPath, StandardCharsets.UTF_8);
-                dataWriter.accept(writer);
-                writer.close();
-                return true;
+                fileTmp = file.getParent().resolve(UUID.randomUUID() + ".tmp");
             }
-            // For non-symlinks, first write to a separate temporary file, and then rename it over the old file
-            else
-            {
-                Path fileTmp = dir.resolve(realPath.getFileName() + ".tmp");
 
-                if (Files.exists(fileTmp))
-                {
-                    fileTmp = realPath.getParent().resolve(UUID.randomUUID() + ".tmp");
-                }
+            return writeDataToExactFile(fileTmp, dataWriter) && FileUtils.move(fileTmp, file);
+        }
 
-                BufferedWriter writer = Files.newBufferedWriter(fileTmp, StandardCharsets.UTF_8);
-                dataWriter.accept(writer);
-                writer.close();
+        return false;
+    }
 
-                return FileUtils.move(fileTmp, file);
-            }
+    public static boolean writeDataToExactFile(final Path file, Consumer<BufferedWriter> dataWriter)
+    {
+        try
+        {
+            BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
+            dataWriter.accept(writer);
+            writer.close();
+            return true;
         }
         catch (Exception e)
         {

@@ -13,6 +13,7 @@ import malilib.config.option.HotkeyConfig;
 import malilib.config.option.IntegerConfig;
 import malilib.config.option.OptionListConfig;
 import malilib.config.option.StringConfig;
+import malilib.config.value.FileWriteType;
 import malilib.config.value.KeybindDisplayMode;
 import malilib.gui.widget.list.search.ConfigsSearchBarWidget.Scope;
 import malilib.input.CancelCondition;
@@ -27,6 +28,7 @@ public class MaLiLibConfigs
     public static class Generic
     {
         public static final OptionListConfig<Scope>              CONFIG_SEARCH_DEFAULT_SCOPE    = new OptionListConfig<>("configSearchDefaultScope", Scope.ALL_CATEGORIES, Scope.VALUES);
+        public static final OptionListConfig<FileWriteType>      CONFIG_WRITE_METHOD            = new OptionListConfig<>("configWriteMethod", FileWriteType.TEMP_AND_RENAME, FileWriteType.VALUES);
         public static final OptionListConfig<MessageOutput>      DEFAULT_TOGGLE_MESSAGE_OUTPUT  = new OptionListConfig<>("defaultToggleMessageOutput", MessageOutput.CUSTOM_HOTBAR, getUsableDefaultToggleMessageOutputs());
         public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY                = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE, KeybindDisplayMode.VALUES);
 
@@ -66,6 +68,7 @@ public class MaLiLibConfigs
                 CONFIG_BACKUP_COUNT,
                 CONFIG_WIDGET_BACKGROUND,
                 CONFIG_SEARCH_DEFAULT_SCOPE,
+                CONFIG_WRITE_METHOD,
                 CUSTOM_HOTBAR_MESSAGE_LIMIT,
                 CUSTOM_SCREEN_SCALE,
                 DATA_DUMP_CSV_DELIMITER,

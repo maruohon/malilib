@@ -1,6 +1,7 @@
 package malilib.util.data.json;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,6 +31,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 import malilib.MaLiLib;
+import malilib.MaLiLibConfigs;
+import malilib.overlay.message.MessageDispatcher;
 import malilib.util.FileUtils;
 import malilib.util.data.BooleanConsumer;
 import malilib.util.data.FloatConsumer;
@@ -836,16 +839,22 @@ public class JsonUtils
 
     public static boolean writeJsonToFile(final JsonElement root, final Path file, final Gson gson)
     {
-        return FileUtils.writeDataToFile(file, w -> {
-            try
-            {
-                w.write(gson.toJson(root));
-            }
-            catch (IOException e)
-            {
-                MaLiLib.LOGGER.warn("Failed to write JSON data to file '{}'", file.toAbsolutePath(), e);
-            }
-        });
+        return FileUtils.writeDataToFile(file, w -> writeJsonToWriter(root, file, w, gson),
+                                         MaLiLibConfigs.Generic.CONFIG_WRITE_METHOD.getValue());
+    }
+
+    public static void writeJsonToWriter(JsonElement root, Path file, BufferedWriter writer, Gson gson)
+    {
+        try
+        {
+            writer.write(gson.toJson(root));
+        }
+        catch (IOException e)
+        {
+            MessageDispatcher.warning().console(e)
+                    .translate("malilib.message.error.failed_to_write_json_to_file",
+                               file.toAbsolutePath(), e.getMessage());
+        }
     }
 
     public static void loadFromFile(Path dir, String fileName, Consumer<JsonElement> dataConsumer)
