@@ -92,7 +92,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
     protected void onModSelected(@Nullable ModInfo mod)
     {
-        Supplier<List<ConfigTab>> tabProvider = mod != null ? Registry.CONFIG_TAB.getConfigTabProviderFor(mod) : null;
+        Supplier<List<? extends ConfigTab>> tabProvider = mod != null ? Registry.CONFIG_TAB.getConfigTabSupplierFor(mod) : null;
         ArrayList<ConfigTab> list = new ArrayList<>();
 
         if (tabProvider != null)
@@ -155,7 +155,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
             return configsInScope;
         }
 
-        Supplier<List<ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabProviderFor(mod);
+        Supplier<List<? extends ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabSupplierFor(mod);
 
         if (tabProvider != null)
         {

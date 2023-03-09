@@ -188,7 +188,7 @@ public class ConfigOptionListWidget extends DataListWidget<ConfigOnTab>
 
         if (scope == ConfigsSearchBarWidget.Scope.ALL_CATEGORIES)
         {
-            Supplier<List<ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabProviderFor(this.modInfo);
+            Supplier<List<? extends ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabSupplierFor(this.modInfo);
 
             if (tabProvider != null)
             {
@@ -209,7 +209,7 @@ public class ConfigOptionListWidget extends DataListWidget<ConfigOnTab>
 
         if (scope == ConfigsSearchBarWidget.Scope.ALL_MODS)
         {
-            List<ConfigTab> allModTabs = Registry.CONFIG_TAB.getAllRegisteredConfigTabs();
+            List<ConfigTab> allModTabs = new ArrayList<>(Registry.CONFIG_TAB.getAllRegisteredConfigTabs());
             allModTabs.add(this.getAllCustomHotkeysAsTab());
             final ArrayList<ConfigOnTab> tmpList = new ArrayList<>();
 

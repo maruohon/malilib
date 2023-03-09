@@ -16,6 +16,7 @@ import malilib.gui.widget.list.ConfigOptionListWidget;
 import malilib.input.Keys;
 import malilib.listener.EventListener;
 import malilib.registry.Registry;
+import malilib.util.ListUtils;
 import malilib.util.data.ConfigOnTab;
 import malilib.util.data.ModInfo;
 
@@ -204,5 +205,15 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget> imp
         {
             this.activeKeyBindButton.onSelected();
         }
+    }
+
+    public static BaseConfigScreen withExtensionModTabs(ModInfo modInfo,
+                                                        List<? extends ScreenTab> configTabs,
+                                                        @Nullable ConfigTab defaultTab,
+                                                        String titleKey, Object... args)
+    {
+        List<? extends ScreenTab> extraTabs = Registry.CONFIG_TAB.getExtraConfigScreenTabsFor(modInfo);
+        List<ScreenTab> allTabs = ListUtils.getAppendedList(configTabs, extraTabs);
+        return new BaseConfigScreen(modInfo, allTabs, defaultTab, titleKey, args);
     }
 }

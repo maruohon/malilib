@@ -164,7 +164,7 @@ public class ConfigUtils
      * Creates a map of all the configs on the provided config tabs, using
      * an identifier key that is in the form "modId.tabName.configName".
      */
-    public static Map<String, ConfigOnTab> getConfigIdToConfigMapFromTabs(List<ConfigTab> tabs)
+    public static Map<String, ConfigOnTab> getConfigIdToConfigMapFromTabs(List<? extends ConfigTab> tabs)
     {
         Map<String, ConfigOnTab> map = new HashMap<>();
 
