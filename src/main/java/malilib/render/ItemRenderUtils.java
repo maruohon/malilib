@@ -5,9 +5,8 @@ import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 import malilib.util.StringUtils;
 import malilib.util.game.wrap.GameUtils;
@@ -17,6 +16,7 @@ public class ItemRenderUtils
 {
     public static void renderStackAt(ItemStack stack, int x, int y, float z, float scale, RenderContext ctx)
     {
+        /* TODO 1.13+ port
         if (stack == null || ItemWrap.isEmpty(stack))
         {
             return;
@@ -51,6 +51,7 @@ public class ItemRenderUtils
         //GlStateManager.disableBlend();
         RenderUtils.disableItemLighting();
         GlStateManager.popMatrix();
+        */
     }
 
     public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack, RenderContext ctx)

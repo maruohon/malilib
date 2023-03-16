@@ -21,7 +21,6 @@ import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.block.enums.ChestType;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
@@ -79,8 +78,9 @@ public class InventoryRenderUtils
         final int invSize = inv.getSize();
 
         RenderUtils.enableGuiItemLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.enableRescaleNormal();
+        // TODO 1.13+ port
+        //GlStateManager.enableDepth();
+        //GlStateManager.enableRescaleNormal();
 
         for (int slot : customSlotPositions.keySet())
         {
@@ -330,8 +330,9 @@ public class InventoryRenderUtils
         y += slotOffset.y;
 
         RenderUtils.enableGuiItemLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.enableRescaleNormal();
+        // TODO 1.13+ port
+        //GlStateManager.enableDepth();
+        //GlStateManager.enableRescaleNormal();
 
         for (int slotOnRow = 0; slot < endSlot; ++slot)
         {

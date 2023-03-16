@@ -6,7 +6,7 @@ import java.util.function.IntUnaryOperator;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.util.math.MatrixStack;
 
 import malilib.gui.icon.Icon;
 import malilib.gui.icon.PositionedIcon;
@@ -73,8 +73,9 @@ public class InventoryRenderDefinition
             InventoryRenderUtils.renderEmptySlotBackgrounds(x, y, z, backgroundTintColor, inv, this.emptySlotTextures, ctx);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, z + 1);
+        MatrixStack matrixStack = ctx.matrixStack;
+        matrixStack.push();
+        matrixStack.translate(0f, 0f, z + 1.0F);
 
         if (this.hasInventoryRanges)
         {
@@ -92,7 +93,7 @@ public class InventoryRenderDefinition
             InventoryRenderUtils.renderGenericInventoryItems(x, y, 100f, 0, -1, slotsPerRow, this.slotOffset, inv, ctx);
         }
 
-        GlStateManager.popMatrix();
+        matrixStack.pop();
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }

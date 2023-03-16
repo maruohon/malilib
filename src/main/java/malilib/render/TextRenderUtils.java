@@ -3,15 +3,18 @@ package malilib.render;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3f;
 
 import malilib.gui.util.GuiUtils;
 import malilib.render.text.StyledTextLine;
@@ -111,23 +114,23 @@ public class TextRenderUtils
             int textStartX = startPos.x + 4;
             int textStartY = startPos.y + 4;
 
-            GlStateManager.disableRescaleNormal();
+            MatrixStack matrixStack = ctx.matrixStack;
+            matrixStack.push();
+            matrixStack.translate(0, 0, z + 1);
+
             RenderUtils.disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
 
             backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight, ctx);
 
             for (String str : textLines)
             {
-                textRenderer.drawWithShadow(ctx.matrixStack, str, textStartX, textStartY, textColor);
+                textRenderer.drawWithShadow(matrixStack, str, textStartX, textStartY, textColor);
                 textStartY += lineHeight;
             }
 
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
+            matrixStack.pop();
+
+            RenderSystem.enableDepthTest();
         }
     }
 
@@ -151,10 +154,10 @@ public class TextRenderUtils
             int textStartX = startPos.x + 4;
             int textStartY = startPos.y + 4;
 
-            GlStateManager.disableRescaleNormal();
+            //GlStateManager.disableRescaleNormal();
             RenderUtils.disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
+            //GlStateManager.disableLighting();
+            RenderSystem.disableDepthTest();
 
             backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight, ctx);
             textRenderer.startBuffers();
@@ -166,10 +169,10 @@ public class TextRenderUtils
             }
 
             textRenderer.renderBuffers();
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
+            //GlStateManager.enableLighting();
+            RenderSystem.enableDepthTest();
+            //RenderHelper.enableStandardItemLighting();
+            //RenderSystem.enableRescaleNormal();
         }
     }
 
@@ -186,14 +189,7 @@ public class TextRenderUtils
                                                  int fillColor, int borderColor1, int borderColor2,
                                                  RenderContext ctx)
     {
-        GlStateManager.disableTexture2D();
-        GlStateManager.disableAlpha();
-        RenderUtils.setupBlend();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
 
         int xl1 = x;
         int xl2 = xl1 + 1;
@@ -208,6 +204,9 @@ public class TextRenderUtils
         int yb2 = yb1 + 1;
         int yb3 = yb2 + 1;
 
+        RenderUtils.setupBlend();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
         ShapeRenderUtils.renderGradientRectangle(xl2, yt1, xr2, yt2, z, fillColor, fillColor, buffer);
         ShapeRenderUtils.renderGradientRectangle(xl2, yb2, xr2, yb3, z, fillColor, fillColor, buffer);
         ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yb2, z, fillColor, fillColor, buffer);
@@ -219,12 +218,10 @@ public class TextRenderUtils
         ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yt3, z, borderColor1, borderColor1, buffer);
         ShapeRenderUtils.renderGradientRectangle(xl2, yb1, xr2, yb2, z, borderColor2, borderColor2, buffer);
 
-        tessellator.draw();
+        RenderUtils.drawBuffer();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
     }
 
     /**
@@ -251,21 +248,23 @@ public class TextRenderUtils
     {
         net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
 
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
-        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
+        //GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        MatrixStack matrixStack = ctx.matrixStack;
+        matrixStack.push();
+        matrixStack.translate(x, y, z);
+        //GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
 
-        GlStateManager.rotate(-yaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(pitch, 1.0F, 0.0F, 0.0F);
+        Quaternion rot = Vec3f.POSITIVE_Y.getDegreesQuaternion(-yaw);
+        rot.hamiltonProduct(Vec3f.POSITIVE_X.getDegreesQuaternion(pitch));
+        matrixStack.multiply(rot);
 
-        GlStateManager.scale(-scale, -scale, scale);
-        GlStateManager.disableLighting();
-        GlStateManager.disableCull();
+        matrixStack.scale(-scale, -scale, scale);
+        //GlStateManager.disableLighting();
+        RenderSystem.disableCull();
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.setupBlend();
-        GlStateManager.disableTexture2D();
+        RenderSystem.disableTexture();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -285,43 +284,43 @@ public class TextRenderUtils
 
         if (disableDepth)
         {
-            GlStateManager.depthMask(false);
-            GlStateManager.disableDepth();
+            RenderSystem.depthMask(false);
+            RenderSystem.disableDepthTest();
         }
 
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
         buffer.vertex(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
         buffer.vertex( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
         buffer.vertex( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
         tessellator.draw();
 
-        GlStateManager.enableTexture2D();
+        RenderSystem.enableTexture();
         int textY = 0;
 
         // translate the text a bit infront of the background
         if (disableDepth == false)
         {
-            GlStateManager.enablePolygonOffset();
-            GlStateManager.doPolygonOffset(-0.6f, -1.2f);
+            RenderSystem.enablePolygonOffset();
+            RenderSystem.polygonOffset(-0.6f, -1.2f);
             //GlStateManager.translate(0, 0, -0.02);
 
-            GlStateManager.enableDepth();
-            GlStateManager.depthMask(true);
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthMask(true);
         }
 
         for (String line : text)
         {
             if (disableDepth)
             {
-                GlStateManager.depthMask(false);
-                GlStateManager.disableDepth();
+                RenderSystem.depthMask(false);
+                RenderSystem.disableDepthTest();
 
                 // Render the faint version that will also show through blocks
                 textRenderer.draw(matrixStack, line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
 
-                GlStateManager.enableDepth();
-                GlStateManager.depthMask(true);
+                RenderSystem.enableDepthTest();
+                RenderSystem.depthMask(true);
             }
 
             // Render the actual fully opaque text, that will not show through blocks
@@ -331,13 +330,13 @@ public class TextRenderUtils
 
         if (disableDepth == false)
         {
-            GlStateManager.doPolygonOffset(0f, 0f);
-            GlStateManager.disablePolygonOffset();
+            RenderSystem.polygonOffset(0f, 0f);
+            RenderSystem.disablePolygonOffset();
         }
 
         RenderUtils.color(1f, 1f, 1f, 1f);
-        GlStateManager.enableCull();
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        RenderSystem.enableCull();
+        RenderSystem.disableBlend();
+        matrixStack.pop();
     }
 }
