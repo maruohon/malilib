@@ -19,6 +19,7 @@ import malilib.gui.widget.BaseWidget;
 import malilib.overlay.widget.InfoRendererWidget;
 import malilib.overlay.widget.StringListRendererWidget;
 import malilib.registry.Registry;
+import malilib.render.RenderContext;
 import malilib.render.RenderUtils;
 import malilib.util.game.wrap.GameUtils;
 
@@ -37,7 +38,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     }
 
     @Override
-    public void onPostGameOverlayRender()
+    public void onPostGameOverlayRender(RenderContext ctx)
     {
         if (GameUtils.Options.hideGui() == false)
         {
@@ -46,9 +47,9 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     }
 
     @Override
-    public void onPostScreenRender(float tickDelta)
+    public void onPostScreenRender(RenderContext ctx, float tickDelta)
     {
-        this.renderScreen();
+        this.renderScreen(ctx);
     }
 
     @Override
@@ -180,18 +181,18 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      * Don't call this unless you have your own instance of the InfoOverlay,
      * ie. don't call this on {@code Registry.INFO_OVERLAY}
      */
-    public void renderScreen()
+    public void renderScreen(RenderContext ctx)
     {
         boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
         boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
-        ScreenContext ctx = new ScreenContext(0, 0, -1, true);
+        ScreenContext screenCtx = new ScreenContext(0, 0, -1, true);
         RenderUtils.disableItemLighting();
 
         if (debug)
         {
             for (InfoArea area : this.infoAreas.values())
             {
-                area.renderDebug(ctx);
+                area.renderDebug(screenCtx);
             }
         }
 
@@ -199,13 +200,13 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
         {
             if (widget.shouldRenderFromContext(OverlayRenderContext.GUI, isScreenOpen))
             {
-                widget.render(ctx);
+                widget.render(screenCtx);
             }
         }
 
         if (debug)
         {
-            BaseWidget.renderDebugTextAndClear(ctx);
+            BaseWidget.renderDebugTextAndClear(screenCtx);
         }
     }
 

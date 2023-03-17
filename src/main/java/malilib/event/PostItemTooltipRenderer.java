@@ -2,6 +2,7 @@ package malilib.event;
 
 import net.minecraft.item.ItemStack;
 
+import malilib.render.RenderContext;
 import malilib.util.ProfilerSectionSupplierSupplier;
 
 public interface PostItemTooltipRenderer extends ProfilerSectionSupplierSupplier
@@ -11,5 +12,5 @@ public interface PostItemTooltipRenderer extends ProfilerSectionSupplierSupplier
      * <br><br>
      * The classes implementing this method should be registered to {@link malilib.event.dispatch.RenderEventDispatcherImpl}
      */
-    void onPostRenderItemTooltip(ItemStack stack, int x, int y);
+    void onPostRenderItemTooltip(ItemStack stack, int x, int y, RenderContext ctx);
 }

@@ -30,7 +30,7 @@ import malilib.util.game.wrap.GameUtils;
 public class BaseWidget
 {
     public static final ImmutableList<String> EMPTY_STRING_LIST = ImmutableList.of();
-    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, z, w, h) -> ShapeRenderUtils.renderOutlinedRectangle(x - 3, y - 3, z, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0);
+    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, z, w, h, c) -> ShapeRenderUtils.renderOutlinedRectangle(x - 3, y - 3, z, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0);
 
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
     private static int lastDebugOutlineColorHue;
@@ -857,7 +857,8 @@ public class BaseWidget
             {
                 int x = (int) posLong.longValue();
                 int y = (int) (posLong.longValue() >>> 32);
-                TextRenderUtils.renderHoverText(x, y, 10, DEBUG_STRINGS.get(posLong), 0xFFFF4040, DEBUG_TEXT_BG_RENDERER);
+                TextRenderUtils.renderHoverText(x, y, 10, DEBUG_STRINGS.get(posLong),
+                                                0xFFFF4040, DEBUG_TEXT_BG_RENDERER, ctx);
             }
 
             DEBUG_STRINGS.clear();

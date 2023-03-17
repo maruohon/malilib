@@ -14,7 +14,7 @@ import malilib.util.game.wrap.ItemWrap;
 
 public class ItemRenderUtils
 {
-    public static void renderStackAt(ItemStack stack, int x, int y, float z, float scale)
+    public static void renderStackAt(ItemStack stack, int x, int y, float z, float scale, RenderContext ctx)
     {
         if (stack == null || ItemWrap.isEmpty(stack))
         {
@@ -52,7 +52,7 @@ public class ItemRenderUtils
         GlStateManager.popMatrix();
     }
 
-    public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack)
+    public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack, RenderContext ctx)
     {
         if (stack == null || ItemWrap.isEmpty(stack))
         {
@@ -73,6 +73,6 @@ public class ItemRenderUtils
             }
         }
 
-        TextRenderUtils.renderHoverText(x, y, zLevel, list);
+        TextRenderUtils.renderHoverText(x, y, zLevel, list, ctx);
     }
 }

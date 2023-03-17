@@ -520,7 +520,8 @@ public class RenderUtils
         }
     }
 
-    public static void renderModelInGui(int x, int y, float zLevel, IBakedModel model, IBlockState state)
+    public static void renderModelInGui(int x, int y, float zLevel,
+                                        IBakedModel model, IBlockState state, RenderContext ctx)
     {
         if (state.getBlock() == Blocks.AIR)
         {

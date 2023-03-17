@@ -365,7 +365,7 @@ public abstract class InteractableWidget extends BackgroundWidget
             }
             else if (this.hasHoverText())
             {
-                TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 50f, this.getHoverText());
+                TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 50f, this.getHoverText(), ctx);
             }
         }
     }
