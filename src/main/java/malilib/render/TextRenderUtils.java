@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 
-import malilib.config.value.HudAlignment;
 import malilib.gui.util.GuiUtils;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.TextRenderer;
@@ -24,102 +23,6 @@ import malilib.util.position.Vec2i;
 
 public class TextRenderUtils
 {
-    public static void renderText(int x, int y, int color, String text)
-    {
-        String[] parts = text.split("\\\\n");
-        FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
-
-        for (String line : parts)
-        {
-            textRenderer.drawString(line, x, y, color);
-            y += textRenderer.FONT_HEIGHT + 1;
-        }
-    }
-
-    public static void renderText(int x, int y, int color, List<String> lines)
-    {
-        if (lines.isEmpty() == false)
-        {
-            FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
-
-            for (String line : lines)
-            {
-                textRenderer.drawString(line, x, y, color);
-                y += textRenderer.FONT_HEIGHT + 2;
-            }
-        }
-    }
-
-    public static int renderText(int xOff, int yOff, int z, double scale, int textColor, int bgColor,
-                                 HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
-    {
-        FontRenderer fontRenderer = GameUtils.getClient().fontRenderer;
-        final int scaledWidth = GuiUtils.getScaledWindowWidth();
-        final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
-        final int contentHeight = lines.size() * lineHeight - 2;
-        int bgMargin = 2;
-
-        // Only Chuck Norris can divide by zero
-        if (scale == 0d)
-        {
-            return 0;
-        }
-
-        if (scale != 1d)
-        {
-            xOff = (int) (xOff * scale);
-            yOff = (int) (yOff * scale);
-
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, 0);
-        }
-
-        double posX = xOff + bgMargin;
-        double posY = yOff + bgMargin;
-
-        posY = GuiUtils.getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
-        posY += GuiUtils.getHudOffsetForPotions(alignment, scale, GameUtils.getClientPlayer());
-
-        for (String line : lines)
-        {
-            final int width = fontRenderer.getStringWidth(line);
-
-            if (alignment == HudAlignment.TOP_RIGHT || alignment == HudAlignment.BOTTOM_RIGHT)
-            {
-                posX = (scaledWidth / scale) - width - xOff - bgMargin;
-            }
-            else if (alignment == HudAlignment.CENTER)
-            {
-                posX = (scaledWidth / scale / 2) - (width / 2) - xOff;
-            }
-
-            final int x = (int) posX;
-            final int y = (int) posY;
-            posY += lineHeight;
-
-            if (useBackground)
-            {
-                ShapeRenderUtils.renderRectangle(x - bgMargin, y - bgMargin, z, width + bgMargin, bgMargin + fontRenderer.FONT_HEIGHT, bgColor);
-            }
-
-            if (useShadow)
-            {
-                fontRenderer.drawStringWithShadow(line, x, y, textColor);
-            }
-            else
-            {
-                fontRenderer.drawString(line, x, y, textColor);
-            }
-        }
-
-        if (scale != 1d)
-        {
-            GlStateManager.popMatrix();
-        }
-
-        return contentHeight + bgMargin * 2;
-    }
-
     public static Vec2i getScreenClampedHoverTextStartPosition(int x, int y, int renderWidth, int renderHeight)
     {
         GuiScreen screen = GuiUtils.getCurrentScreen();
