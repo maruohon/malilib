@@ -29,7 +29,7 @@ public class FileUtils
 
     public static Path getMinecraftDirectory()
     {
-        return GameUtils.getClient().gameDir.toPath();
+        return GameUtils.getClient().runDirectory.toPath();
     }
 
     public static Path getRootDirectory()

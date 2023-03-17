@@ -3,8 +3,8 @@ package malilib.util.inventory;
 import java.util.function.Function;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
 public class EquipmentInventoryView implements InventoryView
@@ -13,17 +13,17 @@ public class EquipmentInventoryView implements InventoryView
      * Note: this order is different from how they are stored in vanilla.
      * This is to make the InventoryRenderDefinitions a bit simpler, so that they can go from top down.
      */
-    public static final ImmutableList<Function<EntityLivingBase, ItemStack>> SLOT_FETCHERS
-            = ImmutableList.of((e) -> e.getItemStackFromSlot(EntityEquipmentSlot.HEAD),
-                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.CHEST),
-                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.LEGS),
-                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.FEET),
-                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND),
-                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND));
+    public static final ImmutableList<Function<LivingEntity, ItemStack>> SLOT_FETCHERS
+            = ImmutableList.of((e) -> e.getEquippedStack(EquipmentSlot.HEAD),
+                               (e) -> e.getEquippedStack(EquipmentSlot.CHEST),
+                               (e) -> e.getEquippedStack(EquipmentSlot.LEGS),
+                               (e) -> e.getEquippedStack(EquipmentSlot.FEET),
+                               (e) -> e.getEquippedStack(EquipmentSlot.MAINHAND),
+                               (e) -> e.getEquippedStack(EquipmentSlot.OFFHAND));
 
-    protected final EntityLivingBase entity;
+    protected final LivingEntity entity;
 
-    public EquipmentInventoryView(EntityLivingBase entity)
+    public EquipmentInventoryView(LivingEntity entity)
     {
         this.entity = entity;
     }

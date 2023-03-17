@@ -6,25 +6,25 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.EquipmentSlot;
 
-public class EquipmentSlotListConfig extends ValueListConfig<EntityEquipmentSlot>
+public class EquipmentSlotListConfig extends ValueListConfig<EquipmentSlot>
 {
-    public EquipmentSlotListConfig(String name, ImmutableList<EntityEquipmentSlot> defaultValues)
+    public EquipmentSlotListConfig(String name, ImmutableList<EquipmentSlot> defaultValues)
     {
-        this(name, defaultValues, EntityEquipmentSlot::getName, EquipmentSlotListConfig::fromString);
+        this(name, defaultValues, EquipmentSlot::getName, EquipmentSlotListConfig::fromString);
     }
 
-    public EquipmentSlotListConfig(String name, ImmutableList<EntityEquipmentSlot> defaultValues,
-                                   Function<EntityEquipmentSlot, String> toStringConverter,
-                                   Function<String, EntityEquipmentSlot> fromStringConverter)
+    public EquipmentSlotListConfig(String name, ImmutableList<EquipmentSlot> defaultValues,
+                                   Function<EquipmentSlot, String> toStringConverter,
+                                   Function<String, EquipmentSlot> fromStringConverter)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter);
     }
 
-    public EquipmentSlotListConfig(String name, ImmutableList<EntityEquipmentSlot> defaultValues,
-                                   Function<EntityEquipmentSlot, String> toStringConverter,
-                                   Function<String, EntityEquipmentSlot> fromStringConverter,
+    public EquipmentSlotListConfig(String name, ImmutableList<EquipmentSlot> defaultValues,
+                                   Function<EquipmentSlot, String> toStringConverter,
+                                   Function<String, EquipmentSlot> fromStringConverter,
                                    @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
@@ -45,11 +45,11 @@ public class EquipmentSlotListConfig extends ValueListConfig<EntityEquipmentSlot
 
     public static EquipmentSlotListConfig fromNames(String cfgName, List<String> itemNames)
     {
-        ImmutableList.Builder<EntityEquipmentSlot> builder = ImmutableList.builder();
+        ImmutableList.Builder<EquipmentSlot> builder = ImmutableList.builder();
 
         for (String name : itemNames)
         {
-            EntityEquipmentSlot slot = fromString(name);
+            EquipmentSlot slot = fromString(name);
 
             if (slot != null)
             {
@@ -60,12 +60,12 @@ public class EquipmentSlotListConfig extends ValueListConfig<EntityEquipmentSlot
         return create(cfgName, builder.build());
     }
 
-    public static EquipmentSlotListConfig create(String cfgName, ImmutableList<EntityEquipmentSlot> slots)
+    public static EquipmentSlotListConfig create(String cfgName, ImmutableList<EquipmentSlot> slots)
     {
         return new EquipmentSlotListConfig(cfgName, slots);
     }
 
-    public static EquipmentSlotListConfig create(String cfgName, ImmutableList<EntityEquipmentSlot> slots, List<EntityEquipmentSlot> validSlots)
+    public static EquipmentSlotListConfig create(String cfgName, ImmutableList<EquipmentSlot> slots, List<EquipmentSlot> validSlots)
     {
         EquipmentSlotListConfig config = new EquipmentSlotListConfig(cfgName, slots);
         config.setValidValues(validSlots);
@@ -73,7 +73,7 @@ public class EquipmentSlotListConfig extends ValueListConfig<EntityEquipmentSlot
     }
 
     @Nullable
-    public static EntityEquipmentSlot fromString(String name)
+    public static EquipmentSlot fromString(String name)
     {
         for (EntityEquipmentSlot slot : EntityEquipmentSlot.values())
         {

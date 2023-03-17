@@ -6,9 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.Validate;
 
-import net.minecraft.util.NonNullList;
-
-public class DefaultedList<E> extends NonNullList<E>
+public class DefaultedList<E> extends net.minecraft.util.collection.DefaultedList<E>
 {
     protected DefaultedList()
     {

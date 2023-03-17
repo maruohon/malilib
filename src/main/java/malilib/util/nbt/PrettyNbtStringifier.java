@@ -6,9 +6,9 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 
 import malilib.util.data.Constants;
 import malilib.util.game.wrap.NbtWrap;
@@ -35,7 +35,7 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
         this.printTagType = printTagType;
     }
 
-    public List<String> getNbtLines(NBTTagCompound tag)
+    public List<String> getNbtLines(NbtCompound tag)
     {
         this.lines = new ArrayList<>();
         this.setIndentationLevel(0);
@@ -75,7 +75,7 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     }
 
     @Override
-    protected void appendPrimitive(String tagName, NBTBase tag)
+    protected void appendPrimitive(String tagName, NbtElement tag)
     {
         String value = this.getFormattedPrimitiveString(tag);
         String name = this.getFormattedTagName(tagName);
@@ -96,7 +96,7 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     }
 
     @Override
-    protected void appendCompound(String tagName, NBTTagCompound compound)
+    protected void appendCompound(String tagName, NbtCompound compound)
     {
         List<String> keys = Lists.newArrayList(NbtWrap.getKeys(compound));
         Collections.sort(keys);
@@ -126,7 +126,7 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     }
 
     @Override
-    protected void appendList(String tagName, NBTTagList list)
+    protected void appendList(String tagName, NbtList list)
     {
         final int size = NbtWrap.getListSize(list);
         String containedTypeName = size > 0 ? NbtWrap.getCommandFeedbackName(list.get(0)) : "?";

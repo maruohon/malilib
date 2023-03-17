@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraft.util.Identifier;
 
 import malilib.MaLiLib;
 import malilib.config.value.BaseOptionListConfigValue;
@@ -117,8 +117,8 @@ public class UsageRestriction<TYPE>
         {
             try
             {
-                ResourceLocation key = new ResourceLocation(name);
-                TYPE value = registry.getObject(key);
+                Identifier key = new Identifier(name);
+                TYPE value = registry.get(key);
 
                 if (value != null && this.valueValidator.test(value))
                 {

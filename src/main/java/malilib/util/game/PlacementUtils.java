@@ -1,6 +1,6 @@
 package malilib.util.game;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -18,7 +18,7 @@ public class PlacementUtils
      */
     public static boolean isReplaceable(World world, BlockPos pos, boolean checkMaterial)
     {
-        IBlockState state = world.getBlockState(pos);
+        BlockState state = world.getBlockState(pos);
 
         return state.getBlock().isReplaceable(world, pos) ||
                (checkMaterial && state.getMaterial().isReplaceable());

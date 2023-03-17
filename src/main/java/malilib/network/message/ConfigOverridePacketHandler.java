@@ -4,8 +4,8 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 
 import malilib.MaLiLib;
 import malilib.config.util.ConfigOverrideUtils;
@@ -16,18 +16,18 @@ import malilib.util.data.json.JsonUtils;
 public class ConfigOverridePacketHandler extends BasePacketHandler
 {
     public static final String CHANNEL_NAME = "malilib:cfgovrrd";
-    public static final List<ResourceLocation> CHANNELS = ImmutableList.of(new ResourceLocation(CHANNEL_NAME));
+    public static final List<Identifier> CHANNELS = ImmutableList.of(new Identifier(CHANNEL_NAME));
 
     private static final ConfigOverridePacketHandler INSTANCE = new ConfigOverridePacketHandler();
 
     @Override
-    public List<ResourceLocation> getChannels()
+    public List<Identifier> getChannels()
     {
         return CHANNELS;
     }
 
     @Override
-    public void onPacketReceived(PacketBuffer buf)
+    public void onPacketReceived(PacketByteBuf buf)
     {
         try
         {

@@ -24,8 +24,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -411,7 +411,7 @@ public class JsonUtils
         }
     }
 
-    public static void addIfNotEqual(JsonObject obj, String name, Rotation value, Rotation excludeValue)
+    public static void addIfNotEqual(JsonObject obj, String name, BlockRotation value, BlockRotation excludeValue)
     {
         if (value != excludeValue)
         {
@@ -419,7 +419,7 @@ public class JsonUtils
         }
     }
 
-    public static void addIfNotEqual(JsonObject obj, String name, Mirror value, Mirror excludeValue)
+    public static void addIfNotEqual(JsonObject obj, String name, BlockMirror value, BlockMirror excludeValue)
     {
         if (value != excludeValue)
         {
@@ -594,7 +594,7 @@ public class JsonUtils
         }
     }
 
-    public static Rotation getRotation(JsonObject obj, String name)
+    public static BlockRotation getRotation(JsonObject obj, String name)
     {
         String str = getString(obj, name);
 
@@ -602,15 +602,15 @@ public class JsonUtils
         {
             try
             {
-                return Rotation.valueOf(str);
+                return BlockRotation.valueOf(str);
             }
             catch (Exception ignore) {}
         }
 
-        return Rotation.NONE;
+        return BlockRotation.NONE;
     }
 
-    public static Mirror getMirror(JsonObject obj, String name)
+    public static BlockMirror getMirror(JsonObject obj, String name)
     {
         String str = getString(obj, name);
 
@@ -618,12 +618,12 @@ public class JsonUtils
         {
             try
             {
-                return Mirror.valueOf(str);
+                return BlockMirror.valueOf(str);
             }
             catch (Exception ignore) {}
         }
 
-        return Mirror.NONE;
+        return BlockMirror.NONE;
     }
 
     public static JsonArray stringListAsArray(List<String> list)

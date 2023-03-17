@@ -4,37 +4,37 @@ import java.nio.file.Path;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Util;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 public class GameUtils
 {
-    public static Minecraft getClient()
+    public static MinecraftClient getClient()
     {
-        return Minecraft.getMinecraft();
+        return MinecraftClient.getInstance();
     }
 
     @Nullable
-    public static WorldClient getClientWorld()
+    public static ClientWorld getClientWorld()
     {
         return getClient().world;
     }
 
     @Nullable
-    public static WorldServer getClientPlayersServerWorld()
+    public static ServerWorld getClientPlayersServerWorld()
     {
         Entity player = getClientPlayer();
         MinecraftServer server = getIntegratedServer();
@@ -42,62 +42,62 @@ public class GameUtils
     }
 
     @Nullable
-    public static EntityPlayerSP getClientPlayer()
+    public static ClientPlayerEntity getClientPlayer()
     {
         return getClient().player;
     }
 
     @Nullable
-    public static InventoryPlayer getPlayerInventory()
+    public static PlayerInventory getPlayerInventory()
     {
-        EntityPlayer player = getClient().player;
+        PlayerEntity player = getClient().player;
         return player != null ? player.inventory : null;
     }
 
     @Nullable
-    public static Container getPlayerInventoryContainer()
+    public static ScreenHandler getPlayerInventoryContainer()
     {
-        EntityPlayer player = getClient().player;
-        return player != null ? player.inventoryContainer : null;
+        PlayerEntity player = getClient().player;
+        return player != null ? player.playerScreenHandler : null;
     }
 
     @Nullable
-    public static Container getCurrentInventoryContainer()
+    public static ScreenHandler getCurrentInventoryContainer()
     {
-        EntityPlayer player = getClient().player;
-        return player != null ? player.openContainer : null;
+        PlayerEntity player = getClient().player;
+        return player != null ? player.currentScreenHandler : null;
     }
 
-    public static PlayerControllerMP getInteractionManager()
+    public static ClientPlayerInteractionManager getInteractionManager()
     {
-        return getClient().playerController;
+        return getClient().interactionManager;
     }
 
     public static double getPlayerReachDistance()
     {
-        return getInteractionManager().getBlockReachDistance();
+        return getInteractionManager().getReachDistance();
     }
 
     @Nullable
     public static MinecraftServer getIntegratedServer()
     {
-        return getClient().getIntegratedServer();
+        return getClient().getServer();
     }
 
     @Nullable
-    public static NetHandlerPlayClient getNetworkConnection()
+    public static ClientPlayNetworkHandler getNetworkConnection()
     {
-        return getClient().getConnection();
+        return getClient().getNetworkHandler();
     }
 
-    public static GameSettings getOptions()
+    public static GameOptions getOptions()
     {
-        return getClient().gameSettings;
+        return getClient().options;
     }
 
     public static void sendCommand(String command)
     {
-        EntityPlayerSP player = getClientPlayer();
+        ClientPlayerEntity player = getClientPlayer();
 
         if (player != null)
         {
@@ -111,8 +111,8 @@ public class GameUtils
     @Nullable
     public static Entity getCameraEntity()
     {
-        Minecraft mc = getClient();
-        Entity entity = mc.getRenderViewEntity();
+        MinecraftClient mc = getClient();
+        Entity entity = mc.getCameraEntity();
         return entity != null ? entity : mc.player;
     }
 
@@ -123,20 +123,20 @@ public class GameUtils
     }
 
     @Nullable
-    public static RayTraceResult getHitResult()
+    public static HitResult getHitResult()
     {
-        return getClient().objectMouseOver;
+        return getClient().crosshairTarget;
     }
 
     public static long getCurrentWorldTick()
     {
         World world = getClientWorld();
-        return world != null ? world.getTotalWorldTime() : -1L;
+        return world != null ? world.getTime() : -1L;
     }
 
     public static boolean isCreativeMode()
     {
-        EntityPlayerSP player = getClientPlayer();
+        ClientPlayerEntity player = getClientPlayer();
         return player != null && player.capabilities.isCreativeMode;
     }
 
@@ -152,7 +152,7 @@ public class GameUtils
 
     public static boolean isSinglePlayer()
     {
-        return getClient().isSingleplayer();
+        return getClient().isInSingleplayer();
     }
 
     public static void scheduleToClientThread(Runnable task)
@@ -203,7 +203,7 @@ public class GameUtils
     {
         public static boolean hideGui()
         {
-            return getOptions().hideGUI;
+            return getOptions().hudHidden;
         }
     }
 }

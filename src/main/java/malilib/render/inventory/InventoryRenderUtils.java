@@ -6,42 +6,41 @@ import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 
+import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.block.BlockFurnace;
-import net.minecraft.block.BlockHopper;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.HopperBlock;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BrewingStandBlockEntity;
+import net.minecraft.block.entity.DispenserBlockEntity;
+import net.minecraft.block.entity.HopperBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.ContainerHorseChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryLargeChest;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.entity.passive.LlamaEntity;
+import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.DoubleInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityBrewingStand;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.tileentity.TileEntityHopper;
-import net.minecraft.tileentity.TileEntityLockableLoot;
-import net.minecraft.tileentity.TileEntityShulkerBox;
+import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 import malilib.config.value.HorizontalAlignment;
 import malilib.config.value.VerticalAlignment;
@@ -49,7 +48,7 @@ import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
 import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
-import malilib.mixin.access.AbstractHorseMixin;
+import malilib.mixin.access.AbstractHorseEntityMixin;
 import malilib.render.ItemRenderUtils;
 import malilib.render.RenderContext;
 import malilib.render.RenderUtils;
@@ -358,13 +357,13 @@ public class InventoryRenderUtils
     public static void renderItemInventoryPreview(ItemStack stack, int baseX, int baseY, float z,
                                                   boolean useShulkerBackgroundColor, RenderContext ctx)
     {
-        if (stack.hasTagCompound())
+        if (stack.hasNbt())
         {
             int bgTintColor = 0xFFFFFFFF;
 
             if (useShulkerBackgroundColor && (stack.getItem() instanceof ItemShulkerBox))
             {
-                BlockShulkerBox block = (BlockShulkerBox) ((ItemBlock) stack.getItem()).getBlock();
+                ShulkerBoxBlock block = (ShulkerBoxBlock) ((BlockItem) stack.getItem()).getBlock();
                 bgTintColor = getShulkerBoxBackgroundTintColor(block);
             }
 
@@ -410,7 +409,7 @@ public class InventoryRenderUtils
     /**
      * @return the background tint color fo the given Shulker Box block
      */
-    public static int getShulkerBoxBackgroundTintColor(@Nullable BlockShulkerBox block)
+    public static int getShulkerBoxBackgroundTintColor(@Nullable ShulkerBoxBlock block)
     {
         // In 1.13+ there is the separate uncolored Shulker Box variant,
         // which returns null from getColor().
@@ -419,29 +418,29 @@ public class InventoryRenderUtils
         return dye != null ? 0xFF000000 | dye.getColorValue() : 0xFFFFFFFF;
     }
 
-    public static InventoryRenderDefinition getInventoryType(IInventory inv)
+    public static InventoryRenderDefinition getInventoryType(Inventory inv)
     {
-        if (inv instanceof TileEntityShulkerBox)
+        if (inv instanceof ShulkerBoxBlockEntity)
         {
             return BuiltinInventoryRenderDefinitions.GENERIC_27;
         }
-        else if (inv instanceof InventoryLargeChest)
+        else if (inv instanceof DoubleInventory)
         {
             return BuiltinInventoryRenderDefinitions.GENERIC_54;
         }
-        else if (inv instanceof TileEntityFurnace)
+        else if (inv instanceof AbstractFurnaceBlockEntity)
         {
             return BuiltinInventoryRenderDefinitions.FURNACE;
         }
-        else if (inv instanceof TileEntityBrewingStand)
+        else if (inv instanceof BrewingStandBlockEntity)
         {
             return BuiltinInventoryRenderDefinitions.BREWING_STAND;
         }
-        else if (inv instanceof TileEntityDispenser) // this includes the Dropper as a sub class
+        else if (inv instanceof DispenserBlockEntity) // this includes the Dropper as a sub class
         {
             return BuiltinInventoryRenderDefinitions.DROPPER;
         }
-        else if (inv instanceof TileEntityHopper)
+        else if (inv instanceof HopperBlockEntity)
         {
             return BuiltinInventoryRenderDefinitions.HOPPER;
         }
@@ -459,23 +458,23 @@ public class InventoryRenderUtils
     {
         Item item = stack.getItem();
 
-        if (item instanceof ItemBlock)
+        if (item instanceof BlockItem)
         {
-            Block block = ((ItemBlock) item).getBlock();
+            Block block = ((BlockItem) item).getBlock();
 
-            if (block instanceof BlockShulkerBox || block instanceof BlockChest)
+            if (block instanceof ShulkerBoxBlock || block instanceof ChestBlock)
             {
                 return BuiltinInventoryRenderDefinitions.GENERIC_27;
             }
-            else if (block instanceof BlockFurnace)
+            else if (block instanceof AbstractFurnaceBlock)
             {
                 return BuiltinInventoryRenderDefinitions.FURNACE;
             }
-            else if (block instanceof BlockDispenser) // this includes the Dropper as a sub class
+            else if (block instanceof DispenserBlock) // this includes the Dropper as a sub class
             {
                 return BuiltinInventoryRenderDefinitions.DROPPER;
             }
-            else if (block instanceof BlockHopper)
+            else if (block instanceof HopperBlock)
             {
                 return BuiltinInventoryRenderDefinitions.HOPPER;
             }
@@ -492,11 +491,11 @@ public class InventoryRenderUtils
     public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory()
     {
         World world = WorldUtils.getBestWorld();
-        EntityPlayer clientPlayer = GameUtils.getClientPlayer();
+        PlayerEntity clientPlayer = GameUtils.getClientPlayer();
 
         // We need to get the player from the server world,
         // so that the player itself won't be included in the ray trace
-        EntityPlayer player = world.getPlayerEntityByUUID(clientPlayer.getUniqueID());
+        PlayerEntity player = world.getPlayerByUuid(clientPlayer.getUuid());
 
         if (player == null)
         {
@@ -504,7 +503,7 @@ public class InventoryRenderUtils
         }
 
         RayTraceUtils.RayTraceFluidHandling fluidHandling = RayTraceUtils.RayTraceFluidHandling.NONE;
-        RayTraceResult trace = RayTraceUtils.getRayTraceFromEntity(world, player, fluidHandling, true, 6.0);
+        HitResult trace = RayTraceUtils.getRayTraceFromEntity(world, player, fluidHandling, true, 6.0);
 
         if (trace == null)
         {
@@ -527,23 +526,23 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromBlock(BlockPos pos, World world)
     {
-        TileEntity te = world.getTileEntity(pos);
+        BlockEntity te = world.getBlockEntity(pos);
 
-        if (te instanceof IInventory)
+        if (te instanceof Inventory)
         {
-            IInventory inv = (IInventory) te;
-            IBlockState state = world.getBlockState(pos);
+            Inventory inv = (Inventory) te;
+            BlockState state = world.getBlockState(pos);
 
             // Prevent loot generation attempt from crashing due to NPEs
             // TODO 1.13+ check if this is still needed
-            if (te instanceof TileEntityLockableLoot && (world instanceof WorldServer) == false)
+            if (te instanceof TileEntityLockableLoot && (world instanceof ServerWorld) == false)
             {
                 ((TileEntityLockableLoot) te).setLootTable(null, 0);
             }
 
-            if (state.getBlock() instanceof BlockChest)
+            if (state.getBlock() instanceof ChestBlock)
             {
-                ILockableContainer cont = ((BlockChest) state.getBlock()).getLockableContainer(world, pos);
+                ILockableContainer cont = ((ChestBlock) state.getBlock()).getLockableContainer(world, pos);
 
                 if (cont instanceof InventoryLargeChest)
                 {
@@ -553,9 +552,9 @@ public class InventoryRenderUtils
 
             Block block = world.getBlockState(pos).getBlock();
 
-            if (block instanceof BlockShulkerBox)
+            if (block instanceof ShulkerBoxBlock)
             {
-                BlockShulkerBox shulkerBoxBlock = (BlockShulkerBox) block;
+                ShulkerBoxBlock shulkerBoxBlock = (ShulkerBoxBlock) block;
                 int bgColor = InventoryRenderUtils.getShulkerBoxBackgroundTintColor(shulkerBoxBlock);
                 return Pair.of(new ColoredVanillaInventoryView(inv, bgColor), getInventoryType(inv));
             }
@@ -569,34 +568,34 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromEntity(Entity entity)
     {
-        if (entity instanceof EntityVillager)
+        if (entity instanceof VillagerEntity)
         {
-            IInventory inv = ((EntityVillager) entity).getVillagerInventory();
-            InventoryView equipmentInv = new EquipmentInventoryView((EntityVillager) entity);
+            Inventory inv = ((VillagerEntity) entity).getInventory();
+            InventoryView equipmentInv = new EquipmentInventoryView((VillagerEntity) entity);
             InventoryView mainInventory = new VanillaInventoryView(inv);
 
             return Pair.of(new CombinedInventoryView(equipmentInv, mainInventory),
                            BuiltinInventoryRenderDefinitions.VILLAGER);
         }
-        else if (entity instanceof AbstractHorse)
+        else if (entity instanceof AbstractHorseEntity)
         {
-            IInventory inv = ((AbstractHorseMixin) entity).malilib_getHorseChest();
-            InventoryView equipmentInv = new EquipmentInventoryView((AbstractHorse) entity);
+            Inventory inv = ((AbstractHorseEntityMixin) entity).malilib_getHorseChest();
+            InventoryView equipmentInv = new EquipmentInventoryView((AbstractHorseEntity) entity);
             InventoryView mainInventory = new VanillaInventoryView(inv);
-            InventoryRenderDefinition def = (entity instanceof EntityLlama) ?
+            InventoryRenderDefinition def = (entity instanceof LlamaEntity) ?
                                                     BuiltinInventoryRenderDefinitions.LLAMA :
                                                     BuiltinInventoryRenderDefinitions.HORSE;
 
             return Pair.of(new CombinedInventoryView(equipmentInv, mainInventory), def);
         }
-        else if (entity instanceof IInventory)
+        else if (entity instanceof Inventory)
         {
-            return Pair.of(new VanillaInventoryView((IInventory) entity),
+            return Pair.of(new VanillaInventoryView((Inventory) entity),
                            BuiltinInventoryRenderDefinitions.GENERIC);
         }
-        else if (entity instanceof EntityLivingBase)
+        else if (entity instanceof LivingEntity)
         {
-            return Pair.of(new EquipmentInventoryView((EntityLivingBase) entity),
+            return Pair.of(new EquipmentInventoryView((LivingEntity) entity),
                            BuiltinInventoryRenderDefinitions.LIVING_ENTITY);
         }
 

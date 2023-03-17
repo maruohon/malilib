@@ -8,15 +8,14 @@ import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
-import org.lwjgl.input.Mouse;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiConfirmOpenLink;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConfirmLinkScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.Window;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.player.PlayerEntity;
 
 import malilib.MaLiLib;
 import malilib.config.value.HudAlignment;
@@ -43,12 +42,12 @@ public class GuiUtils
 
     public static int getVanillaScreenScale()
     {
-        Minecraft mc = GameUtils.getClient();
+        MinecraftClient mc = GameUtils.getClient();
         int scale = Math.min(getDisplayWidth() / 320, getDisplayHeight() / 240);
         scale = Math.min(scale, GameUtils.getVanillaOptionsScreenScale());
         scale = Math.max(scale, 1);
 
-        if (mc.isUnicode() && (scale & 0x1) != 0 && scale > 1)
+        if (mc.forcesUnicodeFont() && (scale & 0x1) != 0 && scale > 1)
         {
             scale -= 1;
         }
@@ -87,7 +86,7 @@ public class GuiUtils
     }
 
     @Nullable
-    public static GuiScreen getCurrentScreen()
+    public static Screen getCurrentScreen()
     {
         return GameUtils.getClient().currentScreen;
     }
@@ -95,7 +94,7 @@ public class GuiUtils
     @Nullable
     public static <T> T getCurrentScreenIfMatches(Class<T> clazz)
     {
-        GuiScreen screen = getCurrentScreen();
+        Screen screen = getCurrentScreen();
 
         if (clazz.isAssignableFrom(screen.getClass()))
         {
@@ -107,7 +106,7 @@ public class GuiUtils
 
     public static void reInitCurrentScreen()
     {
-        GuiScreen screen = getCurrentScreen();
+        Screen screen = getCurrentScreen();
 
         if (screen != null)
         {
@@ -120,7 +119,7 @@ public class GuiUtils
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
+    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, PlayerEntity player)
     {
         if (alignment == HudAlignment.TOP_RIGHT)
         {
@@ -130,18 +129,18 @@ public class GuiUtils
                 return 0;
             }
 
-            Collection<PotionEffect> effects = player.getActivePotionEffects();
+            Collection<StatusEffectInstance> effects = player.getStatusEffects();
 
             if (effects.isEmpty() == false)
             {
                 int y1 = 0;
                 int y2 = 0;
 
-                for (PotionEffect effect : effects)
+                for (StatusEffectInstance effect : effects)
                 {
-                    Potion potion = effect.getPotion();
+                    StatusEffect potion = effect.getEffectType();
 
-                    if (effect.doesShowParticles() && potion.hasStatusIcon())
+                    if (effect.shouldShowParticles() && effect.shouldShowIcon())
                     {
                         if (potion.isBeneficial())
                         {
@@ -257,7 +256,7 @@ public class GuiUtils
                 throw new URISyntaxException(urlString, "Unsupported protocol: " + s.toLowerCase(Locale.ROOT));
             }
 
-            final GuiScreen currentScreen = getCurrentScreen();
+            final Screen currentScreen = getCurrentScreen();
 
             if (GameUtils.getOptions().chatLinksPrompt)
             {

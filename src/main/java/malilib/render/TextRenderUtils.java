@@ -5,13 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.Entity;
 
 import malilib.gui.util.GuiUtils;
@@ -25,7 +24,7 @@ public class TextRenderUtils
 {
     public static Vec2i getScreenClampedHoverTextStartPosition(int x, int y, int renderWidth, int renderHeight)
     {
-        GuiScreen screen = GuiUtils.getCurrentScreen();
+        Screen screen = GuiUtils.getCurrentScreen();
         int maxWidth = screen != null ? screen.width : GuiUtils.getScaledWindowWidth();
         int maxHeight = screen != null ? screen.height : GuiUtils.getScaledWindowHeight();
         int textStartX = x;
@@ -82,7 +81,7 @@ public class TextRenderUtils
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
             List<String> linesNew = new ArrayList<>();
-            FontRenderer font = GameUtils.getClient().fontRenderer;
+            net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
             int maxLineLength = 0;
 
             for (String lineOrig : textLines)
@@ -91,7 +90,7 @@ public class TextRenderUtils
 
                 for (String line : lines)
                 {
-                    int length = font.getStringWidth(line);
+                    int length = textRenderer.getWidth(line);
 
                     if (length > maxLineLength)
                     {
@@ -104,7 +103,7 @@ public class TextRenderUtils
 
             textLines = linesNew;
 
-            int lineHeight = font.FONT_HEIGHT + 1;
+            int lineHeight = textRenderer.fontHeight + 1;
             int textHeight = textLines.size() * lineHeight - 2;
             int backgroundWidth = maxLineLength + 8;
             int backgroundHeight = textHeight + 8;
@@ -250,7 +249,7 @@ public class TextRenderUtils
     public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
                                        float scale, int textColor, int bgColor, boolean disableDepth, RenderContext ctx)
     {
-        FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
+        net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
 
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         GlStateManager.pushMatrix();
@@ -274,11 +273,11 @@ public class TextRenderUtils
 
         for (String line : text)
         {
-            maxLineLen = Math.max(maxLineLen, textRenderer.getStringWidth(line));
+            maxLineLen = Math.max(maxLineLen, textRenderer.getWidth(line));
         }
 
         int strLenHalf = maxLineLen / 2;
-        int textHeight = textRenderer.FONT_HEIGHT * text.size() - 1;
+        int textHeight = textRenderer.fontHeight * text.size() - 1;
         float bga = ((bgColor >>> 24) & 0xFF) * 255f;
         float bgr = ((bgColor >>> 16) & 0xFF) * 255f;
         float bgg = ((bgColor >>>  8) & 0xFF) * 255f;
@@ -291,10 +290,10 @@ public class TextRenderUtils
         }
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        buffer.vertex(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
+        buffer.vertex(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
+        buffer.vertex( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
+        buffer.vertex( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
         tessellator.draw();
 
         GlStateManager.enableTexture2D();

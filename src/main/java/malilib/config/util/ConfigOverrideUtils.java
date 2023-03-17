@@ -23,7 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.network.ServerInfo;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibReference;
@@ -143,7 +143,7 @@ public class ConfigOverrideUtils
 
     protected static void tryApplyOverridesFromServer()
     {
-        ServerData serverData = GameUtils.getClient().getCurrentServerData();
+        ServerInfo serverData = GameUtils.getClient().getCurrentServerEntry();
 
         if (serverData != null)
         {

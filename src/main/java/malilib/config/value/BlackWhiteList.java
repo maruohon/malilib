@@ -9,8 +9,9 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraft.registry.DefaultedRegistry;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 import malilib.config.option.list.BlockListConfig;
 import malilib.config.option.list.ItemListConfig;
@@ -157,7 +158,7 @@ public class BlackWhiteList<TYPE>
         return BlackWhiteList.of(type,
                                  StatusEffectListConfig.create("malilib.label.list_type.blacklist", blackList),
                                  StatusEffectListConfig.create("malilib.label.list_type.whitelist", whiteList),
-                                 Potion.REGISTRY);
+                                 Registries.POTION);
     }
 
     @Override
@@ -186,7 +187,7 @@ public class BlackWhiteList<TYPE>
     public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         return (t) -> {
-            ResourceLocation id = registry.getNameForObject(t);
+            Identifier id = registry.getId(t);
             return id != null ? id.toString() : "<N/A>";
         };
     }
@@ -196,8 +197,8 @@ public class BlackWhiteList<TYPE>
         return (str) -> {
             try
             {
-                ResourceLocation id = new ResourceLocation(str);
-                return registry.getObject(id);
+                Identifier id = new Identifier(str);
+                return registry.get(id);
             }
             catch (Exception e)
             {

@@ -3,11 +3,11 @@ package malilib.util.game.wrap;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -35,7 +35,7 @@ public class EntityWrap
 
     public static Vec3d getEntityPos(Entity entity)
     {
-        return entity.getPositionVector();
+        return entity.getPos();
     }
 
     public static BlockPos getEntityBlockPos(Entity entity)
@@ -70,19 +70,19 @@ public class EntityWrap
 
     public static double lerpX(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosX;
+        double lastTickPos = entity.lastRenderX;
         return lastTickPos + (getX(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpY(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosY;
+        double lastTickPos = entity.lastRenderY;
         return lastTickPos + (getY(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpZ(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosZ;
+        double lastTickPos = entity.lastRenderZ;
         return lastTickPos + (getZ(entity) - lastTickPos) * tickDelta;
     }
 
@@ -111,44 +111,44 @@ public class EntityWrap
         entity.rotationPitch = pitch;
     }
 
-    public static EnumFacing getClosestHorizontalLookingDirection(Entity entity)
+    public static Direction getClosestHorizontalLookingDirection(Entity entity)
     {
-        return EnumFacing.fromAngle(EntityWrap.getYaw(entity));
+        return Direction.fromRotation(EntityWrap.getYaw(entity));
     }
 
     /**
      * @param verticalThreshold The pitch rotation angle over which the up or down direction is preferred over the horizontal directions
      * @return the closest direction the entity is currently looking at.
      */
-    public static EnumFacing getClosestLookingDirection(Entity entity, float verticalThreshold)
+    public static Direction getClosestLookingDirection(Entity entity, float verticalThreshold)
     {
         float pitch = EntityWrap.getPitch(entity);
 
         if (pitch > verticalThreshold)
         {
-            return EnumFacing.DOWN;
+            return Direction.DOWN;
         }
         else if (-pitch > verticalThreshold)
         {
-            return EnumFacing.UP;
+            return Direction.UP;
         }
 
         return getClosestHorizontalLookingDirection(entity);
     }
 
-    public static ItemStack getMainHandItem(EntityLivingBase entity)
+    public static ItemStack getMainHandItem(LivingEntity entity)
     {
-        return getHeldItem(entity, EnumHand.MAIN_HAND);
+        return getHeldItem(entity, Hand.MAIN_HAND);
     }
 
-    public static ItemStack getOffHandItem(EntityLivingBase entity)
+    public static ItemStack getOffHandItem(LivingEntity entity)
     {
-        return getHeldItem(entity, EnumHand.OFF_HAND);
+        return getHeldItem(entity, Hand.OFF_HAND);
     }
 
-    public static ItemStack getHeldItem(EntityLivingBase entity, EnumHand hand)
+    public static ItemStack getHeldItem(LivingEntity entity, Hand hand)
     {
-        return entity.getHeldItem(hand);
+        return entity.getStackInHand(hand);
     }
 
     /**
@@ -157,10 +157,10 @@ public class EntityWrap
      * @param lenient if true, then NBT tags and also damage of damageable items are ignored
      */
     @Nullable
-    public static EnumHand getUsedHandForItem(EntityLivingBase entity, ItemStack stack, boolean lenient)
+    public static Hand getUsedHandForItem(LivingEntity entity, ItemStack stack, boolean lenient)
     {
-        EnumHand hand = null;
-        EnumHand tmpHand = ItemWrap.isEmpty(getMainHandItem(entity)) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND;
+        Hand hand = null;
+        Hand tmpHand = ItemWrap.isEmpty(getMainHandItem(entity)) ? Hand.OFF_HAND : Hand.MAIN_HAND;
         ItemStack handStack = getHeldItem(entity, tmpHand);
 
         if ((lenient          && InventoryUtils.areItemsEqualIgnoreDurability(handStack, stack)) ||

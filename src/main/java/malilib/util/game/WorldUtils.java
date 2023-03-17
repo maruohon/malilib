@@ -2,11 +2,11 @@ package malilib.util.game;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 import malilib.util.game.wrap.GameUtils;
 
@@ -28,7 +28,7 @@ public class WorldUtils
      */
     public static World getBestWorld()
     {
-        Minecraft mc = GameUtils.getClient();
+        MinecraftClient mc = GameUtils.getClient();
 
         if (mc.isSingleplayer() && mc.world != null)
         {
@@ -42,7 +42,7 @@ public class WorldUtils
     }
 
     @Nullable
-    public static WorldServer getServerWorldForClientWorld()
+    public static ServerWorld getServerWorldForClientWorld()
     {
         World world = GameUtils.getClientWorld();
         return world != null ? getServerWorldForClientWorld(world) : null;

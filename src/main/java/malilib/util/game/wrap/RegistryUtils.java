@@ -7,11 +7,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 public class RegistryUtils
 {
@@ -27,20 +28,20 @@ public class RegistryUtils
         }
     }
 
-    public static Block getBlockById(ResourceLocation id)
+    public static Block getBlockById(Identifier id)
     {
         Block block = Block.REGISTRY.getObject(id);
         return block != null ? block : Blocks.AIR;
     }
 
     @Nullable
-    public static ResourceLocation getBlockId(Block block)
+    public static Identifier getBlockId(Block block)
     {
         return Block.REGISTRY.getNameForObject(block);
     }
 
     @Nullable
-    public static ResourceLocation getBlockId(IBlockState state)
+    public static Identifier getBlockId(BlockState state)
     {
         return Block.REGISTRY.getNameForObject(state.getBlock());
     }
@@ -51,13 +52,13 @@ public class RegistryUtils
         return id != null ? id.toString() : "?";
     }
 
-    public static String getBlockIdStr(IBlockState state)
+    public static String getBlockIdStr(BlockState state)
     {
         ResourceLocation id = Block.REGISTRY.getNameForObject(state.getBlock());
         return id != null ? id.toString() : "?";
     }
 
-    public static Collection<ResourceLocation> getRegisteredBlockIds()
+    public static Collection<Identifier> getRegisteredBlockIds()
     {
         return Block.REGISTRY.getKeys();
     }
@@ -88,14 +89,14 @@ public class RegistryUtils
         }
     }
 
-    public static Item getItemById(ResourceLocation id)
+    public static Item getItemById(Identifier id)
     {
         Item item = Item.REGISTRY.getObject(id);
         return item != null ? item : Items.AIR;
     }
 
     @Nullable
-    public static ResourceLocation getItemId(Item item)
+    public static Identifier getItemId(Item item)
     {
         return Item.REGISTRY.getNameForObject(item);
     }
@@ -106,7 +107,7 @@ public class RegistryUtils
         return id != null ? id.toString() : "?";
     }
 
-    public static Collection<ResourceLocation> getRegisteredItemIds()
+    public static Collection<Identifier> getRegisteredItemIds()
     {
         return Item.REGISTRY.getKeys();
     }

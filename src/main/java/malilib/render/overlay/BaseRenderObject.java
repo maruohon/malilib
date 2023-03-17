@@ -14,7 +14,7 @@ public abstract class BaseRenderObject
     {
         this.glMode = glMode;
         this.vertexFormat = vertexFormat;
-        this.hasTexture = this.vertexFormat.getElements().stream().anyMatch((el) -> el.getUsage() == VertexFormatElement.EnumUsage.UV);
+        this.hasTexture = this.vertexFormat.getElements().stream().anyMatch((el) -> el.getType() == VertexFormatElement.Type.UV);
     }
 
     public BaseRenderObject(int glMode, VertexFormat vertexFormat, boolean usesTexture)

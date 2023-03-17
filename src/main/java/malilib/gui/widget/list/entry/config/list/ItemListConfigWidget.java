@@ -1,7 +1,7 @@
 package malilib.gui.widget.list.entry.config.list;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 
 import malilib.config.option.list.ItemListConfig;
 import malilib.gui.config.ConfigWidgetContext;

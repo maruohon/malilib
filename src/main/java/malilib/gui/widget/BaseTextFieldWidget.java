@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.SharedConstants;
 import net.minecraft.util.math.MathHelper;
 
 import malilib.config.value.HorizontalAlignment;
@@ -590,7 +590,7 @@ public class BaseTextFieldWidget extends InteractableWidget
 
     protected boolean isUsableCharacter(char typedChar, int modifiers)
     {
-        if (typedChar != 167 && ChatAllowedCharacters.isAllowedCharacter(typedChar) == false)
+        if (typedChar != 167 && SharedConstants.isValidChar(typedChar) == false)
         {
             return false;
         }

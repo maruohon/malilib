@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 import malilib.config.option.ConfigInfo;
 import malilib.gui.BaseScreen;
@@ -33,7 +33,7 @@ public class BaseConfigTab extends BaseScreenTab implements ConfigTab
 
     public BaseConfigTab(ModInfo modInfo, String name, String translationKey, int configWidth,
                          List<? extends ConfigInfo> configs,
-                         Predicate<GuiScreen> screenChecker,
+                         Predicate<Screen> screenChecker,
                          Supplier<BaseScreen> screenFactory)
     {
         super(name, translationKey, screenChecker, screenFactory);

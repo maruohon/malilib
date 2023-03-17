@@ -3,10 +3,10 @@ package malilib.util.position;
 import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 
-import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.NbtIntArray;
+import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import malilib.MaLiLib;
 
@@ -81,7 +81,7 @@ public class IntBoundingBox
                this.minY <= box.maxY;
     }
 
-    public int getMinValueForAxis(EnumFacing.Axis axis)
+    public int getMinValueForAxis(Direction.Axis axis)
     {
         switch (axis)
         {
@@ -93,7 +93,7 @@ public class IntBoundingBox
         return 0;
     }
 
-    public int getMaxValueForAxis(EnumFacing.Axis axis)
+    public int getMaxValueForAxis(Direction.Axis axis)
     {
         switch (axis)
         {
@@ -105,14 +105,14 @@ public class IntBoundingBox
         return 0;
     }
 
-    public StructureBoundingBox toVanillaBox()
+    public BlockBox toVanillaBox()
     {
-        return new StructureBoundingBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+        return new BlockBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
     }
 
-    public NBTTagIntArray toNbtIntArray()
+    public NbtIntArray toNbtIntArray()
     {
-        return new NBTTagIntArray(new int[] { this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ });
+        return new NbtIntArray(new int[] { this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ });
     }
 
     public JsonArray toJson()
@@ -171,7 +171,7 @@ public class IntBoundingBox
         return null;
     }
 
-    public static IntBoundingBox fromVanillaBox(StructureBoundingBox box)
+    public static IntBoundingBox fromVanillaBox(BlockBox box)
     {
         return createProper(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
     }

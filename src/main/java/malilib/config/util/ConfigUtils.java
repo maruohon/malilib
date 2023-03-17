@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 import com.mumfrey.liteloader.core.LiteLoader;
 import org.apache.commons.lang3.StringUtils;
 
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.Formatting;
 
 import malilib.MaLiLibConfigs;
 import malilib.action.ActionContext;
@@ -96,7 +96,7 @@ public class ConfigUtils
      */
     public static void sortConfigsByDisplayName(List<ConfigInfo> configs)
     {
-        configs.sort(Comparator.comparing((c) -> TextFormatting.getTextWithoutFormattingCodes(c.getDisplayName())));
+        configs.sort(Comparator.comparing((c) -> Formatting.strip(c.getDisplayName())));
     }
 
     /**

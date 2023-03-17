@@ -133,9 +133,9 @@ public class ShapeRenderUtils
         int g = (color >>  8) & 0xFF;
         int b =  color        & 0xFF;
 
-        buffer.pos(x1, y1, z1).color(r, g, b, a).endVertex();
-        buffer.pos(x2, y2, z2).color(r, g, b, a).endVertex();
-        buffer.pos(x3, y3, z3).color(r, g, b, a).endVertex();
+        buffer.vertex(x1, y1, z1).color(r, g, b, a).next();
+        buffer.vertex(x2, y2, z2).color(r, g, b, a).next();
+        buffer.vertex(x3, y3, z3).color(r, g, b, a).next();
     }
 
     public static void renderRectangle(double x, double y, double z, double width, double height, int color)
@@ -158,10 +158,10 @@ public class ShapeRenderUtils
         float g = (float) ((color >>  8) & 0xFF) / 255.0F;
         float b = (float) (color         & 0xFF) / 255.0F;
 
-        buffer.pos(x        , y         , z).color(r, g, b, a).endVertex();
-        buffer.pos(x        , y + height, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + width, y + height, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + width, y         , z).color(r, g, b, a).endVertex();
+        buffer.vertex(x        , y         , z).color(r, g, b, a).next();
+        buffer.vertex(x        , y + height, z).color(r, g, b, a).next();
+        buffer.vertex(x + width, y + height, z).color(r, g, b, a).next();
+        buffer.vertex(x + width, y         , z).color(r, g, b, a).next();
     }
 
     /**
@@ -170,10 +170,10 @@ public class ShapeRenderUtils
     public static void renderRectangle(double x, double y, double z, double width, double height,
                                        Color4f color, BufferBuilder buffer)
     {
-        buffer.pos(x        , y         , z).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x        , y + height, z).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x + width, y + height, z).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x + width, y         , z).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(x        , y         , z).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(x        , y + height, z).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(x + width, y + height, z).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(x + width, y         , z).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -283,10 +283,10 @@ public class ShapeRenderUtils
         double v1 = v                   * pixelHeight;
         double v2 = (v + textureHeight) * pixelHeight;
 
-        buffer.pos(x , y2, z).tex(u1, v2).endVertex();
-        buffer.pos(x2, y2, z).tex(u2, v2).endVertex();
-        buffer.pos(x2, y , z).tex(u2, v1).endVertex();
-        buffer.pos(x , y , z).tex(u1, v1).endVertex();
+        buffer.vertex(x , y2, z).texture(u1, v2).next();
+        buffer.vertex(x2, y2, z).texture(u2, v2).next();
+        buffer.vertex(x2, y , z).texture(u2, v1).next();
+        buffer.vertex(x , y , z).texture(u1, v1).next();
     }
 
     /**
@@ -336,10 +336,10 @@ public class ShapeRenderUtils
         float v1 = v                   * pixelHeight;
         float v2 = (v + textureHeight) * pixelHeight;
 
-        buffer.pos(x , y2, z).tex(u1, v2).color(r, g, b, a).endVertex();
-        buffer.pos(x2, y2, z).tex(u2, v2).color(r, g, b, a).endVertex();
-        buffer.pos(x2, y , z).tex(u2, v1).color(r, g, b, a).endVertex();
-        buffer.pos(x , y , z).tex(u1, v1).color(r, g, b, a).endVertex();
+        buffer.vertex(x , y2, z).texture(u1, v2).color(r, g, b, a).next();
+        buffer.vertex(x2, y2, z).texture(u2, v2).color(r, g, b, a).next();
+        buffer.vertex(x2, y , z).texture(u2, v1).color(r, g, b, a).next();
+        buffer.vertex(x , y , z).texture(u1, v1).color(r, g, b, a).next();
     }
 
     public static void renderGradientRectangle(float left, float top, float right, float bottom, float z,
@@ -374,10 +374,10 @@ public class ShapeRenderUtils
         float eg = (float)(endColor >>  8 & 0xFF) / 255.0F;
         float eb = (float)(endColor & 0xFF) / 255.0F;
 
-        buffer.pos(right, top,    z).color(sr, sg, sb, sa).endVertex();
-        buffer.pos(left,  top,    z).color(sr, sg, sb, sa).endVertex();
-        buffer.pos(left,  bottom, z).color(er, eg, eb, ea).endVertex();
-        buffer.pos(right, bottom, z).color(er, eg, eb, ea).endVertex();
+        buffer.vertex(right, top,    z).color(sr, sg, sb, sa).next();
+        buffer.vertex(left,  top,    z).color(sr, sg, sb, sa).next();
+        buffer.vertex(left,  bottom, z).color(er, eg, eb, ea).next();
+        buffer.vertex(right, bottom, z).color(er, eg, eb, ea).next();
     }
 
     public static void renderArc(double centerX, double centerY, double z, double radius,
@@ -414,7 +414,7 @@ public class ShapeRenderUtils
             double x = centerX + radius * Math.cos(lastAngle);
             double y = centerY + radius * Math.sin(lastAngle);
 
-            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+            buffer.vertex(x, y, z).color(r, g, b, a).next();
 
             lastAngle += angleIncrement;
         }
@@ -461,7 +461,7 @@ public class ShapeRenderUtils
             double x = centerX + innerRadius * Math.cos(lastAngle);
             double y = centerY + innerRadius * Math.sin(lastAngle);
 
-            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+            buffer.vertex(x, y, z).color(r, g, b, a).next();
 
             lastAngle += angleIncrement;
         }
@@ -479,7 +479,7 @@ public class ShapeRenderUtils
             double x = centerX + outerRadius * Math.cos(lastAngle);
             double y = centerY + outerRadius * Math.sin(lastAngle);
 
-            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+            buffer.vertex(x, y, z).color(r, g, b, a).next();
 
             lastAngle -= angleIncrement;
         }
@@ -523,12 +523,12 @@ public class ShapeRenderUtils
             x = centerX + innerRadius * Math.cos(lastAngle);
             y = centerY + innerRadius * Math.sin(lastAngle);
 
-            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+            buffer.vertex(x, y, z).color(r, g, b, a).next();
 
             x = centerX + outerRadius * Math.cos(lastAngle);
             y = centerY + outerRadius * Math.sin(lastAngle);
 
-            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+            buffer.vertex(x, y, z).color(r, g, b, a).next();
 
             lastAngle -= angleIncrement;
         }
@@ -625,28 +625,28 @@ public class ShapeRenderUtils
                                                     Color4f color, BufferBuilder buffer)
     {
         // West side
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // East side
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
         // North side
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // South side
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -657,10 +657,10 @@ public class ShapeRenderUtils
                                         Color4f color, BufferBuilder buffer)
     {
         // Top side
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -671,10 +671,10 @@ public class ShapeRenderUtils
                                            Color4f color, BufferBuilder buffer)
     {
         // Bottom side
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -685,50 +685,50 @@ public class ShapeRenderUtils
                                           Color4f color, BufferBuilder buffer)
     {
         // West side
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // East side
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
         // North side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // South side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
-    public static void renderBlockPosSideQuad(BlockPos pos, EnumFacing side, double expand,
+    public static void renderBlockPosSideQuad(BlockPos pos, Direction side, double expand,
                                               Color4f color, BufferBuilder buffer)
     {
         renderBlockPosSideQuad(pos, side, expand, color, buffer, Vec3d.ZERO);
@@ -737,7 +737,7 @@ public class ShapeRenderUtils
     /**
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
-    public static void renderBlockPosSideQuad(BlockPos pos, EnumFacing side, double expand,
+    public static void renderBlockPosSideQuad(BlockPos pos, Direction side, double expand,
                                               Color4f color, BufferBuilder buffer, Vec3d cameraPos)
     {
         double minX = pos.getX() - expand - cameraPos.x;
@@ -750,45 +750,45 @@ public class ShapeRenderUtils
         switch (side)
         {
             case DOWN:
-                buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
                 break;
 
             case UP:
-                buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
                 break;
 
             case NORTH:
-                buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
                 break;
 
             case SOUTH:
-                buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
                 break;
 
             case WEST:
-                buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
                 break;
 
             case EAST:
-                buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
                 break;
         }
     }

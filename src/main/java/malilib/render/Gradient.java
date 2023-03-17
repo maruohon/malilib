@@ -1,6 +1,6 @@
 package malilib.render;
 
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder;
 
 import malilib.util.data.Color4f;
 

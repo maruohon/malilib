@@ -1,7 +1,7 @@
 package malilib.util.game;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NbtCompound;
 
 import malilib.util.game.wrap.ItemWrap;
 import malilib.util.game.wrap.RegistryUtils;
@@ -13,7 +13,7 @@ public class ItemUtils
         if (ItemWrap.notEmpty(stack))
         {
             String id = RegistryUtils.getItemIdStr(stack.getItem());
-            NBTTagCompound tag = ItemWrap.getTag(stack);
+            NbtCompound tag = ItemWrap.getTag(stack);
 
             return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
                                  id != null ? id : "null", stack.getMetadata(), stack.getDisplayName(),
