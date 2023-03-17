@@ -1,9 +1,9 @@
 package malilib.action;
 
 import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,14 +22,9 @@ public class UtilityActions
 {
     public static ActionResult runVanillaCommand(ActionContext ctx, String arg)
     {
-        if (arg.length() > 0 && arg.charAt(0) != '/')
-        {
-            arg = '/' + arg;
-        }
-
         if (ctx.getPlayer() != null)
         {
-            ctx.getPlayer().sendChatMessage(arg);
+            GameUtils.sendCommand(arg);
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -39,7 +34,8 @@ public class UtilityActions
     {
         if (ctx.getPlayer() != null)
         {
-            ctx.getPlayer().sendChatMessage(arg);
+            arg = StringUtils.normalizeSpace(arg.trim());
+            ctx.getPlayer().sendChatMessage(arg, Text.literal(arg)); // TODO 1.19+ is this correct?
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -116,7 +112,7 @@ public class UtilityActions
                 int slot = Integer.parseInt(arg);
                 if (slot >= 1 && slot <= 9)
                 {
-                    ctx.getPlayer().inventory.currentItem = slot - 1;
+                    ctx.getPlayer().getInventory().selectedSlot = slot - 1;
                     return ActionResult.SUCCESS;
                 }
             }
@@ -182,9 +178,9 @@ public class UtilityActions
 
     public static ActionResult takeScreenshot(ActionContext ctx)
     {
-        Minecraft mc = ctx.getClient();
-        mc.ingameGUI.getChatGUI().printChatMessage(ScreenShotHelper.saveScreenshot(mc.gameDir,
-                                    mc.displayWidth, mc.displayHeight, mc.getFramebuffer()));
+        MinecraftClient mc = ctx.getClient();
+        ScreenshotRecorder.saveScreenshot(mc.runDirectory, mc.getFramebuffer(),
+                                          message -> mc.execute(() -> mc.inGameHud.getChatHud().addMessage(message)));
         return ActionResult.SUCCESS;
     }
 
@@ -241,7 +237,7 @@ public class UtilityActions
                 }
 
                 GameMode mode = modes.get(index);
-                ctx.getPlayer().sendChatMessage("/gamemode " + mode.getName());
+                GameUtils.sendCommand("gamemode " + mode.getName());
 
                 return ActionResult.SUCCESS;
             }
@@ -252,10 +248,10 @@ public class UtilityActions
 
     private static void translateDebugToggleMessage(String key, Object... args)
     {
-        ITextComponent text = new TextComponentString("");
-        text.appendSibling((new TextComponentTranslation("debug.prefix"))
-                                .setStyle((new Style()).setColor(TextFormatting.YELLOW).setBold(Boolean.TRUE)))
-                .appendText(" ").appendSibling(new TextComponentTranslation(key, args));
-        GameUtils.getClient().ingameGUI.getChatGUI().printChatMessage(text);
+        MutableText text = Text.literal("");
+        text.append(Text.translatable("debug.prefix").setStyle(Style.EMPTY
+                    .withColor(Formatting.YELLOW).withBold(Boolean.TRUE)))
+                    .append(" ").append(Text.translatable(key, args));
+        GameUtils.getClient().inGameHud.getChatHud().addMessage(text);
     }
 }

@@ -14,8 +14,8 @@ import java.util.function.Function;
 import java.util.zip.GZIPOutputStream;
 import javax.annotation.Nullable;
 
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.BlockPos;

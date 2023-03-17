@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.DefaultedRegistry;
 
 import malilib.MaLiLib;
 import malilib.config.value.BaseOptionListConfigValue;
@@ -92,7 +92,7 @@ public class UsageRestriction<TYPE>
      * @param errorTranslationKey
      */
     public void setValuesBasedOnRegistry(ListType type, List<String> blackList, List<String> whiteList,
-                                         RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
+                                         DefaultedRegistry<TYPE> registry, String errorTranslationKey)
     {
         this.type = type;
         this.setValuesForListBasedOnRegistry(ListType.BLACKLIST, blackList, registry, errorTranslationKey);
@@ -108,7 +108,7 @@ public class UsageRestriction<TYPE>
      * @param errorTranslationKey
      */
     protected void setValuesForListBasedOnRegistry(ListType type, List<String> names,
-                                                   RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
+                                                   DefaultedRegistry<TYPE> registry, String errorTranslationKey)
     {
         Set<TYPE> set = this.getListForType(type);
         set.clear();

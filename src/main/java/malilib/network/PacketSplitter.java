@@ -34,7 +34,7 @@ public class PacketSplitter
                             ClientPlayNetworkHandler networkHandler)
     {
         send(packet, MAX_PAYLOAD_PER_PACKET_C2S,
-             buf -> networkHandler.sendPacket(new CPacketCustomPayload(channel.toString(), buf)));
+             buf -> networkHandler.sendPacket(new CustomPayloadC2SPacket(channel, buf)));
     }
 
     private static void send(PacketByteBuf packet,
@@ -77,8 +77,7 @@ public class PacketSplitter
                                          CustomPayloadS2CPacket message,
                                          int maxLength)
     {
-        Pair<INetHandler, ResourceLocation> key = Pair.of(networkHandler,
-                                                          new ResourceLocation(message.getChannelName()));
+        Pair<PacketListener, Identifier> key = Pair.of(networkHandler, message.getChannel());
 
         return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new)
                 .receive(PacketUtils.slice(message.getData()), maxLength);

@@ -16,9 +16,11 @@ import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -33,7 +35,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -361,7 +362,8 @@ public class InventoryRenderUtils
         {
             int bgTintColor = 0xFFFFFFFF;
 
-            if (useShulkerBackgroundColor && (stack.getItem() instanceof ItemShulkerBox))
+            if (useShulkerBackgroundColor && (stack.getItem() instanceof BlockItem) &&
+                ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
             {
                 ShulkerBoxBlock block = (ShulkerBoxBlock) ((BlockItem) stack.getItem()).getBlock();
                 bgTintColor = getShulkerBoxBackgroundTintColor(block);
@@ -414,8 +416,9 @@ public class InventoryRenderUtils
         // In 1.13+ there is the separate uncolored Shulker Box variant,
         // which returns null from getColor().
         // In that case don't tint the background.
-        EnumDyeColor dye = block != null ? block.getColor() : null;
-        return dye != null ? 0xFF000000 | dye.getColorValue() : 0xFFFFFFFF;
+        DyeColor dye = block != null ? block.getColor() : null;
+        final float[] colors = dye.getColorComponents();
+        return  0xFF000000 | (int) ((colors[0] * 0xFF)) << 16 | (int) ((colors[1] * 0xFF)) << 8 | (int) (colors[2] * 0xFF);
     }
 
     public static InventoryRenderDefinition getInventoryType(Inventory inv)
@@ -444,7 +447,7 @@ public class InventoryRenderUtils
         {
             return BuiltinInventoryRenderDefinitions.HOPPER;
         }
-        else if (inv instanceof ContainerHorseChest)
+        else if (inv.getClass() == SimpleInventory.class) // FIXME
         {
             return BuiltinInventoryRenderDefinitions.HORSE;
         }
@@ -510,14 +513,14 @@ public class InventoryRenderUtils
             return null;
         }
 
-        if (trace.typeOfHit == RayTraceResult.Type.BLOCK)
+        if (trace.getType() == HitResult.Type.BLOCK)
         {
-            BlockPos pos = trace.getBlockPos();
+            BlockPos pos = ((BlockHitResult) trace).getBlockPos();
             return getInventoryViewFromBlock(pos, world);
         }
-        else if (trace.typeOfHit == RayTraceResult.Type.ENTITY)
+        else if (trace.getType() == HitResult.Type.ENTITY)
         {
-            return getInventoryViewFromEntity(trace.entityHit);
+            return getInventoryViewFromEntity(((EntityHitResult) trace).getEntity());
         }
 
         return null;
@@ -526,27 +529,57 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromBlock(BlockPos pos, World world)
     {
-        BlockEntity te = world.getBlockEntity(pos);
+        @SuppressWarnings("deprecation")
+        boolean isLoaded = world.isChunkLoaded(pos);
 
-        if (te instanceof Inventory)
+        if (isLoaded == false)
         {
-            Inventory inv = (Inventory) te;
+            return null;
+        }
+
+        // The method in World now checks that the caller is from the same thread...
+        BlockEntity be = world.getWorldChunk(pos).getBlockEntity(pos);
+
+        if (be instanceof Inventory)
+        {
+            Inventory inv = (Inventory) be;
             BlockState state = world.getBlockState(pos);
 
             // Prevent loot generation attempt from crashing due to NPEs
             // TODO 1.13+ check if this is still needed
+            /*
             if (te instanceof TileEntityLockableLoot && (world instanceof ServerWorld) == false)
             {
                 ((TileEntityLockableLoot) te).setLootTable(null, 0);
             }
+            */
 
-            if (state.getBlock() instanceof ChestBlock)
+            if (state.getBlock() instanceof ChestBlock && be instanceof ChestBlockEntity)
             {
-                ILockableContainer cont = ((ChestBlock) state.getBlock()).getLockableContainer(world, pos);
+                ChestType type = state.get(ChestBlock.CHEST_TYPE);
 
-                if (cont instanceof InventoryLargeChest)
+                if (type != ChestType.SINGLE)
                 {
-                    inv = cont;
+                    BlockPos posAdj = pos.offset(ChestBlock.getFacing(state));
+                    @SuppressWarnings("deprecation")
+                    boolean isLoadedAdj = world.isChunkLoaded(posAdj);
+
+                    if (isLoadedAdj)
+                    {
+                        BlockState stateAdj = world.getBlockState(posAdj);
+                        // The method in World now checks that the caller is from the same thread...
+                        BlockEntity te2 = world.getWorldChunk(posAdj).getBlockEntity(posAdj);
+
+                        if (stateAdj.getBlock() == state.getBlock() &&
+                                    te2 instanceof ChestBlockEntity &&
+                                    stateAdj.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE &&
+                                    stateAdj.get(ChestBlock.FACING) == state.get(ChestBlock.FACING))
+                        {
+                            Inventory invRight = type == ChestType.RIGHT ?             inv : (Inventory) te2;
+                            Inventory invLeft  = type == ChestType.RIGHT ? (Inventory) te2 :             inv;
+                            inv = new DoubleInventory(invRight, invLeft);
+                        }
+                    }
                 }
             }
 

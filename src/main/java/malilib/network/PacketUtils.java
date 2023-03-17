@@ -40,7 +40,7 @@ public class PacketUtils
 
     public static void send(Identifier channel, PacketByteBuf packet, ClientPlayNetworkHandler networkHandler)
     {
-        networkHandler.sendPacket(new CPacketCustomPayload(channel.toString(), packet));
+        networkHandler.sendPacket(new CustomPayloadC2SPacket(channel, packet));
     }
 
     public static void sendTag(Identifier channel, NbtCompound tag, ClientPlayNetworkHandler networkHandler)

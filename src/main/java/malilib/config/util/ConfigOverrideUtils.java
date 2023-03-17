@@ -147,7 +147,7 @@ public class ConfigOverrideUtils
 
         if (serverData != null)
         {
-            String motd = serverData.serverMOTD;
+            String motd = serverData.label.getString(); // TODO 1.13+ port - check this
             String[] lines = motd.split("\\n");
 
             for (int index = 3; index < lines.length; ++index)

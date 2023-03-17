@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.Potions;
-import net.minecraft.registry.Registries;
+import net.minecraft.util.registry.Registry;
 
 import malilib.config.option.list.StatusEffectListConfig;
 import malilib.gui.config.ConfigWidgetContext;
@@ -43,7 +43,7 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
     {
         List<Potion> effects = new ArrayList<>();
 
-        for (Potion effect : Registries.POTION)
+        for (Potion effect : Registry.POTION)
         {
             effects.add(effect);
         }

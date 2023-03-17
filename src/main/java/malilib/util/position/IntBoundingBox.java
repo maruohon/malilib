@@ -173,7 +173,8 @@ public class IntBoundingBox
 
     public static IntBoundingBox fromVanillaBox(BlockBox box)
     {
-        return createProper(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
+        return createProper(box.getMinX(), box.getMinY(), box.getMinZ(),
+                            box.getMaxX(), box.getMaxY(), box.getMaxZ());
     }
 
     public static IntBoundingBox createProper(Vec3i pos1, Vec3i pos2)

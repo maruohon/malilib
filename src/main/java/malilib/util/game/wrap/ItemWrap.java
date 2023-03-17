@@ -20,7 +20,7 @@ public class ItemWrap
 
     public static ItemStack fromTag(NbtCompound tag)
     {
-        return new ItemStack(tag);
+        return ItemStack.fromNbt(tag);
     }
 
     public static boolean isEmpty(ItemStack stack)

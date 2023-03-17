@@ -2,24 +2,19 @@ package malilib.util.game;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import malilib.util.game.wrap.GameUtils;
 
 public class WorldUtils
 {
-    public static int getDimensionId(World world)
-    {
-        return world.provider.getDimensionType().getId();
-    }
-
     public static String getDimensionIdAsString(World world)
     {
-        return String.valueOf(world.provider.getDimensionType().getId());
+        Identifier id = world.getRegistryKey().getValue();
+        return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 
     /**
@@ -28,16 +23,16 @@ public class WorldUtils
      */
     public static World getBestWorld()
     {
-        MinecraftClient mc = GameUtils.getClient();
+        World world = GameUtils.getClientWorld();
+        MinecraftServer server = GameUtils.getIntegratedServer();
 
-        if (mc.isSingleplayer() && mc.world != null)
+        if (server != null && world != null)
         {
-            IntegratedServer server = mc.getIntegratedServer();
-            return server.getWorld(getDimensionId(mc.world));
+            return server.getWorld(world.getRegistryKey());
         }
         else
         {
-            return mc.world;
+            return world;
         }
     }
 
@@ -49,9 +44,9 @@ public class WorldUtils
     }
 
     @Nullable
-    public static WorldServer getServerWorldForClientWorld(World world)
+    public static ServerWorld getServerWorldForClientWorld(World world)
     {
         MinecraftServer server = GameUtils.getIntegratedServer();
-        return server != null ? server.getWorld(getDimensionId(world)) : null;
+        return server != null ? server.getWorld(world.getRegistryKey()) : null;
     }
 }

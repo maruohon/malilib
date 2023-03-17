@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
@@ -28,7 +27,7 @@ public class InventoryUtils
      */
     public static boolean areItemsEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqualIgnoreDamage(stack1, stack2);
+        return ItemStack.areItemsEqual(stack1, stack2);
     }
 
     /**
@@ -71,8 +70,8 @@ public class InventoryUtils
 
     public static ItemStack getCursorStack()
     {
-        PlayerInventory inv = GameUtils.getPlayerInventory();
-        return inv != null ? inv.getItemStack() : ItemStack.EMPTY;
+        ScreenHandler handler = GameUtils.getCurrentInventoryContainer();
+        return handler != null ? handler.getCursorStack() : ItemStack.EMPTY;
     }
 
     public static boolean isHotbarSlot(int slot)

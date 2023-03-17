@@ -10,6 +10,8 @@ import net.minecraft.entity.EquipmentSlot;
 
 public class EquipmentSlotListConfig extends ValueListConfig<EquipmentSlot>
 {
+    public static final ImmutableList<EquipmentSlot> SLOTS = ImmutableList.copyOf(EquipmentSlot.values());
+
     public EquipmentSlotListConfig(String name, ImmutableList<EquipmentSlot> defaultValues)
     {
         this(name, defaultValues, EquipmentSlot::getName, EquipmentSlotListConfig::fromString);
@@ -75,7 +77,7 @@ public class EquipmentSlotListConfig extends ValueListConfig<EquipmentSlot>
     @Nullable
     public static EquipmentSlot fromString(String name)
     {
-        for (EntityEquipmentSlot slot : EntityEquipmentSlot.values())
+        for (EquipmentSlot slot : SLOTS)
         {
             if (slot.getName().equals(name))
             {

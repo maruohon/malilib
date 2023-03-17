@@ -6,21 +6,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import com.mumfrey.liteloader.LiteMod;
-import com.mumfrey.liteloader.core.LiteLoader;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.network.NetworkManager;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
 import malilib.MaLiLib;
@@ -64,11 +66,11 @@ public class StringUtils
     {
         try
         {
-            LiteMod mod = LiteLoader.getInstance().getMod(modId);
+            Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(modId);
 
-            if (mod != null)
+            if (container.isPresent())
             {
-                return mod.getVersion();
+                return container.get().getMetadata().getVersion().getFriendlyString();
             }
         }
         catch (Exception ignore) {}
@@ -147,10 +149,11 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(String messageKey, Path file)
     {
-        TextComponentString name = new TextComponentString(file.getFileName().toString());
-        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString()));
-        name.getStyle().setUnderlined(Boolean.TRUE);
-        GameUtils.getClientPlayer().sendMessage(new TextComponentTranslation(messageKey, name));
+        MutableText name = (Text.literal(file.getFileName().toString()))
+                .formatted(Formatting.UNDERLINE)
+                .styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString())));
+
+        GameUtils.getClient().inGameHud.getChatHud().addMessage(Text.translatable(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -485,19 +488,22 @@ public class StringUtils
     @Nullable
     public static String getWorldOrServerName()
     {
-        if (GameUtils.isSinglePlayer())
+        MinecraftClient mc = GameUtils.getClient();
+
+        if (mc.isIntegratedServerRunning())
         {
-            IntegratedServer server = GameUtils.getClient().getIntegratedServer();
+            IntegratedServer server = mc.getServer();
 
             if (server != null)
             {
-                return FileNameUtils.generateSimpleSafeFileName(server.getFolderName());
+                // This used to be just MinecraftServer::getLevelName().
+                // Getting the name would now require an @Accessor for MinecraftServer.field_23784
+                String name = server.getSaveProperties().getLevelName();
+                return FileNameUtils.generateSimpleSafeFileName(name);
             }
         }
         else
         {
-            Minecraft mc = GameUtils.getClient();
-
             if (mc.isConnectedToRealms())
             {
                 if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
@@ -516,7 +522,7 @@ public class StringUtils
                 }
             }
 
-            ServerData server = GameUtils.getClient().getCurrentServerData();
+            ServerInfo server = mc.getCurrentServerEntry();
 
             if (server != null)
             {

@@ -1,7 +1,7 @@
 package malilib.overlay.message;
 
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 
 import malilib.MaLiLibConfigs;
 import malilib.overlay.widget.MessageRendererWidget;
@@ -53,32 +53,40 @@ public class DefaultMessageDispatchers
 
     public static void sendVanillaHotbarMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        TextComponentString msg = new TextComponentString(translatedMessage);
-        GameUtils.getClient().ingameGUI.addChatMessage(ChatType.GAME_INFO, msg);
+        addVanillaOverlayMessage(translatedMessage);
     }
 
     public static void sendVanillaHotbarMessageText(StyledText text, MessageDispatcher messageDispatcher)
     {
         if (text.lines.size() > 0)
         {
-            TextComponentString msg = new TextComponentString(text.lines.get(0).displayText);
-            GameUtils.getClient().ingameGUI.addChatMessage(ChatType.GAME_INFO, msg);
+            addVanillaOverlayMessage(text.lines.get(0).displayText);
         }
     }
 
     public static void sendVanillaChatMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        TextComponentString msg = new TextComponentString(translatedMessage);
-        GameUtils.getClient().ingameGUI.addChatMessage(ChatType.CHAT, msg);
+        addLocalVanillaChatMessage(translatedMessage);
     }
 
     public static void sendVanillaChatMessageText(StyledText text, MessageDispatcher messageDispatcher)
     {
         if (text.lines.size() > 0)
         {
-            TextComponentString msg = new TextComponentString(text.lines.get(0).displayText);
-            GameUtils.getClient().ingameGUI.addChatMessage(ChatType.CHAT, msg);
+            addLocalVanillaChatMessage(text.lines.get(0).displayText);
         }
+    }
+
+    public static void addLocalVanillaChatMessage(String translatedMessage)
+    {
+        MutableText msg = Text.literal(translatedMessage);
+        GameUtils.getClient().inGameHud.getChatHud().addMessage(msg);
+    }
+
+    public static void addVanillaOverlayMessage(String translatedMessage)
+    {
+        MutableText msg = Text.literal(translatedMessage);
+        GameUtils.getClient().inGameHud.setOverlayMessage(msg, false);
     }
 
     public static void sendStringToDefaultToggleMessageOutput(String translatedMessage, MessageDispatcher messageDispatcher)

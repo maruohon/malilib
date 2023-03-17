@@ -40,32 +40,32 @@ public class EntityWrap
 
     public static BlockPos getEntityBlockPos(Entity entity)
     {
-        return new BlockPos(entity);
+        return new BlockPos(entity.getPos());
     }
 
     public static double getX(Entity entity)
     {
-        return entity.posX;
+        return entity.getX();
     }
 
     public static double getY(Entity entity)
     {
-        return entity.posY;
+        return entity.getY();
     }
 
     public static double getZ(Entity entity)
     {
-        return entity.posZ;
+        return entity.getZ();
     }
 
     public static float getYaw(Entity entity)
     {
-        return entity.rotationYaw;
+        return entity.getYaw();
     }
 
     public static float getPitch(Entity entity)
     {
-        return entity.rotationPitch;
+        return entity.getPitch();
     }
 
     public static double lerpX(Entity entity, float tickDelta)
@@ -103,12 +103,12 @@ public class EntityWrap
 
     public static void setYaw(Entity entity, float yaw)
     {
-        entity.rotationYaw = yaw;
+        entity.setYaw(yaw);
     }
 
     public static void setPitch(Entity entity, float pitch)
     {
-        entity.rotationPitch = pitch;
+        entity.setPitch(pitch);
     }
 
     public static Direction getClosestHorizontalLookingDirection(Entity entity)

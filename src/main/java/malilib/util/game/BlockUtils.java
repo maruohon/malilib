@@ -46,14 +46,14 @@ public class BlockUtils
         String blockName = index != -1 ? str.substring(0, index) : str;
         Identifier id = new Identifier(blockName);
 
-        if (Block.REGISTRY.containsKey(id))
+        if (Registry.BLOCK.containsId(id))
         {
             Block block = RegistryUtils.getBlockById(id);
-            IBlockState state = block.getDefaultState();
+            BlockState state = block.getDefaultState();
 
             if (index != -1 && str.length() > (index + 4) && str.charAt(str.length() - 1) == ']')
             {
-                BlockStateContainer blockState = block.getBlockState();
+                StateManager<Block, BlockState> stateManager = block.getStateManager();
                 String propStr = str.substring(index + 1, str.length() - 1);
 
                 for (String propAndVal : COMMA_SPLITTER.split(propStr))
@@ -194,7 +194,7 @@ public class BlockUtils
     @Nullable
     public static <T extends Comparable<T>> T getPropertyValueByName(Property<T> prop, String valStr)
     {
-        return prop.parseValue(valStr).orNull();
+        return prop.parse(valStr).orElse(null);
     }
 
     /**
@@ -203,7 +203,7 @@ public class BlockUtils
      */
     public static Optional<DirectionProperty> getFirstDirectionProperty(BlockState state)
     {
-        for (IProperty<?> prop : state.getProperties().keySet())
+        for (Property<?> prop : state.getProperties())
         {
             if (prop instanceof DirectionProperty)
             {

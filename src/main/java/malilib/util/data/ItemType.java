@@ -1,7 +1,7 @@
 package malilib.util.data;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NbtCompound;
 
 import malilib.util.game.wrap.ItemWrap;
 import malilib.util.game.wrap.RegistryUtils;
@@ -63,11 +63,6 @@ public class ItemType
         int result = 1;
         result = prime * result + this.stack.getItem().hashCode();
 
-        if (this.ignoreDamage == false || this.stack.isItemStackDamageable() == false)
-        {
-            result = prime * result + this.stack.getMetadata();
-        }
-
         if (this.checkNbt())
         {
             NbtCompound tag = ItemWrap.getTag(this.stack);
@@ -100,12 +95,6 @@ public class ItemType
                 return false;
             }
 
-            if ((this.ignoreDamage == false || this.stack.isItemStackDamageable() == false) &&
-                this.stack.getMetadata() != other.stack.getMetadata())
-            {
-                return false;
-            }
-
             return this.checkNbt() == false || ItemStack.areNbtEqual(this.stack, other.stack);
         }
     }
@@ -116,13 +105,13 @@ public class ItemType
         if (this.checkNbt())
         {
             String id = RegistryUtils.getItemIdStr(this.stack.getItem());
-            NBTTagCompound tag = ItemWrap.getTag(this.stack);
-            return (id != null ? id : "<null>") + "@" + this.stack.getMetadata() + (tag != null ? tag.toString() : "");
+            NbtCompound tag = ItemWrap.getTag(this.stack);
+            return (id != null ? id : "<null>") + (tag != null ? tag.toString() : "");
         }
         else
         {
             String id = RegistryUtils.getItemIdStr(this.stack.getItem());
-            return (id != null ? id : "<null>") + "@" + this.stack.getMetadata();
+            return id != null ? id : "<null>";
         }
     }
 }

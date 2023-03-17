@@ -1,11 +1,12 @@
 package malilib.render;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 
 import malilib.util.StringUtils;
@@ -32,7 +33,7 @@ public class ItemRenderUtils
         GlStateManager.disableLighting();
         RenderUtils.enableGuiItemLighting();
 
-        Minecraft mc = GameUtils.getClient();
+        MinecraftClient mc = GameUtils.getClient();
         RenderItem itemRenderer = mc.getRenderItem();
         float oldZ = itemRenderer.zLevel;
 
@@ -59,20 +60,21 @@ public class ItemRenderUtils
             return;
         }
 
-        List<String> list = stack.getTooltip(GameUtils.getClientPlayer(), GameUtils.getOptions().advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        List<Text> list = stack.getTooltip(GameUtils.getClientPlayer(), GameUtils.getOptions().advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+        List<String> lines = new ArrayList<>();
 
         for (int i = 0; i < list.size(); ++i)
         {
             if (i == 0)
             {
-                list.set(i, stack.getRarity().color + list.get(i));
+                lines.add(stack.getRarity().formatting + list.get(i).getString());
             }
             else
             {
-                list.set(i, StringUtils.translate("malilib.hover.item_tooltip_lines", list.get(i)));
+                lines.add(StringUtils.translate("malilib.hover.item_tooltip_lines", list.get(i).getString()));
             }
         }
 
-        TextRenderUtils.renderHoverText(x, y, zLevel, list, ctx);
+        TextRenderUtils.renderHoverText(x, y, zLevel, lines, ctx);
     }
 }

@@ -15,8 +15,8 @@ public class ItemUtils
             String id = RegistryUtils.getItemIdStr(stack.getItem());
             NbtCompound tag = ItemWrap.getTag(stack);
 
-            return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
-                                 id != null ? id : "null", stack.getMetadata(), stack.getDisplayName(),
+            return String.format("[%s - display: %s - NBT: %s] (%s)",
+                                 id != null ? id : "null", stack.getName().getString(),
                                  tag != null ? tag.toString() : "<no NBT>", stack);
         }
 
