@@ -12,7 +12,9 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 
 import malilib.render.RenderUtils;
@@ -92,7 +94,7 @@ public class OverlayRendererContainer
         this.enabledRenderersNeedUpdate = false;
     }
 
-    public void render(float tickDelta)
+    public void render(MatrixStack matrixStack, Matrix4f projMatrix, float tickDelta)
     {
         Entity cameraEntity = GameUtils.getCameraEntity();
 
@@ -126,7 +128,7 @@ public class OverlayRendererContainer
         GameUtils.profilerPop();
 
         GameUtils.profilerPush("draw");
-        this.draw(cameraPos);
+        this.draw(matrixStack, projMatrix, cameraPos);
         GameUtils.profilerPop();
     }
 
@@ -160,7 +162,7 @@ public class OverlayRendererContainer
         }
     }
 
-    protected void draw(Vec3d cameraPos)
+    protected void draw(MatrixStack matrixStack, Matrix4f projMatrix, Vec3d cameraPos)
     {
         if (this.resourcesAllocated && this.countActive > 0)
         {

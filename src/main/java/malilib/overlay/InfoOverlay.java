@@ -42,7 +42,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     {
         if (GameUtils.Options.hideGui() == false)
         {
-            this.renderInGame();
+            this.renderInGame(ctx);
         }
     }
 
@@ -145,19 +145,19 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      * Don't call this unless you have your own instance of the InfoOverlay,
      * ie. don't call this on {@code Registry.INFO_OVERLAY}
      */
-    public void renderInGame()
+    public void renderInGame(RenderContext ctx)
     {
         if (GameUtils.Options.hideGui() == false)
         {
             boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
             boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
-            ScreenContext ctx = new ScreenContext(0, 0, -1, true);
+            ScreenContext screenContext = new ScreenContext(0, 0, -1, true, ctx.matrixStack);
 
             if (debug)
             {
                 for (InfoArea area : this.infoAreas.values())
                 {
-                    area.renderDebug(ctx);
+                    area.renderDebug(screenContext);
                 }
             }
 
@@ -165,13 +165,13 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
             {
                 if (widget.shouldRenderFromContext(OverlayRenderContext.INGAME, isScreenOpen))
                 {
-                    widget.render(ctx);
+                    widget.render(screenContext);
                 }
             }
 
             if (debug)
             {
-                BaseWidget.renderDebugTextAndClear(ctx);
+                BaseWidget.renderDebugTextAndClear(screenContext);
             }
         }
     }
@@ -185,7 +185,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     {
         boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
         boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
-        ScreenContext screenCtx = new ScreenContext(0, 0, -1, true);
+        ScreenContext screenCtx = new ScreenContext(0, 0, -1, true, ctx.matrixStack);
         RenderUtils.disableItemLighting();
 
         if (debug)

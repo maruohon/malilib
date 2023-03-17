@@ -1,5 +1,7 @@
 package malilib.gui.util;
 
+import net.minecraft.client.util.math.MatrixStack;
+
 import malilib.MaLiLibConfigs;
 import malilib.render.RenderContext;
 
@@ -10,8 +12,12 @@ public class ScreenContext extends RenderContext
     public final int hoveredWidgetId;
     public final boolean isActiveScreen;
 
-    public ScreenContext(int mouseX, int mouseY, int hoveredWidgetId, boolean isActiveScreen)
+    public ScreenContext(int mouseX, int mouseY,
+                         int hoveredWidgetId, boolean isActiveScreen,
+                         MatrixStack matrixStack)
     {
+        super (matrixStack);
+
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.hoveredWidgetId = hoveredWidgetId;

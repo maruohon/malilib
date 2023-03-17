@@ -3,6 +3,8 @@ package malilib.render.overlay;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Matrix4f;
 
 public abstract class BaseRenderObject
 {
@@ -43,7 +45,7 @@ public abstract class BaseRenderObject
     /**
      * Draws the VBO or Render List to the screen
      */
-    public abstract void draw();
+    public abstract void draw(MatrixStack matrixStack, Matrix4f projMatrix);
 
     /**
      * De-allocates the VBO or Render List

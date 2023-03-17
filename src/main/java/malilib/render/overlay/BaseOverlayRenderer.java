@@ -12,8 +12,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 
 import malilib.listener.EventListener;
@@ -128,13 +130,13 @@ public abstract class BaseOverlayRenderer
     /**
      * Draws all the buffers to screen
      */
-    public void draw()
+    public void draw(MatrixStack matrixStack, Matrix4f projMatrix)
     {
         this.preRender();
 
         for (BaseRenderObject obj : this.renderObjects)
         {
-            obj.draw();
+            obj.draw(matrixStack, projMatrix);
         }
 
         this.postRender();
