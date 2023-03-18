@@ -296,7 +296,6 @@ public class RenderUtils
         int eg = (endColor >>  8 & 0xFF);
         int eb = (endColor & 0xFF);
 
-        RenderSystem.disableTexture();
         setupBlend();
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.applyModelViewMatrix();
@@ -313,7 +312,6 @@ public class RenderUtils
         tessellator.draw();
 
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 
     public static void drawCenteredString(int x, int y, int color, String text, MatrixStack matrixStack)
@@ -761,7 +759,6 @@ public class RenderUtils
         RenderSystem.disableCull();
 
         setupBlend();
-        RenderSystem.disableTexture();
 
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         Tessellator tessellator = Tessellator.getInstance();
@@ -793,7 +790,6 @@ public class RenderUtils
         buffer.vertex( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
         tessellator.draw();
 
-        RenderSystem.enableTexture();
         int textY = 0;
 
         // translate the text a bit infront of the background
@@ -813,14 +809,14 @@ public class RenderUtils
                 RenderSystem.depthMask(false);
                 RenderSystem.disableDepthTest();
                 VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
-                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, modelMatrix, immediate, true, 0, 15728880);
+                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, modelMatrix, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
                 immediate.draw();
                 RenderSystem.enableDepthTest();
                 RenderSystem.depthMask(true);
             }
 
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
-            textRenderer.draw(line, -strLenHalf, textY, textColor, false, modelMatrix, immediate, true, 0, 15728880);
+            textRenderer.draw(line, -strLenHalf, textY, textColor, false, modelMatrix, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
             immediate.draw();
             textY += textRenderer.fontHeight;
         }
@@ -854,7 +850,6 @@ public class RenderUtils
         RenderSystem.applyModelViewMatrix();
 
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        RenderSystem.disableTexture();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
