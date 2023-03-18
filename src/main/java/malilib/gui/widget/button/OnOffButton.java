@@ -64,6 +64,7 @@ public class OnOffButton extends GenericButton
         this.style = style;
 
         boolean isSlider = this.style == OnOffStyle.SLIDER_ON_OFF;
+        this.renderButtonBackgroundTexture = isSlider == false;
         this.getBorderRenderer().getNormalSettings().setBorderWidth(isSlider ? 1 : 0);
         this.getBackgroundRenderer().getNormalSettings().setEnabled(isSlider);
         this.getTextSettings().setHoveredTextColor(isSlider ? 0xFFF0F000 : 0xFFFFFFA0);
@@ -135,15 +136,14 @@ public class OnOffButton extends GenericButton
     }
 
     @Override
-    protected void renderButtonBackgroundIcon(int x, int y, float z, int width, int height,
-                                              boolean hovered, ScreenContext ctx)
+    protected void renderIcon(int x, int y, float z, int width, int height, boolean hovered, ScreenContext ctx)
     {
-        super.renderButtonBackgroundIcon(x, y, z, width, height, hovered, ctx);
+        super.renderIcon(x, y, z, width, height, hovered, ctx);
 
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
-            boolean value = this.getCurrentValue();
-            renderOnOffSlider(x, y, z + 0.125f, width, height, value, this.isEnabled(), hovered,
+            renderOnOffSlider(x, y, z + 0.125f, width, height,
+                              this.getCurrentValue(), this.isEnabled(), hovered,
                               this.iconOn, this.iconOff, ctx);
         }
     }

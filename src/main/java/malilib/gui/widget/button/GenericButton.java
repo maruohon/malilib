@@ -437,18 +437,28 @@ public class GenericButton extends InteractableWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
+        super.renderAt(x, y, z, ctx);
+
         int width = this.getWidth();
         int height = this.getHeight();
         boolean hovered = this.isHoveredForRender(ctx);
 
+        this.renderIcon(x, y, z, width, height, hovered, ctx);
+    }
+
+    @Override
+    protected void renderWidgetBackgroundAndBorder(int x, int y, float z, ScreenContext ctx)
+    {
+        super.renderWidgetBackgroundAndBorder(x, y, z, ctx);
+
         if (this.renderButtonBackgroundTexture)
         {
+            int width = this.getWidth();
+            int height = this.getHeight();
+            boolean hovered = this.isHoveredForRender(ctx);
+
             this.renderButtonBackgroundIcon(x, y, z, width, height, hovered, ctx);
         }
-
-        this.renderIcon(x, y, z, width, height, hovered, ctx);
-
-        super.renderAt(x, y, z, ctx);
     }
 
     public static GenericButton create(int width, int height, String translationKey)
