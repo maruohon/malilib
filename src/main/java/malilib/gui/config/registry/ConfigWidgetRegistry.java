@@ -62,6 +62,7 @@ import malilib.gui.widget.list.entry.config.list.StatusEffectListConfigWidget;
 import malilib.gui.widget.list.entry.config.list.StringListConfigWidget;
 import malilib.input.CustomHotkeyDefinition;
 
+@SuppressWarnings("unchecked")
 public class ConfigWidgetRegistry
 {
     protected final HashMap<Class<? extends ConfigInfo>, ConfigOptionWidgetFactory<?>> configWidgetFactories = new HashMap<>();
