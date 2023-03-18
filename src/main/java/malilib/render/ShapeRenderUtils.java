@@ -201,7 +201,7 @@ public class ShapeRenderUtils
                                                   int width, int height,
                                                   BufferBuilder buffer)
     {
-        double pixelSize = 0.00390625; // 1 / 256
+        float pixelSize = 0.00390625F; // 1 / 256
         renderTexturedRectangle(x, y, z, u, v, width, height, pixelSize, pixelSize, buffer);
     }
 
@@ -213,7 +213,7 @@ public class ShapeRenderUtils
     public static void renderTexturedRectangle(double x, double y, double z,
                                                int u, int v,
                                                int renderWidth, int renderHeight,
-                                               double pixelWidth, double pixelHeight)
+                                               float pixelWidth, float pixelHeight)
     {
         renderScaledTexturedRectangle(x, y, z, u, v,
                                       renderWidth, renderHeight,
@@ -230,7 +230,7 @@ public class ShapeRenderUtils
     public static void renderTexturedRectangle(double x, double y, double z,
                                                int u, int v,
                                                int renderWidth, int renderHeight,
-                                               double pixelWidth, double pixelHeight,
+                                               float pixelWidth, float pixelHeight,
                                                BufferBuilder buffer)
     {
         renderScaledTexturedRectangle(x, y, z, u, v,
@@ -250,7 +250,7 @@ public class ShapeRenderUtils
                                                      int u, int v,
                                                      int renderWidth, int renderHeight,
                                                      int textureWidth, int textureHeight,
-                                                     double pixelWidth, double pixelHeight)
+                                                     float pixelWidth, float pixelHeight)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
@@ -274,14 +274,14 @@ public class ShapeRenderUtils
                                                      int u, int v,
                                                      int renderWidth, int renderHeight,
                                                      int textureWidth, int textureHeight,
-                                                     double pixelWidth, double pixelHeight, BufferBuilder buffer)
+                                                     float pixelWidth, float pixelHeight, BufferBuilder buffer)
     {
         double x2 = x + renderWidth;
         double y2 = y + renderHeight;
-        double u1 = u                  * pixelWidth;
-        double u2 = (u + textureWidth) * pixelWidth;
-        double v1 = v                   * pixelHeight;
-        double v2 = (v + textureHeight) * pixelHeight;
+        float u1 =  u                  * pixelWidth;
+        float u2 = (u + textureWidth)  * pixelWidth;
+        float v1 =  v                  * pixelHeight;
+        float v2 = (v + textureHeight) * pixelHeight;
 
         buffer.pos(x , y2, z).tex(u1, v2).endVertex();
         buffer.pos(x2, y2, z).tex(u2, v2).endVertex();
