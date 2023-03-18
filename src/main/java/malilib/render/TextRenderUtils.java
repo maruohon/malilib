@@ -163,18 +163,18 @@ public class TextRenderUtils
         return new Vec2i(textStartX, textStartY);
     }
 
-    public static void renderHoverText(int x, int y, float z, String text)
+    public static void renderHoverText(int x, int y, float z, String text, RenderContext ctx)
     {
-        renderHoverText(x, y, z, Collections.singletonList(text));
+        renderHoverText(x, y, z, Collections.singletonList(text), ctx);
     }
 
-    public static void renderHoverText(int x, int y, float z, List<String> textLines)
+    public static void renderHoverText(int x, int y, float z, List<String> textLines, RenderContext ctx)
     {
-        renderHoverText(x, y, z, textLines, 0xFFC0C0C0 , TextRenderUtils::renderDefaultHoverTextBackground);
+        renderHoverText(x, y, z, textLines, 0xFFC0C0C0 , TextRenderUtils::renderDefaultHoverTextBackground, ctx);
     }
 
     public static void renderHoverText(int x, int y, float z, List<String> textLines,
-                                       int textColor, RectangleRenderer backgroundRenderer)
+                                       int textColor, RectangleRenderer backgroundRenderer, RenderContext ctx)
     {
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
@@ -214,7 +214,7 @@ public class TextRenderUtils
             GlStateManager.disableLighting();
             GlStateManager.disableDepth();
 
-            backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight);
+            backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight, ctx);
 
             for (String str : textLines)
             {
@@ -229,13 +229,13 @@ public class TextRenderUtils
         }
     }
 
-    public static void renderStyledHoverText(int x, int y, float z, List<StyledTextLine> textLines)
+    public static void renderStyledHoverText(int x, int y, float z, List<StyledTextLine> textLines, RenderContext ctx)
     {
-        renderStyledHoverText(x, y, z, textLines, 0xFFB0B0B0 , TextRenderUtils::renderDefaultHoverTextBackground);
+        renderStyledHoverText(x, y, z, textLines, 0xFFB0B0B0 , TextRenderUtils::renderDefaultHoverTextBackground, ctx);
     }
 
     public static void renderStyledHoverText(int x, int y, float z, List<StyledTextLine> textLines,
-                                             int textColor, RectangleRenderer backgroundRenderer)
+                                             int textColor, RectangleRenderer backgroundRenderer, RenderContext ctx)
     {
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
@@ -254,7 +254,7 @@ public class TextRenderUtils
             GlStateManager.disableLighting();
             GlStateManager.disableDepth();
 
-            backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight);
+            backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight, ctx);
             textRenderer.startBuffers();
 
             for (StyledTextLine line : textLines)
@@ -271,17 +271,18 @@ public class TextRenderUtils
         }
     }
 
-    public static void renderDefaultHoverTextBackground(int x, int y, float z, int width, int height)
+    public static void renderDefaultHoverTextBackground(int x, int y, float z, int width, int height, RenderContext ctx)
     {
         int fillColor = 0xF0180018;
         int borderColor1 = 0xD02060FF;
         int borderColor2 = 0xC01030A0;
 
-        renderHoverTextBackground(x, y, z, width, height, fillColor, borderColor1, borderColor2);
+        renderHoverTextBackground(x, y, z, width, height, fillColor, borderColor1, borderColor2, ctx);
     }
 
     public static void renderHoverTextBackground(int x, int y, float z, int width, int height,
-                                                 int fillColor, int borderColor1, int borderColor2)
+                                                 int fillColor, int borderColor1, int borderColor2,
+                                                 RenderContext ctx)
     {
         GlStateManager.disableTexture2D();
         GlStateManager.disableAlpha();
@@ -328,13 +329,14 @@ public class TextRenderUtils
      * Renders a text plate/billboard, similar to the player name plate.<br>
      * The plate will face towards the camera entity.
      */
-    public static void renderTextPlate(List<String> text, double x, double y, double z, float scale)
+    public static void renderTextPlate(List<String> text, double x, double y, double z, float scale, RenderContext ctx)
     {
         Entity entity = GameUtils.getCameraEntity();
 
         if (entity != null)
         {
-            renderTextPlate(text, x, y, z, EntityWrap.getYaw(entity), EntityWrap.getPitch(entity), scale, 0xFFFFFFFF, 0x40000000, true);
+            renderTextPlate(text, x, y, z, EntityWrap.getYaw(entity), EntityWrap.getPitch(entity),
+                            scale, 0xFFFFFFFF, 0x40000000, true, ctx);
         }
     }
 
@@ -343,7 +345,7 @@ public class TextRenderUtils
      * The plate will face towards the given angle.
      */
     public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-                                       float scale, int textColor, int bgColor, boolean disableDepth)
+                                       float scale, int textColor, int bgColor, boolean disableDepth, RenderContext ctx)
     {
         FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
 

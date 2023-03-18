@@ -51,6 +51,7 @@ import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
 import malilib.mixin.access.AbstractHorseMixin;
 import malilib.render.ItemRenderUtils;
+import malilib.render.RenderContext;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.util.game.RayTraceUtils;
@@ -72,7 +73,8 @@ public class InventoryRenderUtils
      * at their indicated offsets from the base xy-coordinate.
      */
     public static void renderCustomPositionedSlots(int x, int y, float z, InventoryView inv,
-                                                   Int2ObjectOpenHashMap<Vec2i> customSlotPositions)
+                                                   Int2ObjectOpenHashMap<Vec2i> customSlotPositions,
+                                                   RenderContext ctx)
     {
         final int invSize = inv.getSize();
 
@@ -89,7 +91,7 @@ public class InventoryRenderUtils
 
                 if (ItemWrap.notEmpty(stack) && pos != null)
                 {
-                    ItemRenderUtils.renderStackAt(stack, x + pos.x, y + pos.y, z, 1f);
+                    ItemRenderUtils.renderStackAt(stack, x + pos.x, y + pos.y, z, 1f, ctx);
                 }
             }
         }
@@ -100,7 +102,9 @@ public class InventoryRenderUtils
      * at their relative offsets from the base xy-coordinate.
      */
     public static void renderInventoryRanges(int x, int y, float z, InventoryView inv,
-                                             List<InventoryRange> inventoryRanges, int backgroundTintColor)
+                                             List<InventoryRange> inventoryRanges,
+                                             int backgroundTintColor,
+                                             RenderContext ctx)
     {
         for (InventoryRange range : inventoryRanges)
         {
@@ -118,10 +122,10 @@ public class InventoryRenderUtils
                 int tx = x + startPos.x - 1;
                 int ty = y + startPos.y - 1;
 
-                renderDynamicInventoryEmptySlotBackgrounds(tx, ty, z, backgroundTintColor, slotsPerRow, slotCount);
+                renderDynamicInventoryEmptySlotBackgrounds(tx, ty, z, backgroundTintColor, slotsPerRow, slotCount, ctx);
             }
 
-            renderGenericInventoryItems(x, y, z + 100f, range.startSlot, slotCount, slotsPerRow, startPos, inv);
+            renderGenericInventoryItems(x, y, z + 100f, range.startSlot, slotCount, slotsPerRow, startPos, inv, ctx);
         }
     }
 
@@ -132,7 +136,7 @@ public class InventoryRenderUtils
      * due to that being the maximum size of the original background image used.
      */
     public static void renderDynamicInventoryBackground(int x, int y, float z, int backgroundTintColor,
-                                                        int slotsPerRow, int slotCount)
+                                                        int slotsPerRow, int slotCount, RenderContext ctx)
     {
         if (slotCount <= 0 || slotsPerRow <= 0)
         {
@@ -176,11 +180,11 @@ public class InventoryRenderUtils
         ShapeRenderUtils.renderScaledTintedTexturedRectangle(x + w1, y + h1, z, u + width - w2, v + height - h2,
                                                              w2, h2, w2, h2, pw, ph, backgroundTintColor);
 
-        renderDynamicInventoryEmptySlotBackgrounds(x + 7, y + 7, z, backgroundTintColor, slotsPerRow, slotCount);
+        renderDynamicInventoryEmptySlotBackgrounds(x + 7, y + 7, z, backgroundTintColor, slotsPerRow, slotCount, ctx);
     }
 
     public static void renderDynamicInventoryEmptySlotBackgrounds(int x, int y, float z, int backgroundTintColor,
-                                                                  int slotsPerRow, int slotCount)
+                                                                  int slotsPerRow, int slotCount, RenderContext ctx)
     {
         if (slotCount <= 0 || slotsPerRow <= 0)
         {
@@ -257,7 +261,8 @@ public class InventoryRenderUtils
      * that exist in the give map of icons. The map index is the slot number.
      */
     public static void renderEmptySlotBackgrounds(int x, int y, float z, int backgroundTintColor, InventoryView inv,
-                                                  Int2ObjectOpenHashMap<PositionedIcon> emptySlotTextures)
+                                                  Int2ObjectOpenHashMap<PositionedIcon> emptySlotTextures,
+                                                  RenderContext ctx)
     {
         final int invSize = inv.getSize();
 
@@ -300,7 +305,8 @@ public class InventoryRenderUtils
      * @param inv the inventory from which the slots are rendered
      */
     public static void renderGenericInventoryItems(int x, int y, float z, int startSlot, int maxSlotCount,
-                                                   int slotsPerRow, Vec2i slotOffset, InventoryView inv)
+                                                   int slotsPerRow, Vec2i slotOffset, InventoryView inv,
+                                                   RenderContext ctx)
     {
         final int invSize = inv.getSize();
 
@@ -333,7 +339,7 @@ public class InventoryRenderUtils
 
             if (ItemWrap.notEmpty(stack))
             {
-                ItemRenderUtils.renderStackAt(stack, x, y, z, 1f);
+                ItemRenderUtils.renderStackAt(stack, x, y, z, 1f, ctx);
             }
 
             if (++slotOnRow >= slotsPerRow)
@@ -350,7 +356,7 @@ public class InventoryRenderUtils
     }
 
     public static void renderItemInventoryPreview(ItemStack stack, int baseX, int baseY, float z,
-                                                  boolean useShulkerBackgroundColor)
+                                                  boolean useShulkerBackgroundColor, RenderContext ctx)
     {
         if (stack.hasTagCompound())
         {
@@ -372,7 +378,7 @@ public class InventoryRenderUtils
             InventoryRenderDefinition renderDefinition = InventoryRenderUtils.getInventoryType(stack);
 
             renderInventoryPreview(inv, renderDefinition, baseX, baseY, z, bgTintColor,
-                                   HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM);
+                                   HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM, ctx);
         }
     }
 
@@ -380,7 +386,8 @@ public class InventoryRenderUtils
                                               InventoryRenderDefinition renderDefinition,
                                               int baseX, int baseY, float z, int bgTintColor,
                                               HorizontalAlignment horizontalAlignment,
-                                              VerticalAlignment verticalAlignment)
+                                              VerticalAlignment verticalAlignment,
+                                              RenderContext ctx)
     {
         int screenWidth = GuiUtils.getScaledWindowWidth();
         int screenHeight = GuiUtils.getScaledWindowHeight();
@@ -397,7 +404,7 @@ public class InventoryRenderUtils
             bgTintColor = ((ColoredVanillaInventoryView) inv).getBackgroundTintColor();
         }
 
-        renderDefinition.renderInventory(x, y, z, bgTintColor, inv);
+        renderDefinition.renderInventory(x, y, z, bgTintColor, inv, ctx);
     }
 
     /**

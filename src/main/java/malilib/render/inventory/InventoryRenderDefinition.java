@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.GlStateManager;
 
 import malilib.gui.icon.Icon;
 import malilib.gui.icon.PositionedIcon;
+import malilib.render.RenderContext;
 import malilib.render.RenderUtils;
 import malilib.util.inventory.InventoryView;
 import malilib.util.position.Vec2i;
@@ -60,16 +61,16 @@ public class InventoryRenderDefinition
         return this.renderHeightFunction.applyAsInt(inv.getSize());
     }
 
-    public void renderInventory(int x, int y, float z, int backgroundTintColor, InventoryView inv)
+    public void renderInventory(int x, int y, float z, int backgroundTintColor, InventoryView inv, RenderContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.disableItemLighting();
 
-        this.renderInventoryBackground(x, y, z, backgroundTintColor, inv);
+        this.renderInventoryBackground(x, y, z, backgroundTintColor, inv, ctx);
 
         if (this.hasEmptySlotTextures)
         {
-            InventoryRenderUtils.renderEmptySlotBackgrounds(x, y, z, backgroundTintColor, inv, this.emptySlotTextures);
+            InventoryRenderUtils.renderEmptySlotBackgrounds(x, y, z, backgroundTintColor, inv, this.emptySlotTextures, ctx);
         }
 
         GlStateManager.pushMatrix();
@@ -77,18 +78,18 @@ public class InventoryRenderDefinition
 
         if (this.hasInventoryRanges)
         {
-            InventoryRenderUtils.renderInventoryRanges(x, y, 0, inv, this.inventoryRanges, backgroundTintColor);
+            InventoryRenderUtils.renderInventoryRanges(x, y, 0, inv, this.inventoryRanges, backgroundTintColor, ctx);
         }
 
         if (this.hasCustomSlotPositions)
         {
-            InventoryRenderUtils.renderCustomPositionedSlots(x, y, 100f, inv, this.customSlotPositions);
+            InventoryRenderUtils.renderCustomPositionedSlots(x, y, 100f, inv, this.customSlotPositions, ctx);
         }
 
         if (this.hasCustomSlotPositions == false && this.hasInventoryRanges == false)
         {
             int slotsPerRow = this.slotsPerRowFunction.applyAsInt(inv.getSize());
-            InventoryRenderUtils.renderGenericInventoryItems(x, y, 100f, 0, -1, slotsPerRow, this.slotOffset, inv);
+            InventoryRenderUtils.renderGenericInventoryItems(x, y, 100f, 0, -1, slotsPerRow, this.slotOffset, inv, ctx);
         }
 
         GlStateManager.popMatrix();
@@ -96,7 +97,8 @@ public class InventoryRenderDefinition
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
-    protected void renderInventoryBackground(int x, int y, float z, int backgroundTintColor, InventoryView inv)
+    protected void renderInventoryBackground(int x, int y, float z, int backgroundTintColor,
+                                             InventoryView inv, RenderContext ctx)
     {
         if (this.backgroundTextures.isEmpty() == false)
         {
@@ -106,7 +108,7 @@ public class InventoryRenderDefinition
         {
             int slotsPerRow = this.slotsPerRowFunction.applyAsInt(inv.getSize());
             int slotCount = inv.getSize();
-            InventoryRenderUtils.renderDynamicInventoryBackground(x, y, z, backgroundTintColor, slotsPerRow, slotCount);
+            InventoryRenderUtils.renderDynamicInventoryBackground(x, y, z, backgroundTintColor, slotsPerRow, slotCount, ctx);
         }
     }
 

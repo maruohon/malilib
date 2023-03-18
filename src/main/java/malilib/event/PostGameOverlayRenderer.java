@@ -1,5 +1,6 @@
 package malilib.event;
 
+import malilib.render.RenderContext;
 import malilib.util.ProfilerSectionSupplierSupplier;
 
 public interface PostGameOverlayRenderer extends ProfilerSectionSupplierSupplier
@@ -13,5 +14,5 @@ public interface PostGameOverlayRenderer extends ProfilerSectionSupplierSupplier
      * Note: The client world and the client player are checked
      * to not be null before this method is called.
      */
-    void onPostGameOverlayRender();
+    void onPostGameOverlayRender(RenderContext ctx);
 }

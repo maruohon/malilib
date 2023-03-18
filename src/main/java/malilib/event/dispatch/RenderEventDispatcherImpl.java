@@ -9,6 +9,7 @@ import malilib.event.PostGameOverlayRenderer;
 import malilib.event.PostItemTooltipRenderer;
 import malilib.event.PostScreenRenderer;
 import malilib.event.PostWorldRenderer;
+import malilib.render.RenderContext;
 import malilib.render.overlay.OverlayRendererContainer;
 import malilib.util.game.wrap.GameUtils;
 
@@ -67,7 +68,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostGameOverlayRenderer renderer : this.overlayRenderers)
             {
                 GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
-                renderer.onPostGameOverlayRender();
+                renderer.onPostGameOverlayRender(RenderContext.DUMMY);
                 GameUtils.profilerPop();
             }
 
@@ -87,7 +88,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostScreenRenderer renderer : this.screenPostRenderers)
             {
                 GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
-                renderer.onPostScreenRender(tickDelta);
+                renderer.onPostScreenRender(RenderContext.DUMMY, tickDelta);
                 GameUtils.profilerPop();
             }
 
@@ -107,7 +108,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostItemTooltipRenderer renderer : this.tooltipLastRenderers)
             {
                 GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
-                renderer.onPostRenderItemTooltip(stack, x, y);
+                renderer.onPostRenderItemTooltip(stack, x, y, RenderContext.DUMMY);
                 GameUtils.profilerPop();
             }
 
@@ -132,7 +133,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostWorldRenderer renderer : this.worldLastRenderers)
             {
                 GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
-                renderer.onPostWorldRender(tickDelta);
+                renderer.onPostWorldRender(RenderContext.DUMMY, tickDelta);
                 GameUtils.profilerPop();
             }
 
