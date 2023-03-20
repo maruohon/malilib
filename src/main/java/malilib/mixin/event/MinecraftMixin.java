@@ -17,32 +17,32 @@ import malilib.event.dispatch.InitializationDispatcherImpl;
 import malilib.registry.Registry;
 
 @Mixin(Minecraft.class)
-public abstract class MinecraftClientMixin
+public abstract class MinecraftMixin
 {
-    @Shadow public ClientLevel world;
+    @Shadow public ClientLevel level;
 
     private ClientLevel worldBefore;
 
-    @Inject(method = "<init>(Lnet/minecraft/client/RunArgs;)V", at = @At("RETURN"))
+    @Inject(method = "<init>(Lnet/minecraft/client/main/GameConfig;)V", at = @At("RETURN"))
     private void onInitComplete(GameConfig args, CallbackInfo ci)
     {
         // Register all mod handlers
         ((InitializationDispatcherImpl) Registry.INITIALIZATION_DISPATCHER).onGameInitDone();
     }
 
-    @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;)V", at = @At("HEAD"))
+    @Inject(method = "setLevel(Lnet/minecraft/client/multiplayer/ClientLevel;)V", at = @At("HEAD"))
     private void onLoadWorldPre(@Nullable ClientLevel worldClientIn, CallbackInfo ci)
     {
         // Only handle dimension changes/respawns here.
         // The initial join is handled in MixinClientPlayNetworkHandler onGameJoin 
-        if (this.world != null)
+        if (this.level != null)
         {
-            this.worldBefore = this.world;
-            ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.world, worldClientIn);
+            this.worldBefore = this.level;
+            ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.level, worldClientIn);
         }
     }
 
-    @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;)V", at = @At("RETURN"))
+    @Inject(method = "setLevel(Lnet/minecraft/client/multiplayer/ClientLevel;)V", at = @At("RETURN"))
     private void onLoadWorldPost(@Nullable ClientLevel worldClientIn, CallbackInfo ci)
     {
         if (this.worldBefore != null)
@@ -52,14 +52,14 @@ public abstract class MinecraftClientMixin
         }
     }
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
+    @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"))
     private void onDisconnectPre(Screen screen, CallbackInfo ci)
     {
-        this.worldBefore = this.world;
+        this.worldBefore = this.level;
         ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.worldBefore, null);
     }
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("RETURN"))
+    @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("RETURN"))
     private void onDisconnectPost(Screen screen, CallbackInfo ci)
     {
         ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, null);

@@ -13,30 +13,30 @@ import malilib.input.InputDispatcherImpl;
 import malilib.registry.Registry;
 
 @Mixin(MouseHandler.class)
-public class MouseMixin
+public class MouseHandlerMixin
 {
-    @Shadow private double eventDeltaWheel;
+    @Shadow private double accumulatedScroll;
 
-    @Inject(method = "onCursorPos",
-            at = @At(value = "FIELD", target = "Lnet/minecraft/client/Mouse;hasResolutionChanged:Z", ordinal = 0))
+    @Inject(method = "onMove",
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/MouseHandler;ignoreFirstMove:Z", ordinal = 0))
     private void hookOnMouseMove(long handle, double xpos, double ypos, CallbackInfo ci)
     {
         ((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onMouseMove(xpos, ypos);
     }
 
-    @Inject(method = "onMouseScroll", cancellable = true,
-            at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", ordinal = 0))
+    @Inject(method = "onScroll", cancellable = true,
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;", ordinal = 0))
     private void hookOnMouseScroll(long handle, double xOffset, double yOffset, CallbackInfo ci)
     {
         if (((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onMouseScroll(xOffset, yOffset))
         {
-            this.eventDeltaWheel = 0.0;
+            this.accumulatedScroll = 0.0;
             ci.cancel();
         }
     }
 
-    @Inject(method = "onMouseButton", cancellable = true,
-            at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;IS_SYSTEM_MAC:Z", ordinal = 0))
+    @Inject(method = "onPress", cancellable = true,
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;ON_OSX:Z", ordinal = 0))
     private void hookOnMouseClick(long handle, final int button, final int action, int mods, CallbackInfo ci)
     {
         final boolean keyState = action == GLFW.GLFW_PRESS;

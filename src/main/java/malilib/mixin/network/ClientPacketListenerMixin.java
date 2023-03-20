@@ -12,11 +12,11 @@ import malilib.network.ClientPacketChannelHandlerImpl;
 import malilib.registry.Registry;
 
 @Mixin(ClientPacketListener.class)
-public abstract class ClientPlayNetworkHandlerMixin
+public abstract class ClientPacketListenerMixin
 {
-    @Inject(method = "onCustomPayload", cancellable = true,
+    @Inject(method = "handleCustomPayload", cancellable = true,
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;getChannel()Lnet/minecraft/util/Identifier;"))
+                    target = "Lnet/minecraft/network/protocol/game/ClientboundCustomPayloadPacket;getIdentifier()Lnet/minecraft/resources/ResourceLocation;"))
     private void onCustomPayload(ClientboundCustomPayloadPacket packet, CallbackInfo ci)
     {
         if (((ClientPacketChannelHandlerImpl) Registry.CLIENT_PACKET_CHANNEL_HANDLER).processPacketFromServer(packet, (ClientPacketListener)(Object) this))

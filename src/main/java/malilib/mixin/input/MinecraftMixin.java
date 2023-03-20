@@ -12,7 +12,7 @@ import malilib.input.KeyBindImpl;
 import malilib.registry.Registry;
 
 @Mixin(Minecraft.class)
-public abstract class MinecraftClientMixin
+public abstract class MinecraftMixin
 {
     @Inject(method = "tick()V", at = @At("RETURN"))
     private void onPostKeyboardInput(CallbackInfo ci)

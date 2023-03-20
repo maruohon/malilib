@@ -4,18 +4,18 @@
 	"compatibilityLevel": "JAVA_17",
 	"minVersion": "0.8",
 	"client": [
-		"access.AbstractHorseEntityMixin",
+		"access.AbstractHorseMixin",
 		"access.NbtElementMixin",
-		"event.ClientPlayNetworkHandlerMixin",
-		"event.MinecraftClientMixin",
-		"input.KeyboardMixin",
-		"input.MinecraftClientMixin",
-		"input.MouseMixin",
-		"network.ClientPlayNetworkHandlerMixin",
-		"render.CreativeInventoryScreenMixin",
-		"render.InGameHudMixin",
-		"render.ScreenMixin",
-		"render.WorldRendererMixin"
+		"event.ClientPacketListenerMixin",
+		"event.MinecraftMixin",
+		"input.KeyboardHandlerMixin",
+		"input.MinecraftMixin",
+		"input.MouseHandlerMixin",
+		"network.ClientPacketListenerMixin",
+		"render.CreativeModeInventoryScreenMixin",
+		"render.GuiMixin",
+		"render.LevelRendererMixin",
+		"render.ScreenMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

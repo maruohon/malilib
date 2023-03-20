@@ -12,18 +12,18 @@ import malilib.input.InputDispatcherImpl;
 import malilib.registry.Registry;
 
 @Mixin(KeyboardHandler.class)
-public abstract class KeyboardMixin// implements F3KeyStateSetter
+public abstract class KeyboardHandlerMixin// implements F3KeyStateSetter
 {
-    @Shadow private boolean switchF3State;
+    @Shadow private boolean handledDebugKey;
 
     //@Override
     public void setF3KeyState(boolean value)
     {
-        this.switchF3State = value;
+        this.handledDebugKey = value;
     }
 
-    @Inject(method = "onKey", cancellable = true,
-            at = @At(value = "FIELD", target = "Lnet/minecraft/client/Keyboard;debugCrashStartTime:J", ordinal = 0))
+    @Inject(method = "keyPress", cancellable = true,
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/KeyboardHandler;debugCrashKeyTime:J", ordinal = 0))
     private void onKeyboardInput(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci)
     {
         if (((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onKeyInput(key, scanCode, modifiers, action != 0))

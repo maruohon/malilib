@@ -7,8 +7,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 
 @Mixin(AbstractHorse.class)
-public interface AbstractHorseEntityMixin
+public interface AbstractHorseMixin
 {
-    @Accessor("items")
+    @Accessor("inventory")
     SimpleContainer malilib_getHorseChest();
 }

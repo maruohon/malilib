@@ -12,7 +12,7 @@ import malilib.event.dispatch.RenderEventDispatcherImpl;
 import malilib.registry.Registry;
 
 @Mixin(Gui.class)
-public abstract class InGameHudMixin
+public abstract class GuiMixin
 {
     @Inject(method = "render", at = @At("RETURN"))
     private void onGameOverlayPost(PoseStack matrixStack, float partialTicks, CallbackInfo ci)
