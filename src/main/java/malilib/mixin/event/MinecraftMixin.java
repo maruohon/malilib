@@ -9,11 +9,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.main.GameConfig;
 import net.minecraft.client.multiplayer.ClientLevel;
 
 import malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl;
-import malilib.event.dispatch.InitializationDispatcherImpl;
 import malilib.registry.Registry;
 
 @Mixin(Minecraft.class)
@@ -23,12 +21,14 @@ public abstract class MinecraftMixin
 
     private ClientLevel worldBefore;
 
+    /*
     @Inject(method = "<init>(Lnet/minecraft/client/main/GameConfig;)V", at = @At("RETURN"))
     private void onInitComplete(GameConfig args, CallbackInfo ci)
     {
         // Register all mod handlers
         ((InitializationDispatcherImpl) Registry.INITIALIZATION_DISPATCHER).onGameInitDone();
     }
+    */
 
     @Inject(method = "setLevel(Lnet/minecraft/client/multiplayer/ClientLevel;)V", at = @At("HEAD"))
     private void onLoadWorldPre(@Nullable ClientLevel worldClientIn, CallbackInfo ci)

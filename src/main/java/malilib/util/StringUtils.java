@@ -10,8 +10,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -25,6 +23,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
@@ -67,11 +67,11 @@ public class StringUtils
     {
         try
         {
-            Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(modId);
+            Optional<? extends ModContainer> container = ModList.get().getModContainerById(modId);
 
             if (container.isPresent())
             {
-                return container.get().getMetadata().getVersion().getFriendlyString();
+                return container.get().getModInfo().getVersion().toString();
             }
         }
         catch (Exception ignore) {}

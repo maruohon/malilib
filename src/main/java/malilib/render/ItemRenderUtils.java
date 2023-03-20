@@ -67,6 +67,7 @@ public class ItemRenderUtils
         {
             if (i == 0)
             {
+                //lines.add(stack.getRarity().getStyleModifier().apply(Style.EMPTY).getInsertion() + list.get(i).getString());
                 lines.add(stack.getRarity().color + list.get(i).getString());
             }
             else
