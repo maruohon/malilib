@@ -1,7 +1,7 @@
 package malilib.overlay.message;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 
 import malilib.MaLiLibConfigs;
 import malilib.overlay.widget.MessageRendererWidget;
@@ -79,13 +79,13 @@ public class DefaultMessageDispatchers
 
     public static void addLocalVanillaChatMessage(String translatedMessage)
     {
-        MutableComponent msg = Component.literal(translatedMessage);
+        MutableComponent msg = new TextComponent(translatedMessage);
         GameUtils.getClient().gui.getChat().addMessage(msg);
     }
 
     public static void addVanillaOverlayMessage(String translatedMessage)
     {
-        MutableComponent msg = Component.literal(translatedMessage);
+        MutableComponent msg = new TextComponent(translatedMessage);
         GameUtils.getClient().gui.setOverlayMessage(msg, false);
     }
 

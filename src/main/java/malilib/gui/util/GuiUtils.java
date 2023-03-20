@@ -266,7 +266,7 @@ public class GuiUtils
 
             final Screen currentScreen = getCurrentScreen();
 
-            if (GameUtils.getOptions().getChatLinksPrompt().getValue())
+            if (GameUtils.getOptions().chatLinksPrompt)
             {
                 BaseScreen.openScreen(new ConfirmLinkScreen((result) -> {
                     if (result)

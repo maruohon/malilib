@@ -21,8 +21,9 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 
 import malilib.MaLiLib;
@@ -149,11 +150,11 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(String messageKey, Path file)
     {
-        MutableComponent name = (Component.literal(file.getFileName().toString()))
-                .formatted(ChatFormatting.UNDERLINE)
-                .styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString())));
+        MutableComponent name = (new TextComponent(file.getFileName().toString()))
+                .withStyle(ChatFormatting.UNDERLINE)
+                .withStyle((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString())));
 
-        GameUtils.getClient().gui.getChat().addMessage(Component.translatable(messageKey, name));
+        GameUtils.getClient().gui.getChat().addMessage(new TranslatableComponent(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)

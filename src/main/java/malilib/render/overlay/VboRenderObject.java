@@ -30,10 +30,7 @@ public class VboRenderObject extends BaseRenderObject
     @Override
     public void uploadData(BufferBuilder buffer)
     {
-        BufferBuilder.BuiltBuffer renderBuffer = buffer.end();
-        this.vertexBuffer.bind();
-        this.vertexBuffer.upload(renderBuffer);
-        VertexBuffer.unbind();
+        this.vertexBuffer.upload(buffer);
     }
 
     @Override

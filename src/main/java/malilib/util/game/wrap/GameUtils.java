@@ -100,7 +100,12 @@ public class GameUtils
 
         if (player != null)
         {
-            player.sendCommand(command);
+            if (command.startsWith("/") == false)
+            {
+                command = "/" + command;
+            }
+
+            player.chat(command);
         }
     }
 
@@ -141,12 +146,12 @@ public class GameUtils
 
     public static int getRenderDistanceChunks()
     {
-        return getOptions().getEffectiveRenderDistance().getValue();
+        return getOptions().getEffectiveRenderDistance();
     }
 
     public static int getVanillaOptionsScreenScale()
     {
-        return GameUtils.getOptions().getGuiScale().getValue();
+        return GameUtils.getOptions().guiScale;
     }
 
     public static boolean isSinglePlayer()

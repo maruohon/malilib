@@ -86,13 +86,6 @@ public abstract class BaseScreen extends Screen
     }
 
     @Override
-    public void init()
-    {
-        super.init();
-        this.initScreen();
-    }
-
-    @Override
     public void removed()
     {
         super.removed();
@@ -101,7 +94,7 @@ public abstract class BaseScreen extends Screen
 
     // TODO 1.13+ port - does this init hierarchy work?
     @Override
-    protected void clearAndInit()
+    public void init()
     {
         this.onScreenResolutionSet(this.width, this.height);
 
@@ -116,7 +109,7 @@ public abstract class BaseScreen extends Screen
             this.getParent().init(this.mc, this.width, this.height);
         }
 
-        super.clearAndInit();
+        this.initScreen();
     }
 
     @Override

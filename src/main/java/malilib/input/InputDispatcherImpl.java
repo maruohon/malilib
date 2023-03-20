@@ -149,8 +149,8 @@ public class InputDispatcherImpl implements InputDispatcher
 
     public boolean onMouseScroll(final double xOffset, final double yOffset)
     {
-        boolean discrete = GameUtils.getOptions().getDiscreteMouseScroll().getValue();
-        double sensitivity = GameUtils.getOptions().getMouseWheelSensitivity().getValue();
+        boolean discrete = GameUtils.getOptions().discreteMouseScroll;
+        double sensitivity = GameUtils.getOptions().mouseWheelSensitivity;
         double amount = (discrete ? Math.signum(yOffset) : yOffset) * sensitivity;
         boolean cancel = false;
 

@@ -7,9 +7,10 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
@@ -187,8 +188,8 @@ public class MessageDispatcher
     {
         if (MaLiLibConfigs.Debug.MESSAGE_KEY_TO_CHAT.getBooleanValue())
         {
-            MutableComponent message = Component.literal(translationKey);
-            MutableComponent hoverMessage = Component.translatable("malilib.label.message_debug.add_key_to_chat");
+            MutableComponent message = new TextComponent(translationKey);
+            MutableComponent hoverMessage = new TranslatableComponent("malilib.label.message_debug.add_key_to_chat");
             message.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
             message.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
             GameUtils.getClient().gui.getChat().addMessage(message);

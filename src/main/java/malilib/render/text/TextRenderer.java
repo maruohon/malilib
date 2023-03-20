@@ -307,10 +307,15 @@ public class TextRenderer
         // TODO 1.13+ port
         if (this.buildingStyleBuffer)
         {
-            RenderSystem.disableTexture();
-            RenderSystem.setShader(GameRenderer::getPositionColorShader);
-            BufferUploader.drawWithShader(this.styleBuffer.end());
-            RenderSystem.enableTexture();
+            if (this.styleBuffer.building())
+            {
+                this.styleBuffer.end();
+                RenderSystem.disableTexture();
+                RenderSystem.setShader(GameRenderer::getPositionColorShader);
+                BufferUploader.end(this.styleBuffer);
+                RenderSystem.enableTexture();
+            }
+
             this.buildingStyleBuffer = false;
         }
     }
@@ -322,11 +327,16 @@ public class TextRenderer
             // TODO 1.13+ port
             if (this.currentFontTexture != null)
             {
-                RenderSystem.enableTexture();
-                RenderUtils.bindTexture(this.currentFontTexture);
-                RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-                BufferUploader.drawWithShader(this.textBuffer.end());
-                RenderSystem.disableTexture();
+                if (this.textBuffer.building())
+                {
+                    this.textBuffer.end();
+                    RenderSystem.enableTexture();
+                    RenderUtils.bindTexture(this.currentFontTexture);
+                    RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+                    BufferUploader.end(this.textBuffer);
+                    RenderSystem.disableTexture();
+                }
+
                 this.buildingTextBuffer = false;
             }
 

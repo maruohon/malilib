@@ -56,10 +56,10 @@ public class TextRendererUtils
 
     public static void readGlyphSizes(byte[] glyphWidth)
     {
-        Resource resource = GameUtils.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin")).orElse(null);
-        
         try
         {
+            Resource resource = GameUtils.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin"));
+
             if (resource == null || resource.getInputStream().read(glyphWidth) <= 0)
             {
                 MaLiLib.LOGGER.warn("Failed to read glyph sizes from 'font/glyph_sizes.bin'");
@@ -74,7 +74,13 @@ public class TextRendererUtils
     public static void readCharacterWidthsFromFontTexture(Identifier texture, int[] charWidthArray,
                                                           IntConsumer glyphWidthListener, IntConsumer glyphHeightListener)
     {
-        Resource resource = GameUtils.getClient().getResourceManager().getResource(texture).orElse(null);
+        Resource resource = null;
+
+        try
+        {
+            resource = GameUtils.getClient().getResourceManager().getResource(texture);
+        }
+        catch (Exception ignore) {}
 
         if (resource == null)
         {
