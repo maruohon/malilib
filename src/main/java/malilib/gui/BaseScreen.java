@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -492,6 +494,7 @@ public abstract class BaseScreen extends Screen
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.setupBlend();
+        RenderSystem.enableDepthTest();
 
         // These are after the parent rendering, because the parent
         // can/will also both enable and disable the custom scale,
@@ -532,6 +535,8 @@ public abstract class BaseScreen extends Screen
         {
             RenderUtils.setupScaledScreenRendering(GuiUtils.getVanillaScreenScale());
         }
+
+        RenderSystem.disableDepthTest();
     }
 
     @Override

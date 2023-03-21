@@ -292,10 +292,10 @@ public class ShapeRenderUtils
         double v1 = v                   * pixelHeight;
         double v2 = (v + textureHeight) * pixelHeight;
 
-        buffer.vertex(x , y2, z).texture(u1, v2).next();
-        buffer.vertex(x2, y2, z).texture(u2, v2).next();
-        buffer.vertex(x2, y , z).texture(u2, v1).next();
-        buffer.vertex(x , y , z).texture(u1, v1).next();
+        buffer.vertex(x , y2, z).texture((float) u1, (float) v2).next();
+        buffer.vertex(x2, y2, z).texture((float) u2, (float) v2).next();
+        buffer.vertex(x2, y , z).texture((float) u2, (float) v1).next();
+        buffer.vertex(x , y , z).texture((float) u1, (float) v1).next();
     }
 
     /**
