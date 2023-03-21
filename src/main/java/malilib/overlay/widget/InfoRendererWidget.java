@@ -9,8 +9,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
-import net.minecraft.client.renderer.GlStateManager;
-
 import malilib.MaLiLibConfigs;
 import malilib.config.value.ScreenLocation;
 import malilib.gui.util.BackgroundRenderer;
@@ -308,9 +306,9 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
 
         if (scaled)
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(x, y, z);
-            GlStateManager.scale(this.scale, this.scale, 1);
+            ctx.matrixStack.push();
+            ctx.matrixStack.translate(x, y, z);
+            ctx.matrixStack.scale((float) this.scale, (float) this.scale, 1);
 
             x = 0;
             y = 0;
@@ -325,7 +323,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
 
         if (scaled)
         {
-            GlStateManager.popMatrix();
+            ctx.matrixStack.pop();
         }
 
         if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())

@@ -7,11 +7,9 @@ import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Matrix4f;
@@ -30,7 +28,6 @@ public class OverlayRendererContainer
     protected final List<BaseOverlayRenderer> renderers = new ArrayList<>();
     protected final List<BaseOverlayRenderer> enabledRenderers = new ArrayList<>();
     protected boolean resourcesAllocated;
-    protected boolean useVbo;
     protected int countActive;
 
     private boolean canRender;
@@ -166,76 +163,53 @@ public class OverlayRendererContainer
     {
         if (this.resourcesAllocated && this.countActive > 0)
         {
-            GlStateManager.pushMatrix();
-
-            GlStateManager.disableTexture2D();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
-            GlStateManager.disableCull();
-            GlStateManager.disableLighting();
-            GlStateManager.depthMask(false);
-            GlStateManager.doPolygonOffset(-3f, -3f);
-            GlStateManager.enablePolygonOffset();
+            RenderSystem.disableTexture();
+            RenderSystem.disableCull();
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthMask(false);
+            RenderSystem.polygonOffset(-3f, -3f);
+            RenderSystem.enablePolygonOffset();
 
             RenderUtils.setupBlend();
             RenderUtils.color(1f, 1f, 1f, 1f);
-
-            if (OpenGlHelper.useVbo())
-            {
-                GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-                GlStateManager.glEnableClientState(GL11.GL_COLOR_ARRAY);
-            }
 
             double cx = cameraPos.x;
             double cy = cameraPos.y;
             double cz = cameraPos.z;
 
-            for (BaseOverlayRenderer renderer : this.enabledRenderers)
+            for (BaseOverlayRenderer renderer : this.renderers)
             {
                 GameUtils.profilerPush(() -> renderer.getClass().getName());
 
                 if (renderer.shouldRender())
                 {
                     Vec3d updatePos = renderer.getUpdatePosition();
-                    GlStateManager.pushMatrix();
-                    GlStateManager.translate(updatePos.x - cx, updatePos.y - cy, updatePos.z - cz);
+                    matrixStack.push();
+                    matrixStack.translate(updatePos.x - cx, updatePos.y - cy, updatePos.z - cz);
 
-                    renderer.draw();
+                    renderer.draw(matrixStack, projMatrix);
 
-                    GlStateManager.popMatrix();
+                    matrixStack.pop();
                 }
 
                 GameUtils.profilerPop();
             }
 
-            if (OpenGlHelper.useVbo())
-            {
-                OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, 0);
-                GlStateManager.resetColor();
-
-                GlStateManager.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-                GlStateManager.glDisableClientState(GL11.GL_COLOR_ARRAY);
-            }
-
             RenderUtils.color(1f, 1f, 1f, 1f);
 
-            GlStateManager.doPolygonOffset(0f, 0f);
-            GlStateManager.disablePolygonOffset();
-            GlStateManager.disableBlend();
-            GlStateManager.enableDepth();
-            GlStateManager.enableCull();
-            GlStateManager.depthMask(true);
-            GlStateManager.enableTexture2D();
-
-            GlStateManager.popMatrix();
+            RenderSystem.polygonOffset(0f, 0f);
+            RenderSystem.disablePolygonOffset();
+            RenderSystem.disableBlend();
+            RenderSystem.enableDepthTest();
+            RenderSystem.enableCull();
+            RenderSystem.depthMask(true);
+            RenderSystem.enableTexture();
         }
     }
 
     protected void checkVideoSettings()
     {
-        boolean vboLast = this.useVbo;
-        this.useVbo = OpenGlHelper.useVbo();
-
-        if (vboLast != this.useVbo || this.resourcesAllocated == false)
+        if (this.resourcesAllocated == false)
         {
             this.deleteGlResources();
             this.allocateGlResources();

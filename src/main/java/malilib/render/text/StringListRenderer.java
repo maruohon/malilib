@@ -2,11 +2,13 @@ package malilib.render.text;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 
 import malilib.config.value.HorizontalAlignment;
 import malilib.gui.util.ScreenContext;
@@ -285,7 +287,7 @@ public class StringListRenderer extends BaseWidget
 
         if (renderBackground)
         {
-            buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
+            buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
         }
 
         TextRenderer.INSTANCE.startBuffers();
@@ -338,8 +340,8 @@ public class StringListRenderer extends BaseWidget
 
         if (renderBackground)
         {
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderUtils.drawBuffer();
-            GlStateManager.enableTexture2D();
         }
 
         TextRenderer.INSTANCE.renderBuffers();
