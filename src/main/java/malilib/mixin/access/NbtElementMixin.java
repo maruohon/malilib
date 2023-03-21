@@ -5,10 +5,10 @@ import java.io.IOException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NbtElement;
 
-@Mixin(NBTBase.class)
-public interface NBTBaseMixin
+@Mixin(NbtElement.class)
+public interface NbtElementMixin
 {
     @Invoker("write")
     void invokeWrite(DataOutput output) throws IOException;

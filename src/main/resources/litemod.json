@@ -1,5 +1,0 @@
-{
-	"name": "malilib",
-	"mcversion": "1.12.2",
-	"mixinConfigs": [ "mixins.malilib.json" ]
-}
