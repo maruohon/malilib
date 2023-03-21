@@ -6,11 +6,13 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.Mouse;
+
+import net.minecraft.client.MouseHandler;
+
 import malilib.input.InputDispatcherImpl;
 import malilib.registry.Registry;
 
-@Mixin(Mouse.class)
+@Mixin(MouseHandler.class)
 public class MouseMixin
 {
     @Shadow private double eventDeltaWheel;

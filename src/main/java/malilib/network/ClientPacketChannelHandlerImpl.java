@@ -10,21 +10,21 @@ import com.google.common.collect.ArrayListMultimap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
+import net.minecraft.resources.ResourceLocation;
 
 import malilib.MaLiLib;
 import malilib.util.game.wrap.GameUtils;
 
 public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandler
 {
-    public static final Identifier REGISTER = new Identifier("minecraft:register");
-    public static final Identifier UNREGISTER = new Identifier("minecraft:unregister");
+    public static final ResourceLocation REGISTER = new ResourceLocation("minecraft:register");
+    public static final ResourceLocation UNREGISTER = new ResourceLocation("minecraft:unregister");
 
-    protected final ArrayListMultimap<Identifier, PluginChannelHandler> handlers = ArrayListMultimap.create();
+    protected final ArrayListMultimap<ResourceLocation, PluginChannelHandler> handlers = ArrayListMultimap.create();
 
     public ClientPacketChannelHandlerImpl()
     {
@@ -33,9 +33,9 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     @Override
     public void registerClientChannelHandler(PluginChannelHandler handler)
     {
-        Set<Identifier> toRegister = new HashSet<>();
+        Set<ResourceLocation> toRegister = new HashSet<>();
 
-        for (Identifier channel : handler.getChannels())
+        for (ResourceLocation channel : handler.getChannels())
         {
             if (this.handlers.containsEntry(channel, handler) == false)
             {
@@ -57,9 +57,9 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     @Override
     public void unregisterClientChannelHandler(PluginChannelHandler handler)
     {
-        Set<Identifier> toUnRegister = new HashSet<>();
+        Set<ResourceLocation> toUnRegister = new HashSet<>();
 
-        for (Identifier channel : handler.getChannels())
+        for (ResourceLocation channel : handler.getChannels())
         {
             if (this.handlers.remove(channel, handler) && handler.registerToServer())
             {
@@ -76,16 +76,16 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean processPacketFromServer(CustomPayloadS2CPacket packet, ClientPlayNetworkHandler netHandler)
+    public boolean processPacketFromServer(ClientboundCustomPayloadPacket packet, ClientPacketListener netHandler)
     {
-        Identifier channel = packet.getChannel();
+        ResourceLocation channel = packet.getIdentifier();
         List<PluginChannelHandler> handlers = this.handlers.get(channel);
 
         if (handlers.isEmpty() == false)
         {
             for (PluginChannelHandler handler : handlers)
             {
-                PacketByteBuf buf;
+                FriendlyByteBuf buf;
 
                 if (handler.usePacketSplitter())
                 {
@@ -110,17 +110,17 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
         return false;
     }
 
-    protected void sendRegisterPacket(Identifier type, Collection<Identifier> channels)
+    protected void sendRegisterPacket(ResourceLocation type, Collection<ResourceLocation> channels)
     {
-        String joinedChannels = channels.stream().map(Identifier::toString).collect(Collectors.joining("\0"));
+        String joinedChannels = channels.stream().map(ResourceLocation::toString).collect(Collectors.joining("\0"));
         ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
-        ClientPlayNetworkHandler handler = GameUtils.getClient().getNetworkHandler();
-        CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(type, new PacketByteBuf(payload));
+        ClientPacketListener handler = GameUtils.getClient().getConnection();
+        ServerboundCustomPayloadPacket packet = new ServerboundCustomPayloadPacket(type, new FriendlyByteBuf(payload));
 
         if (handler != null)
         {
             MaLiLib.debugLog("(Un-)Registering packet handlers: type: '{}', '{}'", type, channels);
-            handler.sendPacket(packet);
+            handler.send(packet);
         }
         else
         {

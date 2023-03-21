@@ -6,13 +6,13 @@ import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class RegistryUtils
 {
@@ -20,7 +20,7 @@ public class RegistryUtils
     {
         try
         {
-            return Registry.BLOCK.get(new Identifier(name));
+            return Registry.BLOCK.get(new ResourceLocation(name));
         }
         catch (Exception e)
         {
@@ -28,39 +28,39 @@ public class RegistryUtils
         }
     }
 
-    public static Block getBlockById(Identifier id)
+    public static Block getBlockById(ResourceLocation id)
     {
         Block block = Registry.BLOCK.get(id);
         return block != null ? block : Blocks.AIR;
     }
 
     @Nullable
-    public static Identifier getBlockId(Block block)
+    public static ResourceLocation getBlockId(Block block)
     {
-        return Registry.BLOCK.getId(block);
+        return Registry.BLOCK.getKey(block);
     }
 
     @Nullable
-    public static Identifier getBlockId(BlockState state)
+    public static ResourceLocation getBlockId(BlockState state)
     {
-        return Registry.BLOCK.getId(state.getBlock());
+        return Registry.BLOCK.getKey(state.getBlock());
     }
 
     public static String getBlockIdStr(Block block)
     {
-        Identifier id = Registry.BLOCK.getId(block);
+        ResourceLocation id = Registry.BLOCK.getKey(block);
         return id != null ? id.toString() : "?";
     }
 
     public static String getBlockIdStr(BlockState state)
     {
-        Identifier id = Registry.BLOCK.getId(state.getBlock());
+        ResourceLocation id = Registry.BLOCK.getKey(state.getBlock());
         return id != null ? id.toString() : "?";
     }
 
-    public static Collection<Identifier> getRegisteredBlockIds()
+    public static Collection<ResourceLocation> getRegisteredBlockIds()
     {
-        return Registry.BLOCK.getIds();
+        return Registry.BLOCK.keySet();
     }
 
     public static List<Block> getSortedBlockList()
@@ -81,7 +81,7 @@ public class RegistryUtils
     {
         try
         {
-            return Registry.ITEM.get(new Identifier(name));
+            return Registry.ITEM.get(new ResourceLocation(name));
         }
         catch (Exception e)
         {
@@ -89,27 +89,27 @@ public class RegistryUtils
         }
     }
 
-    public static Item getItemById(Identifier id)
+    public static Item getItemById(ResourceLocation id)
     {
         Item item = Registry.ITEM.get(id);
         return item != null ? item : Items.AIR;
     }
 
     @Nullable
-    public static Identifier getItemId(Item item)
+    public static ResourceLocation getItemId(Item item)
     {
-        return Registry.ITEM.getId(item);
+        return Registry.ITEM.getKey(item);
     }
 
     public static String getItemIdStr(Item item)
     {
-        Identifier id = Registry.ITEM.getId(item);
+        ResourceLocation id = Registry.ITEM.getKey(item);
         return id != null ? id.toString() : "?";
     }
 
-    public static Collection<Identifier> getRegisteredItemIds()
+    public static Collection<ResourceLocation> getRegisteredItemIds()
     {
-        return Registry.ITEM.getIds();
+        return Registry.ITEM.keySet();
     }
 
     public static List<Item> getSortedItemList()

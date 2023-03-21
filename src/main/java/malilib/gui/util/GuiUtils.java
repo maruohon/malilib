@@ -8,14 +8,14 @@ import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
+import com.mojang.blaze3d.platform.Window;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ConfirmLinkScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.Window;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.player.Player;
 
 import malilib.MaLiLib;
 import malilib.config.value.HudAlignment;
@@ -30,22 +30,22 @@ public class GuiUtils
 
     public static int getScaledWindowWidth()
     {
-        return GameUtils.getClient().getWindow().getScaledWidth();
+        return GameUtils.getClient().getWindow().getGuiScaledWidth();
     }
 
     public static int getScaledWindowHeight()
     {
-        return GameUtils.getClient().getWindow().getScaledHeight();
+        return GameUtils.getClient().getWindow().getGuiScaledHeight();
     }
 
     public static int getVanillaScreenScale()
     {
-        MinecraftClient mc = GameUtils.getClient();
+        Minecraft mc = GameUtils.getClient();
         int scale = Math.min(getDisplayWidth() / 320, getDisplayHeight() / 240);
         scale = Math.min(scale, GameUtils.getVanillaOptionsScreenScale());
         scale = Math.max(scale, 1);
 
-        if (mc.forcesUnicodeFont() && (scale & 0x1) != 0 && scale > 1)
+        if (mc.isEnforceUnicode() && (scale & 0x1) != 0 && scale > 1)
         {
             scale -= 1;
         }
@@ -55,46 +55,46 @@ public class GuiUtils
 
     public static int getDisplayWidth()
     {
-        return GameUtils.getClient().getWindow().getWidth();
+        return GameUtils.getClient().getWindow().getScreenWidth();
     }
 
     public static int getDisplayHeight()
     {
-        return GameUtils.getClient().getWindow().getHeight();
+        return GameUtils.getClient().getWindow().getScreenHeight();
     }
 
     public static int getMouseScreenX(int screenWidth)
     {
-        MinecraftClient mc = GameUtils.getClient();
+        Minecraft mc = GameUtils.getClient();
         Window window = mc.getWindow();
-        return (int) (mc.mouse.getX() * (double) screenWidth / (double) window.getWidth());
+        return (int) (mc.mouseHandler.xpos() * (double) screenWidth / (double) window.getScreenWidth());
     }
 
     public static int getMouseScreenY(int screenHeight)
     {
-        MinecraftClient mc = GameUtils.getClient();
+        Minecraft mc = GameUtils.getClient();
         Window window = mc.getWindow();
-        return (int) (mc.mouse.getY() * (double) screenHeight / (double) window.getHeight());
+        return (int) (mc.mouseHandler.ypos() * (double) screenHeight / (double) window.getScreenHeight());
     }
 
     public static int getMouseScreenX()
     {
-        MinecraftClient mc = MinecraftClient.getInstance();
+        Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
-        return (int) (mc.mouse.getX() * (double) window.getScaledWidth() / (double) window.getWidth());
+        return (int) (mc.mouseHandler.xpos() * (double) window.getGuiScaledWidth() / (double) window.getScreenWidth());
     }
 
     public static int getMouseScreenY()
     {
-        MinecraftClient mc = MinecraftClient.getInstance();
+        Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
-        return (int) (mc.mouse.getY() * (double) window.getScaledHeight() / (double) window.getHeight());
+        return (int) (mc.mouseHandler.ypos() * (double) window.getGuiScaledHeight() / (double) window.getScreenHeight());
     }
 
     @Nullable
     public static Screen getCurrentScreen()
     {
-        return GameUtils.getClient().currentScreen;
+        return GameUtils.getClient().screen;
     }
 
     @Nullable
@@ -116,9 +116,9 @@ public class GuiUtils
 
         if (screen != null)
         {
-            MinecraftClient mc = MinecraftClient.getInstance();
+            Minecraft mc = Minecraft.getInstance();
             Window window = mc.getWindow();
-            screen.init(mc, window.getScaledWidth(), window.getScaledHeight());
+            screen.init(mc, window.getGuiScaledWidth(), window.getGuiScaledHeight());
         }
     }
 
@@ -127,7 +127,7 @@ public class GuiUtils
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, PlayerEntity player)
+    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, Player player)
     {
         if (alignment == HudAlignment.TOP_RIGHT)
         {
@@ -137,18 +137,18 @@ public class GuiUtils
                 return 0;
             }
 
-            Collection<StatusEffectInstance> effects = player.getStatusEffects();
+            Collection<MobEffectInstance> effects = player.getActiveEffects();
 
             if (effects.isEmpty() == false)
             {
                 int y1 = 0;
                 int y2 = 0;
 
-                for (StatusEffectInstance effect : effects)
+                for (MobEffectInstance effect : effects)
                 {
-                    StatusEffect potion = effect.getEffectType();
+                    MobEffect potion = effect.getEffect();
 
-                    if (effect.shouldShowParticles() && effect.shouldShowIcon())
+                    if (effect.isVisible() && effect.showIcon())
                     {
                         if (potion.isBeneficial())
                         {

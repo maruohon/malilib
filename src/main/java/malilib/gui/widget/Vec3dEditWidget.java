@@ -2,17 +2,17 @@ package malilib.gui.widget;
 
 import java.util.function.Consumer;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.phys.Vec3;
 
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.position.Coordinate;
 
-public class Vec3dEditWidget extends BaseTripleNumberEditWidget<Vec3d, DoubleEditWidget>
+public class Vec3dEditWidget extends BaseTripleNumberEditWidget<Vec3, DoubleEditWidget>
 {
     public Vec3dEditWidget(int width, int height, int gap,
                            boolean addMoveToPlayerButton,
-                           Vec3d initialPos,
-                           Consumer<Vec3d> posConsumer)
+                           Vec3 initialPos,
+                           Consumer<Vec3> posConsumer)
     {
         super(width, height, gap, addMoveToPlayerButton, initialPos, posConsumer);
     }
@@ -20,7 +20,7 @@ public class Vec3dEditWidget extends BaseTripleNumberEditWidget<Vec3d, DoubleEdi
     @Override
     public void updateWidgetState()
     {
-        Vec3d pos = this.pos;
+        Vec3 pos = this.pos;
         this.xCoordinateWidget.setDoubleValue(pos.x);
         this.yCoordinateWidget.setDoubleValue(pos.y);
         this.zCoordinateWidget.setDoubleValue(pos.z);
@@ -34,7 +34,7 @@ public class Vec3dEditWidget extends BaseTripleNumberEditWidget<Vec3d, DoubleEdi
     }
 
     @Override
-    protected DoubleEditWidget createNumberEditWidget(int width, int height, Vec3d initialPos, Coordinate coord)
+    protected DoubleEditWidget createNumberEditWidget(int width, int height, Vec3 initialPos, Coordinate coord)
     {
         return new DoubleEditWidget(width, height,
                                     coord.asDouble(initialPos),
@@ -43,7 +43,7 @@ public class Vec3dEditWidget extends BaseTripleNumberEditWidget<Vec3d, DoubleEdi
     }
 
     @Override
-    protected Vec3d getPositionFromPlayer()
+    protected Vec3 getPositionFromPlayer()
     {
         return EntityWrap.getCameraEntityPosition();
     }

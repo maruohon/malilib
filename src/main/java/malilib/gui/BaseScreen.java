@@ -5,14 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import malilib.MaLiLibConfigs;
 import malilib.gui.icon.DefaultIcons;
@@ -35,7 +34,7 @@ import malilib.util.position.Vec2i;
 
 public abstract class BaseScreen extends Screen
 {
-    protected final MinecraftClient mc = GameUtils.getClient();
+    protected final Minecraft mc = GameUtils.getClient();
     protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
     protected final List<Runnable> tasks = new ArrayList<>();
     protected final List<Runnable> preInitListeners = new ArrayList<>();
@@ -77,7 +76,7 @@ public abstract class BaseScreen extends Screen
 
     public BaseScreen()
     {
-        super(Text.of(""));
+        super(Component.nullToEmpty(""));
 
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
         this.useCustomScreenScaling = customScale != GameUtils.getVanillaOptionsScreenScale() && customScale > 0;
@@ -121,9 +120,9 @@ public abstract class BaseScreen extends Screen
     }
 
     @Override
-    public boolean shouldPause()
+    public boolean isPauseScreen()
     {
-        return this.getParent() != null && this.getParent().shouldPause();
+        return this.getParent() != null && this.getParent().isPauseScreen();
     }
 
     protected void initScreen()
@@ -135,7 +134,7 @@ public abstract class BaseScreen extends Screen
 
         this.reAddActiveWidgets();
         this.updateWidgetPositions();
-        this.mc.keyboard.setRepeatEvents(true);
+        this.mc.keyboardHandler.setSendRepeatsToGui(true);
 
         for (Runnable listener : this.postInitListeners)
         {
@@ -150,7 +149,7 @@ public abstract class BaseScreen extends Screen
             listener.run();
         }
 
-        this.mc.keyboard.setRepeatEvents(false);
+        this.mc.keyboardHandler.setSendRepeatsToGui(false);
     }
 
     protected void onScreenResolutionSet(int width, int height)
@@ -342,9 +341,9 @@ public abstract class BaseScreen extends Screen
     }
 
     @Override
-    public Text getTitle()
+    public Component getTitle()
     {
-        return Text.of(this.getTitleString());
+        return Component.nullToEmpty(this.getTitleString());
     }
 
     @Nullable
@@ -460,7 +459,7 @@ public abstract class BaseScreen extends Screen
         this.hoveredWidget = isActiveScreen ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
     }
 
-    public ScreenContext getContext(MatrixStack matrices)
+    public ScreenContext getContext(PoseStack matrices)
     {
         int mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
         int mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
@@ -477,7 +476,7 @@ public abstract class BaseScreen extends Screen
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks)
+    public void render(PoseStack matrices, int mouseX, int mouseY, float partialTicks)
     {
         if (this.useCustomScreenScaling)
         {
@@ -817,7 +816,7 @@ public abstract class BaseScreen extends Screen
         return textFields;
     }
 
-    public void bindTexture(Identifier texture)
+    public void bindTexture(ResourceLocation texture)
     {
         RenderUtils.bindTexture(texture);
     }
@@ -1099,12 +1098,12 @@ public abstract class BaseScreen extends Screen
 
     public static void setStringToClipboard(String str)
     {
-        MinecraftClient.getInstance().keyboard.setClipboard(str);
+        Minecraft.getInstance().keyboardHandler.setClipboard(str);
     }
 
     public static String getStringFromClipboard()
     {
-        return MinecraftClient.getInstance().keyboard.getClipboard();
+        return Minecraft.getInstance().keyboardHandler.getClipboard();
     }
 
     public void renderDebug(ScreenContext ctx)

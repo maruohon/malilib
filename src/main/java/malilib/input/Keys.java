@@ -212,7 +212,7 @@ public class Keys
 
     public static boolean isKeyDown(int keyCode)
     {
-        long window = GameUtils.getClient().getWindow().getHandle();
+        long window = GameUtils.getClient().getWindow().getWindow();
 
         if (keyCode >= 0)
         {

@@ -5,7 +5,7 @@ package malilib.util.data;
  * The sole purpose of this class is to hide that mapping difference from lots of the places in
  * the mods' code, where an identifier is needed.
  */
-public class Identifier extends net.minecraft.util.Identifier
+public class Identifier extends net.minecraft.resources.ResourceLocation
 {
     public Identifier(String resourceName)
     {

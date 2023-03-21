@@ -2,7 +2,7 @@ package malilib.event;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 public interface ClientWorldChangeHandler extends PrioritizedEventHandler
 {
@@ -14,7 +14,7 @@ public interface ClientWorldChangeHandler extends PrioritizedEventHandler
      * @param worldBefore the old world reference, before the new one gets assigned
      * @param worldAfter the new world reference that is going to be assigned
      */
-    default void onPreClientWorldChange(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter) {}
+    default void onPreClientWorldChange(@Nullable ClientLevel worldBefore, @Nullable ClientLevel worldAfter) {}
 
     /**
      * Called after the client world reference has been changed.
@@ -23,5 +23,5 @@ public interface ClientWorldChangeHandler extends PrioritizedEventHandler
      * @param worldBefore the old world reference, before the new one gets assigned
      * @param worldAfter the new world reference that is going to be assigned
      */
-    default void onPostClientWorldChange(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter) {}
+    default void onPostClientWorldChange(@Nullable ClientLevel worldBefore, @Nullable ClientLevel worldAfter) {}
 }

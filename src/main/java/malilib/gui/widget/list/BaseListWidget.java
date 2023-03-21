@@ -6,8 +6,8 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.util.Mth;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.icon.DefaultIcons;
@@ -402,7 +402,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
 
         if (GuiUtils.isMouseInRegion(mouseX, mouseY, this.getX(), this.entryWidgetStartY, this.getWidth(), this.listHeight))
         {
-            int amount = MathHelper.clamp(3, 1, this.visibleListEntries);
+            int amount = Mth.clamp(3, 1, this.visibleListEntries);
             this.offsetScrollBarPosition(mouseWheelDelta < 0 ? amount : -amount);
             return true;
         }
@@ -538,7 +538,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         else
         {
             int totalCount = this.getFactoryTotalListWidgetCount();
-            int newKeyboardIndex = MathHelper.clamp(oldKeyboardIndex + offset, 0, totalCount - 1);
+            int newKeyboardIndex = Mth.clamp(oldKeyboardIndex + offset, 0, totalCount - 1);
             this.setKeyboardNavigationIndex(newKeyboardIndex);
 
             // keyboard index went off-screen on the top

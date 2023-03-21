@@ -6,7 +6,7 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 import malilib.util.game.wrap.RegistryUtils;
 

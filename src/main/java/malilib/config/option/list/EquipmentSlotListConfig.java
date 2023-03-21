@@ -6,7 +6,7 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public class EquipmentSlotListConfig extends ValueListConfig<EquipmentSlot>
 {

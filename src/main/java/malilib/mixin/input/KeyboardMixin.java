@@ -5,11 +5,13 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.Keyboard;
+
+import net.minecraft.client.KeyboardHandler;
+
 import malilib.input.InputDispatcherImpl;
 import malilib.registry.Registry;
 
-@Mixin(Keyboard.class)
+@Mixin(KeyboardHandler.class)
 public abstract class KeyboardMixin// implements F3KeyStateSetter
 {
     @Shadow private boolean switchF3State;

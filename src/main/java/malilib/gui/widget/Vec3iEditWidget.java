@@ -2,7 +2,7 @@ package malilib.gui.widget;
 
 import java.util.function.Consumer;
 
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.core.Vec3i;
 
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.position.Coordinate;

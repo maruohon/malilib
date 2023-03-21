@@ -1,30 +1,30 @@
 package malilib.render.overlay;
 
 import java.util.function.Supplier;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Shader;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
+import net.minecraft.client.renderer.ShaderInstance;
 
 public abstract class BaseRenderObject
 {
-    protected final VertexFormat.DrawMode glMode;
-    protected final Supplier<Shader> shader;
+    protected final VertexFormat.Mode glMode;
+    protected final Supplier<ShaderInstance> shader;
 
-    public BaseRenderObject(VertexFormat.DrawMode glMode, Supplier<Shader> shader)
+    public BaseRenderObject(VertexFormat.Mode glMode, Supplier<ShaderInstance> shader)
     {
         this.glMode = glMode;
         this.shader = shader;
     }
 
-    public VertexFormat.DrawMode getGlMode()
+    public VertexFormat.Mode getGlMode()
     {
         return this.glMode;
     }
 
-    public Supplier<Shader> getShader()
+    public Supplier<ShaderInstance> getShader()
     {
         return this.shader;
     }
@@ -63,7 +63,7 @@ public abstract class BaseRenderObject
     /**
      * Draws the VBO to the screen
      */
-    public abstract void draw(MatrixStack matrixStack, Matrix4f projMatrix);
+    public abstract void draw(PoseStack matrixStack, Matrix4f projMatrix);
 
     /**
      * De-allocates the VBO

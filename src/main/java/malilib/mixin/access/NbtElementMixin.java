@@ -5,9 +5,9 @@ import java.io.IOException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.Tag;
 
-@Mixin(NbtElement.class)
+@Mixin(Tag.class)
 public interface NbtElementMixin
 {
     @Invoker("write")

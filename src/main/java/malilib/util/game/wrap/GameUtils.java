@@ -4,100 +4,99 @@ import java.nio.file.Path;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Util;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 
 public class GameUtils
 {
-    public static MinecraftClient getClient()
+    public static Minecraft getClient()
     {
-        return MinecraftClient.getInstance();
+        return Minecraft.getInstance();
     }
 
     @Nullable
-    public static ClientWorld getClientWorld()
+    public static ClientLevel getClientWorld()
     {
-        return getClient().world;
+        return getClient().level;
     }
 
     @Nullable
-    public static ServerWorld getClientPlayersServerWorld()
+    public static ServerLevel getClientPlayersServerWorld()
     {
         Entity player = getClientPlayer();
         MinecraftServer server = getIntegratedServer();
-        return player != null && server != null ? server.getWorld(player.getWorld().getRegistryKey()) : null;
+        return player != null && server != null ? server.getLevel(player.getLevel().dimension()) : null;
     }
 
     @Nullable
-    public static ClientPlayerEntity getClientPlayer()
+    public static LocalPlayer getClientPlayer()
     {
         return getClient().player;
     }
 
     @Nullable
-    public static PlayerInventory getPlayerInventory()
+    public static Inventory getPlayerInventory()
     {
-        PlayerEntity player = getClient().player;
+        Player player = getClient().player;
         return player != null ? player.getInventory() : null;
     }
 
     @Nullable
-    public static ScreenHandler getPlayerInventoryContainer()
+    public static AbstractContainerMenu getPlayerInventoryContainer()
     {
-        PlayerEntity player = getClient().player;
-        return player != null ? player.playerScreenHandler : null;
+        Player player = getClient().player;
+        return player != null ? player.inventoryMenu : null;
     }
 
     @Nullable
-    public static ScreenHandler getCurrentInventoryContainer()
+    public static AbstractContainerMenu getCurrentInventoryContainer()
     {
-        PlayerEntity player = getClient().player;
-        return player != null ? player.currentScreenHandler : null;
+        Player player = getClient().player;
+        return player != null ? player.containerMenu : null;
     }
 
-    public static ClientPlayerInteractionManager getInteractionManager()
+    public static MultiPlayerGameMode getInteractionManager()
     {
-        return getClient().interactionManager;
+        return getClient().gameMode;
     }
 
     public static double getPlayerReachDistance()
     {
-        return getInteractionManager().getReachDistance();
+        return getInteractionManager().getPickRange();
     }
 
     @Nullable
     public static MinecraftServer getIntegratedServer()
     {
-        return getClient().getServer();
+        return getClient().getSingleplayerServer();
     }
 
     @Nullable
-    public static ClientPlayNetworkHandler getNetworkConnection()
+    public static ClientPacketListener getNetworkConnection()
     {
-        return getClient().getNetworkHandler();
+        return getClient().getConnection();
     }
 
-    public static GameOptions getOptions()
+    public static net.minecraft.client.Options getOptions()
     {
         return getClient().options;
     }
 
     public static void sendCommand(String command)
     {
-        ClientPlayerEntity player = getClientPlayer();
+        LocalPlayer player = getClientPlayer();
 
         if (player != null)
         {
@@ -111,7 +110,7 @@ public class GameUtils
     @Nullable
     public static Entity getCameraEntity()
     {
-        MinecraftClient mc = getClient();
+        Minecraft mc = getClient();
         Entity entity = mc.getCameraEntity();
         return entity != null ? entity : mc.player;
     }
@@ -125,24 +124,24 @@ public class GameUtils
     @Nullable
     public static HitResult getHitResult()
     {
-        return getClient().crosshairTarget;
+        return getClient().hitResult;
     }
 
     public static long getCurrentWorldTick()
     {
-        World world = getClientWorld();
-        return world != null ? world.getTime() : -1L;
+        Level world = getClientWorld();
+        return world != null ? world.getGameTime() : -1L;
     }
 
     public static boolean isCreativeMode()
     {
-        ClientPlayerEntity player = getClientPlayer();
-        return player != null && player.getAbilities().creativeMode;
+        LocalPlayer player = getClientPlayer();
+        return player != null && player.getAbilities().instabuild;
     }
 
     public static int getRenderDistanceChunks()
     {
-        return getOptions().getViewDistance().getValue();
+        return getOptions().getEffectiveRenderDistance().getValue();
     }
 
     public static int getVanillaOptionsScreenScale()
@@ -152,7 +151,7 @@ public class GameUtils
 
     public static boolean isSinglePlayer()
     {
-        return getClient().isInSingleplayer();
+        return getClient().isLocalServer();
     }
 
     public static void scheduleToClientThread(Runnable task)
@@ -172,12 +171,12 @@ public class GameUtils
 
     public static void profilerSwap(String name)
     {
-        getClient().getProfiler().swap(name);
+        getClient().getProfiler().popPush(name);
     }
 
     public static void profilerSwap(Supplier<String> nameSupplier)
     {
-        getClient().getProfiler().swap(nameSupplier);
+        getClient().getProfiler().popPush(nameSupplier);
     }
 
     public static void profilerPop()
@@ -187,14 +186,14 @@ public class GameUtils
 
     public static void openFile(Path file)
     {
-        Util.getOperatingSystem().open(file.toFile());
+        Util.getPlatform().openFile(file.toFile());
     }
 
     public static class Options
     {
         public static boolean hideGui()
         {
-            return getOptions().hudHidden;
+            return getOptions().hideGui;
         }
     }
 }

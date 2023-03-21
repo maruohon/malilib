@@ -2,10 +2,10 @@ package malilib.action;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Entity;
 
 import malilib.overlay.message.MessageOutput;
 import malilib.util.game.wrap.GameUtils;
@@ -31,19 +31,19 @@ public class ActionContext
         return this.messageOutput != null ? this.messageOutput : defaultOutput;
     }
 
-    public MinecraftClient getClient()
+    public Minecraft getClient()
     {
         return GameUtils.getClient();
     }
 
     @Nullable
-    public ClientWorld getWorld()
+    public ClientLevel getWorld()
     {
         return GameUtils.getClientWorld();
     }
 
     @Nullable
-    public ClientPlayerEntity getPlayer()
+    public LocalPlayer getPlayer()
     {
         return GameUtils.getClientPlayer();
     }

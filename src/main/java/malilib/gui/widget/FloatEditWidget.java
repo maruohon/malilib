@@ -1,6 +1,6 @@
 package malilib.gui.widget;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.callback.FloatSliderCallback;
@@ -73,7 +73,7 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
 
     protected void clampAndSetValue(float newValue)
     {
-        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+        this.value = Mth.clamp(newValue, this.minValue, this.maxValue);
     }
 
     @Override

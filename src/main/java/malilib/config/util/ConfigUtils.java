@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import org.apache.commons.lang3.StringUtils;
 
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
 
 import malilib.MaLiLibConfigs;
 import malilib.action.ActionContext;
@@ -95,7 +95,7 @@ public class ConfigUtils
      */
     public static void sortConfigsByDisplayName(List<ConfigInfo> configs)
     {
-        configs.sort(Comparator.comparing((c) -> Formatting.strip(c.getDisplayName())));
+        configs.sort(Comparator.comparing((c) -> ChatFormatting.stripFormatting(c.getDisplayName())));
     }
 
     /**

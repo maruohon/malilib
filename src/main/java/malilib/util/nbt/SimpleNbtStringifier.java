@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import com.google.common.collect.Lists;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 
 import malilib.util.data.Constants;
 import malilib.util.game.wrap.NbtWrap;
@@ -25,7 +25,7 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
         super(true, true, baseColor);
     }
 
-    public String getNbtString(NbtCompound tag)
+    public String getNbtString(CompoundTag tag)
     {
         this.stringBuilder = new StringBuilder();
 
@@ -40,13 +40,13 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
     }
 
     @Override
-    protected void appendPrimitive(String tagName, NbtElement tag)
+    protected void appendPrimitive(String tagName, Tag tag)
     {
         this.stringBuilder.append(this.getFormattedPrimitiveString(tag));
     }
 
     @Override
-    protected void appendCompound(String tagName, NbtCompound tag)
+    protected void appendCompound(String tagName, CompoundTag tag)
     {
         List<String> keys = Lists.newArrayList(NbtWrap.getKeys(tag));
         Collections.sort(keys);
@@ -71,7 +71,7 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
     }
 
     @Override
-    protected void appendList(String tagName, NbtList list)
+    protected void appendList(String tagName, ListTag list)
     {
         final int size = NbtWrap.getListSize(list);
 

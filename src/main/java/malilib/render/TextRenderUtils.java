@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.entity.Entity;
 
 import malilib.gui.util.GuiUtils;
 import malilib.render.text.StyledTextLine;
@@ -84,7 +84,7 @@ public class TextRenderUtils
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
             List<String> linesNew = new ArrayList<>();
-            net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
+            net.minecraft.client.gui.Font textRenderer = GameUtils.getClient().font;
             int maxLineLength = 0;
 
             for (String lineOrig : textLines)
@@ -93,7 +93,7 @@ public class TextRenderUtils
 
                 for (String line : lines)
                 {
-                    int length = textRenderer.getWidth(line);
+                    int length = textRenderer.width(line);
 
                     if (length > maxLineLength)
                     {
@@ -106,7 +106,7 @@ public class TextRenderUtils
 
             textLines = linesNew;
 
-            int lineHeight = textRenderer.fontHeight + 1;
+            int lineHeight = textRenderer.lineHeight + 1;
             int textHeight = textLines.size() * lineHeight - 2;
             int backgroundWidth = maxLineLength + 8;
             int backgroundHeight = textHeight + 8;
@@ -114,8 +114,8 @@ public class TextRenderUtils
             int textStartX = startPos.x + 4;
             int textStartY = startPos.y + 4;
 
-            MatrixStack matrixStack = ctx.matrixStack;
-            matrixStack.push();
+            PoseStack matrixStack = ctx.matrixStack;
+            matrixStack.pushPose();
             matrixStack.translate(0, 0, z + 1);
 
             RenderUtils.disableItemLighting();
@@ -124,11 +124,11 @@ public class TextRenderUtils
 
             for (String str : textLines)
             {
-                textRenderer.drawWithShadow(matrixStack, str, textStartX, textStartY, textColor);
+                textRenderer.drawShadow(matrixStack, str, textStartX, textStartY, textColor);
                 textStartY += lineHeight;
             }
 
-            matrixStack.pop();
+            matrixStack.popPose();
 
             RenderSystem.enableDepthTest();
         }
@@ -189,7 +189,7 @@ public class TextRenderUtils
                                                  int fillColor, int borderColor1, int borderColor2,
                                                  RenderContext ctx)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, false);
 
         int xl1 = x;
         int xl2 = xl1 + 1;
@@ -246,17 +246,17 @@ public class TextRenderUtils
     public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
                                        float scale, int textColor, int bgColor, boolean disableDepth, RenderContext ctx)
     {
-        net.minecraft.client.font.TextRenderer textRenderer = GameUtils.getClient().textRenderer;
+        net.minecraft.client.gui.Font textRenderer = GameUtils.getClient().font;
 
         //GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-        MatrixStack matrixStack = ctx.matrixStack;
-        matrixStack.push();
+        PoseStack matrixStack = ctx.matrixStack;
+        matrixStack.pushPose();
         matrixStack.translate(x, y, z);
         //GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
 
-        Quaternion rot = Vec3f.POSITIVE_Y.getDegreesQuaternion(-yaw);
-        rot.hamiltonProduct(Vec3f.POSITIVE_X.getDegreesQuaternion(pitch));
-        matrixStack.multiply(rot);
+        Quaternion rot = Vector3f.YP.rotationDegrees(-yaw);
+        rot.mul(Vector3f.XP.rotationDegrees(pitch));
+        matrixStack.mulPose(rot);
 
         matrixStack.scale(-scale, -scale, scale);
         //GlStateManager.disableLighting();
@@ -266,17 +266,17 @@ public class TextRenderUtils
         RenderUtils.setupBlend();
         RenderSystem.disableTexture();
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder buffer = tessellator.getBuilder();
         int maxLineLen = 0;
 
         for (String line : text)
         {
-            maxLineLen = Math.max(maxLineLen, textRenderer.getWidth(line));
+            maxLineLen = Math.max(maxLineLen, textRenderer.width(line));
         }
 
         int strLenHalf = maxLineLen / 2;
-        int textHeight = textRenderer.fontHeight * text.size() - 1;
+        int textHeight = textRenderer.lineHeight * text.size() - 1;
         float bga = ((bgColor >>> 24) & 0xFF) * 255f;
         float bgr = ((bgColor >>> 16) & 0xFF) * 255f;
         float bgg = ((bgColor >>>  8) & 0xFF) * 255f;
@@ -288,12 +288,12 @@ public class TextRenderUtils
             RenderSystem.disableDepthTest();
         }
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        buffer.vertex(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
-        buffer.vertex(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
-        buffer.vertex( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
-        buffer.vertex( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
-        tessellator.draw();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        buffer.vertex(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        buffer.vertex(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        buffer.vertex( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        buffer.vertex( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        tessellator.end();
 
         RenderSystem.enableTexture();
         int textY = 0;
@@ -325,7 +325,7 @@ public class TextRenderUtils
 
             // Render the actual fully opaque text, that will not show through blocks
             textRenderer.draw(matrixStack, line, -strLenHalf, textY, textColor);
-            textY += textRenderer.fontHeight;
+            textY += textRenderer.lineHeight;
         }
 
         if (disableDepth == false)
@@ -337,6 +337,6 @@ public class TextRenderUtils
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

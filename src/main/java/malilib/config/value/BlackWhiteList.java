@@ -6,12 +6,12 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DefaultedRegistry;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.level.block.Block;
 
 import malilib.config.option.list.BlockListConfig;
 import malilib.config.option.list.ItemListConfig;
@@ -190,7 +190,7 @@ public class BlackWhiteList<TYPE>
     public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(DefaultedRegistry<TYPE> registry)
     {
         return (t) -> {
-            Identifier id = registry.getId(t);
+            ResourceLocation id = registry.getKey(t);
             return id != null ? id.toString() : "<N/A>";
         };
     }
@@ -200,7 +200,7 @@ public class BlackWhiteList<TYPE>
         return (str) -> {
             try
             {
-                Identifier id = new Identifier(str);
+                ResourceLocation id = new ResourceLocation(str);
                 return registry.get(id);
             }
             catch (Exception e)

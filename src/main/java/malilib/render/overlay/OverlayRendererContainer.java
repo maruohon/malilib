@@ -8,12 +8,12 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 import org.apache.commons.lang3.StringUtils;
 
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 import malilib.render.RenderUtils;
 import malilib.util.BackupUtils;
@@ -61,13 +61,13 @@ public class OverlayRendererContainer
         this.enabledRenderersNeedUpdate = true;
     }
 
-    protected Vec3d getCameraPos(Entity cameraEntity, float partialTicks)
+    protected Vec3 getCameraPos(Entity cameraEntity, float partialTicks)
     {
         double x = EntityWrap.lerpX(cameraEntity, partialTicks);
         double y = EntityWrap.lerpY(cameraEntity, partialTicks);
         double z = EntityWrap.lerpZ(cameraEntity, partialTicks);
 
-        return new Vec3d(x, y, z);
+        return new Vec3(x, y, z);
     }
 
     public void resetRenderTimeout()
@@ -91,7 +91,7 @@ public class OverlayRendererContainer
         this.enabledRenderersNeedUpdate = false;
     }
 
-    public void render(MatrixStack matrixStack, Matrix4f projMatrix, float tickDelta)
+    public void render(PoseStack matrixStack, Matrix4f projMatrix, float tickDelta)
     {
         Entity cameraEntity = GameUtils.getCameraEntity();
 
@@ -118,7 +118,7 @@ public class OverlayRendererContainer
             }
         }
 
-        Vec3d cameraPos = this.getCameraPos(cameraEntity, tickDelta);
+        Vec3 cameraPos = this.getCameraPos(cameraEntity, tickDelta);
 
         GameUtils.profilerPush("update");
         this.update(cameraPos, cameraEntity);
@@ -129,7 +129,7 @@ public class OverlayRendererContainer
         GameUtils.profilerPop();
     }
 
-    protected void update(Vec3d cameraPos, Entity entity)
+    protected void update(Vec3 cameraPos, Entity entity)
     {
         if (this.enabledRenderersNeedUpdate)
         {
@@ -159,7 +159,7 @@ public class OverlayRendererContainer
         }
     }
 
-    protected void draw(MatrixStack matrixStack, Matrix4f projMatrix, Vec3d cameraPos)
+    protected void draw(PoseStack matrixStack, Matrix4f projMatrix, Vec3 cameraPos)
     {
         if (this.resourcesAllocated && this.countActive > 0)
         {
@@ -183,13 +183,13 @@ public class OverlayRendererContainer
 
                 if (renderer.shouldRender())
                 {
-                    Vec3d updatePos = renderer.getUpdatePosition();
-                    matrixStack.push();
+                    Vec3 updatePos = renderer.getUpdatePosition();
+                    matrixStack.pushPose();
                     matrixStack.translate(updatePos.x - cx, updatePos.y - cy, updatePos.z - cz);
 
                     renderer.draw(matrixStack, projMatrix);
 
-                    matrixStack.pop();
+                    matrixStack.popPose();
                 }
 
                 GameUtils.profilerPop();

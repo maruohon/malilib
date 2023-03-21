@@ -6,7 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.Validate;
 
-public class DefaultedList<E> extends net.minecraft.util.collection.DefaultedList<E>
+public class DefaultedList<E> extends net.minecraft.core.NonNullList<E>
 {
     protected DefaultedList()
     {
@@ -27,7 +27,7 @@ public class DefaultedList<E> extends net.minecraft.util.collection.DefaultedLis
      * Creates a new NonNullList with <i>fixed</i> size, and filled with the object passed.
      */
     @SuppressWarnings("unchecked")
-    public static <E> DefaultedList<E> ofSize(int size, E defaultValue)
+    public static <E> DefaultedList<E> withSize(int size, E defaultValue)
     {
         Validate.notNull(defaultValue);
         Object[] arr = new Object[size];

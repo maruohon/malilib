@@ -6,30 +6,32 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.RunArgs;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.world.ClientWorld;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.main.GameConfig;
+import net.minecraft.client.multiplayer.ClientLevel;
+
 import malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl;
 import malilib.event.dispatch.InitializationDispatcherImpl;
 import malilib.registry.Registry;
 
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 public abstract class MinecraftClientMixin
 {
-    @Shadow public ClientWorld world;
+    @Shadow public ClientLevel world;
 
-    private ClientWorld worldBefore;
+    private ClientLevel worldBefore;
 
     @Inject(method = "<init>(Lnet/minecraft/client/RunArgs;)V", at = @At("RETURN"))
-    private void onInitComplete(RunArgs args, CallbackInfo ci)
+    private void onInitComplete(GameConfig args, CallbackInfo ci)
     {
         // Register all mod handlers
         ((InitializationDispatcherImpl) Registry.INITIALIZATION_DISPATCHER).onGameInitDone();
     }
 
     @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;)V", at = @At("HEAD"))
-    private void onLoadWorldPre(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
+    private void onLoadWorldPre(@Nullable ClientLevel worldClientIn, CallbackInfo ci)
     {
         // Only handle dimension changes/respawns here.
         // The initial join is handled in MixinClientPlayNetworkHandler onGameJoin 
@@ -41,7 +43,7 @@ public abstract class MinecraftClientMixin
     }
 
     @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;)V", at = @At("RETURN"))
-    private void onLoadWorldPost(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
+    private void onLoadWorldPost(@Nullable ClientLevel worldClientIn, CallbackInfo ci)
     {
         if (this.worldBefore != null)
         {

@@ -2,14 +2,14 @@ package malilib.util.position;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.phys.Vec3;
 
 import malilib.util.game.wrap.EntityWrap;
 
@@ -18,10 +18,10 @@ public class PositionUtils
     public static final Direction[] ALL_DIRECTIONS = new Direction[] {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
     public static final Direction[] HORIZONTAL_DIRECTIONS = new Direction[] { Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
     public static final Direction[] VERTICAL_DIRECTIONS = new Direction[] { Direction.DOWN, Direction.UP };
-    public static final BlockMirror[] MIRROR_VALUES = BlockMirror.values();
-    public static final BlockRotation[] ROTATION_VALUES = BlockRotation.values();
+    public static final Mirror[] MIRROR_VALUES = Mirror.values();
+    public static final Rotation[] ROTATION_VALUES = Rotation.values();
 
-    public static final int SIZE_BITS_X = 1 + MathHelper.floorLog2(MathHelper.smallestEncompassingPowerOfTwo(30000000));
+    public static final int SIZE_BITS_X = 1 + Mth.log2(Mth.smallestEncompassingPowerOfTwo(30000000));
     public static final int SIZE_BITS_Z = SIZE_BITS_X;
     public static final int SIZE_BITS_Y = 64 - SIZE_BITS_X - SIZE_BITS_Z;
     public static final long BITMASK_X = (1L << SIZE_BITS_X) - 1L;
@@ -117,7 +117,7 @@ public class PositionUtils
                pos.getZ() >= posMin.getZ() && pos.getZ() <= posMax.getZ();
     }
 
-    public static BlockRotation cycleRotation(BlockRotation rotation, boolean reverse)
+    public static Rotation cycleRotation(Rotation rotation, boolean reverse)
     {
         int ordinal = rotation.ordinal();
 
@@ -133,7 +133,7 @@ public class PositionUtils
         return ROTATION_VALUES[ordinal];
     }
 
-    public static BlockMirror cycleBlockMirror(BlockMirror mirror, boolean reverse)
+    public static Mirror cycleBlockMirror(Mirror mirror, boolean reverse)
     {
         int ordinal = mirror.ordinal();
 
@@ -151,7 +151,7 @@ public class PositionUtils
 
     public static Direction cycleDirection(Direction direction, boolean reverse)
     {
-        int index = direction.getId();
+        int index = direction.get3DDataValue();
 
         if (reverse)
         {
@@ -162,7 +162,7 @@ public class PositionUtils
             index = index >= 5 ? 0 : index + 1;
         }
 
-        return Direction.byId(index);
+        return Direction.from3DDataValue(index);
     }
 
     /**
@@ -191,7 +191,7 @@ public class PositionUtils
             return Direction.UP;
         }
 
-        return entity.getHorizontalFacing();
+        return entity.getDirection();
     }
 
     /**
@@ -199,17 +199,17 @@ public class PositionUtils
      */
     public static Direction getClosestSideDirection(Entity entity)
     {
-        Direction forwardDirection = entity.getHorizontalFacing();
+        Direction forwardDirection = entity.getDirection();
         float entityYaw = ((EntityWrap.getYaw(entity) % 360.0F) + 360.0F) % 360.0F;
-        float forwardYaw = forwardDirection.asRotation();
+        float forwardYaw = forwardDirection.toYRot();
 
         if (entityYaw < forwardYaw || (forwardYaw == 0.0F && entityYaw > 270.0F))
         {
-            return forwardDirection.rotateYCounterclockwise();
+            return forwardDirection.getCounterClockWise();
         }
         else
         {
-            return forwardDirection.rotateYClockwise();
+            return forwardDirection.getClockWise();
         }
     }
 
@@ -236,17 +236,17 @@ public class PositionUtils
 
         if (pitch >= verticalThreshold)
         {
-            return pos.down();
+            return pos.below();
         }
         else if (pitch <= -verticalThreshold)
         {
             return new BlockPos(x, Math.ceil(entity.getBoundingBox().maxY), z);
         }
 
-        double width = entity.getWidth();
+        double width = entity.getBbWidth();
         y = Math.floor(y + entity.getEyeHeight(entity.getPose()));
 
-        switch (entity.getHorizontalFacing())
+        switch (entity.getDirection())
         {
             case EAST:
                 return new BlockPos((int) Math.ceil( x + width / 2),     (int) y, (int) Math.floor(z));
@@ -268,11 +268,11 @@ public class PositionUtils
      * (at least one of them is vertical, but they are not the same), then null is returned.
      */
     @Nullable
-    public static BlockRotation getRotation(Direction directionFrom, Direction directionTo)
+    public static Rotation getRotation(Direction directionFrom, Direction directionTo)
     {
         if (directionFrom == directionTo)
         {
-            return BlockRotation.NONE;
+            return Rotation.NONE;
         }
 
         if (directionFrom.getAxis() == Direction.Axis.Y || directionTo.getAxis() == Direction.Axis.Y)
@@ -282,16 +282,16 @@ public class PositionUtils
 
         if (directionTo == directionFrom.getOpposite())
         {
-            return BlockRotation.CLOCKWISE_180;
+            return Rotation.CLOCKWISE_180;
         }
 
-        return directionTo == directionFrom.rotateYClockwise() ? BlockRotation.CLOCKWISE_90 : BlockRotation.COUNTERCLOCKWISE_90;
+        return directionTo == directionFrom.getClockWise() ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90;
     }
 
     /**
      * Returns the hit vector at the center point of the given side/face of the given block position.
      */
-    public static Vec3d getHitVecCenter(BlockPos basePos, Direction facing)
+    public static Vec3 getHitVecCenter(BlockPos basePos, Direction facing)
     {
         int x = basePos.getX();
         int y = basePos.getY();
@@ -299,13 +299,13 @@ public class PositionUtils
 
         switch (facing)
         {
-            case UP:    return new Vec3d(x + 0.5, y + 1  , z + 0.5);
-            case DOWN:  return new Vec3d(x + 0.5, y      , z + 0.5);
-            case NORTH: return new Vec3d(x + 0.5, y + 0.5, z      );
-            case SOUTH: return new Vec3d(x + 0.5, y + 0.5, z + 1  );
-            case WEST:  return new Vec3d(x      , y + 0.5, z      );
-            case EAST:  return new Vec3d(x + 1  , y + 0.5, z + 1);
-            default:    return new Vec3d(x, y, z);
+            case UP:    return new Vec3(x + 0.5, y + 1  , z + 0.5);
+            case DOWN:  return new Vec3(x + 0.5, y      , z + 0.5);
+            case NORTH: return new Vec3(x + 0.5, y + 0.5, z      );
+            case SOUTH: return new Vec3(x + 0.5, y + 0.5, z + 1  );
+            case WEST:  return new Vec3(x      , y + 0.5, z      );
+            case EAST:  return new Vec3(x + 1  , y + 0.5, z + 1);
+            default:    return new Vec3(x, y, z);
         }
     }
 
@@ -313,9 +313,9 @@ public class PositionUtils
      * Returns the part of the block face the player is currently targeting.
      * The block face is divided into four side segments and a center segment.
      */
-    public static HitPart getHitPart(Direction originalSide, Direction playerFacingH, BlockPos pos, Vec3d hitVec)
+    public static HitPart getHitPart(Direction originalSide, Direction playerFacingH, BlockPos pos, Vec3 hitVec)
     {
-        Vec3d positions = getHitPartPositions(originalSide, playerFacingH, pos, hitVec);
+        Vec3 positions = getHitPartPositions(originalSide, playerFacingH, pos, hitVec);
         double posH = positions.x;
         double posV = positions.y;
         double offH = Math.abs(posH - 0.5d);
@@ -338,7 +338,7 @@ public class PositionUtils
         }
     }
 
-    private static Vec3d getHitPartPositions(Direction originalSide, Direction playerFacingH, BlockPos pos, Vec3d hitVec)
+    private static Vec3 getHitPartPositions(Direction originalSide, Direction playerFacingH, BlockPos pos, Vec3 hitVec)
     {
         double x = hitVec.x - pos.getX();
         double y = hitVec.y - pos.getY();
@@ -379,25 +379,25 @@ public class PositionUtils
                 break;
             case NORTH:
             case SOUTH:
-                posH = originalSide.getDirection() == Direction.AxisDirection.POSITIVE ? x : 1.0d - x;
+                posH = originalSide.getAxisDirection() == Direction.AxisDirection.POSITIVE ? x : 1.0d - x;
                 posV = y;
                 break;
             case WEST:
             case EAST:
-                posH = originalSide.getDirection() == Direction.AxisDirection.NEGATIVE ? z : 1.0d - z;
+                posH = originalSide.getAxisDirection() == Direction.AxisDirection.NEGATIVE ? z : 1.0d - z;
                 posV = y;
                 break;
         }
 
-        return new Vec3d(posH, posV, 0);
+        return new Vec3(posH, posV, 0);
     }
 
     /**
      * Returns the direction the targeted part of the targeting overlay is pointing towards.
      */
-    public static Direction getTargetedDirection(Direction side, Direction playerFacingH, BlockPos pos, Vec3d hitVec)
+    public static Direction getTargetedDirection(Direction side, Direction playerFacingH, BlockPos pos, Vec3 hitVec)
     {
-        Vec3d positions = getHitPartPositions(side, playerFacingH, pos, hitVec);
+        Vec3 positions = getHitPartPositions(side, playerFacingH, pos, hitVec);
         double posH = positions.x;
         double posV = positions.y;
         double offH = Math.abs(posH - 0.5d);
@@ -409,7 +409,7 @@ public class PositionUtils
             {
                 if (offH > offV)
                 {
-                    return posH < 0.5d ? playerFacingH.rotateYCounterclockwise() : playerFacingH.rotateYClockwise();
+                    return posH < 0.5d ? playerFacingH.getCounterClockWise() : playerFacingH.getClockWise();
                 }
                 else
                 {
@@ -427,7 +427,7 @@ public class PositionUtils
             {
                 if (offH > offV)
                 {
-                    return posH < 0.5d ? side.rotateYClockwise() : side.rotateYCounterclockwise();
+                    return posH < 0.5d ? side.getClockWise() : side.getCounterClockWise();
                 }
                 else
                 {
@@ -443,7 +443,7 @@ public class PositionUtils
      * Adjusts the (usually ray traced) position so that the provided entity
      * will not clip inside the presumable block side.
      */
-    public static Vec3d adjustPositionToSideOfEntity(Vec3d pos, Entity entity, Direction side)
+    public static Vec3 adjustPositionToSideOfEntity(Vec3 pos, Entity entity, Direction side)
     {
         double x = pos.x;
         double y = pos.y;
@@ -451,16 +451,16 @@ public class PositionUtils
 
         if (side == Direction.DOWN)
         {
-            y -= entity.getHeight();
+            y -= entity.getBbHeight();
         }
         else if (side.getAxis().isHorizontal())
         {
-            float width = entity.getWidth();
-            x += side.getOffsetX() * (width / 2 + 1.0E-4D);
-            z += side.getOffsetZ() * (width / 2 + 1.0E-4D);
+            float width = entity.getBbWidth();
+            x += side.getStepX() * (width / 2 + 1.0E-4D);
+            z += side.getStepZ() * (width / 2 + 1.0E-4D);
         }
 
-        return new Vec3d(x, y, z);
+        return new Vec3(x, y, z);
     }
 
     public enum HitPart

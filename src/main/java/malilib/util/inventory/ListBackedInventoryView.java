@@ -3,7 +3,7 @@ package malilib.util.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class ListBackedInventoryView implements InventoryView
 {

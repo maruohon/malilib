@@ -6,41 +6,41 @@ import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.block.AbstractFurnaceBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.HopperBlock;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.block.enums.ChestType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.passive.LlamaEntity;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.DoubleInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.CompoundContainer;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.horse.Llama;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.HopperBlock;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.level.block.entity.HopperBlockEntity;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.ChestType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import malilib.config.value.HorizontalAlignment;
 import malilib.config.value.VerticalAlignment;
@@ -359,7 +359,7 @@ public class InventoryRenderUtils
     public static void renderItemInventoryPreview(ItemStack stack, int baseX, int baseY, float z,
                                                   boolean useShulkerBackgroundColor, RenderContext ctx)
     {
-        if (stack.hasNbt())
+        if (stack.hasTag())
         {
             int bgTintColor = 0xFFFFFFFF;
 
@@ -398,8 +398,8 @@ public class InventoryRenderUtils
         int x = baseX + horizontalAlignment.getXStartOffsetForEdgeAlignment(width);
         int y = baseY + verticalAlignment.getYStartOffsetForEdgeAlignment(height);
 
-        x = MathHelper.clamp(x, 0, screenWidth - width);
-        y = MathHelper.clamp(y, 0, screenHeight - height);
+        x = Mth.clamp(x, 0, screenWidth - width);
+        y = Mth.clamp(y, 0, screenHeight - height);
 
         if (bgTintColor == 0xFFFFFFFF && inv instanceof ColoredVanillaInventoryView)
         {
@@ -418,17 +418,17 @@ public class InventoryRenderUtils
         // which returns null from getColor().
         // In that case don't tint the background.
         DyeColor dye = block != null ? block.getColor() : null;
-        final float[] colors = dye.getColorComponents();
+        final float[] colors = dye.getTextureDiffuseColors();
         return  0xFF000000 | (int) ((colors[0] * 0xFF)) << 16 | (int) ((colors[1] * 0xFF)) << 8 | (int) (colors[2] * 0xFF);
     }
 
-    public static InventoryRenderDefinition getInventoryType(Inventory inv)
+    public static InventoryRenderDefinition getInventoryType(Container inv)
     {
         if (inv instanceof ShulkerBoxBlockEntity)
         {
             return BuiltinInventoryRenderDefinitions.GENERIC_27;
         }
-        else if (inv instanceof DoubleInventory)
+        else if (inv instanceof CompoundContainer)
         {
             return BuiltinInventoryRenderDefinitions.GENERIC_54;
         }
@@ -448,7 +448,7 @@ public class InventoryRenderUtils
         {
             return BuiltinInventoryRenderDefinitions.HOPPER;
         }
-        else if (inv.getClass() == SimpleInventory.class) // FIXME
+        else if (inv.getClass() == SimpleContainer.class) // FIXME
         {
             return BuiltinInventoryRenderDefinitions.HORSE;
         }
@@ -494,12 +494,12 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory()
     {
-        World world = WorldUtils.getBestWorld();
-        PlayerEntity clientPlayer = GameUtils.getClientPlayer();
+        Level world = WorldUtils.getBestWorld();
+        Player clientPlayer = GameUtils.getClientPlayer();
 
         // We need to get the player from the server world,
         // so that the player itself won't be included in the ray trace
-        PlayerEntity player = world.getPlayerByUuid(clientPlayer.getUuid());
+        Player player = world.getPlayerByUUID(clientPlayer.getUUID());
 
         if (player == null)
         {
@@ -528,10 +528,10 @@ public class InventoryRenderUtils
     }
 
     @Nullable
-    public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromBlock(BlockPos pos, World world)
+    public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromBlock(BlockPos pos, Level world)
     {
         @SuppressWarnings("deprecation")
-        boolean isLoaded = world.isChunkLoaded(pos);
+        boolean isLoaded = world.hasChunkAt(pos);
 
         if (isLoaded == false)
         {
@@ -539,11 +539,11 @@ public class InventoryRenderUtils
         }
 
         // The method in World now checks that the caller is from the same thread...
-        BlockEntity be = world.getWorldChunk(pos).getBlockEntity(pos);
+        BlockEntity be = world.getChunkAt(pos).getBlockEntity(pos);
 
-        if (be instanceof Inventory)
+        if (be instanceof Container)
         {
-            Inventory inv = (Inventory) be;
+            Container inv = (Container) be;
             BlockState state = world.getBlockState(pos);
 
             // Prevent loot generation attempt from crashing due to NPEs
@@ -557,28 +557,28 @@ public class InventoryRenderUtils
 
             if (state.getBlock() instanceof ChestBlock && be instanceof ChestBlockEntity)
             {
-                ChestType type = state.get(ChestBlock.CHEST_TYPE);
+                ChestType type = state.getValue(ChestBlock.TYPE);
 
                 if (type != ChestType.SINGLE)
                 {
-                    BlockPos posAdj = pos.offset(ChestBlock.getFacing(state));
+                    BlockPos posAdj = pos.relative(ChestBlock.getConnectedDirection(state));
                     @SuppressWarnings("deprecation")
-                    boolean isLoadedAdj = world.isChunkLoaded(posAdj);
+                    boolean isLoadedAdj = world.hasChunkAt(posAdj);
 
                     if (isLoadedAdj)
                     {
                         BlockState stateAdj = world.getBlockState(posAdj);
                         // The method in World now checks that the caller is from the same thread...
-                        BlockEntity te2 = world.getWorldChunk(posAdj).getBlockEntity(posAdj);
+                        BlockEntity te2 = world.getChunkAt(posAdj).getBlockEntity(posAdj);
 
                         if (stateAdj.getBlock() == state.getBlock() &&
                                     te2 instanceof ChestBlockEntity &&
-                                    stateAdj.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE &&
-                                    stateAdj.get(ChestBlock.FACING) == state.get(ChestBlock.FACING))
+                                    stateAdj.getValue(ChestBlock.TYPE) != ChestType.SINGLE &&
+                                    stateAdj.getValue(ChestBlock.FACING) == state.getValue(ChestBlock.FACING))
                         {
-                            Inventory invRight = type == ChestType.RIGHT ?             inv : (Inventory) te2;
-                            Inventory invLeft  = type == ChestType.RIGHT ? (Inventory) te2 :             inv;
-                            inv = new DoubleInventory(invRight, invLeft);
+                            Container invRight = type == ChestType.RIGHT ?             inv : (Container) te2;
+                            Container invLeft  = type == ChestType.RIGHT ? (Container) te2 :             inv;
+                            inv = new CompoundContainer(invRight, invLeft);
                         }
                     }
                 }
@@ -602,29 +602,29 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromEntity(Entity entity)
     {
-        if (entity instanceof VillagerEntity)
+        if (entity instanceof Villager)
         {
-            Inventory inv = ((VillagerEntity) entity).getInventory();
-            InventoryView equipmentInv = new EquipmentInventoryView((VillagerEntity) entity);
+            Container inv = ((Villager) entity).getInventory();
+            InventoryView equipmentInv = new EquipmentInventoryView((Villager) entity);
             InventoryView mainInventory = new VanillaInventoryView(inv);
 
             return Pair.of(new CombinedInventoryView(equipmentInv, mainInventory),
                            BuiltinInventoryRenderDefinitions.VILLAGER);
         }
-        else if (entity instanceof AbstractHorseEntity)
+        else if (entity instanceof AbstractHorse)
         {
-            Inventory inv = ((AbstractHorseEntityMixin) entity).malilib_getHorseChest();
-            InventoryView equipmentInv = new EquipmentInventoryView((AbstractHorseEntity) entity);
+            Container inv = ((AbstractHorseEntityMixin) entity).malilib_getHorseChest();
+            InventoryView equipmentInv = new EquipmentInventoryView((AbstractHorse) entity);
             InventoryView mainInventory = new VanillaInventoryView(inv);
-            InventoryRenderDefinition def = (entity instanceof LlamaEntity) ?
+            InventoryRenderDefinition def = (entity instanceof Llama) ?
                                                     BuiltinInventoryRenderDefinitions.LLAMA :
                                                     BuiltinInventoryRenderDefinitions.HORSE;
 
             return Pair.of(new CombinedInventoryView(equipmentInv, mainInventory), def);
         }
-        else if (entity instanceof Inventory)
+        else if (entity instanceof Container)
         {
-            return Pair.of(new VanillaInventoryView((Inventory) entity),
+            return Pair.of(new VanillaInventoryView((Container) entity),
                            BuiltinInventoryRenderDefinitions.GENERIC);
         }
         else if (entity instanceof LivingEntity)

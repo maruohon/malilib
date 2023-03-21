@@ -3,11 +3,11 @@ package malilib.gui.widget.button;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.renderer.GameRenderer;
 
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
@@ -166,7 +166,7 @@ public class OnOffButton extends GenericButton
         int v1 = icon.getVariantV(variantIndex);
         int v2 = v1 + icon.getHeight() - iconHeight2;
 
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE, true);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX, true);
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(icon.getTexture());
         RenderSystem.enableDepthTest();

@@ -1,10 +1,9 @@
 package malilib.config.option;
 
 import java.util.StringJoiner;
-
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.MaLiLib;
 import malilib.config.option.BooleanAndIntConfig.BooleanAndInt;
@@ -125,7 +124,7 @@ public class BooleanAndIntConfig extends BaseBooleanAndNumberConfig<BooleanAndIn
 
     protected int getClampedValue(int value)
     {
-        return MathHelper.clamp(value, this.minValue, this.maxValue);
+        return Mth.clamp(value, this.minValue, this.maxValue);
     }
 
     public boolean isModified(String newValue)

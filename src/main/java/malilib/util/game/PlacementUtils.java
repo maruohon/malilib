@@ -1,7 +1,7 @@
 package malilib.util.game;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PlacementUtils
 {
@@ -12,11 +12,11 @@ public class PlacementUtils
      * based on the replaceability of the material instead. If <b>checkMaterial</b> is true, then the
      * replaceability of the material can override the non-replaceability of the block for the return value.
      */
-    public static boolean isReplaceable(ItemPlacementContext ctx, boolean checkMaterial)
+    public static boolean isReplaceable(BlockPlaceContext ctx, boolean checkMaterial)
     {
-        BlockState state = ctx.getWorld().getBlockState(ctx.getBlockPos());
+        BlockState state = ctx.getLevel().getBlockState(ctx.getClickedPos());
 
-        return state.canReplace(ctx) ||
+        return state.canBeReplaced(ctx) ||
                (checkMaterial && state.getMaterial().isReplaceable());
     }
 

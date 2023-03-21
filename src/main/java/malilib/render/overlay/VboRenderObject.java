@@ -2,23 +2,21 @@ package malilib.render.overlay;
 
 import java.util.function.Supplier;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 
-import net.minecraft.client.gl.VertexBuffer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Shader;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
-
-import malilib.listener.EventListener;
+import net.minecraft.client.renderer.ShaderInstance;
 
 public class VboRenderObject extends BaseRenderObject
 {
     protected final VertexBuffer vertexBuffer;
     protected final boolean hasTexture;
 
-    public VboRenderObject(VertexFormat.DrawMode glMode,
-                           Supplier<Shader> shader,
+    public VboRenderObject(VertexFormat.Mode glMode,
+                           Supplier<ShaderInstance> shader,
                            //VertexFormat vertexFormat)
                            boolean hasTexture)
     {
@@ -39,7 +37,7 @@ public class VboRenderObject extends BaseRenderObject
     }
 
     @Override
-    public void draw(MatrixStack matrixStack, Matrix4f projMatrix)
+    public void draw(PoseStack matrixStack, Matrix4f projMatrix)
     {
         if (this.hasTexture)
         {
@@ -49,7 +47,7 @@ public class VboRenderObject extends BaseRenderObject
         RenderSystem.setShader(this.getShader());
 
         this.vertexBuffer.bind();
-        this.vertexBuffer.draw(matrixStack.peek().getPositionMatrix(), projMatrix, this.getShader().get());
+        this.vertexBuffer.drawWithShader(matrixStack.last().pose(), projMatrix, this.getShader().get());
         VertexBuffer.unbind();
 
         if (this.hasTexture)

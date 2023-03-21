@@ -4,8 +4,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 import malilib.config.value.ScreenLocation;
 import malilib.overlay.message.MessageDispatcher;
@@ -33,18 +33,18 @@ import malilib.registry.Registry;
 public class MessagePacketHandler extends BasePacketHandler
 {
     public static final String CHANNEL_NAME = "malilib:message";
-    public static final List<Identifier> CHANNELS = ImmutableList.of(new Identifier(CHANNEL_NAME));
+    public static final List<ResourceLocation> CHANNELS = ImmutableList.of(new ResourceLocation(CHANNEL_NAME));
 
     private static final MessagePacketHandler INSTANCE = new MessagePacketHandler();
 
     @Override
-    public List<Identifier> getChannels()
+    public List<ResourceLocation> getChannels()
     {
         return CHANNELS;
     }
 
     @Override
-    public void onPacketReceived(PacketByteBuf buf)
+    public void onPacketReceived(FriendlyByteBuf buf)
     {
         // type (string)
         // displayTimeMs (varInt)
@@ -57,7 +57,7 @@ public class MessagePacketHandler extends BasePacketHandler
 
         @Nullable ScreenLocation location = null;
         @Nullable String marker = null;
-        MessageOutput type = MessageOutput.findValueByName(buf.readString(16), MessageOutput.getValues());
+        MessageOutput type = MessageOutput.findValueByName(buf.readUtf(16), MessageOutput.getValues());
         int displayTimeMs = buf.readVarInt();
         int defaultColor = buf.readInt();
 
@@ -65,17 +65,17 @@ public class MessagePacketHandler extends BasePacketHandler
 
         if (hasLocation)
         {
-            location = ScreenLocation.findValueByName(buf.readString(16), ScreenLocation.VALUES);
+            location = ScreenLocation.findValueByName(buf.readUtf(16), ScreenLocation.VALUES);
         }
 
         boolean hasMarker = buf.readBoolean();
 
         if (hasMarker)
         {
-            marker = buf.readString(64);
+            marker = buf.readUtf(64);
         }
 
-        String message = buf.readString(8192);
+        String message = buf.readUtf(8192);
 
         MessageDispatcher.generic(displayTimeMs)
                 .type(type)

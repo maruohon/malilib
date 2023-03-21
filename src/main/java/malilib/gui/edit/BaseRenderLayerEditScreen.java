@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
 
 import malilib.config.value.LayerMode;
 import malilib.gui.BaseScreen;

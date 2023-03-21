@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.DoubleConsumer;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.callback.DoubleSliderCallback;
@@ -104,7 +104,7 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
 
     protected void clampAndSetValue(double newValue)
     {
-        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+        this.value = Mth.clamp(newValue, this.minValue, this.maxValue);
     }
 
     @Override

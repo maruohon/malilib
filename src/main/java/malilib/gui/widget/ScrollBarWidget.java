@@ -2,7 +2,7 @@ package malilib.gui.widget;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.icon.DefaultIcons;
@@ -94,7 +94,7 @@ public class ScrollBarWidget extends InteractableWidget
 
     public void setValueNoNotify(int value)
     {
-        this.currentValue = MathHelper.clamp(value, 0, this.maxValue);
+        this.currentValue = Mth.clamp(value, 0, this.maxValue);
     }
 
     public void setValue(int value)

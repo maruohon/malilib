@@ -1,22 +1,24 @@
 package malilib.input;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.Window;
+import com.mojang.blaze3d.platform.Window;
+
+import net.minecraft.client.Minecraft;
+
 import malilib.util.game.wrap.GameUtils;
 
 public class InputUtils
 {
     public static double getMouseX()
     {
-        MinecraftClient mc = GameUtils.getClient();
+        Minecraft mc = GameUtils.getClient();
         Window window = mc.getWindow();
-        return (mc.mouse.getX() * (double) window.getScaledWidth() / (double) window.getWidth());
+        return (mc.mouseHandler.xpos() * (double) window.getGuiScaledWidth() / (double) window.getScreenWidth());
     }
 
     public static double getMouseY()
     {
-        MinecraftClient mc = GameUtils.getClient();
+        Minecraft mc = GameUtils.getClient();
         Window window = mc.getWindow();
-        return (mc.mouse.getY() * (double) window.getScaledHeight() / (double) window.getHeight());
+        return (mc.mouseHandler.ypos() * (double) window.getGuiScaledHeight() / (double) window.getScreenHeight());
     }
 }

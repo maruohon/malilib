@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot;
 
 import malilib.config.option.list.EquipmentSlotListConfig;
 import malilib.gui.config.ConfigWidgetContext;

@@ -14,7 +14,7 @@ import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
 import org.apache.commons.io.IOUtils;
 
-import net.minecraft.resource.Resource;
+import net.minecraft.server.packs.resources.Resource;
 
 import malilib.MaLiLib;
 import malilib.util.data.Identifier;

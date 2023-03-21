@@ -13,17 +13,17 @@ import javax.annotation.Nullable;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.Level;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
@@ -149,11 +149,11 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(String messageKey, Path file)
     {
-        MutableText name = (Text.literal(file.getFileName().toString()))
-                .formatted(Formatting.UNDERLINE)
+        MutableComponent name = (Component.literal(file.getFileName().toString()))
+                .formatted(ChatFormatting.UNDERLINE)
                 .styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString())));
 
-        GameUtils.getClient().inGameHud.getChatHud().addMessage(Text.translatable(messageKey, name));
+        GameUtils.getClient().gui.getChat().addMessage(Component.translatable(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -488,17 +488,17 @@ public class StringUtils
     @Nullable
     public static String getWorldOrServerName()
     {
-        MinecraftClient mc = GameUtils.getClient();
+        Minecraft mc = GameUtils.getClient();
 
-        if (mc.isIntegratedServerRunning())
+        if (mc.hasSingleplayerServer())
         {
-            IntegratedServer server = mc.getServer();
+            IntegratedServer server = mc.getSingleplayerServer();
 
             if (server != null)
             {
                 // This used to be just MinecraftServer::getLevelName().
                 // Getting the name would now require an @Accessor for MinecraftServer.field_23784
-                String name = server.getSaveProperties().getLevelName();
+                String name = server.getWorldData().getLevelName();
                 return FileNameUtils.generateSimpleSafeFileName(name);
             }
         }
@@ -512,21 +512,21 @@ public class StringUtils
                 }
                 else
                 {
-                    ClientPlayNetworkHandler handler = mc.getNetworkHandler();
-                    ClientConnection connection = handler != null ? handler.getConnection() : null;
+                    ClientPacketListener handler = mc.getConnection();
+                    Connection connection = handler != null ? handler.getConnection() : null;
 
                     if (connection != null)
                     {
-                        return "realms_" + stringifyAddress(connection.getAddress());
+                        return "realms_" + stringifyAddress(connection.getRemoteAddress());
                     }
                 }
             }
 
-            ServerInfo server = mc.getCurrentServerEntry();
+            ServerData server = mc.getCurrentServer();
 
             if (server != null)
             {
-                return server.address.trim().replace(':', '_');
+                return server.ip.trim().replace(':', '_');
             }
         }
 
@@ -553,7 +553,7 @@ public class StringUtils
             }
             else
             {
-                World world = GameUtils.getClientWorld();
+                Level world = GameUtils.getClientWorld();
 
                 if (world != null)
                 {
@@ -631,7 +631,7 @@ public class StringUtils
     {
         try
         {
-            return I18n.translate(translationKey, args);
+            return I18n.get(translationKey, args);
         }
         catch (Exception e)
         {
@@ -645,7 +645,7 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return GameUtils.getClient().textRenderer.fontHeight;
+        return GameUtils.getClient().font.lineHeight;
     }
 
     /**
@@ -655,6 +655,6 @@ public class StringUtils
      */
     public static int getStringWidth(String text)
     {
-        return GameUtils.getClient().textRenderer.getWidth(text);
+        return GameUtils.getClient().font.width(text);
     }
 }

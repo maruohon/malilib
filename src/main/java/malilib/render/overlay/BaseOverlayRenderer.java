@@ -7,16 +7,16 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Shader;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 import malilib.util.data.ModInfo;
 import malilib.util.data.json.JsonUtils;
@@ -27,8 +27,8 @@ public abstract class BaseOverlayRenderer
     protected static final BufferBuilder BUFFER_2 = new BufferBuilder(2097152);
 
     protected final List<BaseRenderObject> renderObjects = new ArrayList<>();
-    protected BlockPos lastUpdatePos = BlockPos.ORIGIN;
-    private Vec3d updateCameraPos = Vec3d.ZERO;
+    protected BlockPos lastUpdatePos = BlockPos.ZERO;
+    private Vec3 updateCameraPos = Vec3.ZERO;
     protected boolean needsUpdate;
     protected boolean renderThrough;
     protected float lineWidth = 1f;
@@ -46,7 +46,7 @@ public abstract class BaseOverlayRenderer
     /**
      * @return the camera position where the renderer was last updated
      */
-    public final Vec3d getUpdatePosition()
+    public final Vec3 getUpdatePosition()
     {
         return this.updateCameraPos;
     }
@@ -54,7 +54,7 @@ public abstract class BaseOverlayRenderer
     /**
      * Sets the camera position where the renderer was last updated
      */
-    public final void setUpdatePosition(Vec3d cameraPosition)
+    public final void setUpdatePosition(Vec3 cameraPosition)
     {
         this.updateCameraPos = cameraPosition;
     }
@@ -104,7 +104,7 @@ public abstract class BaseOverlayRenderer
      *                  and the camera position during the draw() call.
      * @param entity The current camera entity
      */
-    public abstract void update(Vec3d cameraPos, Entity entity);
+    public abstract void update(Vec3 cameraPos, Entity entity);
 
     protected void preRender()
     {
@@ -129,7 +129,7 @@ public abstract class BaseOverlayRenderer
     /**
      * Draws all the buffers to screen
      */
-    public void draw(MatrixStack matrixStack, Matrix4f projMatrix)
+    public void draw(PoseStack matrixStack, Matrix4f projMatrix)
     {
         this.preRender();
 
@@ -146,8 +146,8 @@ public abstract class BaseOverlayRenderer
      */
     public void allocateGlResources()
     {
-        this.allocateBuffer(VertexFormat.DrawMode.QUADS);
-        this.allocateBuffer(VertexFormat.DrawMode.DEBUG_LINES);
+        this.allocateBuffer(VertexFormat.Mode.QUADS);
+        this.allocateBuffer(VertexFormat.Mode.DEBUG_LINES);
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class BaseOverlayRenderer
     /**
      * Allocates a new VBO or display list, adds it to the list, and returns it
      */
-    protected BaseRenderObject allocateBuffer(VertexFormat.DrawMode drawMode)
+    protected BaseRenderObject allocateBuffer(VertexFormat.Mode drawMode)
     {
         return this.allocateBuffer(drawMode, GameRenderer::getPositionColorShader, false);
     }
@@ -174,7 +174,7 @@ public abstract class BaseOverlayRenderer
     /**
      * Allocates a new VBO or display list, adds it to the list, and returns it
      */
-    protected BaseRenderObject allocateBuffer(VertexFormat.DrawMode drawMode, Supplier<Shader> shader, boolean hasTexture)
+    protected BaseRenderObject allocateBuffer(VertexFormat.Mode drawMode, Supplier<ShaderInstance> shader, boolean hasTexture)
     {
         BaseRenderObject obj = new VboRenderObject(drawMode, shader, hasTexture);
         this.renderObjects.add(obj);

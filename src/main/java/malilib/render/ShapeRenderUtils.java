@@ -1,14 +1,14 @@
 package malilib.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 import malilib.util.data.Color4f;
 import malilib.util.data.EdgeInt;
@@ -29,7 +29,7 @@ public class ShapeRenderUtils
     public static void renderGrid(double x, double y, double z, double width, double height,
                                   double gridInterval, double lineWidth, int color)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, false);
 
         renderGrid(x, y, z, width, height, gridInterval, lineWidth, color, buffer);
 
@@ -56,7 +56,7 @@ public class ShapeRenderUtils
 
     public static void renderOutlinedRectangle(double x, double y, double z, double width, double height, int colorBg, int colorBorder)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, false);
 
         // Draw the background
         renderRectangle(x + 1, y + 1, z, width - 2, height - 2, colorBg, buffer);
@@ -70,7 +70,7 @@ public class ShapeRenderUtils
 
     public static void renderOutlinedRectangle(double x, double y, double z, double width, double height, int bgColor, EdgeInt borderColor)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, false);
 
         // Draw the background
         renderRectangle(x + 1, y + 1, z, width - 2, height - 2, bgColor, buffer);
@@ -84,7 +84,7 @@ public class ShapeRenderUtils
 
     public static void renderOutline(double x, double y, double z, double width, double height, double borderWidth, int color)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, false);
 
         renderOutline(x, y, z, width, height, borderWidth, color, buffer);
 
@@ -94,7 +94,7 @@ public class ShapeRenderUtils
 
     public static void renderOutline(double x, double y, double z, double width, double height, double borderWidth, EdgeInt color)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, false);
 
         renderOutline(x, y, z, width, height, borderWidth, color, buffer);
 
@@ -139,14 +139,14 @@ public class ShapeRenderUtils
         int g = (color >>  8) & 0xFF;
         int b =  color        & 0xFF;
 
-        buffer.vertex(x1, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(x2, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(x3, y3, z3).color(r, g, b, a).next();
+        buffer.vertex(x1, y1, z1).color(r, g, b, a).endVertex();
+        buffer.vertex(x2, y2, z2).color(r, g, b, a).endVertex();
+        buffer.vertex(x3, y3, z3).color(r, g, b, a).endVertex();
     }
 
     public static void renderRectangle(double x, double y, double z, double width, double height, int color)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, false);
 
         renderRectangle(x, y, z, width, height, color, buffer);
 
@@ -165,10 +165,10 @@ public class ShapeRenderUtils
         float g = (float) ((color >>  8) & 0xFF) / 255.0F;
         float b = (float) (color         & 0xFF) / 255.0F;
 
-        buffer.vertex(x        , y         , z).color(r, g, b, a).next();
-        buffer.vertex(x        , y + height, z).color(r, g, b, a).next();
-        buffer.vertex(x + width, y + height, z).color(r, g, b, a).next();
-        buffer.vertex(x + width, y         , z).color(r, g, b, a).next();
+        buffer.vertex(x        , y         , z).color(r, g, b, a).endVertex();
+        buffer.vertex(x        , y + height, z).color(r, g, b, a).endVertex();
+        buffer.vertex(x + width, y + height, z).color(r, g, b, a).endVertex();
+        buffer.vertex(x + width, y         , z).color(r, g, b, a).endVertex();
     }
 
     /**
@@ -177,10 +177,10 @@ public class ShapeRenderUtils
     public static void renderRectangle(double x, double y, double z, double width, double height,
                                        Color4f color, BufferBuilder buffer)
     {
-        buffer.vertex(x        , y         , z).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(x        , y + height, z).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(x + width, y + height, z).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(x + width, y         , z).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(x        , y         , z).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(x        , y + height, z).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(x + width, y + height, z).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(x + width, y         , z).color(color.r, color.g, color.b, color.a).endVertex();
     }
 
     /**
@@ -191,7 +191,7 @@ public class ShapeRenderUtils
                                                   int u, int v,
                                                   int width, int height)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE, true);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX, true);
 
         renderTexturedRectangle256(x, y, z, u, v, width, height, buffer);
 
@@ -260,7 +260,7 @@ public class ShapeRenderUtils
                                                      int textureWidth, int textureHeight,
                                                      double pixelWidth, double pixelHeight)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE, true);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX, true);
 
         renderScaledTexturedRectangle(x, y, z, u, v,
                                       renderWidth, renderHeight,
@@ -292,10 +292,10 @@ public class ShapeRenderUtils
         double v1 = v                   * pixelHeight;
         double v2 = (v + textureHeight) * pixelHeight;
 
-        buffer.vertex(x , y2, z).texture((float) u1, (float) v2).next();
-        buffer.vertex(x2, y2, z).texture((float) u2, (float) v2).next();
-        buffer.vertex(x2, y , z).texture((float) u2, (float) v1).next();
-        buffer.vertex(x , y , z).texture((float) u1, (float) v1).next();
+        buffer.vertex(x , y2, z).uv((float) u1, (float) v2).endVertex();
+        buffer.vertex(x2, y2, z).uv((float) u2, (float) v2).endVertex();
+        buffer.vertex(x2, y , z).uv((float) u2, (float) v1).endVertex();
+        buffer.vertex(x , y , z).uv((float) u1, (float) v1).endVertex();
     }
 
     /**
@@ -311,7 +311,7 @@ public class ShapeRenderUtils
                                                            float pixelWidth, float pixelHeight,
                                                            int backgroundTintColor)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR, true);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR, true);
 
         renderScaledTintedTexturedRectangle(x, y, z, u, v, renderWidth, renderHeight, textureWidth, textureHeight,
                                             pixelWidth, pixelHeight, backgroundTintColor, buffer);
@@ -346,10 +346,10 @@ public class ShapeRenderUtils
         float v1 = v                   * pixelHeight;
         float v2 = (v + textureHeight) * pixelHeight;
 
-        buffer.vertex(x , y2, z).texture(u1, v2).color(r, g, b, a).next();
-        buffer.vertex(x2, y2, z).texture(u2, v2).color(r, g, b, a).next();
-        buffer.vertex(x2, y , z).texture(u2, v1).color(r, g, b, a).next();
-        buffer.vertex(x , y , z).texture(u1, v1).color(r, g, b, a).next();
+        buffer.vertex(x , y2, z).uv(u1, v2).color(r, g, b, a).endVertex();
+        buffer.vertex(x2, y2, z).uv(u2, v2).color(r, g, b, a).endVertex();
+        buffer.vertex(x2, y , z).uv(u2, v1).color(r, g, b, a).endVertex();
+        buffer.vertex(x , y , z).uv(u1, v1).color(r, g, b, a).endVertex();
     }
 
     public static void renderGradientRectangle(float left, float top, float right, float bottom, float z,
@@ -386,10 +386,10 @@ public class ShapeRenderUtils
         float eg = (float)(endColor >>  8 & 0xFF) / 255.0F;
         float eb = (float)(endColor & 0xFF) / 255.0F;
 
-        buffer.vertex(right, top,    z).color(sr, sg, sb, sa).next();
-        buffer.vertex(left,  top,    z).color(sr, sg, sb, sa).next();
-        buffer.vertex(left,  bottom, z).color(er, eg, eb, ea).next();
-        buffer.vertex(right, bottom, z).color(er, eg, eb, ea).next();
+        buffer.vertex(right, top,    z).color(sr, sg, sb, sa).endVertex();
+        buffer.vertex(left,  top,    z).color(sr, sg, sb, sa).endVertex();
+        buffer.vertex(left,  bottom, z).color(er, eg, eb, ea).endVertex();
+        buffer.vertex(right, bottom, z).color(er, eg, eb, ea).endVertex();
     }
 
     public static void renderArc(double centerX, double centerY, double z, double radius,
@@ -418,7 +418,7 @@ public class ShapeRenderUtils
         double angleIncrement = arcAngle / (double) steps;
         double lastAngle = startAngle;
 
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR, false);
         RenderSystem.lineWidth(lineWidth);
 
         for (int i = 0; i <= steps; ++i)
@@ -426,7 +426,7 @@ public class ShapeRenderUtils
             double x = centerX + radius * Math.cos(lastAngle);
             double y = centerY + radius * Math.sin(lastAngle);
 
-            buffer.vertex(x, y, z).color(r, g, b, a).next();
+            buffer.vertex(x, y, z).color(r, g, b, a).endVertex();
 
             lastAngle += angleIncrement;
         }
@@ -466,7 +466,7 @@ public class ShapeRenderUtils
         double lastAngle = startAngle;
 
         // TODO 1.13+ port check this (was LINE_LOOP)
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR, false);
         RenderSystem.lineWidth(lineWidth);
 
         // First render the inner arc in the positive direction
@@ -475,7 +475,7 @@ public class ShapeRenderUtils
             double x = centerX + innerRadius * Math.cos(lastAngle);
             double y = centerY + innerRadius * Math.sin(lastAngle);
 
-            buffer.vertex(x, y, z).color(r, g, b, a).next();
+            buffer.vertex(x, y, z).color(r, g, b, a).endVertex();
 
             lastAngle += angleIncrement;
         }
@@ -493,7 +493,7 @@ public class ShapeRenderUtils
             double x = centerX + outerRadius * Math.cos(lastAngle);
             double y = centerY + outerRadius * Math.sin(lastAngle);
 
-            buffer.vertex(x, y, z).color(r, g, b, a).next();
+            buffer.vertex(x, y, z).color(r, g, b, a).endVertex();
 
             lastAngle -= angleIncrement;
         }
@@ -524,7 +524,7 @@ public class ShapeRenderUtils
             arcAngle += twoPi;
         }
 
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR, false);
 
         double arcLength = arcAngle * outerRadius;
         int steps = Math.max((int) Math.ceil(arcLength / 5.0), 2);
@@ -538,12 +538,12 @@ public class ShapeRenderUtils
             x = centerX + innerRadius * Math.cos(lastAngle);
             y = centerY + innerRadius * Math.sin(lastAngle);
 
-            buffer.vertex(x, y, z).color(r, g, b, a).next();
+            buffer.vertex(x, y, z).color(r, g, b, a).endVertex();
 
             x = centerX + outerRadius * Math.cos(lastAngle);
             y = centerY + outerRadius * Math.sin(lastAngle);
 
-            buffer.vertex(x, y, z).color(r, g, b, a).next();
+            buffer.vertex(x, y, z).color(r, g, b, a).endVertex();
 
             lastAngle -= angleIncrement;
         }
@@ -557,14 +557,14 @@ public class ShapeRenderUtils
      */
     public static void renderBlockPosSideQuads(BlockPos pos, double expand, Color4f color, BufferBuilder buffer)
     {
-        renderBlockPosSideQuads(pos, expand, color, buffer, Vec3d.ZERO);
+        renderBlockPosSideQuads(pos, expand, color, buffer, Vec3.ZERO);
     }
 
     /**
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
     public static void renderBlockPosSideQuads(BlockPos pos, double expand, Color4f color,
-                                               BufferBuilder buffer, Vec3d cameraPos)
+                                               BufferBuilder buffer, Vec3 cameraPos)
     {
         double minX = pos.getX() - expand - cameraPos.x;
         double minY = pos.getY() - expand - cameraPos.y;
@@ -581,7 +581,7 @@ public class ShapeRenderUtils
      */
     public static void renderBlockPosEdgeLines(BlockPos pos, double expand, Color4f color, BufferBuilder buffer)
     {
-        renderBlockPosEdgeLines(pos, expand, color, buffer, Vec3d.ZERO);
+        renderBlockPosEdgeLines(pos, expand, color, buffer, Vec3.ZERO);
     }
 
     /**
@@ -589,7 +589,7 @@ public class ShapeRenderUtils
      * The cameraPos value will be subtracted from the absolute coordinate values of the passed in BlockPos.
      */
     public static void renderBlockPosEdgeLines(BlockPos pos, double expand, Color4f color,
-                                               BufferBuilder buffer, Vec3d cameraPos)
+                                               BufferBuilder buffer, Vec3 cameraPos)
     {
         double minX = pos.getX() - expand - cameraPos.x;
         double minY = pos.getY() - expand - cameraPos.y;
@@ -620,7 +620,7 @@ public class ShapeRenderUtils
      */
     public static void renderBoxSidesAndEdges(BlockPos posMin, BlockPos posMax,
                                               Color4f colorLines, Color4f colorSides,
-                                              BufferBuilder bufferQuads, BufferBuilder bufferLines, Vec3d cameraPos)
+                                              BufferBuilder bufferQuads, BufferBuilder bufferLines, Vec3 cameraPos)
     {
         final double x1 = posMin.getX() - cameraPos.x;
         final double y1 = posMin.getY() - cameraPos.y;
@@ -641,28 +641,28 @@ public class ShapeRenderUtils
                                                     Color4f color, BufferBuilder buffer)
     {
         // West side
-        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
 
         // East side
-        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
 
         // North side
-        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
 
         // South side
-        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
     }
 
     /**
@@ -673,10 +673,10 @@ public class ShapeRenderUtils
                                         Color4f color, BufferBuilder buffer)
     {
         // Top side
-        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
     }
 
     /**
@@ -687,10 +687,10 @@ public class ShapeRenderUtils
                                            Color4f color, BufferBuilder buffer)
     {
         // Bottom side
-        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
     }
 
     /**
@@ -701,44 +701,44 @@ public class ShapeRenderUtils
                                           Color4f color, BufferBuilder buffer)
     {
         // West side
-        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
 
-        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
 
-        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
 
-        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
 
         // East side
-        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
 
-        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
 
-        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
 
-        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
 
         // North side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
 
-        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
 
         // South side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
 
-        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
     }
 
     /**
@@ -747,14 +747,14 @@ public class ShapeRenderUtils
     public static void renderBlockPosSideQuad(BlockPos pos, Direction side, double expand,
                                               Color4f color, BufferBuilder buffer)
     {
-        renderBlockPosSideQuad(pos, side, expand, color, buffer, Vec3d.ZERO);
+        renderBlockPosSideQuad(pos, side, expand, color, buffer, Vec3.ZERO);
     }
 
     /**
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
     public static void renderBlockPosSideQuad(BlockPos pos, Direction side, double expand,
-                                              Color4f color, BufferBuilder buffer, Vec3d cameraPos)
+                                              Color4f color, BufferBuilder buffer, Vec3 cameraPos)
     {
         double minX = pos.getX() - expand - cameraPos.x;
         double minY = pos.getY() - expand - cameraPos.y;
@@ -766,45 +766,45 @@ public class ShapeRenderUtils
         switch (side)
         {
             case DOWN:
-                buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
                 break;
 
             case UP:
-                buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
                 break;
 
             case NORTH:
-                buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
                 break;
 
             case SOUTH:
-                buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
                 break;
 
             case WEST:
-                buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
                 break;
 
             case EAST:
-                buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
-                buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+                buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
                 break;
         }
     }
@@ -813,7 +813,7 @@ public class ShapeRenderUtils
      * Takes in buffers initialized for GL_QUADS and GL_LINES, POSITION_COLOR modes.
      */
     public static void renderBoxSidesAndEdges(IntBoundingBox bb, Color4f color,
-                                              BufferBuilder bufferQuads, BufferBuilder bufferLines, Vec3d cameraPos)
+                                              BufferBuilder bufferQuads, BufferBuilder bufferLines, Vec3 cameraPos)
     {
         double minX = bb.minX - cameraPos.x;
         double minY = bb.minY - cameraPos.y;

@@ -2,10 +2,9 @@ package malilib.render.text;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import malilib.config.value.HorizontalAlignment;
 import malilib.gui.util.ScreenContext;
@@ -284,7 +283,7 @@ public class StringListRenderer extends BaseWidget
 
         if (renderBackground)
         {
-            buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR, false);
+            buffer = RenderUtils.startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, false);
         }
 
         TextRenderer.INSTANCE.startBuffers();

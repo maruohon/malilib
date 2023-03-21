@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.config.value.HorizontalAlignment;
 import malilib.gui.BaseScreen;
@@ -419,7 +419,7 @@ public class BaseTextFieldWidget extends InteractableWidget
         }
 
         // The cursor can go after the last character, so not length - 1 here
-        this.cursorPosition = MathHelper.clamp(position, 0, this.getTextLength());
+        this.cursorPosition = Mth.clamp(position, 0, this.getTextLength());
 
         if (this.cursorPosition <= this.visibleText.getStartIndex() ||
             this.visibleText.isIndexVisibleWithCurrentStart(this.cursorPosition, this.text) == false)
@@ -590,7 +590,7 @@ public class BaseTextFieldWidget extends InteractableWidget
 
     protected boolean isUsableCharacter(char typedChar, int modifiers)
     {
-        if (typedChar != 167 && SharedConstants.isValidChar(typedChar) == false)
+        if (typedChar != 167 && SharedConstants.isAllowedChatCharacter(typedChar) == false)
         {
             return false;
         }

@@ -1,6 +1,6 @@
 package malilib.gui.util;
 
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import malilib.MaLiLibConfigs;
 import malilib.render.RenderContext;
@@ -14,7 +14,7 @@ public class ScreenContext extends RenderContext
 
     public ScreenContext(int mouseX, int mouseY,
                          int hoveredWidgetId, boolean isActiveScreen,
-                         MatrixStack matrixStack)
+                         PoseStack matrixStack)
     {
         super (matrixStack);
 

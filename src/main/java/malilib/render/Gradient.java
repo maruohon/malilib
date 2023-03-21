@@ -1,6 +1,6 @@
 package malilib.render;
 
-import net.minecraft.client.render.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 
 import malilib.util.data.Color4f;
 

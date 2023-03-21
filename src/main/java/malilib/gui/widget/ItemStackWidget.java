@@ -1,7 +1,7 @@
 package malilib.gui.widget;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import malilib.gui.util.ScreenContext;
 import malilib.render.ItemRenderUtils;

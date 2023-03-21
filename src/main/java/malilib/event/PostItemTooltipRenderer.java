@@ -1,6 +1,6 @@
 package malilib.event;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import malilib.render.RenderContext;
 import malilib.util.ProfilerSectionSupplierSupplier;

@@ -3,18 +3,18 @@ package malilib.util.position;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.Vec3;
 
 public enum Coordinate
 {
-    X((v) -> v.x, Vec3i::getX, Vec2d::getX, Vec2i::getX, (n, o) -> new Vec3d(n  , o.y, o.z), (n, o) -> new Vec3i(n       , o.getY(), o.getZ()), (n, o) -> new BlockPos(n       , o.getY(), o.getZ()), (n, o) -> new Vec2d(n, o.y), (n, o) -> new Vec2i(n, o.y)),
-    Y((v) -> v.y, Vec3i::getY, Vec2d::getY, Vec2i::getY, (n, o) -> new Vec3d(o.x, n  , o.z), (n, o) -> new Vec3i(o.getX(), n       , o.getZ()), (n, o) -> new BlockPos(o.getX(), n       , o.getZ()), (n, o) -> new Vec2d(o.x, n), (n, o) -> new Vec2i(o.x, n)),
-    Z((v) -> v.z, Vec3i::getZ, v -> 0     , v -> 0     , (n, o) -> new Vec3d(o.x, o.y, n  ), (n, o) -> new Vec3i(o.getX(), o.getY(), n       ), (n, o) -> new BlockPos(o.getX(), o.getY(), n       ), (n, o) -> o                , (n, o) -> o);
+    X((v) -> v.x, Vec3i::getX, Vec2d::getX, Vec2i::getX, (n, o) -> new Vec3(n  , o.y, o.z), (n, o) -> new Vec3i(n       , o.getY(), o.getZ()), (n, o) -> new BlockPos(n       , o.getY(), o.getZ()), (n, o) -> new Vec2d(n, o.y), (n, o) -> new Vec2i(n, o.y)),
+    Y((v) -> v.y, Vec3i::getY, Vec2d::getY, Vec2i::getY, (n, o) -> new Vec3(o.x, n  , o.z), (n, o) -> new Vec3i(o.getX(), n       , o.getZ()), (n, o) -> new BlockPos(o.getX(), n       , o.getZ()), (n, o) -> new Vec2d(o.x, n), (n, o) -> new Vec2i(o.x, n)),
+    Z((v) -> v.z, Vec3i::getZ, v -> 0     , v -> 0     , (n, o) -> new Vec3(o.x, o.y, n  ), (n, o) -> new Vec3i(o.getX(), o.getY(), n       ), (n, o) -> new BlockPos(o.getX(), o.getY(), n       ), (n, o) -> o                , (n, o) -> o);
 
     private final ToDoubleFunction<Vec2d> vec2dToDoubleFunction;
-    private final ToDoubleFunction<Vec3d> vec3dToDoubleFunction;
+    private final ToDoubleFunction<Vec3> vec3dToDoubleFunction;
     private final ToIntFunction<Vec2i> vec2iToIntFunction;
     private final ToIntFunction<Vec3i> vec3iToIntFunction;
     private final BlockPosModifier blockPosModifier;
@@ -23,7 +23,7 @@ public enum Coordinate
     private final Vec2dModifier vec2dModifier;
     private final Vec2iModifier vec2iModifier;
 
-    Coordinate(ToDoubleFunction<Vec3d> vec3dToDoubleFunction,
+    Coordinate(ToDoubleFunction<Vec3> vec3dToDoubleFunction,
                ToIntFunction<Vec3i> vec3iToIntFunction,
                ToDoubleFunction<Vec2d> vec2dToDoubleFunction,
                ToIntFunction<Vec2i> vec2iToIntFunction,
@@ -59,7 +59,7 @@ public enum Coordinate
         return this.vec2dToDoubleFunction.applyAsDouble(pos);
     }
 
-    public double asDouble(Vec3d pos)
+    public double asDouble(Vec3 pos)
     {
         return this.vec3dToDoubleFunction.applyAsDouble(pos);
     }
@@ -74,7 +74,7 @@ public enum Coordinate
         return this.vec2iModifier.modify(newValue, oldVec);
     }
 
-    public Vec3d modifyVec3d(double newValue, Vec3d oldVec)
+    public Vec3 modifyVec3d(double newValue, Vec3 oldVec)
     {
         return this.vec3dModifier.modify(newValue, oldVec);
     }
@@ -107,7 +107,7 @@ public enum Coordinate
         return this.vec3iModifier.modify(newValue, oldVec);
     }
 
-    public Vec3d offsetVec3d(double offset, Vec3d oldVec)
+    public Vec3 offsetVec3d(double offset, Vec3 oldVec)
     {
         double newValue = this.vec3dToDoubleFunction.applyAsDouble(oldVec) + offset;
         return this.vec3dModifier.modify(newValue, oldVec);
@@ -124,7 +124,7 @@ public enum Coordinate
         return String.valueOf(this.asInt(pos));
     }
 
-    public String asDoubleString(Vec3d pos)
+    public String asDoubleString(Vec3 pos)
     {
         return String.valueOf(this.asDouble(pos));
     }
@@ -136,7 +136,7 @@ public enum Coordinate
 
     public interface Vec3dModifier
     {
-        Vec3d modify(double newValue, Vec3d oldVec);
+        Vec3 modify(double newValue, Vec3 oldVec);
     }
 
     public interface BlockPosModifier

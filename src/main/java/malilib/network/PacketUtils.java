@@ -4,11 +4,11 @@ import java.util.Objects;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
+import net.minecraft.resources.ResourceLocation;
 
 public class PacketUtils
 {
@@ -19,10 +19,10 @@ public class PacketUtils
      * @return a slice of the buffer
      * @see io.netty.buffer.ByteBuf#slice()
      */
-    public static PacketByteBuf slice(ByteBuf buf)
+    public static FriendlyByteBuf slice(ByteBuf buf)
     {
         Objects.requireNonNull(buf, "PacketUtils#slice(): ByteBuf cannot be null");
-        return new PacketByteBuf(buf.slice());
+        return new FriendlyByteBuf(buf.slice());
     }
 
     /**
@@ -32,20 +32,20 @@ public class PacketUtils
      * @return a slice of the buffer
      * @see io.netty.buffer.ByteBuf#retainedSlice()
      */
-    public static PacketByteBuf retainedSlice(ByteBuf buf)
+    public static FriendlyByteBuf retainedSlice(ByteBuf buf)
     {
         Objects.requireNonNull(buf, "PacketUtils#retainedSlice(): ByteBuf cannot be null");
-        return new PacketByteBuf(buf.retainedSlice());
+        return new FriendlyByteBuf(buf.retainedSlice());
     }
 
-    public static void send(Identifier channel, PacketByteBuf packet, ClientPlayNetworkHandler networkHandler)
+    public static void send(ResourceLocation channel, FriendlyByteBuf packet, ClientPacketListener networkHandler)
     {
-        networkHandler.sendPacket(new CustomPayloadC2SPacket(channel, packet));
+        networkHandler.send(new ServerboundCustomPayloadPacket(channel, packet));
     }
 
-    public static void sendTag(Identifier channel, NbtCompound tag, ClientPlayNetworkHandler networkHandler)
+    public static void sendTag(ResourceLocation channel, CompoundTag tag, ClientPacketListener networkHandler)
     {
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeNbt(tag);
         send(channel, buf, networkHandler);
     }

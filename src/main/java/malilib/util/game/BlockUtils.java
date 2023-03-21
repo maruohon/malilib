@@ -11,18 +11,18 @@ import javax.annotation.Nullable;
 import com.google.common.base.Splitter;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Property;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import malilib.render.text.StyledTextLine;
 import malilib.util.StringUtils;
@@ -46,14 +46,14 @@ public class BlockUtils
         String blockName = index != -1 ? str.substring(0, index) : str;
         Identifier id = new Identifier(blockName);
 
-        if (Registry.BLOCK.containsId(id))
+        if (Registry.BLOCK.containsKey(id))
         {
             Block block = RegistryUtils.getBlockById(id);
-            BlockState state = block.getDefaultState();
+            BlockState state = block.defaultBlockState();
 
             if (index != -1 && str.length() > (index + 4) && str.charAt(str.length() - 1) == ']')
             {
-                StateManager<Block, BlockState> stateManager = block.getStateManager();
+                StateDefinition<Block, BlockState> stateManager = block.getStateDefinition();
                 String propStr = str.substring(index + 1, str.length() - 1);
 
                 for (String propAndVal : COMMA_SPLITTER.split(propStr))
@@ -96,17 +96,17 @@ public class BlockUtils
      * None of the values are checked for validity here, and this can be used for
      * parsing strings for states from another Minecraft version, such as 1.12 <-> 1.13+.
      */
-    public static NbtCompound getBlockStateTagFromString(String stateString)
+    public static CompoundTag getBlockStateTagFromString(String stateString)
     {
         int index = stateString.indexOf("["); // [f=b]
         String blockName = index != -1 ? stateString.substring(0, index) : stateString;
-        NbtCompound tag = new NbtCompound();
+        CompoundTag tag = new CompoundTag();
 
         NbtWrap.putString(tag, "Name", blockName);
 
         if (index != -1 && stateString.length() > (index + 4) && stateString.charAt(stateString.length() - 1) == ']')
         {
-            NbtCompound propsTag = new NbtCompound();
+            CompoundTag propsTag = new CompoundTag();
             String propStr = stateString.substring(index + 1, stateString.length() - 1);
 
             for (String propAndVal : COMMA_SPLITTER.split(propStr))
@@ -142,7 +142,7 @@ public class BlockUtils
      * This string format is what the Sponge schematic format uses in the palette.
      * @return an equivalent of BlockState.toString() of the given tag representing a block state
      */
-    public static String getBlockStateStringFromTag(NbtCompound stateTag)
+    public static String getBlockStateStringFromTag(CompoundTag stateTag)
     {
         String name = NbtWrap.getString(stateTag, "Name");
 
@@ -151,7 +151,7 @@ public class BlockUtils
             return name;
         }
 
-        NbtCompound propTag = NbtWrap.getCompound(stateTag, "Properties");
+        CompoundTag propTag = NbtWrap.getCompound(stateTag, "Properties");
         ArrayList<Pair<String, String>> props = new ArrayList<>();
 
         for (String key : NbtWrap.getKeys(propTag))
@@ -188,13 +188,13 @@ public class BlockUtils
     @SuppressWarnings("unchecked")
     public static <T extends Comparable<T>> BlockState getBlockStateWithProperty(BlockState state, Property<T> prop, Comparable<?> value)
     {
-        return state.with(prop, (T) value);
+        return state.setValue(prop, (T) value);
     }
 
     @Nullable
     public static <T extends Comparable<T>> T getPropertyValueByName(Property<T> prop, String valStr)
     {
-        return prop.parse(valStr).orElse(null);
+        return prop.getValue(valStr).orElse(null);
     }
 
     /**
@@ -222,7 +222,7 @@ public class BlockUtils
     public static Optional<Direction> getFirstPropertyFacingValue(BlockState state)
     {
         Optional<DirectionProperty> propOptional = getFirstDirectionProperty(state);
-        return propOptional.isPresent() ? Optional.ofNullable(state.get(propOptional.get())) : Optional.empty();
+        return propOptional.isPresent() ? Optional.ofNullable(state.getValue(propOptional.get())) : Optional.empty();
     }
 
     public static List<String> getFormattedBlockStateProperties(BlockState state)
@@ -242,7 +242,7 @@ public class BlockUtils
             {
                 for (Property<?> prop : properties)
                 {
-                    Comparable<?> val = state.get(prop);
+                    Comparable<?> val = state.getValue(prop);
                     String key;
 
                     if (prop instanceof BooleanProperty)
@@ -258,7 +258,7 @@ public class BlockUtils
                     {
                         key = "malilib.label.block_state_properties.enum";
                     }
-                    else if (prop instanceof IntProperty)
+                    else if (prop instanceof IntegerProperty)
                     {
                         key = "malilib.label.block_state_properties.integer";
                     }
@@ -291,7 +291,7 @@ public class BlockUtils
             {
                 for (Property<?> prop : properties)
                 {
-                    Comparable<?> val = state.get(prop);
+                    Comparable<?> val = state.getValue(prop);
                     String key;
 
                     if (prop instanceof BooleanProperty)
@@ -307,7 +307,7 @@ public class BlockUtils
                     {
                         key = "malilib.label.block_state_properties.enum";
                     }
-                    else if (prop instanceof IntProperty)
+                    else if (prop instanceof IntegerProperty)
                     {
                         key = "malilib.label.block_state_properties.integer";
                     }
@@ -334,6 +334,6 @@ public class BlockUtils
 
     public static boolean isFluidSourceBlock(BlockState state)
     {
-        return state.getBlock() instanceof FluidBlock && state.get(FluidBlock.LEVEL).intValue() == 0;
+        return state.getBlock() instanceof LiquidBlock && state.getValue(LiquidBlock.LEVEL).intValue() == 0;
     }
 }

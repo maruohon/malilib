@@ -6,7 +6,7 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 import malilib.util.game.wrap.RegistryUtils;
 

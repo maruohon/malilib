@@ -3,16 +3,17 @@ package malilib.action;
 import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.util.ScreenshotRecorder;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.GameMode;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 
 import malilib.input.ActionResult;
 import malilib.util.game.wrap.EntityWrap;
@@ -35,7 +36,7 @@ public class UtilityActions
         if (ctx.getPlayer() != null)
         {
             arg = StringUtils.normalizeSpace(arg.trim());
-            ctx.getPlayer().sendChatMessage(arg, Text.literal(arg)); // TODO 1.19+ is this correct?
+            ctx.getPlayer().chat(arg);
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -43,7 +44,7 @@ public class UtilityActions
 
     public static ActionResult setPlayerFractionalXZ(ActionContext ctx, String arg)
     {
-        PlayerEntity player = ctx.getPlayer();
+        Player player = ctx.getPlayer();
 
         if (player != null)
         {
@@ -55,11 +56,11 @@ public class UtilityActions
                 {
                     double fx = Math.abs(Double.parseDouble(args[0])) % 1.0;
                     double fz = Math.abs(Double.parseDouble(args[1])) % 1.0;
-                    double px = MathHelper.floor(EntityWrap.getX(player));
-                    double pz = MathHelper.floor(EntityWrap.getZ(player));
+                    double px = Mth.floor(EntityWrap.getX(player));
+                    double pz = Mth.floor(EntityWrap.getZ(player));
                     double x = px < 0.0 ? px + 1.0 - fx : px + fx;
                     double z = pz < 0.0 ? pz + 1.0 - fz : pz + fz;
-                    player.refreshPositionAndAngles(x, EntityWrap.getY(player), z,
+                    player.moveTo(x, EntityWrap.getY(player), z,
                                                     EntityWrap.getYaw(player), EntityWrap.getPitch(player));
                 }
 
@@ -76,7 +77,7 @@ public class UtilityActions
         {
             try
             {
-                EntityWrap.setYaw(ctx.getPlayer(), MathHelper.wrapDegrees(Float.parseFloat(arg)));
+                EntityWrap.setYaw(ctx.getPlayer(), Mth.wrapDegrees(Float.parseFloat(arg)));
                 return ActionResult.SUCCESS;
             }
             catch (Exception ignore) {}
@@ -112,7 +113,7 @@ public class UtilityActions
                 int slot = Integer.parseInt(arg);
                 if (slot >= 1 && slot <= 9)
                 {
-                    ctx.getPlayer().getInventory().selectedSlot = slot - 1;
+                    ctx.getPlayer().getInventory().selected = slot - 1;
                     return ActionResult.SUCCESS;
                 }
             }
@@ -125,12 +126,12 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            GameUtils.getOptions().debugEnabled = ! GameUtils.getOptions().debugEnabled;
+            GameUtils.getOptions().renderDebug = ! GameUtils.getOptions().renderDebug;
 
-            if (GameUtils.getOptions().debugEnabled == false)
+            if (GameUtils.getOptions().renderDebug == false)
             {
-                GameUtils.getOptions().debugProfilerEnabled = false;
-                GameUtils.getOptions().debugTpsEnabled = false;
+                GameUtils.getOptions().renderDebugCharts = false;
+                GameUtils.getOptions().renderFpsChart = false;
             }
             return ActionResult.SUCCESS;
         }
@@ -141,11 +142,11 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            GameUtils.getOptions().debugProfilerEnabled = ! GameUtils.getOptions().debugProfilerEnabled;
-            boolean state = GameUtils.getOptions().debugProfilerEnabled;
+            GameUtils.getOptions().renderDebugCharts = ! GameUtils.getOptions().renderDebugCharts;
+            boolean state = GameUtils.getOptions().renderDebugCharts;
             if (arg.equalsIgnoreCase("on")) state = true;
             else if (arg.equalsIgnoreCase("off")) state = false;
-            GameUtils.getOptions().debugEnabled = state;
+            GameUtils.getOptions().renderDebug = state;
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -155,11 +156,11 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            GameUtils.getOptions().debugTpsEnabled = ! GameUtils.getOptions().debugTpsEnabled;
-            boolean state = GameUtils.getOptions().debugTpsEnabled;
+            GameUtils.getOptions().renderFpsChart = ! GameUtils.getOptions().renderFpsChart;
+            boolean state = GameUtils.getOptions().renderFpsChart;
             if (arg.equalsIgnoreCase("on")) state = true;
             else if (arg.equalsIgnoreCase("off")) state = false;
-            GameUtils.getOptions().debugEnabled = state;
+            GameUtils.getOptions().renderDebug = state;
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -169,7 +170,7 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            boolean enabled = ctx.getClient().debugRenderer.toggleShowChunkBorder();
+            boolean enabled = ctx.getClient().debugRenderer.switchRenderChunkborder();
             translateDebugToggleMessage(enabled ? "debug.chunk_boundaries.on" : "debug.chunk_boundaries.off");
             return ActionResult.SUCCESS;
         }
@@ -178,9 +179,9 @@ public class UtilityActions
 
     public static ActionResult takeScreenshot(ActionContext ctx)
     {
-        MinecraftClient mc = ctx.getClient();
-        ScreenshotRecorder.saveScreenshot(mc.runDirectory, mc.getFramebuffer(),
-                                          message -> mc.execute(() -> mc.inGameHud.getChatHud().addMessage(message)));
+        Minecraft mc = ctx.getClient();
+        Screenshot.grab(mc.gameDirectory, mc.getMainRenderTarget(),
+                                          message -> mc.execute(() -> mc.gui.getChat().addMessage(message)));
         return ActionResult.SUCCESS;
     }
 
@@ -188,38 +189,38 @@ public class UtilityActions
     {
         if (ctx.getPlayer() != null && ctx.getPlayer().isSpectator() == false)
         {
-            ctx.getPlayer().dropSelectedItem(true);
+            ctx.getPlayer().drop(true);
         }
         return ActionResult.SUCCESS;
     }
 
     public static ActionResult cycleGameMode(ActionContext ctx, String arg)
     {
-        if (ctx.getPlayer() != null && ctx.getClient().getNetworkHandler() != null)
+        if (ctx.getPlayer() != null && ctx.getClient().getConnection() != null)
         {
             String[] parts = arg.split(",");
 
             if (parts.length > 0)
             {
-                ArrayList<GameMode> modes = new ArrayList<>();
+                ArrayList<GameType> modes = new ArrayList<>();
 
                 for (String part : parts)
                 {
                     if (part.equalsIgnoreCase("survival") || part.equals("s") || part.equals("0"))
                     {
-                        modes.add(GameMode.SURVIVAL);
+                        modes.add(GameType.SURVIVAL);
                     }
                     else if (part.equalsIgnoreCase("creative") || part.equals("c") || part.equals("1"))
                     {
-                        modes.add(GameMode.CREATIVE);
+                        modes.add(GameType.CREATIVE);
                     }
                     else if (part.equalsIgnoreCase("adventure") || part.equals("a") || part.equals("2"))
                     {
-                        modes.add(GameMode.ADVENTURE);
+                        modes.add(GameType.ADVENTURE);
                     }
                     else if (part.equalsIgnoreCase("spectator") || part.equals("sp") || part.equals("3"))
                     {
-                        modes.add(GameMode.SPECTATOR);
+                        modes.add(GameType.SPECTATOR);
                     }
                 }
 
@@ -228,7 +229,7 @@ public class UtilityActions
                     return ActionResult.FAIL;
                 }
 
-                PlayerListEntry info = ctx.getClient().getNetworkHandler().getPlayerListEntry(ctx.getPlayer().getGameProfile().getId());
+                PlayerInfo info = ctx.getClient().getConnection().getPlayerInfo(ctx.getPlayer().getGameProfile().getId());
                 int index = info != null ? modes.indexOf(info.getGameMode()) : -1;
 
                 if (++index >= modes.size())
@@ -236,7 +237,7 @@ public class UtilityActions
                     index = 0;
                 }
 
-                GameMode mode = modes.get(index);
+                GameType mode = modes.get(index);
                 GameUtils.sendCommand("gamemode " + mode.getName());
 
                 return ActionResult.SUCCESS;
@@ -248,10 +249,10 @@ public class UtilityActions
 
     private static void translateDebugToggleMessage(String key, Object... args)
     {
-        MutableText text = Text.literal("");
-        text.append(Text.translatable("debug.prefix").setStyle(Style.EMPTY
-                    .withColor(Formatting.YELLOW).withBold(Boolean.TRUE)))
-                    .append(" ").append(Text.translatable(key, args));
-        GameUtils.getClient().inGameHud.getChatHud().addMessage(text);
+        MutableComponent text = new TextComponent("");
+        text.append(new TranslatableComponent("debug.prefix").setStyle(Style.EMPTY
+                    .withColor(ChatFormatting.YELLOW).withBold(Boolean.TRUE)))
+                    .append(" ").append(new TranslatableComponent(key, args));
+        GameUtils.getClient().gui.getChat().addMessage(text);
     }
 }

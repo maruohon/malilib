@@ -1,6 +1,6 @@
 package malilib.gui.widget;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.gui.callback.SliderCallback;
 import malilib.gui.icon.DefaultIcons;
@@ -20,7 +20,7 @@ public class SliderWidget extends InteractableWidget
 
         this.callback = callback;
         int usableWidth = this.getWidth() - 4;
-        this.sliderWidth = MathHelper.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);
+        this.sliderWidth = Mth.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);
         this.textOffset.setCenterHorizontally(true);
         this.textOffset.setXOffset(0);
     }
@@ -109,6 +109,6 @@ public class SliderWidget extends InteractableWidget
     protected double getRelativePosition(int mouseX)
     {
         int relPos = mouseX - this.getX() - this.sliderWidth / 2;
-        return MathHelper.clamp((double) relPos / (double) (this.getWidth() - this.sliderWidth - 4), 0, 1);
+        return Mth.clamp((double) relPos / (double) (this.getWidth() - this.sliderWidth - 4), 0, 1);
     }
 }

@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.util.ScreenContext;
@@ -273,8 +273,8 @@ public class ColorEditorHSVScreen extends BaseScreen
     {
         if (element == Element.SV)
         {
-            mouseX = MathHelper.clamp(mouseX, this.xHS, this.xHS + this.sizeHS);
-            mouseY = MathHelper.clamp(mouseY, this.yHS, this.yHS + this.sizeHS);
+            mouseX = Mth.clamp(mouseX, this.xHS, this.xHS + this.sizeHS);
+            mouseY = Mth.clamp(mouseY, this.yHS, this.yHS + this.sizeHS);
             int relX = mouseX - this.xHS;
             int relY = mouseY - this.yHS;
             float saturation = 1f - ((float) relY / (float) this.sizeHS);
@@ -289,7 +289,7 @@ public class ColorEditorHSVScreen extends BaseScreen
         }
         else if (element == Element.H_FULL_SV)
         {
-            mouseY = MathHelper.clamp(mouseY, this.yHS, this.yHS + this.sizeHS);
+            mouseY = Mth.clamp(mouseY, this.yHS, this.yHS + this.sizeHS);
             int relY = mouseY - this.yHS;
             float hue = 1f - ((float) relY / (float) this.sizeHS);
 
@@ -299,7 +299,7 @@ public class ColorEditorHSVScreen extends BaseScreen
         }
         else
         {
-            mouseX = MathHelper.clamp(mouseX, this.xH, this.xH + this.widthSlider);
+            mouseX = Mth.clamp(mouseX, this.xH, this.xH + this.widthSlider);
             int relX = mouseX - this.xH;
             float relVal = (float) relX / (float) this.widthSlider;
 
@@ -790,34 +790,34 @@ public class ColorEditorHSVScreen extends BaseScreen
                     switch (this.type)
                     {
                         case H:
-                            val = MathHelper.clamp(val, 0, 360);
+                            val = Mth.clamp(val, 0, 360);
                             float h = (float) val / 360f;
                             colorNew = Color.HSBtoRGB(h, hsv[1], hsv[2]);
                             break;
                         case S:
-                            val = MathHelper.clamp(val, 0, 100);
+                            val = Mth.clamp(val, 0, 100);
                             float s = (float) val / 100f;
                             colorNew = Color.HSBtoRGB(hsv[0], s, hsv[2]);
                             break;
                         case V:
-                            val = MathHelper.clamp(val, 0, 100);
+                            val = Mth.clamp(val, 0, 100);
                             float v = (float) val / 100f;
                             colorNew = Color.HSBtoRGB(hsv[0], hsv[1], v);
                             break;
                         case R:
-                            val = MathHelper.clamp(val, 0, 255);
+                            val = Mth.clamp(val, 0, 255);
                             colorNew = (colorOld & 0x00FFFF) | (val << 16);
                             break;
                         case G:
-                            val = MathHelper.clamp(val, 0, 255);
+                            val = Mth.clamp(val, 0, 255);
                             colorNew = (colorOld & 0xFF00FF) | (val <<  8);
                             break;
                         case B:
-                            val = MathHelper.clamp(val, 0, 255);
+                            val = Mth.clamp(val, 0, 255);
                             colorNew = (colorOld & 0xFFFF00) | val;
                             break;
                         case A:
-                            val = MathHelper.clamp(val, 0, 255);
+                            val = Mth.clamp(val, 0, 255);
                             colorNew = (colorOld & 0x00FFFFFF) | (val << 24);
                             break;
                         default:

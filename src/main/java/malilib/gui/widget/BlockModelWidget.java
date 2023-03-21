@@ -2,9 +2,9 @@ package malilib.gui.widget;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import malilib.gui.util.ScreenContext;
 import malilib.render.RenderUtils;
@@ -26,7 +26,7 @@ public class BlockModelWidget extends BaseModelWidget
 
     public BlockModelWidget(int dimensions, @Nullable Block block)
     {
-        this(dimensions, block != null ? block.getDefaultState() : null);
+        this(dimensions, block != null ? block.defaultBlockState() : null);
     }
 
     public BlockModelWidget(int dimensions, @Nullable BlockState state)
@@ -42,7 +42,7 @@ public class BlockModelWidget extends BaseModelWidget
 
         if (state != null)
         {
-            this.model = this.mc.getBlockRenderManager().getModel(state);
+            this.model = this.mc.getBlockRenderer().getBlockModel(state);
         }
         else
         {

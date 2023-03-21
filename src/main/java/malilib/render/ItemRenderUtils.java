@@ -3,10 +3,9 @@ package malilib.render;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 import malilib.util.StringUtils;
 import malilib.util.game.wrap.GameUtils;
@@ -61,14 +60,14 @@ public class ItemRenderUtils
             return;
         }
 
-        List<Text> list = stack.getTooltip(GameUtils.getClientPlayer(), GameUtils.getOptions().advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+        List<Component> list = stack.getTooltipLines(GameUtils.getClientPlayer(), GameUtils.getOptions().advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
         List<String> lines = new ArrayList<>();
 
         for (int i = 0; i < list.size(); ++i)
         {
             if (i == 0)
             {
-                lines.add(stack.getRarity().formatting + list.get(i).getString());
+                lines.add(stack.getRarity().color + list.get(i).getString());
             }
             else
             {

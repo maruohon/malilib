@@ -1,21 +1,20 @@
 package malilib.render;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 
 public class RenderContext
 {
-    public final MatrixStack matrixStack;
+    public final PoseStack matrixStack;
     @Nullable public final Matrix4f projMatrix;
 
-    public RenderContext(MatrixStack matrixStack)
+    public RenderContext(PoseStack matrixStack)
     {
         this(matrixStack, null);
     }
 
-    public RenderContext(MatrixStack matrixStack, @Nullable Matrix4f projMatrix)
+    public RenderContext(PoseStack matrixStack, @Nullable Matrix4f projMatrix)
     {
         this.matrixStack = matrixStack;
         this.projMatrix = projMatrix;

@@ -3,7 +3,7 @@ package malilib.gui.tab;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.BaseTabbedScreen;

@@ -1,7 +1,7 @@
 package malilib.util.data;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import malilib.util.game.wrap.ItemWrap;
 import malilib.util.game.wrap.RegistryUtils;
@@ -65,7 +65,7 @@ public class ItemType
 
         if (this.checkNbt())
         {
-            NbtCompound tag = ItemWrap.getTag(this.stack);
+            CompoundTag tag = ItemWrap.getTag(this.stack);
             result = prime * result + (tag != null ? tag.hashCode() : 0);
         }
 
@@ -95,7 +95,7 @@ public class ItemType
                 return false;
             }
 
-            return this.checkNbt() == false || ItemStack.areNbtEqual(this.stack, other.stack);
+            return this.checkNbt() == false || ItemStack.tagMatches(this.stack, other.stack);
         }
     }
 
@@ -105,7 +105,7 @@ public class ItemType
         if (this.checkNbt())
         {
             String id = RegistryUtils.getItemIdStr(this.stack.getItem());
-            NbtCompound tag = ItemWrap.getTag(this.stack);
+            CompoundTag tag = ItemWrap.getTag(this.stack);
             return (id != null ? id : "<null>") + (tag != null ? tag.toString() : "");
         }
         else

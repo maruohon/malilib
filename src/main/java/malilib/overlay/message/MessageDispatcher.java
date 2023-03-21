@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
@@ -187,11 +187,11 @@ public class MessageDispatcher
     {
         if (MaLiLibConfigs.Debug.MESSAGE_KEY_TO_CHAT.getBooleanValue())
         {
-            MutableText message = Text.literal(translationKey);
-            MutableText hoverMessage = Text.translatable("malilib.label.message_debug.add_key_to_chat");
+            MutableComponent message = Component.literal(translationKey);
+            MutableComponent hoverMessage = Component.translatable("malilib.label.message_debug.add_key_to_chat");
             message.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
             message.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
-            GameUtils.getClient().inGameHud.getChatHud().addMessage(message);
+            GameUtils.getClient().gui.getChat().addMessage(message);
         }
 
         MessageOutput output = Registry.MESSAGE_REDIRECT_MANAGER.getRedirectedMessageOutput(translationKey, this.type);

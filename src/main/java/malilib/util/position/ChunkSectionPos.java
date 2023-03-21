@@ -2,8 +2,8 @@ package malilib.util.position;
 
 import java.util.Comparator;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 
 public class ChunkSectionPos extends Vec3i
 {
@@ -33,8 +33,8 @@ public class ChunkSectionPos extends Vec3i
             int y = this.referencePosition.getY();
             int z = this.referencePosition.getZ();
 
-            double dist1 = pos1.getSquaredDistance(x, y, z);
-            double dist2 = pos2.getSquaredDistance(x, y, z);
+            double dist1 = pos1.distToLowCornerSqr(x, y, z);
+            double dist2 = pos2.distToLowCornerSqr(x, y, z);
 
             return Double.compare(dist1, dist2);
         }

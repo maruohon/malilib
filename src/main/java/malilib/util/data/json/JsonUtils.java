@@ -24,11 +24,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.phys.Vec3;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
@@ -411,7 +411,7 @@ public class JsonUtils
         }
     }
 
-    public static void addIfNotEqual(JsonObject obj, String name, BlockRotation value, BlockRotation excludeValue)
+    public static void addIfNotEqual(JsonObject obj, String name, Rotation value, Rotation excludeValue)
     {
         if (value != excludeValue)
         {
@@ -419,7 +419,7 @@ public class JsonUtils
         }
     }
 
-    public static void addIfNotEqual(JsonObject obj, String name, BlockMirror value, BlockMirror excludeValue)
+    public static void addIfNotEqual(JsonObject obj, String name, Mirror value, Mirror excludeValue)
     {
         if (value != excludeValue)
         {
@@ -546,7 +546,7 @@ public class JsonUtils
         return getVec3d(obj, name) != null;
     }
 
-    public static JsonArray vec3dToJson(Vec3d vec)
+    public static JsonArray vec3dToJson(Vec3 vec)
     {
         JsonArray arr = new JsonArray();
 
@@ -558,7 +558,7 @@ public class JsonUtils
     }
 
     @Nullable
-    public static Vec3d getVec3d(JsonObject obj, String name)
+    public static Vec3 getVec3d(JsonObject obj, String name)
     {
         if (hasArray(obj, name))
         {
@@ -568,7 +568,7 @@ public class JsonUtils
             {
                 try
                 {
-                    return new Vec3d(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
+                    return new Vec3(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
                 }
                 catch (Exception ignore) {}
             }
@@ -578,15 +578,15 @@ public class JsonUtils
     }
 
     @Nullable
-    public static Vec3d getVec3dOrDefault(JsonObject obj, String name, @Nullable Vec3d defaultVec)
+    public static Vec3 getVec3dOrDefault(JsonObject obj, String name, @Nullable Vec3 defaultVec)
     {
-        Vec3d vec = getVec3d(obj, name);
+        Vec3 vec = getVec3d(obj, name);
         return vec != null ? vec : defaultVec;
     }
 
-    public static void getVec3dIfExists(JsonObject obj, String name, Consumer<Vec3d> consumer)
+    public static void getVec3dIfExists(JsonObject obj, String name, Consumer<Vec3> consumer)
     {
-        Vec3d vec = getVec3d(obj, name);
+        Vec3 vec = getVec3d(obj, name);
 
         if (vec != null)
         {
@@ -594,7 +594,7 @@ public class JsonUtils
         }
     }
 
-    public static BlockRotation getRotation(JsonObject obj, String name)
+    public static Rotation getRotation(JsonObject obj, String name)
     {
         String str = getString(obj, name);
 
@@ -602,15 +602,15 @@ public class JsonUtils
         {
             try
             {
-                return BlockRotation.valueOf(str);
+                return Rotation.valueOf(str);
             }
             catch (Exception ignore) {}
         }
 
-        return BlockRotation.NONE;
+        return Rotation.NONE;
     }
 
-    public static BlockMirror getMirror(JsonObject obj, String name)
+    public static Mirror getMirror(JsonObject obj, String name)
     {
         String str = getString(obj, name);
 
@@ -618,12 +618,12 @@ public class JsonUtils
         {
             try
             {
-                return BlockMirror.valueOf(str);
+                return Mirror.valueOf(str);
             }
             catch (Exception ignore) {}
         }
 
-        return BlockMirror.NONE;
+        return Mirror.NONE;
     }
 
     public static JsonArray stringListAsArray(List<String> list)

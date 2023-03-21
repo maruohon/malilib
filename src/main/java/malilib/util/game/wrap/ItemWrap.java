@@ -2,25 +2,25 @@ package malilib.util.game.wrap;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemWrap
 {
     @Nullable
-    public static NbtCompound getTag(ItemStack stack)
+    public static CompoundTag getTag(ItemStack stack)
     {
-        return stack.getNbt();
+        return stack.getTag();
     }
 
-    public static void setTag(ItemStack stack, @Nullable NbtCompound tag)
+    public static void setTag(ItemStack stack, @Nullable CompoundTag tag)
     {
-        stack.setNbt(tag);
+        stack.setTag(tag);
     }
 
-    public static ItemStack fromTag(NbtCompound tag)
+    public static ItemStack fromTag(CompoundTag tag)
     {
-        return ItemStack.fromNbt(tag);
+        return ItemStack.of(tag);
     }
 
     public static boolean isEmpty(ItemStack stack)

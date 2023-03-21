@@ -4,12 +4,12 @@ import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
 
 import malilib.util.data.ItemType;
 import malilib.util.game.wrap.DefaultedList;
@@ -24,15 +24,15 @@ public class StorageItemInventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stack)
     {
-        NbtCompound nbt = ItemWrap.getTag(stack);
+        CompoundTag nbt = ItemWrap.getTag(stack);
 
         if (nbt != null && NbtWrap.containsCompound(nbt, "BlockEntityTag"))
         {
-            NbtCompound tag = NbtWrap.getCompound(nbt, "BlockEntityTag");
+            CompoundTag tag = NbtWrap.getCompound(nbt, "BlockEntityTag");
 
             if (NbtWrap.containsList(tag, "Items"))
             {
-                NbtList tagList = NbtWrap.getListOfCompounds(tag, "Items");
+                ListTag tagList = NbtWrap.getListOfCompounds(tag, "Items");
                 return NbtWrap.getListSize(tagList) > 0;
             }
         }
@@ -65,7 +65,7 @@ public class StorageItemInventoryUtils
 
     public static boolean doesSlotContainShulkerBoxWithItem(Slot slot, ItemStack referenceStack, boolean ignoreNbt)
     {
-        ItemStack stack = slot.getStack();
+        ItemStack stack = slot.getItem();
 
         if (ItemWrap.isEmpty(stack) == false &&
             stack.getItem() instanceof BlockItem &&
@@ -84,16 +84,16 @@ public class StorageItemInventoryUtils
      */
     public static DefaultedList<ItemStack> getNonEmptyStoredItems(ItemStack stackIn)
     {
-        NbtCompound nbt = ItemWrap.getTag(stackIn);
+        CompoundTag nbt = ItemWrap.getTag(stackIn);
 
         if (nbt != null && NbtWrap.containsCompound(nbt, "BlockEntityTag"))
         {
-            NbtCompound tagBlockEntity = NbtWrap.getCompound(nbt, "BlockEntityTag");
+            CompoundTag tagBlockEntity = NbtWrap.getCompound(nbt, "BlockEntityTag");
 
             if (NbtWrap.containsList(tagBlockEntity, "Items"))
             {
                 DefaultedList<ItemStack> items = DefaultedList.empty();
-                NbtList tagList = NbtWrap.getListOfCompounds(tagBlockEntity, "Items");
+                ListTag tagList = NbtWrap.getListOfCompounds(tagBlockEntity, "Items");
                 final int count = NbtWrap.getListSize(tagList);
 
                 for (int i = 0; i < count; ++i)
@@ -115,20 +115,20 @@ public class StorageItemInventoryUtils
 
     public static void readStoredItems(ItemStack containerStack, Consumer<Pair<Integer, ItemStack>> consumer)
     {
-        NbtCompound nbt = ItemWrap.getTag(containerStack);
+        CompoundTag nbt = ItemWrap.getTag(containerStack);
 
         if (nbt != null && NbtWrap.containsCompound(nbt, "BlockEntityTag"))
         {
-            NbtCompound tagBlockEntity = NbtWrap.getCompound(nbt, "BlockEntityTag");
+            CompoundTag tagBlockEntity = NbtWrap.getCompound(nbt, "BlockEntityTag");
 
             if (NbtWrap.containsList(tagBlockEntity, "Items"))
             {
-                NbtList tagList = NbtWrap.getListOfCompounds(tagBlockEntity, "Items");
+                ListTag tagList = NbtWrap.getListOfCompounds(tagBlockEntity, "Items");
                 final int count = NbtWrap.getListSize(tagList);
 
                 for (int i = 0; i < count; ++i)
                 {
-                    NbtCompound tag = NbtWrap.getCompoundAt(tagList, i);
+                    CompoundTag tag = NbtWrap.getCompoundAt(tagList, i);
                     ItemStack stack = ItemWrap.fromTag(tag);
                     int slot = NbtWrap.getByte(tag, "Slot");
 

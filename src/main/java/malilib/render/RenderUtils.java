@@ -3,32 +3,32 @@ package malilib.render;
 import java.util.List;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.map.MapState;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.math.random.LocalRandom;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.RandomSource;
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.phys.Vec3;
 
 import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
@@ -40,28 +40,28 @@ import malilib.util.position.PositionUtils.HitPart;
 
 public class RenderUtils
 {
-    public static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
-    public static final Identifier TEXTURE_MAP_BACKGROUND_CHECKERBOARD = new Identifier("textures/map/map_background_checkerboard.png");
+    public static final ResourceLocation TEXTURE_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
+    public static final ResourceLocation TEXTURE_MAP_BACKGROUND_CHECKERBOARD = new ResourceLocation("textures/map/map_background_checkerboard.png");
 
-    private static final Random RAND = new LocalRandom(0);
+    private static final RandomSource RAND = new SingleThreadedRandomSource(0);
 
     public static void setupBlend()
     {
         RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA,
-                                       GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
-                                       GlStateManager.SrcFactor.ONE,
-                                       GlStateManager.DstFactor.ZERO);
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                                       GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                                       GlStateManager.SourceFactor.ONE,
+                                       GlStateManager.DestFactor.ZERO);
     }
 
     public static void setupBlendSimple()
     {
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA,
-                               GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,
+                               GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void bindTexture(Identifier texture)
+    public static void bindTexture(ResourceLocation texture)
     {
         RenderSystem.setShaderTexture(0, texture);
     }
@@ -96,12 +96,12 @@ public class RenderUtils
      * @param useTexture determines if texture2D mode is enabled or disabled
      * @return the initialized BufferBuilder
      */
-    public static BufferBuilder startBuffer(VertexFormat.DrawMode drawMode,
+    public static BufferBuilder startBuffer(VertexFormat.Mode drawMode,
                                             VertexFormat format,
                                             boolean useTexture)
     {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder buffer = tessellator.getBuilder();
 
         if (useTexture)
         {
@@ -124,7 +124,7 @@ public class RenderUtils
      */
     public static void drawBuffer()
     {
-        Tessellator.getInstance().draw();
+        Tesselator.getInstance().end();
         RenderSystem.enableTexture();
     }
 
@@ -138,7 +138,7 @@ public class RenderUtils
 
     public static void setupScaledScreenRendering(double width, double height)
     {
-        Matrix4f matrix = Matrix4f.projectionMatrix(
+        Matrix4f matrix = Matrix4f.orthographic(
                 0.0F,
                 (float) width,
                 0.0F,
@@ -209,7 +209,7 @@ public class RenderUtils
                                                 int width, int height,
                                                 int texWidth, int texHeight, int edgeThickness)
     {
-        BufferBuilder buffer = startBuffer(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE, true);
+        BufferBuilder buffer = startBuffer(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX, true);
 
         int e = edgeThickness;
         
@@ -305,12 +305,12 @@ public class RenderUtils
     public static void renderBlockTargetingOverlay(Entity entity,
                                                    BlockPos pos,
                                                    Direction side,
-                                                   Vec3d hitVec,
+                                                   Vec3 hitVec,
                                                    Color4f color,
                                                    float partialTicks,
                                                    RenderContext ctx)
     {
-        Direction playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = entity.getDirection();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
 
         double dx = EntityWrap.lerpX(entity, partialTicks);
@@ -321,102 +321,102 @@ public class RenderUtils
         double y = pos.getY() + 0.5d - dy;
         double z = pos.getZ() + 0.5d - dz;
 
-        MatrixStack matrixStack = ctx.matrixStack;
-        matrixStack.push();
+        PoseStack matrixStack = ctx.matrixStack;
+        matrixStack.pushPose();
 
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStack);
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder buffer = tessellator.getBuilder();
         float quadAlpha = 0.18f;
         float ha = color.a;
         float hr = color.r;
         float hg = color.g;
         float hb = color.b;
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         // White full block background
-        buffer.vertex(x - 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).next();
-        buffer.vertex(x + 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).next();
-        buffer.vertex(x + 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).next();
-        buffer.vertex(x - 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).next();
+        buffer.vertex(x - 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
+        buffer.vertex(x + 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
+        buffer.vertex(x + 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
+        buffer.vertex(x - 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
 
         switch (part)
         {
             case CENTER:
-                buffer.vertex(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
                 break;
             case LEFT:
-                buffer.vertex(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
                 break;
             case RIGHT:
-                buffer.vertex(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
                 break;
             case TOP:
-                buffer.vertex(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
                 break;
             case BOTTOM:
-                buffer.vertex(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).next();
-                buffer.vertex(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).next();
+                buffer.vertex(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.vertex(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
                 break;
             default:
         }
 
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        tessellator.draw();
+        tessellator.end();
 
         RenderSystem.lineWidth(1.6f);
 
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
 
         // Middle small rectangle
-        buffer.vertex(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x + 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x + 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
 
         //buffer.vertex(x + 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x + 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x + 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
 
         //buffer.vertex(x + 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
 
         //buffer.vertex(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).next();
-        tessellator.draw();
+        buffer.vertex(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        tessellator.end();
 
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
         // Bottom left
-        buffer.vertex(x - 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x - 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
 
         // Top left
-        buffer.vertex(x - 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x - 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
 
         // Bottom right
-        buffer.vertex(x + 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x + 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x + 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x + 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
 
         // Top right
-        buffer.vertex(x + 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x + 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).next();
-        tessellator.draw();
+        buffer.vertex(x + 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x + 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        tessellator.end();
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public static void renderBlockTargetingOverlaySimple(Entity entity,
@@ -426,7 +426,7 @@ public class RenderUtils
                                                          float partialTicks,
                                                          RenderContext ctx)
     {
-        Direction playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = entity.getDirection();
 
         double dx = EntityWrap.lerpX(entity, partialTicks);
         double dy = EntityWrap.lerpY(entity, partialTicks);
@@ -436,73 +436,73 @@ public class RenderUtils
         double y = pos.getY() + 0.5d - dy;
         double z = pos.getZ() + 0.5d - dz;
 
-        MatrixStack matrixStack = ctx.matrixStack;
-        matrixStack.push();
+        PoseStack matrixStack = ctx.matrixStack;
+        matrixStack.pushPose();
 
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStack);
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder buffer = tessellator.getBuilder();
 
         float a = color.a;
         float r = color.r;
         float g = color.g;
         float b = color.b;
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         // Simple colored quad
-        buffer.vertex(x - 0.5, y - 0.5, z).color(r, g, b, a).next();
-        buffer.vertex(x + 0.5, y - 0.5, z).color(r, g, b, a).next();
-        buffer.vertex(x + 0.5, y + 0.5, z).color(r, g, b, a).next();
-        buffer.vertex(x - 0.5, y + 0.5, z).color(r, g, b, a).next();
+        buffer.vertex(x - 0.5, y - 0.5, z).color(r, g, b, a).endVertex();
+        buffer.vertex(x + 0.5, y - 0.5, z).color(r, g, b, a).endVertex();
+        buffer.vertex(x + 0.5, y + 0.5, z).color(r, g, b, a).endVertex();
+        buffer.vertex(x - 0.5, y + 0.5, z).color(r, g, b, a).endVertex();
 
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        tessellator.draw();
+        tessellator.end();
 
         RenderSystem.lineWidth(1.6f);
 
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
 
         // Middle rectangle
-        buffer.vertex(x - 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x + 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x + 0.375, y + 0.375, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x - 0.375, y + 0.375, z).color(1f, 1f, 1f, 1f).next();
-        buffer.vertex(x - 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).next();
+        buffer.vertex(x - 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x + 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x + 0.375, y + 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x - 0.375, y + 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.vertex(x - 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
 
-        tessellator.draw();
+        tessellator.end();
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
                                                           Direction side,
                                                           Direction playerFacing,
-                                                          MatrixStack matrixStack)
+                                                          PoseStack matrixStack)
     {
         matrixStack.translate(x, y, z);
 
         switch (side)
         {
             case DOWN:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f - playerFacing.asRotation()));
-                matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90f));
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(180f - playerFacing.toYRot()));
+                matrixStack.mulPose(Vector3f.XP.rotationDegrees(90f));
                 break;
             case UP:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f - playerFacing.asRotation()));
-                matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90f));
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(180f - playerFacing.toYRot()));
+                matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90f));
                 break;
             case NORTH:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180f));
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(180f));
                 break;
             case SOUTH:
                 break;
             case WEST:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-90f));
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90f));
                 break;
             case EAST:
-                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90f));
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(90f));
                 break;
         }
 
@@ -514,10 +514,10 @@ public class RenderUtils
                                         int dimensions,
                                         RenderContext ctx)
     {
-        if (stack.getItem() instanceof FilledMapItem)
+        if (stack.getItem() instanceof MapItem)
         {
-            MatrixStack matrixStack = ctx.matrixStack;
-            matrixStack.push();
+            PoseStack matrixStack = ctx.matrixStack;
+            matrixStack.pushPose();
             color(1f, 1f, 1f, 1f);
 
             int screenWidth = GuiUtils.getScaledWindowWidth();
@@ -538,25 +538,25 @@ public class RenderUtils
             int x2 = x1 + dimensions;
             int y2 = y1 + dimensions;
 
-            Integer mapId = FilledMapItem.getMapId(stack);
-            MapState mapState = FilledMapItem.getMapState(mapId, GameUtils.getClientWorld());
+            Integer mapId = MapItem.getMapId(stack);
+            MapItemSavedData mapState = MapItem.getSavedData(mapId, GameUtils.getClientWorld());
 
-            Identifier bgTexture = mapState == null ? TEXTURE_MAP_BACKGROUND : TEXTURE_MAP_BACKGROUND_CHECKERBOARD;
+            ResourceLocation bgTexture = mapState == null ? TEXTURE_MAP_BACKGROUND : TEXTURE_MAP_BACKGROUND_CHECKERBOARD;
             bindTexture(bgTexture);
             setupBlend();
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             //RenderSystem.applyModelViewMatrix();
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBuffer();
+            Tesselator tessellator = Tesselator.getInstance();
+            BufferBuilder buffer = tessellator.getBuilder();
 
-            buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-            buffer.vertex(x1, y2, z).texture(0.0f, 1.0f).next();
-            buffer.vertex(x2, y2, z).texture(1.0f, 1.0f).next();
-            buffer.vertex(x2, y1, z).texture(1.0f, 0.0f).next();
-            buffer.vertex(x1, y1, z).texture(0.0f, 0.0f).next();
+            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+            buffer.vertex(x1, y2, z).uv(0.0f, 1.0f).endVertex();
+            buffer.vertex(x2, y2, z).uv(1.0f, 1.0f).endVertex();
+            buffer.vertex(x2, y1, z).uv(1.0f, 0.0f).endVertex();
+            buffer.vertex(x1, y1, z).uv(0.0f, 0.0f).endVertex();
 
-            tessellator.draw();
+            tessellator.end();
             RenderSystem.disableBlend();
 
             if (mapState != null)
@@ -564,17 +564,17 @@ public class RenderUtils
                 x1 += 8;
                 y1 += 8;
                 double scale = (double) (dimensions - 16) / 128.0;
-                VertexConsumerProvider.Immediate consumer = VertexConsumerProvider.immediate(buffer);
-                MatrixStack emptyStack = new MatrixStack();
+                MultiBufferSource.BufferSource consumer = MultiBufferSource.immediate(buffer);
+                PoseStack emptyStack = new PoseStack();
                 emptyStack.translate(x1, y1, z);
                 emptyStack.scale((float) scale, (float) scale, 1);
                 GameUtils.getClient().gameRenderer.getMapRenderer()
-                        .draw(emptyStack, consumer, mapId, mapState, false, 0xF000F0);
-                consumer.draw();
+                        .render(emptyStack, consumer, mapId, mapState, false, 0xF000F0);
+                consumer.endBatch();
             }
 
             color(1f, 1f, 1f, 1f);
-            matrixStack.pop();
+            matrixStack.popPose();
         }
     }
 
@@ -586,10 +586,10 @@ public class RenderUtils
             return;
         }
 
-        MatrixStack matrixStack = ctx.matrixStack;
-        matrixStack.push();
-        bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
-        GameUtils.getClient().getTextureManager().getTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
+        PoseStack matrixStack = ctx.matrixStack;
+        matrixStack.pushPose();
+        bindTexture(InventoryMenu.BLOCK_ATLAS);
+        GameUtils.getClient().getTextureManager().getTexture(InventoryMenu.BLOCK_ATLAS).setFilter(false, false);
 
         RenderSystem.enableBlend();
         setupBlendSimple();
@@ -599,28 +599,28 @@ public class RenderUtils
         matrixStack.scale(16, -16, 16);
 
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
-        matrixStack.multiply(new Quaternion(Vec3f.POSITIVE_X, 30, true));
-        matrixStack.multiply(new Quaternion(Vec3f.POSITIVE_Y, 225, true));
+        matrixStack.mulPose(new Quaternion(Vector3f.XP, 30, true));
+        matrixStack.mulPose(new Quaternion(Vector3f.YP, 225, true));
         matrixStack.scale(0.625f, 0.625f, 0.625f);
 
         renderModel(model, state, zLevel, matrixStack);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private static void renderModel(BakedModel model, BlockState state,
-                                    float zLevel, MatrixStack matrixStack)
+                                    float zLevel, PoseStack matrixStack)
     {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(-0.5, -0.5, zLevel);
         int color = 0xFFFFFFFF;
 
-        if (model.isBuiltin() == false)
+        if (model.isCustomRenderer() == false)
         {
-            RenderSystem.setShader(GameRenderer::getRenderTypeSolidShader);
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
-            bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
+            RenderSystem.setShader(GameRenderer::getRendertypeSolidShader);
+            Tesselator tessellator = Tesselator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuilder();
+            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
 
             for (Direction face : PositionUtils.ALL_DIRECTIONS)
             {
@@ -630,10 +630,10 @@ public class RenderUtils
 
             RAND.setSeed(0);
             renderQuads(bufferbuilder, model.getQuads(state, null, RAND), state, color);
-            tessellator.draw();
+            tessellator.end();
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, BlockState state, int color)

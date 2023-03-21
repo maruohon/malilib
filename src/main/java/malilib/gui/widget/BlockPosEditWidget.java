@@ -2,7 +2,7 @@ package malilib.gui.widget;
 
 import java.util.function.Consumer;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.position.Coordinate;

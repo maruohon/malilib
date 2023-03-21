@@ -2,7 +2,7 @@ package malilib.config.option;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.MaLiLib;
 import malilib.gui.callback.IntegerSliderCallback;
@@ -92,7 +92,7 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
 
     protected int getClampedValue(int value)
     {
-        return MathHelper.clamp(value, this.minValue, this.maxValue);
+        return Mth.clamp(value, this.minValue, this.maxValue);
     }
 
     public boolean isModified(String newValue)

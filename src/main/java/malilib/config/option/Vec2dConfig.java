@@ -1,6 +1,6 @@
 package malilib.config.option;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.util.position.Vec2d;
 
@@ -51,8 +51,8 @@ public class Vec2dConfig extends BaseDualValueConfig<Vec2d>
 
     protected Vec2d getClampedValue(Vec2d value)
     {
-        double x = MathHelper.clamp(value.x, this.minValue, this.maxValue);
-        double y = MathHelper.clamp(value.y, this.minValue, this.maxValue);
+        double x = Mth.clamp(value.x, this.minValue, this.maxValue);
+        double y = Mth.clamp(value.y, this.minValue, this.maxValue);
 
         return new Vec2d(x, y);
     }

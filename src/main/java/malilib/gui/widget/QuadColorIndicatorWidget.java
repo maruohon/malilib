@@ -1,8 +1,8 @@
 package malilib.gui.widget;
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.EdgeIntEditScreen;
@@ -50,7 +50,7 @@ public class QuadColorIndicatorWidget extends InteractableWidget
         ShapeRenderUtils.renderRectangle(x    , y    , z, width    , height    , 0xFFFFFFFF);
         ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, width - 2, height - 2, 0xFF000000);
 
-        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR, false);
+        BufferBuilder buffer = RenderUtils.startBuffer(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR, false);
 
         int x1 = x + 2;
         int y1 = y + 2;

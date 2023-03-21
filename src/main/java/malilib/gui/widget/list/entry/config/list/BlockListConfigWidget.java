@@ -1,7 +1,7 @@
 package malilib.gui.widget.list.entry.config.list;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import malilib.config.option.list.BlockListConfig;
 import malilib.gui.config.ConfigWidgetContext;

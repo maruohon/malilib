@@ -3,10 +3,10 @@ package malilib.util.position;
 import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 
-import net.minecraft.nbt.NbtIntArray;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import malilib.MaLiLib;
 
@@ -105,14 +105,14 @@ public class IntBoundingBox
         return 0;
     }
 
-    public BlockBox toVanillaBox()
+    public BoundingBox toVanillaBox()
     {
-        return new BlockBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+        return new BoundingBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
     }
 
-    public NbtIntArray toNbtIntArray()
+    public IntArrayTag toNbtIntArray()
     {
-        return new NbtIntArray(new int[] { this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ });
+        return new IntArrayTag(new int[] { this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ });
     }
 
     public JsonArray toJson()
@@ -171,10 +171,10 @@ public class IntBoundingBox
         return null;
     }
 
-    public static IntBoundingBox fromVanillaBox(BlockBox box)
+    public static IntBoundingBox fromVanillaBox(BoundingBox box)
     {
-        return createProper(box.getMinX(), box.getMinY(), box.getMinZ(),
-                            box.getMaxX(), box.getMaxY(), box.getMaxZ());
+        return createProper(box.minX(), box.minY(), box.minZ(),
+                            box.maxX(), box.maxY(), box.maxZ());
     }
 
     public static IntBoundingBox createProper(Vec3i pos1, Vec3i pos2)

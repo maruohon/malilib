@@ -4,10 +4,10 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
 import malilib.config.value.BaseOptionListConfigValue;
 import malilib.config.value.LayerMode;
@@ -279,9 +279,9 @@ public class LayerRange
     {
         switch (this.axis)
         {
-            case X: return MathHelper.floor(EntityWrap.getX(entity));
-            case Y: return MathHelper.floor(EntityWrap.getY(entity));
-            case Z: return MathHelper.floor(EntityWrap.getZ(entity));
+            case X: return Mth.floor(EntityWrap.getX(entity));
+            case Y: return Mth.floor(EntityWrap.getY(entity));
+            case Z: return Mth.floor(EntityWrap.getZ(entity));
         }
 
         return 0;
@@ -517,7 +517,7 @@ public class LayerRange
 
     protected int getLimitsClampedValue(int value, IntBoundingBox limits)
     {
-        return MathHelper.clamp(value,
+        return Mth.clamp(value,
                                 limits.getMinValueForAxis(this.axis),
                                 limits.getMaxValueForAxis(this.axis));
     }
@@ -655,7 +655,7 @@ public class LayerRange
     {
         if (this.axis == axis)
         {
-            return MathHelper.clamp(value, this.getMinLayerBoundary(), this.getMaxLayerBoundary());
+            return Mth.clamp(value, this.getMinLayerBoundary(), this.getMaxLayerBoundary());
         }
 
         //return MathHelper.clamp(value, limits.getMinValueForAxis(axis), limits.getMaxValueForAxis(axis));
@@ -765,7 +765,7 @@ public class LayerRange
     public void fromJson(JsonObject obj)
     {
         this.layerMode = BaseOptionListConfigValue.findValueByName(JsonUtils.getString(obj, "mode"), LayerMode.VALUES);
-        this.axis = Direction.Axis.fromName(JsonUtils.getString(obj, "axis"));
+        this.axis = Direction.Axis.byName(JsonUtils.getString(obj, "axis"));
         if (this.axis == null) { this.axis = Direction.Axis.Y; }
 
         this.followPlayer = JsonUtils.getBoolean(obj, "follow_player");

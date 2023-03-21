@@ -2,10 +2,10 @@ package malilib.event.dispatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Matrix4f;
+import net.minecraft.world.item.ItemStack;
 
 import malilib.event.PostGameOverlayRenderer;
 import malilib.event.PostItemTooltipRenderer;
@@ -61,7 +61,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost(MatrixStack matrices)
+    public void onRenderGameOverlayPost(PoseStack matrices)
     {
         if (this.overlayRenderers.isEmpty() == false)
         {
@@ -82,7 +82,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderScreenPost(MatrixStack matrices, float tickDelta)
+    public void onRenderScreenPost(PoseStack matrices, float tickDelta)
     {
         if (this.screenPostRenderers.isEmpty() == false)
         {
@@ -103,7 +103,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderTooltipPost(ItemStack stack, int x, int y, MatrixStack matrices)
+    public void onRenderTooltipPost(ItemStack stack, int x, int y, PoseStack matrices)
     {
         if (this.tooltipLastRenderers.isEmpty() == false)
         {
@@ -124,7 +124,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(MatrixStack matrices, Matrix4f projMatrix, float tickDelta)
+    public void onRenderWorldLast(PoseStack matrices, Matrix4f projMatrix, float tickDelta)
     {
         GameUtils.profilerPush("malilib_world_post");
 

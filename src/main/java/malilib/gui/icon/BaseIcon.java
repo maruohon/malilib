@@ -1,7 +1,6 @@
 package malilib.gui.icon;
 
 import java.util.Objects;
-
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

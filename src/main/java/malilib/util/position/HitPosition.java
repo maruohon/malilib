@@ -1,16 +1,16 @@
 package malilib.util.position;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 public class HitPosition
 {
     protected final BlockPos blockPos;
-    protected final Vec3d exactPos;
+    protected final Vec3 exactPos;
     protected final Direction direction;
 
-    public HitPosition(BlockPos blockPos, Vec3d exactPos, Direction direction)
+    public HitPosition(BlockPos blockPos, Vec3 exactPos, Direction direction)
     {
         this.blockPos = blockPos;
         this.exactPos = exactPos;
@@ -22,7 +22,7 @@ public class HitPosition
         return this.blockPos;
     }
 
-    public Vec3d getExactPos()
+    public Vec3 getExactPos()
     {
         return this.exactPos;
     }
@@ -32,7 +32,7 @@ public class HitPosition
         return this.direction;
     }
 
-    public static HitPosition of(BlockPos blockPos, Vec3d exactPos, Direction direction)
+    public static HitPosition of(BlockPos blockPos, Vec3 exactPos, Direction direction)
     {
         return new HitPosition(blockPos, exactPos, direction);
     }

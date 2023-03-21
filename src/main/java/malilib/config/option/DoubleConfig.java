@@ -2,7 +2,7 @@ package malilib.config.option;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import malilib.MaLiLib;
 import malilib.gui.callback.DoubleSliderCallback;
@@ -105,7 +105,7 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
 
     protected double getClampedValue(double value)
     {
-        return MathHelper.clamp(value, this.minValue, this.maxValue);
+        return Mth.clamp(value, this.minValue, this.maxValue);
     }
 
     public boolean isModified(String newValue)
