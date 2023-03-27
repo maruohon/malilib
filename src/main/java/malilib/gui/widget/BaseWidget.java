@@ -857,8 +857,8 @@ public class BaseWidget
             {
                 int x = (int) posLong.longValue();
                 int y = (int) (posLong.longValue() >>> 32);
-                TextRenderUtils.renderHoverText(x, y, 10, DEBUG_STRINGS.get(posLong),
-                                                0xFFFF4040, DEBUG_TEXT_BG_RENDERER, ctx);
+                TextRenderUtils.renderStyledHoverText(x, y, 10, StyledTextLine.ofStrings(DEBUG_STRINGS.get(posLong)),
+                                                      0xFFFF4040, DEBUG_TEXT_BG_RENDERER, ctx);
             }
 
             DEBUG_STRINGS.clear();

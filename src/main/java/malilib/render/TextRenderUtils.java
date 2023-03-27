@@ -1,7 +1,5 @@
 package malilib.render;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 
@@ -15,6 +13,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 
 import malilib.gui.util.GuiUtils;
+import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.TextRenderer;
 import malilib.util.game.wrap.EntityWrap;
@@ -66,70 +65,9 @@ public class TextRenderUtils
         return new Vec2i(textStartX, textStartY);
     }
 
-    public static void renderHoverText(int x, int y, float z, String text, RenderContext ctx)
+    public static void renderStyledHoverText(int x, int y, float z, StyledText text, RenderContext ctx)
     {
-        renderHoverText(x, y, z, Collections.singletonList(text), ctx);
-    }
-
-    public static void renderHoverText(int x, int y, float z, List<String> textLines, RenderContext ctx)
-    {
-        renderHoverText(x, y, z, textLines, 0xFFC0C0C0 , TextRenderUtils::renderDefaultHoverTextBackground, ctx);
-    }
-
-    public static void renderHoverText(int x, int y, float z, List<String> textLines,
-                                       int textColor, RectangleRenderer backgroundRenderer, RenderContext ctx)
-    {
-        if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
-        {
-            List<String> linesNew = new ArrayList<>();
-            FontRenderer font = GameUtils.getClient().fontRenderer;
-            int maxLineLength = 0;
-
-            for (String lineOrig : textLines)
-            {
-                String[] lines = lineOrig.split("\\\\n");
-
-                for (String line : lines)
-                {
-                    int length = font.getStringWidth(line);
-
-                    if (length > maxLineLength)
-                    {
-                        maxLineLength = length;
-                    }
-
-                    linesNew.add(line);
-                }
-            }
-
-            textLines = linesNew;
-
-            int lineHeight = font.FONT_HEIGHT + 1;
-            int textHeight = textLines.size() * lineHeight - 2;
-            int backgroundWidth = maxLineLength + 8;
-            int backgroundHeight = textHeight + 8;
-            Vec2i startPos = getScreenClampedHoverTextStartPosition(x, y, backgroundWidth, backgroundHeight);
-            int textStartX = startPos.x + 4;
-            int textStartY = startPos.y + 4;
-
-            GlStateManager.disableRescaleNormal();
-            RenderUtils.disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
-
-            backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight, ctx);
-
-            for (String str : textLines)
-            {
-                font.drawStringWithShadow(str, textStartX, textStartY, textColor);
-                textStartY += lineHeight;
-            }
-
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
-        }
+        renderStyledHoverText(x, y, z, text.lines, 0xFFB0B0B0 , TextRenderUtils::renderDefaultHoverTextBackground, ctx);
     }
 
     public static void renderStyledHoverText(int x, int y, float z, List<StyledTextLine> textLines, RenderContext ctx)

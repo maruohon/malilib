@@ -1,5 +1,6 @@
 package malilib.render;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -8,7 +9,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 
-import malilib.util.StringUtils;
+import malilib.render.text.StyledTextLine;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.game.wrap.ItemWrap;
 
@@ -60,19 +61,20 @@ public class ItemRenderUtils
         }
 
         List<String> list = stack.getTooltip(GameUtils.getClientPlayer(), GameUtils.getOptions().advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        List<StyledTextLine> textLines = new ArrayList<>();
 
         for (int i = 0; i < list.size(); ++i)
         {
             if (i == 0)
             {
-                list.set(i, stack.getRarity().color + list.get(i));
+                StyledTextLine.of(textLines, stack.getRarity().color + list.get(i));
             }
             else
             {
-                list.set(i, StringUtils.translate("malilib.hover.item_tooltip_lines", list.get(i)));
+                StyledTextLine.translate(textLines, "malilib.hover.item_tooltip_lines", list.get(i));
             }
         }
 
-        TextRenderUtils.renderHoverText(x, y, zLevel, list, ctx);
+        TextRenderUtils.renderStyledHoverText(x, y, zLevel, textLines, ctx);
     }
 }

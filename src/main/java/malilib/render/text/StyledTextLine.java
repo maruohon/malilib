@@ -201,17 +201,6 @@ public class StyledTextLine
      * Creates a styled text line of the translation result of the provided translation key.
      * If the string has line breaks, the separate lines will be joined
      * and the line breaks will be replaced by the string '\n'.
-     * This is just a convenience method to also add the text to the given list.
-     */
-    public static void translate(List<StyledTextLine> lines, String translationKey, Object... args)
-    {
-        lines.addAll(StyledText.translate(translationKey, args).lines);
-    }
-
-    /**
-     * Creates a styled text line of the translation result of the provided translation key.
-     * If the string has line breaks, the separate lines will be joined
-     * and the line breaks will be replaced by the string '\n'.
      */
     public static StyledTextLine translate(String translationKey, Object... args)
     {
@@ -230,14 +219,21 @@ public class StyledTextLine
     }
 
     /**
-     * Creates a styled text line of the provided raw string.
-     * If the string has line breaks, the separate lines will be joined
-     * and the line breaks will be replaced by the string '\n'.
-     * This is just a convenience method to also add the text to the given list.
+     * Creates styled text lines of the translation result of the provided translation key.
+     * This is just a convenience method to also add the text lines to the given list.
      */
-    public static void of(List<StyledTextLine> lines, String str)
+    public static void translate(List<StyledTextLine> linesOut, String translationKey, Object... args)
     {
-        lines.addAll(StyledText.of(str).lines);
+        linesOut.addAll(StyledText.translate(translationKey, args).lines);
+    }
+
+    /**
+     * Creates styled text lines of the provided string by calling {@link StyledText#of(String)}.
+     * This is just a convenience method to also add the text lines to the given list.
+     */
+    public static void of(List<StyledTextLine> linesOut, String str)
+    {
+        linesOut.addAll(StyledText.of(str).lines);
     }
 
     /**
