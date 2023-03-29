@@ -255,14 +255,16 @@ public abstract class InteractableWidget extends BackgroundWidget
 
     public ImmutableList<StyledTextLine> getHoverText()
     {
+        ImmutableList<StyledTextLine> lines = this.hoverInfoFactory.getStyledLines();
+
         if (this.hoverInfoRequiresShift &&
             BaseScreen.isShiftDown() == false &&
-            this.hoverInfoFactory.getStyledLines().isEmpty() == false)
+            lines.isEmpty() == false)
         {
             return this.getHoverHelp();
         }
 
-        return this.hoverInfoFactory.getStyledLines();
+        return lines;
     }
 
     public OrderedStringListFactory getHoverInfoFactory()
@@ -365,7 +367,8 @@ public abstract class InteractableWidget extends BackgroundWidget
             }
             else if (this.hasHoverText())
             {
-                TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 50f, this.getHoverText(), ctx);
+                TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 50f,
+                                                      this.getHoverText(), ctx);
             }
         }
     }
@@ -383,7 +386,8 @@ public abstract class InteractableWidget extends BackgroundWidget
     }
 
     @Nullable
-    public InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
+    public InteractableWidget getTopHoveredWidget(int mouseX, int mouseY,
+                                                  @Nullable InteractableWidget highestFoundWidget)
     {
         if (this.canInteract() && this.isMouseOver(mouseX, mouseY) &&
             (highestFoundWidget == null || this.getZ() > highestFoundWidget.getZ()))
@@ -395,7 +399,9 @@ public abstract class InteractableWidget extends BackgroundWidget
     }
 
     @Nullable
-    public static InteractableWidget getTopHoveredWidgetFromList(List<? extends InteractableWidget> widgets, int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
+    public static InteractableWidget getTopHoveredWidgetFromList(List<? extends InteractableWidget> widgets,
+                                                                 int mouseX, int mouseY,
+                                                                 @Nullable InteractableWidget highestFoundWidget)
     {
         if (widgets.isEmpty() == false)
         {

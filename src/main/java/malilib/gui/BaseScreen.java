@@ -606,7 +606,7 @@ public abstract class BaseScreen extends GuiScreen
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         List<BaseTextFieldWidget> textFields = this.getAllTextFields();
-        InteractableWidget clickedWidget = null;
+        boolean handled = false;
 
         // Clear the focus from all text fields
         for (BaseTextFieldWidget tf : textFields)
@@ -617,7 +617,7 @@ public abstract class BaseScreen extends GuiScreen
         if (this.hoveredWidget != null &&
             this.hoveredWidget.tryMouseClick(mouseX, mouseY, mouseButton))
         {
-            clickedWidget = this.hoveredWidget;
+            handled = true;
         }
         else
         {
@@ -625,14 +625,14 @@ public abstract class BaseScreen extends GuiScreen
             {
                 if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
                 {
-                    clickedWidget = widget;
+                    handled = true;
                     break;
                 }
             }
         }
 
         // Only call super if the click wasn't handled
-        if (clickedWidget != null)
+        if (handled)
         {
             return true;
         }
