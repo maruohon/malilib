@@ -337,7 +337,7 @@ public class GenericButton extends InteractableWidget
 
         if (this.fullDisplayString != null)
         {
-            StyledTextLine text = StyledTextLine.of(this.fullDisplayString);
+            StyledTextLine text = StyledTextLine.parseFirstLine(this.fullDisplayString);
 
             if (this.automaticWidth == false)
             {

@@ -12,6 +12,7 @@ public class Glyph
     public final int width;
     public final int height;
     public final int renderWidth;
+    public final int renderWidthWhenBold;
     public final boolean whiteSpace;
     public final char c;
 
@@ -38,8 +39,14 @@ public class Glyph
         this.width = width;
         this.height = height;
         this.renderWidth = renderWidth;
+        this.renderWidthWhenBold = whiteSpace ? renderWidth : renderWidth + 1;
         this.whiteSpace = whiteSpace;
         this.c = c;
+    }
+
+    public int getRenderWidthWithStyle(TextStyle style)
+    {
+        return style.bold ? this.renderWidthWhenBold : this.renderWidth;
     }
 
     @Override
@@ -56,6 +63,7 @@ public class Glyph
         sb.append(", width=").append(this.width);
         sb.append(", height=").append(this.height);
         sb.append(", renderWidth=").append(this.renderWidth);
+        sb.append(", renderWidthWhenBold=").append(this.renderWidthWhenBold);
         sb.append(", whiteSpace=").append(this.whiteSpace);
         sb.append('}');
 

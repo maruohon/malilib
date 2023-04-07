@@ -164,7 +164,7 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public int getRenderWidth(String str)
     {
-        return StyledText.of(str).getRenderWidth();
+        return StyledText.parse(str).getRenderWidth();
     }
 
     public Glyph getGlyphFor(char c)
@@ -482,12 +482,13 @@ public class TextRenderer implements IResourceManagerReloadListener
     protected int renderGlyph(float x, float y, float z, Glyph glyph, Color4f color,
                               TextStyle style, BufferBuilder buffer)
     {
+        int renderWidth = glyph.getRenderWidthWithStyle(style);
+
         if (glyph == EMPTY_GLYPH)
         {
-            return glyph.renderWidth;
+            return renderWidth;
         }
 
-        int renderWidth = glyph.renderWidth;
         float slant = style.italic ? 1.0F : 0.0F;
         float w = (float) glyph.width;
         float h = (float) glyph.height;
@@ -512,7 +513,6 @@ public class TextRenderer implements IResourceManagerReloadListener
         if (style.bold)
         {
             x += this.unicode ? 0.5F : 1.0F;
-            renderWidth += 1;
 
             buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
             buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();

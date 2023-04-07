@@ -82,7 +82,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         if (org.apache.commons.lang3.StringUtils.isBlank(name) == false)
         {
-            this.setText(StyledTextLine.of(name));
+            this.setText(StyledTextLine.parseFirstLine(name));
 
             int width = this.text.renderWidth + 10;
 
@@ -165,7 +165,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         if (this.hoverText != null)
         {
-            this.widgetHoverText.add(StyledTextLine.translate(this.hoverText));
+            StyledTextLine.translate(this.widgetHoverText, this.hoverText);
             this.combinedHoverText.addAll(this.widgetHoverText);
         }
 

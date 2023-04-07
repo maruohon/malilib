@@ -37,9 +37,9 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.ctx = ctx;
 
         String ownerLabel = this.getOwnerText();
-        this.categoryText = StyledTextLine.of(ownerLabel);
-        this.nameText = StyledTextLine.translate("malilib.label.config.config_display_name", config.getDisplayName());
-        this.internalNameText = StyledTextLine.translate("malilib.label.config.config_internal_name", config.getName());
+        this.categoryText = StyledTextLine.parseFirstLine(ownerLabel);
+        this.nameText = StyledTextLine.translateFirstLine("malilib.label.config.config_display_name", config.getDisplayName());
+        this.internalNameText = StyledTextLine.translateFirstLine("malilib.label.config.config_internal_name", config.getName());
         this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), this.getHeight(), 0xFFFFFFFF);
         this.resetButton = GenericButton.create("malilib.button.misc.reset.caps", this::onResetButtonClicked);
         this.resetButton.setEnabledStatusSupplier(this::isResetEnabled);

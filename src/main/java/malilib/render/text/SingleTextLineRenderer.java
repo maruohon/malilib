@@ -81,7 +81,7 @@ public class SingleTextLineRenderer
 
     public void setText(String translationKey, Object... args)
     {
-        this.setStyledText(StyledText.translate(translationKey, args));
+        this.setStyledTextLine(StyledTextLine.translateJoin(translationKey, args));
     }
 
     public void setStyledText(StyledText text)

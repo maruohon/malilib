@@ -202,7 +202,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
     public void setName(String name)
     {
         this.name = name;
-        this.styledName = StyledTextLine.of(name);
+        this.styledName = StyledTextLine.parseFirstLine(name);
     }
 
     /**

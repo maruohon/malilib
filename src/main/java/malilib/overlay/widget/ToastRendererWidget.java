@@ -106,7 +106,7 @@ public class ToastRendererWidget extends InfoRendererWidget
 
     public void addToast(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        StyledText text = StyledText.of(translatedMessage);
+        StyledText text = StyledText.parse(translatedMessage);
         this.addToast(text, messageDispatcher);
     }
 
@@ -134,7 +134,7 @@ public class ToastRendererWidget extends InfoRendererWidget
     public void addToast(String message, int displayTimeMs, int fadeInTimeMs, int fadeOutTimeMs,
                          @Nullable String marker, boolean append)
     {
-        StyledText text = StyledText.of(message);
+        StyledText text = StyledText.parse(message);
         this.addToast(text, displayTimeMs, fadeInTimeMs, fadeOutTimeMs, marker, append);
     }
 
@@ -311,8 +311,8 @@ public class ToastRendererWidget extends InfoRendererWidget
     {
         widget.setCanConfigure(true);
         widget.setCanRemove(true);
-        widget.setText(StyledTextLine.translate("malilib.hover.toast_renderer.entry_name",
-                                                this.getName(), this.getScreenLocation().getDisplayName()));
+        widget.setText(StyledTextLine.translateFirstLine("malilib.hover.toast_renderer.entry_name",
+                                                         this.getName(), this.getScreenLocation().getDisplayName()));
     }
 
     @Override

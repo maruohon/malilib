@@ -8,7 +8,7 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
     {
         super(data, constructData);
 
-        this.setText(StyledTextLine.raw(data));
+        this.setText(StyledTextLine.unParsed(data));
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0xA0101010 : 0xA0303030);
         this.getBackgroundRenderer().getHoverSettings().setColor(0xA0707070);
     }

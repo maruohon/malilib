@@ -386,8 +386,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     {
         this.menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
 
-        StyledTextLine textEdit = StyledTextLine.translate("malilib.label.misc.edit");
-        StyledTextLine textRemove = StyledTextLine.translate("malilib.label.misc.delete.colored");
+        StyledTextLine textEdit = StyledTextLine.translateFirstLine("malilib.label.misc.edit");
+        StyledTextLine textRemove = StyledTextLine.translateFirstLine("malilib.label.misc.delete.colored");
         this.menuWidget.setMenuEntries(new MenuEntryWidget(textEdit, () -> this.editActionWidget(widget)),
                                        new MenuEntryWidget(textRemove, () -> this.removeActionWidget(widget)));
 
@@ -400,8 +400,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     {
         this.menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
 
-        StyledTextLine textEdit = StyledTextLine.translate("malilib.label.misc.edit_selected");
-        StyledTextLine textRemove = StyledTextLine.translate("malilib.label.misc.delete_selected.colored");
+        StyledTextLine textEdit = StyledTextLine.translateFirstLine("malilib.label.misc.edit_selected");
+        StyledTextLine textRemove = StyledTextLine.translateFirstLine("malilib.label.misc.delete_selected.colored");
         this.menuWidget.setMenuEntries(new MenuEntryWidget(textEdit, this::editSelectedWidgets),
                                        new MenuEntryWidget(textRemove, this::deleteSelectedWidgets));
 

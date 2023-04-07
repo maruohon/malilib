@@ -29,7 +29,7 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
         int textWidth = this.getWidth() - this.removeButton.getWidth() - this.outputDropdown.getWidth() - 20;
         String key = StringUtils.clampTextToRenderLength(data.getMessageTranslationKey(), textWidth, LeftRight.RIGHT, "...");
 
-        this.setText(StyledTextLine.of(key));
+        this.setText(StyledTextLine.parseFirstLine(key));
         this.addHoverStrings(data.getMessageTranslationKey());
     }
 

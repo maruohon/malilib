@@ -98,7 +98,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
         this.zLevelIncrement = 20;
         this.shouldReceiveOutsideClicks = true;
-        this.searchTipText = StyledTextLine.translate("malilib.label.misc.dropdown.type_to_search");
+        this.searchTipText = StyledTextLine.translateFirstLine("malilib.label.misc.dropdown.type_to_search");
 
         this.setHoverInfoRequiresShift(true);
         this.setWidthNoUpdate(120); // The width will get updated later
@@ -570,7 +570,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         if (supportsMultiSelection)
         {
             String key = this.multiSelectionTranslationKey;
-            maxWidth = StyledTextLine.translate(key, 99).renderWidth + 4;
+            maxWidth = StyledTextLine.translateFirstLine(key, 99).renderWidth + 4;
         }
 
         for (T entry : entriesIn)
@@ -698,7 +698,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 if (count > 1)
                 {
                     String key = this.multiSelectionTranslationKey;
-                    widget.setText(StyledTextLine.translate(key, count));
+                    widget.setText(StyledTextLine.translateFirstLine(key, count));
 
                     if (this.multiSelectionHoverTextSupplier != null)
                     {
@@ -707,7 +707,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 }
                 else
                 {
-                    widget.setText(StyledTextLine.of("-"));
+                    widget.setText(StyledTextLine.parseFirstLine("-"));
                 }
             }
 
@@ -851,7 +851,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         @Override
         public StyledTextLine getText(T data)
         {
-            return this.stringFactory != null ? StyledTextLine.of(this.stringFactory.apply(data)) : null;
+            return this.stringFactory != null ? StyledTextLine.parseFirstLine(this.stringFactory.apply(data)) : null;
         }
 
         @Nullable
@@ -888,7 +888,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 widget.getTextOffset().setYOffset(0);
                 int unusableWidth = textOffset + 6;
                 widget.getTextLineRenderer().setMaxWidth(width - unusableWidth);
-                widget.setText(StyledTextLine.of(getDisplayString(entry, this.stringFactory)));
+                widget.setText(StyledTextLine.parseFirstLine(getDisplayString(entry, this.stringFactory)));
             }
 
             return widget;

@@ -484,18 +484,18 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForNonFile()
     {
-        StyledTextLine textPaste  = StyledTextLine.translate("malilib.label.file_browser.context_menu.paste");
+        StyledTextLine textPaste  = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.paste");
         boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
         return ImmutableList.of(new MenuEntryWidget(textPaste, this::pasteFiles, hasFiles));
     }
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForFile()
     {
-        StyledTextLine textCopy   = StyledTextLine.translate("malilib.label.file_browser.context_menu.copy");
-        StyledTextLine textCut    = StyledTextLine.translate("malilib.label.file_browser.context_menu.cut");
-        StyledTextLine textDelete = StyledTextLine.translate("malilib.label.file_browser.context_menu.delete");
-        StyledTextLine textPaste  = StyledTextLine.translate("malilib.label.file_browser.context_menu.paste");
-        StyledTextLine textRename = StyledTextLine.translate("malilib.label.file_browser.context_menu.rename");
+        StyledTextLine textCopy   = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.copy");
+        StyledTextLine textCut    = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.cut");
+        StyledTextLine textDelete = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.delete");
+        StyledTextLine textPaste  = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.paste");
+        StyledTextLine textRename = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.rename");
         boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
 
         return ImmutableList.of(new MenuEntryWidget(textCopy,   this::copyFiles),
@@ -510,9 +510,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         String sizeKey = this.showFileSize ? "malilib.label.file_browser.context_menu.hide_file_size" : "malilib.label.file_browser.context_menu.show_file_size";
         String mTimeKey = this.showFileModificationTime ? "malilib.label.file_browser.context_menu.hide_file_mtime" : "malilib.label.file_browser.context_menu.show_file_mtime";
         String hiddenKey = this.showHiddenFiles ? "malilib.label.file_browser.context_menu.dont_show_hidden_files" : "malilib.label.file_browser.context_menu.show_hidden_files";
-        StyledTextLine textShowSize = StyledTextLine.translate(sizeKey);
-        StyledTextLine textShowDate = StyledTextLine.translate(mTimeKey);
-        StyledTextLine textShowHidden = StyledTextLine.translate(hiddenKey);
+        StyledTextLine textShowSize = StyledTextLine.translateFirstLine(sizeKey);
+        StyledTextLine textShowDate = StyledTextLine.translateFirstLine(mTimeKey);
+        StyledTextLine textShowHidden = StyledTextLine.translateFirstLine(hiddenKey);
 
         return ImmutableList.of(new MenuEntryWidget(textShowSize, this::toggleShowFileSize),
                                 new MenuEntryWidget(textShowDate, this::toggleShowModificationTime),

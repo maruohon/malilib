@@ -82,7 +82,7 @@ public class CustomHotkeyDefinition extends CommonDescription implements Hotkey,
         }
 
         String key = "malilib.label.custom_hotkeys.widget.action_display_name.multiple_actions";
-        return StyledTextLine.translate(key, this.actions.size());
+        return StyledTextLine.translateFirstLine(key, this.actions.size());
     }
 
     protected ActionResult execute(ActionContext ctx)

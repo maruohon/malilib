@@ -2,15 +2,24 @@ package malilib.render.text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 
 import malilib.MaLiLib;
+import malilib.render.text.StyledText.StyledTextCacheKey;
 import malilib.util.StringUtils;
 
 public class StyledTextLine
 {
     public static final StyledTextLine EMPTY = new StyledTextLine(ImmutableList.of());
+
+    protected static final Cache<StyledTextCacheKey, ImmutableList<StyledTextLine>> TEXT_CACHE = CacheBuilder.newBuilder().concurrencyLevel(1).initialCapacity(4000).maximumSize(4000).expireAfterAccess(10 * 60, TimeUnit.SECONDS).build();
 
     public final ImmutableList<StyledTextSegment> segments;
     public final String displayText;
@@ -93,14 +102,41 @@ public class StyledTextLine
     public StyledTextLine append(StyledTextSegment segment)
     {
         ArrayList<StyledTextSegment> segments = new ArrayList<>(this.segments);
-        segments.add(segment);
+        int last = segments.size() - 1;
+
+        if (last >= 0 && segments.get(last).canAppend(segment))
+        {
+            segments.set(last, segments.get(last).append(segment));
+        }
+        else
+        {
+            segments.add(segment);
+        }
+
         return new StyledTextLine(ImmutableList.copyOf(segments));
     }
 
     public StyledTextLine append(StyledTextLine other)
     {
+        if (other.segments.isEmpty())
+        {
+            return this;
+        }
+
         ArrayList<StyledTextSegment> segments = new ArrayList<>(this.segments);
-        segments.addAll(other.segments);
+        StyledTextSegment first = other.segments.get(0);
+        int last = segments.size() - 1;
+
+        if (last >= 0 && segments.get(last).canAppend(first))
+        {
+            segments.set(last, segments.get(last).append(first));
+            segments.addAll(other.segments.subList(1, other.segments.size()));
+        }
+        else
+        {
+            segments.addAll(other.segments);
+        }
+
         return new StyledTextLine(ImmutableList.copyOf(segments));
     }
 
@@ -198,13 +234,106 @@ public class StyledTextLine
     }
 
     /**
+     * Creates styled text lines of the provided string by calling
+     * {@link malilib.render.text.StyledTextLine#parseLines(String)}.
+     * This is just a convenience method to also add the text lines to the given list.
+     */
+    public static void parseLines(List<StyledTextLine> linesOut, String str)
+    {
+        linesOut.addAll(parseLines(str));
+    }
+
+    /**
+     * Creates styled text lines of the provided string by calling
+     * {@link malilib.render.text.StyledTextLine#parseLines(String)}.
+     * This is just a convenience method to feed the text lines to the given consumer.
+     */
+    public static void parseLines(Consumer<StyledTextLine> lineConsumer, String str)
+    {
+        for (StyledTextLine line : parseLines(str))
+        {
+            lineConsumer.accept(line);
+        }
+    }
+
+    /**
+     * Creates styled text lines of the provided string.
+     */
+    public static ImmutableList<StyledTextLine> parseLines(String str)
+    {
+        return parseLines(str, Optional.empty());
+    }
+
+    public static ImmutableList<StyledTextLine> parseLines(String str, TextStyle startingStyle)
+    {
+        return parseLines(str, Optional.of(startingStyle));
+    }
+
+    protected static ImmutableList<StyledTextLine> parseLines(String str, Optional<TextStyle> startingStyle)
+    {
+        try
+        {
+            TextStyle style = startingStyle.isPresent() ? startingStyle.get() : null;
+            StyledTextCacheKey key = new StyledTextCacheKey(str, style);
+            return TEXT_CACHE.get(key, () -> StyledTextParser.parseString(str, startingStyle));
+        }
+        catch (ExecutionException e)
+        {
+            MaLiLib.LOGGER.warn("Exception while retrieving StyledText from cache", e);
+            return StyledTextParser.parseString(str, startingStyle);
+        }
+    }
+
+    /**
+     * Creates a styled text line of the provided string.
+     * If the string has line breaks, the separate lines will be joined
+     * and the line breaks will be replaced by the string '\n'.
+     */
+    public static StyledTextLine parseJoin(String str)
+    {
+        return joinLines(parseLines(str));
+    }
+
+    /**
+     * Creates a styled text line of the provided string.
+     * If the string has line breaks, the separate lines will be joined
+     * and the line breaks will be replaced by the string '\n'.
+     * Uses the given startingStyle as the style builder base style.
+     */
+    public static StyledTextLine parseJoin(String str, TextStyle startingStyle)
+    {
+        return joinLines(parseLines(str, startingStyle));
+    }
+
+    /**
+     * Creates a styled text line of the provided string.
+     * Only the first line is returned, even if the result has more than one line.
+     */
+    public static StyledTextLine parseFirstLine(String str)
+    {
+        List<StyledTextLine> lines = parseLines(str);
+        return lines.isEmpty() ? EMPTY : lines.get(0);
+    }
+
+    /**
+     * Creates a styled text line of the provided string.
+     * Only the first line is returned, even if the result has more than one line.
+     * Uses the given startingStyle as the style builder base style.
+     */
+    public static StyledTextLine parseFirstLine(String str, TextStyle startingStyle)
+    {
+        List<StyledTextLine> lines = parseLines(str, startingStyle);
+        return lines.isEmpty() ? EMPTY : lines.get(0);
+    }
+
+    /**
      * Creates a styled text line of the translation result of the provided translation key.
      * If the string has line breaks, the separate lines will be joined
      * and the line breaks will be replaced by the string '\n'.
      */
-    public static StyledTextLine translate(String translationKey, Object... args)
+    public static StyledTextLine translateJoin(String translationKey, Object... args)
     {
-        return of(StringUtils.translate(translationKey, args));
+        return parseJoin(StringUtils.translate(translationKey, args));
     }
 
     /**
@@ -213,9 +342,17 @@ public class StyledTextLine
      * and the line breaks will be replaced by the string '\n'.
      * Uses the given startingStyle as the style builder base style.
      */
-    public static StyledTextLine translate(TextStyle startingStyle, String translationKey, Object... args)
+    public static StyledTextLine translateJoin(TextStyle startingStyle, String translationKey, Object... args)
     {
-        return of(StringUtils.translate(translationKey, args), startingStyle);
+        return parseJoin(StringUtils.translate(translationKey, args), startingStyle);
+    }
+
+    /**
+     * Creates styled text lines of the translation result of the provided translation key.
+     */
+    public static ImmutableList<StyledTextLine> translate(String translationKey, Object... args)
+    {
+        return parseLines(StringUtils.translate(translationKey, args));
     }
 
     /**
@@ -224,83 +361,90 @@ public class StyledTextLine
      */
     public static void translate(List<StyledTextLine> linesOut, String translationKey, Object... args)
     {
-        linesOut.addAll(StyledText.translate(translationKey, args).lines);
+        linesOut.addAll(translate(translationKey, args));
     }
 
     /**
-     * Creates styled text lines of the provided string by calling {@link StyledText#of(String)}.
-     * This is just a convenience method to also add the text lines to the given list.
+     * Creates a styled text line of the translation result of the provided translation key.
+     * Only the first line is returned, even if the result has more than one line.
      */
-    public static void of(List<StyledTextLine> linesOut, String str)
+    public static StyledTextLine translateFirstLine(String translationKey, Object... args)
     {
-        linesOut.addAll(StyledText.of(str).lines);
+        List<StyledTextLine> lines = parseLines(StringUtils.translate(translationKey, args));
+        return lines.isEmpty() ? EMPTY : lines.get(0);
     }
 
     /**
-     * Creates a styled text line of the provided raw string.
-     * If the string has line breaks, the separate lines will be joined
-     * and the line breaks will be replaced by the string '\n'.
-     */
-    public static StyledTextLine of(String str)
-    {
-        StyledText text = StyledText.of(str);
-        return joinLines(text);
-    }
-
-    /**
-     * Creates a styled text line of the provided raw string.
-     * If the string has line breaks, the separate lines will be joined
-     * and the line breaks will be replaced by the string '\n'.
+     * Creates a styled text line of the translation result of the provided translation key.
+     * Only the first line is returned, even if the result has more than one line.
      * Uses the given startingStyle as the style builder base style.
      */
-    public static StyledTextLine of(String str, TextStyle startingStyle)
+    public static StyledTextLine translateFirstLine(TextStyle startingStyle, String translationKey, Object... args)
     {
-        StyledText text = StyledText.of(str, startingStyle);
-        return joinLines(text);
+        List<StyledTextLine> lines = parseLines(StringUtils.translate(translationKey, args), startingStyle);
+        return lines.isEmpty() ? EMPTY : lines.get(0);
     }
 
-    public static ImmutableList<StyledTextLine> ofStrings(List<String> strings)
-    {
-        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
-
-        for (String str : strings)
-        {
-            builder.addAll(StyledText.of(str).lines);
-        }
-
-        return builder.build();
-    }
-
-    public static ImmutableList<StyledTextLine> translateStrings(List<String> strings)
+    /**
+     * Creates styled text lines of the provided list of strings.
+     * Each string in the input list will be passed through
+     * {@link malilib.render.text.StyledTextLine#parseLines(String)}.
+     */
+    public static ImmutableList<StyledTextLine> parseList(List<String> strings)
     {
         ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
 
         for (String str : strings)
         {
-            builder.addAll(StyledText.translate(str).lines);
+            builder.addAll(parseLines(str));
         }
 
         return builder.build();
     }
 
+    /**
+     * Creates styled text lines of the provided list of strings.
+     * Each string in the input list will first be translated and then passed through
+     * {@link malilib.render.text.StyledTextLine#parseLines(String)}.
+     */
+    public static ImmutableList<StyledTextLine> translateList(List<String> strings)
+    {
+        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
+
+        for (String str : strings)
+        {
+            builder.addAll(parseLines(StringUtils.translate(str)));
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * Joins all the lines of the provided StyledText into one StyledTextLine
+     */
     public static StyledTextLine joinLines(StyledText text)
     {
-        final int lineCount = text.lines.size();
+        return joinLines(text.lines);
+    }
+
+    public static StyledTextLine joinLines(List<StyledTextLine> textLines)
+    {
+        final int lineCount = textLines.size();
 
         if (lineCount == 1)
         {
-            return text.lines.get(0);
+            return textLines.get(0);
         }
         else if (lineCount > 1)
         {
             List<StyledTextSegment> newSegments = new ArrayList<>();
             Glyph lineBreakGlyph = TextRenderer.INSTANCE.getGlyphFor('\n');
-            StyledTextSegment defaultLineBreakSegment = new StyledTextSegment(lineBreakGlyph.texture, TextStyle.DEFAULT,
+            StyledTextSegment defaultLineBreakSegment = new StyledTextSegment(lineBreakGlyph.texture,
+                                                                              TextStyle.DEFAULT,
                                                                               ImmutableList.of(lineBreakGlyph), "", "");
 
-            for (int lineIndex = 0; lineIndex < lineCount; ++lineIndex)
+            for (StyledTextLine line : textLines)
             {
-                StyledTextLine line = text.lines.get(lineIndex);
                 List<StyledTextSegment> oldSegments = line.segments;
                 final int segmentCount = oldSegments.size();
 
@@ -348,23 +492,22 @@ public class StyledTextLine
     }
 
     /**
-     * 
      * Returns the string as a completely un-parsed raw StyledTextLine with the default TextStyle
      */
-    public static StyledTextLine raw(String str)
+    public static StyledTextLine unParsed(String str)
     {
-        return rawWithStyle(str, TextStyle.DEFAULT);
+        return unParsedWithStyle(str, TextStyle.DEFAULT);
     }
 
     /**
      * Returns the string as a completely un-parsed raw StyledTextLine,
      * using the provided TextStyle
      */
-    public static StyledTextLine rawWithStyle(String str, TextStyle style)
+    public static StyledTextLine unParsedWithStyle(String str, TextStyle style)
     {
         List<StyledTextSegment> segments = new ArrayList<>();
-        TextRendererUtils.generatePerFontTextureSegmentsFor(str, str, style,
-                                                            segments::add, TextRenderer.INSTANCE::getGlyphFor);
+        StyledTextUtils.generatePerFontTextureSegmentsFor(str, str, style,
+                                                          segments::add, TextRenderer.INSTANCE::getGlyphFor);
         return new StyledTextLine(ImmutableList.copyOf(segments));
     }
 }

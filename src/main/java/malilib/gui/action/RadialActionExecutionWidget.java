@@ -288,10 +288,10 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
     {
         if (this.resizing || this.dragging)
         {
-            StyledText text = StyledText.of(String.format("r: %.2f ... %.2f\\n%.4f rad\\n%.4f rad => %.4f rad",
-                                                          this.innerRadius, this.outerRadius,
-                                                          this.getSectorWidth(),
-                                                          this.startAngle, this.endAngle));
+            StyledText text = StyledText.parse(String.format("r: %.2f ... %.2f\\n%.4f rad\\n%.4f rad => %.4f rad",
+                                                             this.innerRadius, this.outerRadius,
+                                                             this.getSectorWidth(),
+                                                             this.startAngle, this.endAngle));
 
             double middleAngle = this.getMiddleAngle();
             int tx = (int) (this.center.x + Math.cos(middleAngle) * (this.outerRadius + 10));

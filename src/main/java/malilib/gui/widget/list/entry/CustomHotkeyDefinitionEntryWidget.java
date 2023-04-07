@@ -33,7 +33,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.screen = screen;
 
         TextStyle actionStyle = TextStyle.normal(0xFFC0C0C0);
-        StyledTextLine name = StyledTextLine.translate("malilib.label.custom_hotkeys.widget.hotkey_name", data.getName());
+        StyledTextLine name = StyledTextLine.translateFirstLine("malilib.label.custom_hotkeys.widget.hotkey_name", data.getName());
         StyledTextLine actionName = data.getActionDisplayName().withStartingStyle(actionStyle);
 
         this.nameLabelWidget = new LabelWidget(-1, this.getHeight(), 0xFFF0F0F0);
@@ -50,7 +50,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.getBackgroundRenderer().getHoverSettings().setColor(0xFF303030);
 
         ArrayList<StyledTextLine> lines = new ArrayList<>();
-        MacroAction.getContainedActionsTooltip(data.getActionList(), lines::add, 8);
+        MacroAction.getContainedActionsTooltip(lines, data.getActionList(), 8);
         this.hoverInfoFactory.addTextLines(lines);
     }
 

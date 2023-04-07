@@ -61,7 +61,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         this.fileBrowserWidget = fileBrowserWidget;
         this.getTextSettings().setTextShadowEnabled(false);
 
-        this.fullNameText = StyledTextLine.raw(this.getDisplayName());
+        this.fullNameText = StyledTextLine.unParsed(this.getDisplayName());
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, this.isOdd ? 0xFF202020 : 0xFF303030);
         this.getBackgroundRenderer().getHoverSettings().setColor(0xFF404040);
         this.getBorderRenderer().getHoverSettings().setEnabled(true);
@@ -79,8 +79,8 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         this.textOffset.setXOffset(textXOffset);
 
         String mTimeStr = BaseFileBrowserWidget.DATE_FORMAT.format(new Date(FileUtils.getMTime(entry.getFullPath())));
-        this.fileSizeText = StyledTextLine.of(this.getFileSizeStringFor(entry));
-        this.modificationTimeText = StyledTextLine.of(mTimeStr);
+        this.fileSizeText = StyledTextLine.parseFirstLine(this.getFileSizeStringFor(entry));
+        this.modificationTimeText = StyledTextLine.parseFirstLine(mTimeStr);
     }
 
     @Override

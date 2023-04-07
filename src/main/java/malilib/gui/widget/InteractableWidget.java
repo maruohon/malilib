@@ -15,7 +15,6 @@ import malilib.gui.util.ScreenContext;
 import malilib.listener.EventListener;
 import malilib.render.TextRenderUtils;
 import malilib.render.text.OrderedStringListFactory;
-import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
 import malilib.util.StringUtils;
 import malilib.util.position.Vec2i;
@@ -247,7 +246,7 @@ public abstract class InteractableWidget extends BackgroundWidget
     {
         if (this.hoverHelp == null)
         {
-            this.hoverHelp = StyledText.translate(this.hoverHelpTranslationKey).lines;
+            this.hoverHelp = StyledTextLine.translate(this.hoverHelpTranslationKey);
         }
 
         return this.hoverHelp;

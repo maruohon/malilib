@@ -231,7 +231,7 @@ public class BaseTextFieldWidget extends InteractableWidget
 
             if (message != null)
             {
-                this.messageRenderer.addMessage(StyledText.of(message), Message.ERROR, 3000, 200);
+                this.messageRenderer.addMessage(StyledText.parse(message), Message.ERROR, 3000, 200);
                 this.updateMessageRendererPosition();
             }
         }
@@ -1019,7 +1019,7 @@ public class BaseTextFieldWidget extends InteractableWidget
             str = String.format("%d / %d", pos, len);
         }
 
-        StyledTextLine text = StyledTextLine.of(str);
+        StyledTextLine text = StyledTextLine.parseFirstLine(str);
         int tl = text.renderWidth;
         int bw = tl + 10;
         int bh = 12;

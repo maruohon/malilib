@@ -78,8 +78,8 @@ public class FloatSliderCallback implements SteppedSliderCallback
     @Override
     public void updateDisplayText()
     {
-        this.displayText = StyledTextLine.translate("malilib.label.config.slider_value.float",
-                                                    String.format("%.4f", this.storage.getFloatValue()));
+        this.displayText = StyledTextLine.translateFirstLine("malilib.label.config.slider_value.float",
+                                                             String.format("%.4f", this.storage.getFloatValue()));
     }
 
     @Override

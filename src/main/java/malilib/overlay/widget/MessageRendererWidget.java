@@ -69,7 +69,7 @@ public class MessageRendererWidget extends InfoRendererWidget
 
     public void addMessage(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        this.addMessage(StyledText.of(translatedMessage), messageDispatcher);
+        this.addMessage(StyledText.parse(translatedMessage), messageDispatcher);
     }
 
     public void addMessage(StyledText text, MessageDispatcher messageDispatcher)

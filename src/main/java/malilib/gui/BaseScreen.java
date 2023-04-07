@@ -361,7 +361,7 @@ public abstract class BaseScreen extends GuiScreen
         else
         {
             this.titleString = StringUtils.translate(titleKey, args);
-            this.titleText = StyledTextLine.of(this.getTitleString());
+            this.titleText = StyledTextLine.parseFirstLine(this.getTitleString());
         }
     }
 
@@ -1045,7 +1045,7 @@ public abstract class BaseScreen extends GuiScreen
             String str = String.format("%s @ x: %d, y: %d, w: %d, h: %d",
                                        this.getClass().getName(),
                                        this.x, this.y, this.screenWidth, this.screenHeight);
-            StyledTextLine line = StyledTextLine.of(str);
+            StyledTextLine line = StyledTextLine.parseJoin(str);
 
             int x = this.x + 1;
             int y = this.y + 1;

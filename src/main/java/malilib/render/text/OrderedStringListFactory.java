@@ -112,7 +112,7 @@ public class OrderedStringListFactory
      */
     public void addStrings(List<String> linesIn)
     {
-        this.addTextLines(StyledText.ofStrings(linesIn).lines);
+        this.addTextLines(StyledTextLine.parseList(linesIn));
     }
 
     /**
@@ -135,7 +135,7 @@ public class OrderedStringListFactory
     public void setStringListProvider(String key, Supplier<List<String>> supplierIn, int priority)
     {
         Function<List<StyledTextLine>, List<StyledTextLine>> provider =
-                (oldLines) -> StyledText.ofStrings(supplierIn.get()).lines;
+                (oldLines) -> StyledTextLine.parseList(supplierIn.get());
 
         this.providers.put(key, Pair.of(priority, provider));
         this.updateSortedProviders();

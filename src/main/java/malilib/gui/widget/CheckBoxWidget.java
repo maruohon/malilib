@@ -43,7 +43,7 @@ public class CheckBoxWidget extends InteractableWidget
 
         if (StringUtils.isBlank(translationKey) == false)
         {
-            this.text = StyledTextLine.translate(translationKey);
+            this.setText(StyledTextLine.translateFirstLine(translationKey));
         }
 
         int textWidth = this.text != null ? this.text.renderWidth : 0;
@@ -92,7 +92,7 @@ public class CheckBoxWidget extends InteractableWidget
 
     public CheckBoxWidget setTranslationKey(String translationKey)
     {
-        this.text = StyledTextLine.translate(translationKey);
+        this.setText(StyledTextLine.translateFirstLine(translationKey));
         return this;
     }
 

@@ -44,7 +44,7 @@ public class RadioButtonWidget<T> extends InteractableWidget
         {
             String displayString = displayStringFunction.apply(val);
             width = Math.max(width, this.getStringWidth(displayString));
-            builder.add(StyledTextLine.of(displayString));
+            StyledTextLine.parseLines(builder::add, displayString);
         }
 
         this.displayStrings = builder.build();

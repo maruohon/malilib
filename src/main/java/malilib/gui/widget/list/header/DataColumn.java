@@ -70,7 +70,7 @@ public class DataColumn<DATATYPE>
     {
         if (this.nameTranslationKey != null)
         {
-            return Optional.of(StyledTextLine.translate(this.nameTranslationKey));
+            return Optional.of(StyledTextLine.translateFirstLine(this.nameTranslationKey));
         }
 
         return Optional.empty();

@@ -33,13 +33,7 @@ public class StyledTextSegment
 
         for (Glyph glyph : glyphs)
         {
-            renderWidth += glyph.renderWidth;
-        }
-
-        // Bold style glyphs are 1 pixel wider per glyph
-        if (style.bold)
-        {
-            renderWidth += glyphs.size();
+            renderWidth += glyph.getRenderWidthWithStyle(style);
         }
 
         this.glyphCount = glyphs.size();
@@ -47,8 +41,8 @@ public class StyledTextSegment
     }
 
     /**
-     * Returns the Glyphs for rendering.
-     * These will be randomized, if this segment has the random/obfuscated style set.
+     * @return  the Glyphs for rendering.
+     *          These will be randomized, if this segment has the random/obfuscated style set.
      */
     public List<Glyph> getGlyphsForRender()
     {
@@ -60,15 +54,19 @@ public class StyledTextSegment
         return this.glyphs;
     }
 
+    /**
+     * @return the list of the actual glyphs contained in this segment.
+     *         This doesn't take the randomized style into account.
+     */
     public List<Glyph> getOriginalGlyphs()
     {
         return this.glyphs;
     }
 
     /**
-     * Returns a sub segment of this text segment.
-     * @param startIndex the inclusive start index of the sub segment
-     * @param endIndex the exclusive end index of the sub segment
+     * @param startIndex the inclusive start index of the sub-segment
+     * @param endIndex the exclusive end index of the sub-segment
+     * @return a sub-segment of this text segment between the given indices
      */
     public StyledTextSegment getSubSegment(int startIndex, int endIndex)
     {
@@ -101,7 +99,7 @@ public class StyledTextSegment
     }
 
     /**
-     * Checks if the texture sheet and style of the given segment are identical
+     * @return true if the texture sheet and style of the given segment are identical
      * to this segment, and thus the segments could be merged.
      */
     public boolean canAppend(StyledTextSegment other)
@@ -110,8 +108,8 @@ public class StyledTextSegment
     }
 
     /**
-     * Appends the other segment to this segment, if both of them use the same texture sheet and style.
-     * Otherwise returns this segment as-is.
+     * @return the other segment appended to this segment, if both of them use the same texture sheet
+     * and style and thus can be merged, otherwise returns this segment as-is.
      */
     public StyledTextSegment append(StyledTextSegment other)
     {
@@ -126,11 +124,17 @@ public class StyledTextSegment
         return this;
     }
 
+    /**
+     * @return a copy of this text segment, but using the provided style
+     */
     public StyledTextSegment withStyle(TextStyle style)
     {
         return new StyledTextSegment(this.texture, style, this.glyphs, this.displayText, this.originalString);
     }
 
+    /**
+     * @return a copy of this segment with the style set to default
+     */
     public StyledTextSegment withoutStyle()
     {
         return this.withStyle(TextStyle.DEFAULT);

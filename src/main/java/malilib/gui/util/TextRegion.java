@@ -51,7 +51,7 @@ public class TextRegion
     protected void setText(String text)
     {
         this.text = text;
-        this.styledText = StyledTextLine.raw(text);
+        this.styledText = StyledTextLine.unParsed(text);
     }
 
     /**

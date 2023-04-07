@@ -31,7 +31,7 @@ public class IntegerConfigStatusWidget extends BaseConfigStatusIndicatorWidget<I
     protected void updateValue()
     {
         this.lastValue = this.config.getIntegerValue();
-        this.valueDisplayText = StyledTextLine.of(String.valueOf(this.lastValue));
+        this.valueDisplayText = StyledTextLine.parseFirstLine(String.valueOf(this.lastValue));
         this.valueRenderWidth = this.valueDisplayText.renderWidth;
     }
 }

@@ -31,7 +31,7 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
         this.iconOffset.setXOffset(4);
         this.textOffset.setXOffset(28);
         this.setIcon(data);
-        this.setText(StyledTextLine.of(String.format("%d x %d @ [ %d, %d ] @ %s", w, h, u, v, texture)));
+        this.setText(StyledTextLine.parseFirstLine(String.format("%d x %d @ [ %d, %d ] @ %s", w, h, u, v, texture)));
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x30707070 : 0x50707070);
         this.getBackgroundRenderer().getHoverSettings().setColor(0x50909090);

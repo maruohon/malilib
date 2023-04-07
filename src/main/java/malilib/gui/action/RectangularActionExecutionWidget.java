@@ -70,7 +70,7 @@ public class RectangularActionExecutionWidget extends BaseActionExecutionWidget
     {
         if (this.resizing || this.dragging || this.selected)
         {
-            StyledTextLine line = StyledTextLine.raw(String.format("%d x %d", this.getWidth(), this.getHeight()));
+            StyledTextLine line = StyledTextLine.unParsed(String.format("%d x %d", this.getWidth(), this.getHeight()));
             this.renderTextLine(x, y - 10, z, 0xFFFFFFFF, true, line, ctx);
         }
 

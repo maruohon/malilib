@@ -31,7 +31,7 @@ public class DoubleConfigStatusWidget extends BaseConfigStatusIndicatorWidget<Do
     protected void updateValue()
     {
         this.lastValue = this.config.getDoubleValue();
-        this.valueDisplayText = StyledTextLine.of(String.valueOf(this.lastValue));
+        this.valueDisplayText = StyledTextLine.parseFirstLine(String.valueOf(this.lastValue));
         this.valueRenderWidth = this.valueDisplayText.renderWidth;
     }
 }

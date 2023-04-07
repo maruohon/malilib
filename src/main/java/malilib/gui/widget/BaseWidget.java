@@ -643,7 +643,7 @@ public class BaseWidget
 
     public int getRawStyledTextWidth(String str)
     {
-        return StyledTextLine.raw(str).renderWidth;
+        return StyledTextLine.unParsed(str).renderWidth;
     }
 
     protected int getTextPositionX(int x, int usableWidth, int textWidth)
@@ -686,7 +686,7 @@ public class BaseWidget
      */
     public void renderPlainString(int x, int y, float z, int color, boolean shadow, String str, ScreenContext ctx)
     {
-        this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str), ctx);
+        this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.parseJoin(str), ctx);
     }
 
     protected void renderText(int x, int y, float z, int color, ScreenContext ctx)
@@ -857,7 +857,7 @@ public class BaseWidget
             {
                 int x = (int) posLong.longValue();
                 int y = (int) (posLong.longValue() >>> 32);
-                TextRenderUtils.renderStyledHoverText(x, y, 10, StyledTextLine.ofStrings(DEBUG_STRINGS.get(posLong)),
+                TextRenderUtils.renderStyledHoverText(x, y, 10, StyledTextLine.parseList(DEBUG_STRINGS.get(posLong)),
                                                       0xFFFF4040, DEBUG_TEXT_BG_RENDERER, ctx);
             }
 

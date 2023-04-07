@@ -67,7 +67,7 @@ public class ItemRenderUtils
         {
             if (i == 0)
             {
-                StyledTextLine.of(textLines, stack.getRarity().color + list.get(i));
+                StyledTextLine.parseLines(textLines, stack.getRarity().color + list.get(i));
             }
             else
             {

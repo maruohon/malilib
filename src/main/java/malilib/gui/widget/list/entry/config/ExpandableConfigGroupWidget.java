@@ -114,20 +114,20 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
             count = size;
         }
 
-        lines.add(StyledTextLine.translate(titleKey, size));
+        StyledTextLine.translate(lines, titleKey, size);
 
         for (int i = 0; i < count; ++i)
         {
             ConfigInfo config = configs.get(i);
             String name = config.getDisplayName();
             String className = config.getClass().getSimpleName();
-            lines.add(StyledTextLine.translate(entryKey, name, className));
+            StyledTextLine.translate(lines, entryKey, name, className);
         }
 
         if (size > count)
         {
             String footerKey = "malilib.hover.config.expandable_config_group.more";
-            lines.add(StyledTextLine.translate(footerKey, size - count));
+            StyledTextLine.translate(lines, footerKey, size - count);
         }
 
         return lines;

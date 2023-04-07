@@ -23,7 +23,7 @@ public class BaseInfoRendererWidgetEntryWidget extends BaseDataListEntryWidget<I
         this.configureButton = GenericButton.create("malilib.button.misc.configure", data::openEditScreen);
         this.removeButton = GenericButton.create("malilib.button.misc.remove", this::removeInfoRendererWidget);
 
-        this.setText(StyledTextLine.of(data.getName()));
+        this.setText(StyledTextLine.parseFirstLine(data.getName()));
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x30707070 : 0x50707070);
         this.getBackgroundRenderer().getHoverSettings().setColor(0x50909090);

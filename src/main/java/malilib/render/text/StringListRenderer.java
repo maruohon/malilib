@@ -170,6 +170,21 @@ public class StringListRenderer extends BaseWidget
         }
     }
 
+    public void setStyledText(StyledText text)
+    {
+        this.setStyledTextLines(text.lines);
+    }
+
+    public void setStyledTextLines(List<StyledTextLine> lines)
+    {
+        this.clearText();
+
+        for (StyledTextLine line : lines)
+        {
+            this.addStyledTextLine(line);
+        }
+    }
+
     public void addLine(String translationKey, Object... args)
     {
         String translated = StringUtils.translate(translationKey, args);
@@ -178,12 +193,7 @@ public class StringListRenderer extends BaseWidget
 
     protected void parseAndAddLine(String translated)
     {
-        this.addStyledText(StyledText.of(translated));
-    }
-
-    public void setStyledText(StyledText text)
-    {
-        this.setStyledTextLines(text.lines);
+        this.addStyledTextLines(StyledTextLine.parseLines(translated));
     }
 
     public void addStyledText(StyledText text)
@@ -194,10 +204,8 @@ public class StringListRenderer extends BaseWidget
         }
     }
 
-    public void setStyledTextLines(List<StyledTextLine> lines)
+    public void addStyledTextLines(List<StyledTextLine> lines)
     {
-        this.clearText();
-
         for (StyledTextLine line : lines)
         {
             this.addStyledTextLine(line);

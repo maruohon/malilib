@@ -1,10 +1,12 @@
 package malilib.render.text;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import com.google.common.collect.ImmutableList;
 
 import malilib.util.StringUtils;
+import malilib.util.data.Identifier;
 import malilib.util.data.LeftRight;
 
 public class StyledTextUtils
@@ -137,11 +139,13 @@ public class StyledTextUtils
                 continue;
             }
 
+            TextStyle style = segment.style;
+
             for (Glyph glyph : segment.getOriginalGlyphs())
             {
                 if (currentIndex >= startIndex)
                 {
-                    renderWidth += glyph.renderWidth;
+                    renderWidth += glyph.getRenderWidthWithStyle(style);
 
                     if (renderWidth > maxRenderWidth)
                     {
@@ -165,13 +169,14 @@ public class StyledTextUtils
         for (int segmentIndex = segmentCount - 1; segmentIndex >= 0; --segmentIndex)
         {
             StyledTextSegment segment = line.segments.get(segmentIndex);
+            TextStyle style = segment.style;
             List<Glyph> glyphs = segment.getOriginalGlyphs();
             final int glyphCount = glyphs.size();
 
             for (int glyphIndex = glyphCount - 1; glyphIndex >= 0; --glyphIndex)
             {
                 Glyph glyph = glyphs.get(glyphIndex);
-                renderWidth += glyph.renderWidth;
+                renderWidth += glyph.getRenderWidthWithStyle(style);
 
                 if (renderWidth > maxRenderWidth)
                 {
@@ -204,11 +209,13 @@ public class StyledTextUtils
                 continue;
             }
 
+            TextStyle style = segment.style;
+
             for (Glyph glyph : segment.getOriginalGlyphs())
             {
                 if (currentIndex >= startIndex)
                 {
-                    renderWidth += glyph.renderWidth;
+                    renderWidth += glyph.getRenderWidthWithStyle(style);
 
                     if (renderWidth > maxRenderWidth)
                     {
@@ -249,7 +256,7 @@ public class StyledTextUtils
 
         if (usableWidth <= 16)
         {
-            return StyledTextLine.raw(clampIndicator);
+            return StyledTextLine.unParsed(clampIndicator);
         }
 
         int startIndex;
@@ -267,6 +274,56 @@ public class StyledTextUtils
             endIndex = getLastGlyphIndexWithinWidth(0, usableWidth, line) + 1;
         }
 
-        return line.slice(startIndex, endIndex).append(StyledTextLine.of(clampIndicator, line.getLastStyle()));
+        return line.slice(startIndex, endIndex).append(StyledTextLine.parseJoin(clampIndicator, line.getLastStyle()));
+    }
+
+    public static void generatePerFontTextureSegmentsFor(String displayString, String originalString, TextStyle style,
+                                                         Consumer<StyledTextSegment> consumer, GlyphSource glyphSource)
+    {
+        List<Glyph> glyphs = new ArrayList<>();
+        Identifier texture = null;
+        final int len = displayString.length();
+        int displayStringStart = 0;
+        int originalStringStart = 0;
+        int stylePrefixLength = originalString.length() - displayString.length();
+        int segmentLength = 0;
+
+        for (int i = 0; i < len; ++i, ++segmentLength)
+        {
+            char c = displayString.charAt(i);
+            Glyph glyph = glyphSource.getGlyphFor(c);
+
+            // font sheet change, add the segment
+            if (texture != null && glyph.texture != texture)
+            {
+                int endIndex = originalStringStart + stylePrefixLength + segmentLength;
+                String originalStringSegment = originalString.substring(originalStringStart, endIndex);
+                String displayStringSegment = displayString.substring(displayStringStart, i);
+
+                consumer.accept(new StyledTextSegment(texture, style, ImmutableList.copyOf(glyphs), displayStringSegment, originalStringSegment));
+
+                displayStringStart += segmentLength;
+                originalStringStart += segmentLength + stylePrefixLength;
+                stylePrefixLength = 0;
+                segmentLength = 0;
+                glyphs.clear();
+            }
+
+            glyphs.add(glyph);
+            texture = glyph.texture;
+        }
+
+        if (texture != null)
+        {
+            String displayStringSegment = displayString.substring(displayStringStart, len);
+            String originalStringSegment = originalString.substring(originalStringStart);
+
+            consumer.accept(new StyledTextSegment(texture, style, ImmutableList.copyOf(glyphs), displayStringSegment, originalStringSegment));
+        }
+    }
+
+    public interface GlyphSource
+    {
+        Glyph getGlyphFor(char character);
     }
 }

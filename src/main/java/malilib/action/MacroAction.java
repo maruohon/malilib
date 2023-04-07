@@ -2,7 +2,6 @@ package malilib.action;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
@@ -59,28 +58,28 @@ public class MacroAction extends NamedAction
     {
         String name = this.getName();
         int size = this.getActionList().size();
-        return StyledTextLine.translate(this.coloredDisplayNameTranslationKey, name, size);
+        return StyledTextLine.translateFirstLine(this.coloredDisplayNameTranslationKey, name, size);
     }
 
     @Override
     public List<StyledTextLine> getHoverInfo()
     {
         List<StyledTextLine> lines = new ArrayList<>();
-        lines.add(StyledTextLine.translate("malilib.hover.action.name", this.getName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.action_type", this.type.getDisplayName()));
+        StyledTextLine.translate(lines, "malilib.hover.action.name", this.getName());
+        StyledTextLine.translate(lines, "malilib.hover.action.action_type", this.type.getDisplayName());
 
         if (this.registryName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover.action.registry_name", this.registryName));
+            StyledTextLine.translate(lines, "malilib.hover.action.registry_name", this.registryName);
         }
 
-        getContainedActionsTooltip(this.actionList, lines::add, 8);
+        getContainedActionsTooltip(lines, this.actionList, 8);
 
         return lines;
     }
 
-    public static void getContainedActionsTooltip(List<NamedAction> actions,
-                                                  Consumer<StyledTextLine> consumer,
+    public static void getContainedActionsTooltip(List<StyledTextLine> linesOut,
+                                                  List<NamedAction> actions,
                                                   int maxEntriesShown)
     {
         int size = actions.size();
@@ -96,17 +95,17 @@ public class MacroAction extends NamedAction
                 count = size;
             }
 
-            consumer.accept(StyledTextLine.translate(titleKey, size));
+            StyledTextLine.translate(linesOut, titleKey, size);
 
             for (int i = 0; i < count; ++i)
             {
-                consumer.accept(StyledTextLine.translate(entryKey, actions.get(i).getName()));
+                StyledTextLine.translate(linesOut, entryKey, actions.get(i).getName());
             }
 
             if (size > count)
             {
                 String footerKey = "malilib.hover.action.contained_actions.more";
-                consumer.accept(StyledTextLine.translate(footerKey, size - count));
+                StyledTextLine.translate(linesOut, footerKey, size - count);
             }
         }
     }

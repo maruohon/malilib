@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import malilib.input.ActionResult;
 import malilib.registry.Registry;
 import malilib.render.text.StyledTextLine;
+import malilib.render.text.TextStyle;
 import malilib.util.data.ModInfo;
 import malilib.util.data.json.JsonUtils;
 
@@ -50,7 +51,7 @@ public class ParameterizedNamedAction extends NamedAction
         String name = this.getName();
         String originalName = this.baseAction.getName();
         String modName = this.baseAction.getModInfo().getModName();
-        return StyledTextLine.translate(this.coloredDisplayNameTranslationKey, name, modName, originalName);
+        return StyledTextLine.translateFirstLine(this.coloredDisplayNameTranslationKey, name, modName, originalName);
     }
 
     @Override
@@ -58,21 +59,21 @@ public class ParameterizedNamedAction extends NamedAction
     {
         List<StyledTextLine> lines = new ArrayList<>();
 
-        lines.add(StyledTextLine.translate("malilib.hover.action.name", this.getName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.mod", this.baseAction.getModInfo().getModName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.display_name", this.baseAction.getDisplayName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.action_type", this.type.getDisplayName()));
-        lines.add(StyledTextLine.translate("malilib.hover.action.base_action_name", this.baseAction.getName()));
+        StyledTextLine.translate(lines, "malilib.hover.action.name", this.getName());
+        StyledTextLine.translate(lines, "malilib.hover.action.mod", this.baseAction.getModInfo().getModName());
+        StyledTextLine.translate(lines, "malilib.hover.action.display_name", this.baseAction.getDisplayName());
+        StyledTextLine.translate(lines, "malilib.hover.action.action_type", this.type.getDisplayName());
+        StyledTextLine.translate(lines, "malilib.hover.action.base_action_name", this.baseAction.getName());
 
         String regName = this.baseAction.getRegistryName();
 
         if (regName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover.action.base_action_registry_name", regName));
+            StyledTextLine.translate(lines, "malilib.hover.action.base_action_registry_name", regName);
         }
 
-        StyledTextLine start = StyledTextLine.translate("malilib.hover.action.parameterized_action_argument");
-        lines.add(start.append(StyledTextLine.rawWithStyle(this.argument, start.getLastStyle())));
+        StyledTextLine start = StyledTextLine.translateFirstLine("malilib.hover.action.parameterized_action_argument");
+        lines.add(start.append(StyledTextLine.unParsedWithStyle(this.argument, TextStyle.normal(0xFFF0F040))));
 
         return lines;
     }

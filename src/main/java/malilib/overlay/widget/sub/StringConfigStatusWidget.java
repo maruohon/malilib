@@ -33,7 +33,7 @@ public class StringConfigStatusWidget extends BaseConfigStatusIndicatorWidget<St
     protected void updateValue()
     {
         this.lastValue = this.config.getValue();
-        this.valueDisplayText = StyledTextLine.of(this.lastValue, this.style);
+        this.valueDisplayText = StyledTextLine.parseJoin(this.lastValue, this.style);
         this.valueRenderWidth = this.valueDisplayText.renderWidth;
     }
 }

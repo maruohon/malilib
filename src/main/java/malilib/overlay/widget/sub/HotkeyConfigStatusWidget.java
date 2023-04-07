@@ -36,7 +36,7 @@ public class HotkeyConfigStatusWidget extends BaseConfigStatusIndicatorWidget<Ho
     {
         this.lastValue.clear();
         this.config.getValue().getKeysToList(this.lastValue);
-        this.valueDisplayText = StyledTextLine.of(this.config.getValue().getKeysDisplayString(), this.style);
+        this.valueDisplayText = StyledTextLine.parseFirstLine(this.config.getValue().getKeysDisplayString(), this.style);
         this.valueRenderWidth = this.valueDisplayText.renderWidth;
     }
 }

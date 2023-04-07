@@ -88,7 +88,7 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
         {
             String keysString = this.keyBindSupplier.get().getKeysDisplayString();
             String key = "malilib.label.config_status_indicator.hotkeys_string";
-            this.keysText = StyledTextLine.translate(key, keysString);
+            this.keysText = StyledTextLine.translateFirstLine(key, keysString);
             this.valueRenderWidth += this.keysText.renderWidth + 4;
         }
     }

@@ -53,8 +53,8 @@ public class IntegerSliderCallback implements SliderCallback
     @Override
     public void updateDisplayText()
     {
-        this.displayText = StyledTextLine.translate("malilib.label.config.slider_value.integer",
-                                                    this.storage.getIntegerValue());
+        this.displayText = StyledTextLine.translateFirstLine("malilib.label.config.slider_value.integer",
+                                                             this.storage.getIntegerValue());
     }
 
     @Override

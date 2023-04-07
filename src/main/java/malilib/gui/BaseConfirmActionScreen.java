@@ -1,10 +1,9 @@
 package malilib.gui;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
-import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.StyledTextUtils;
 
@@ -24,8 +23,8 @@ public abstract class BaseConfirmActionScreen extends BaseScreen
         this.renderBorder = true;
         this.backgroundColor = 0xFF000000;
 
-        ImmutableList<StyledTextLine> lines = StyledText.translate(messageKey, messageArgs).lines;
-        ImmutableList<StyledTextLine> messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(lines, width - 30);
+        List<StyledTextLine> lines = StyledTextLine.translate(messageKey, messageArgs);
+        List<StyledTextLine> messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(lines, width - 30);
         this.labelWidget = new LabelWidget(0xFFC0C0C0, messageLines);
 
         this.confirmButton = GenericButton.create(confirmButtonTranslationKey, this::onConfirm);

@@ -315,7 +315,7 @@ public class BlockUtils
                         key = "malilib.label.block_state_properties.generic";
                     }
 
-                    lines.add(StyledTextLine.translate(key, prop.getName(), separator, val.toString()));
+                    StyledTextLine.translate(lines, key, prop.getName(), separator, val.toString());
                 }
             }
             catch (Exception ignore) {}

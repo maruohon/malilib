@@ -384,9 +384,8 @@ public class KeyBindImpl implements KeyBind
             }
 
             int displayTimeMs = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue();
-            StyledText text = StyledText.ofStrings(lines);
             MessageDispatcher.generic(displayTimeMs).type(MessageOutput.TOAST)
-                             .messageMarker("keybind_display").append(true).send(text);
+                             .messageMarker("keybind_display").append(true).send(StyledText.parseList(lines));
         }
     }
 

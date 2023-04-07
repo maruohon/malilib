@@ -35,7 +35,7 @@ public class OptionListConfigStatusWidget extends BaseConfigStatusIndicatorWidge
     protected void updateValue()
     {
         this.lastValue = this.config.getValue();
-        this.valueDisplayText = StyledTextLine.of(this.lastValue.getDisplayName());
+        this.valueDisplayText = StyledTextLine.parseFirstLine(this.lastValue.getDisplayName());
         this.valueRenderWidth = this.valueDisplayText.renderWidth;
     }
 }

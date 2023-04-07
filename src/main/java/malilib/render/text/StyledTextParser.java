@@ -3,9 +3,11 @@ package malilib.render.text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 
 import malilib.util.StringReader;
 import malilib.util.data.Color4f;
@@ -18,19 +20,19 @@ public class StyledTextParser
     protected static final Pattern PATTERN_COLOR_6 = Pattern.compile("[0-9a-fA-F]{6}>");
     protected static final Pattern PATTERN_COLOR_8 = Pattern.compile("[0-9a-fA-F]{8}>");
 
-    public static StyledText parseStringWithStartingStyle(String str, TextStyle style)
+    public static ImmutableList<StyledTextLine> parseString(String str, Optional<TextStyle> startingStyle)
     {
-        StyledText.Builder builder = StyledText.builder(style);
+        StyledTextBuilder builder = startingStyle.isPresent() ? StyledText.builder(startingStyle.get()) : StyledText.builder();
         return parseString(str, builder);
     }
 
-    public static StyledText parseString(String str)
+    public static ImmutableList<StyledTextLine> parseString(String str)
     {
-        StyledText.Builder builder = StyledText.builder();
+        StyledTextBuilder builder = StyledText.builder();
         return parseString(str, builder);
     }
 
-    public static StyledText parseString(String str, StyledText.Builder builder)
+    public static ImmutableList<StyledTextLine> parseString(String str, StyledTextBuilder builder)
     {
         StringReader reader = new StringReader(str);
         List<Token> tokens = new ArrayList<>();
@@ -40,7 +42,7 @@ public class StyledTextParser
         return parseTokensToStyledText(tokens, builder);
     }
 
-    public static StyledText parseTokensToStyledText(List<Token> tokens, StyledText.Builder builder)
+    public static ImmutableList<StyledTextLine> parseTokensToStyledText(List<Token> tokens, StyledTextBuilder builder)
     {
         for (Token token : tokens)
         {
@@ -253,7 +255,7 @@ public class StyledTextParser
             return this.stringLength;
         }
 
-        public abstract void applyTo(StyledText.Builder builder);
+        public abstract void applyTo(StyledTextBuilder builder);
     }
 
     public static class StyleChangeToken extends Token
@@ -271,7 +273,7 @@ public class StyledTextParser
         }
 
         @Override
-        public void applyTo(StyledText.Builder builder)
+        public void applyTo(StyledTextBuilder builder)
         {
             builder.applyStyleChange((b) -> this.consumer.accept(b, this.state));
             builder.appendOriginalTextString(this.originalString);
@@ -293,7 +295,7 @@ public class StyledTextParser
         }
 
         @Override
-        public void applyTo(StyledText.Builder builder)
+        public void applyTo(StyledTextBuilder builder)
         {
             builder.applyStyleChange((b) -> this.consumer.accept(b, this.color));
             builder.appendOriginalTextString(this.originalString);
@@ -313,7 +315,7 @@ public class StyledTextParser
         }
 
         @Override
-        public void applyTo(StyledText.Builder builder)
+        public void applyTo(StyledTextBuilder builder)
         {
             switch (this.code)
             {
@@ -342,7 +344,7 @@ public class StyledTextParser
         }
 
         @Override
-        public void applyTo(StyledText.Builder builder)
+        public void applyTo(StyledTextBuilder builder)
         {
             builder.appendOriginalTextString(this.originalString);
             builder.addLineBeak();
@@ -362,7 +364,7 @@ public class StyledTextParser
         }
 
         @Override
-        public void applyTo(StyledText.Builder builder)
+        public void applyTo(StyledTextBuilder builder)
         {
             builder.appendDisplayString(this.str);
             builder.appendOriginalTextString(this.originalString);
