@@ -40,7 +40,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.categoryText = StyledTextLine.parseFirstLine(ownerLabel);
         this.nameText = StyledTextLine.translateFirstLine("malilib.label.config.config_display_name", config.getDisplayName());
         this.internalNameText = StyledTextLine.translateFirstLine("malilib.label.config.config_internal_name", config.getName());
-        this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), this.getHeight(), 0xFFFFFFFF);
+        this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), this.getHeight());
         this.resetButton = GenericButton.create("malilib.button.misc.reset.caps", this::onResetButtonClicked);
         this.resetButton.setEnabledStatusSupplier(this::isResetEnabled);
 
@@ -87,17 +87,17 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         if (showCategory)
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(2);
-            this.configOwnerAndNameLabelWidget.setLabelStyledTextLines(this.nameText, this.categoryText);
+            this.configOwnerAndNameLabelWidget.setLines(this.nameText, this.categoryText);
         }
         else if (this.shouldShowInternalName())
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(2);
-            this.configOwnerAndNameLabelWidget.setLabelStyledTextLines(this.nameText, this.internalNameText);
+            this.configOwnerAndNameLabelWidget.setLines(this.nameText, this.internalNameText);
         }
         else
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(7);
-            this.configOwnerAndNameLabelWidget.setLabelStyledTextLines(this.nameText);
+            this.configOwnerAndNameLabelWidget.setLines(this.nameText);
         }
     }
 

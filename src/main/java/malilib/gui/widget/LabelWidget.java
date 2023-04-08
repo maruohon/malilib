@@ -16,47 +16,39 @@ public class LabelWidget extends InteractableWidget
 {
     protected final StringListRenderer stringListRenderer = new StringListRenderer();
     protected boolean useBackgroundForHoverOverflow = true;
-    protected boolean visible = true;
     protected int totalHeight;
     protected int totalWidth;
 
     public LabelWidget()
     {
-        this(0, 0, -1, -1, 0xFFFFFFFF);
+        this(-1, -1, 0xFFFFFFFF);
     }
 
-    public LabelWidget(String... text)
+    public LabelWidget(String translationKey, Object... args)
     {
-        this(0xFFFFFFFF, text);
+        this(0xFFFFFFFF, translationKey, args);
     }
 
-    public LabelWidget(int textColor, String... text)
+    public LabelWidget(int textColor, String translationKey, Object... args)
     {
-        this(0, 0, -1, -1, textColor);
+        this(-1, -1, textColor);
 
-        this.setLabelText(Arrays.asList(text));
+        this.translateSetLines(translationKey, args);
     }
 
-    public LabelWidget(int textColor, StyledTextLine... lines)
+    public LabelWidget(int textColor)
     {
-        this(textColor, Arrays.asList(lines));
+        this(-1, -1, textColor);
     }
 
-    public LabelWidget(int textColor, List<StyledTextLine> lines)
+    public LabelWidget(int width, int height)
     {
-        this(0, 0, -1, -1, textColor);
-
-        this.setLabelStyledTextLines(lines);
+        this(width, height, 0xFFFFFFFF);
     }
 
     public LabelWidget(int width, int height, int textColor)
     {
-        this(0, 0, width, height, textColor);
-    }
-
-    public LabelWidget(int x, int y, int width, int height, int textColor)
-    {
-        super(x, y, width, height);
+        super(width, height);
 
         this.setNormalTextColor(textColor);
         this.setHoverTextColor(textColor);
@@ -82,70 +74,74 @@ public class LabelWidget extends InteractableWidget
         this.stringListRenderer.clearText();
     }
 
-    public LabelWidget setLabelText(String translationKey, Object... args)
-    {
-        this.stringListRenderer.setText(translationKey, args);
-        this.updateLabelWidgetSize();
-        return this;
-    }
-
-    public LabelWidget setLabelText(List<String> lines)
-    {
-        this.stringListRenderer.setText(lines);
-        this.updateLabelWidgetSize();
-        return this;
-    }
-
-    public LabelWidget addLabelLine(String translationKey, Object... args)
+    public LabelWidget translateAddLine(String translationKey, Object... args)
     {
         this.stringListRenderer.addLine(translationKey, args);
         this.updateLabelWidgetSize();
         return this;
     }
 
-    public LabelWidget setLabelStyledText(StyledText text)
-    {
-        this.stringListRenderer.setStyledText(text);
-        this.updateLabelWidgetSize();
-        return this;
-    }
-
-    public LabelWidget setLabelStyledTextLines(StyledTextLine... lines)
-    {
-        this.stringListRenderer.setStyledTextLines(Arrays.asList(lines));
-        this.updateLabelWidgetSize();
-        return this;
-    }
-
-    public LabelWidget setLabelStyledTextLines(List<StyledTextLine> lines)
-    {
-        this.stringListRenderer.setStyledTextLines(lines);
-        this.updateLabelWidgetSize();
-        return this;
-    }
-
-    public LabelWidget addLabelStyledTextLine(StyledTextLine line)
+    public LabelWidget addLine(StyledTextLine line)
     {
         this.stringListRenderer.addStyledTextLine(line);
         this.updateLabelWidgetSize();
         return this;
     }
 
-    public LabelWidget setVisible(boolean visible)
+    /**
+     * Add the text without trying to translate the string
+     */
+    public LabelWidget addLines(String text)
     {
-        this.visible = visible;
+        this.stringListRenderer.parseAndAddLine(text);
+        this.updateLabelWidgetSize();
+        return this;
+    }
+
+    public LabelWidget translateSetLines(String translationKey, Object... args)
+    {
+        this.stringListRenderer.setText(translationKey, args);
+        this.updateLabelWidgetSize();
+        return this;
+    }
+
+    /**
+     * Set the text without trying to translate the string
+     */
+    public LabelWidget setLines(String text)
+    {
+        this.stringListRenderer.parseAndSetLines(text);
+        this.updateLabelWidgetSize();
+        return this;
+    }
+
+    public LabelWidget translateSetLines(List<String> lines)
+    {
+        this.stringListRenderer.setText(lines);
+        this.updateLabelWidgetSize();
+        return this;
+    }
+
+    public LabelWidget setLines(StyledText text)
+    {
+        return this.setLines(text.lines);
+    }
+
+    public LabelWidget setLines(StyledTextLine... lines)
+    {
+        return this.setLines(Arrays.asList(lines));
+    }
+
+    public LabelWidget setLines(List<StyledTextLine> lines)
+    {
+        this.stringListRenderer.setStyledTextLines(lines);
+        this.updateLabelWidgetSize();
         return this;
     }
 
     public LabelWidget setHorizontalAlignment(HorizontalAlignment alignment)
     {
         this.stringListRenderer.setHorizontalAlignment(alignment);
-        return this;
-    }
-
-    public LabelWidget setUseTextShadow(boolean useShadow)
-    {
-        this.stringListRenderer.getNormalTextSettings().setTextShadowEnabled(useShadow);
         return this;
     }
 
@@ -166,6 +162,12 @@ public class LabelWidget extends InteractableWidget
     public LabelWidget setHoverTextColor(int color)
     {
         this.stringListRenderer.getHoverTextSettings().setTextColor(color);
+        return this;
+    }
+
+    public LabelWidget setUseTextShadow(boolean useShadow)
+    {
+        this.stringListRenderer.getNormalTextSettings().setTextShadowEnabled(useShadow);
         return this;
     }
 
@@ -262,41 +264,38 @@ public class LabelWidget extends InteractableWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        if (this.visible)
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
+        int width = this.totalWidth;
+
+        if (this.getBackgroundRenderer().getNormalSettings().isEnabled() == false &&
+            this.useBackgroundForHoverOverflow &&
+            this.stringListRenderer.hasClampedContent() &&
+            this.isHoveredForRender(ctx))
         {
-            RenderUtils.color(1f, 1f, 1f, 1f);
-
-            int width = this.totalWidth;
-
-            if (this.getBackgroundRenderer().getNormalSettings().isEnabled() == false &&
-                this.useBackgroundForHoverOverflow &&
-                this.stringListRenderer.hasClampedContent() &&
-                this.isHoveredForRender(ctx))
-            {
-                z += 20;
-                int height = this.totalHeight;
-                BorderSettings borderSettings = this.getBorderRenderer().getHoverSettings();
-                BackgroundSettings bgSettings = this.getBackgroundRenderer().getHoverSettings();
-                this.getBackgroundRenderer().renderBackground(x, y, z, width, height, bgSettings, ctx);
-                this.getBorderRenderer().renderBorder(x, y, z, width, height, borderSettings, ctx);
-            }
-            else
-            {
-                super.renderAt(x, y, z, ctx);
-            }
-
-            int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
-            x += this.padding.getLeft() + bw;
-            y += this.padding.getTop() + bw;
-
-            if (this.automaticWidth == false && this.getWidth() > this.totalWidth &&
-                this.stringListRenderer.hasClampedContent() == false &&
-                this.stringListRenderer.getHorizontalAlignment() == HorizontalAlignment.RIGHT)
-            {
-                x = this.getRight() - this.stringListRenderer.getTotalRenderWidth() - this.padding.getRight() - bw;
-            }
-
-            this.stringListRenderer.renderAt(x, y, z, this.isHoveredForRender(ctx), ctx);
+            z += 20;
+            int height = this.totalHeight;
+            BorderSettings borderSettings = this.getBorderRenderer().getHoverSettings();
+            BackgroundSettings bgSettings = this.getBackgroundRenderer().getHoverSettings();
+            this.getBackgroundRenderer().renderBackground(x, y, z, width, height, bgSettings, ctx);
+            this.getBorderRenderer().renderBorder(x, y, z, width, height, borderSettings, ctx);
         }
+        else
+        {
+            super.renderAt(x, y, z, ctx);
+        }
+
+        int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
+        x += this.padding.getLeft() + bw;
+        y += this.padding.getTop() + bw;
+
+        if (this.automaticWidth == false && this.getWidth() > this.totalWidth &&
+            this.stringListRenderer.hasClampedContent() == false &&
+            this.stringListRenderer.getHorizontalAlignment() == HorizontalAlignment.RIGHT)
+        {
+            x = this.getRight() - this.stringListRenderer.getTotalRenderWidth() - this.padding.getRight() - bw;
+        }
+
+        this.stringListRenderer.renderAt(x, y, z, this.isHoveredForRender(ctx), ctx);
     }
 }

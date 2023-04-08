@@ -27,7 +27,6 @@ import malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
 import malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
-import malilib.util.StringUtils;
 import malilib.util.data.json.JsonUtils;
 
 public class MacroActionEditScreen extends BaseActionListScreen
@@ -48,8 +47,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
 
         this.setTitle("malilib.title.screen.edit_macro");
 
-        String label = StringUtils.translate("malilib.label.actions.macro_edit_screen.contained_actions", macro.getName());
-        this.macroActionsLabelWidget = new LabelWidget(label);
+        this.macroActionsLabelWidget = new LabelWidget("malilib.label.actions.macro_edit_screen.contained_actions", macro.getName());
 
         this.addActionsButton = GenericButton.create(15, "malilib.button.macro_edit_screen.add_actions", this::addSelectedActions);
         this.addActionsButton.translateAndAddHoverString("malilib.hover.macro_edit_screen.add_actions");

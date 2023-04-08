@@ -17,6 +17,7 @@ import malilib.gui.BaseScreen;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.IntegerTextFieldWidget;
+import malilib.gui.widget.LabelWidget;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.shader.ShaderProgram;
@@ -111,7 +112,9 @@ public class ColorEditorHSVScreen extends BaseScreen
 
         String str = "HEX:";
         int w = this.getStringWidth(str);
-        this.addLabel(this.xH - w - 4, y + 6, 0xFFC0C0C0, str);
+        LabelWidget label = new LabelWidget(0xFFC0C0C0).setLines(str);
+        label.setPosition(this.xH - w - 4, y + 6);
+        this.addWidget(label);
         this.textFieldFullColor = new BaseTextFieldWidget(68, 14);
         this.textFieldFullColor.setPosition(this.xH - 1, y + 2);
         this.textFieldFullColor.setTextValidator(BaseTextFieldWidget.VALIDATOR_HEX_COLOR_8_6_4_3);
@@ -164,7 +167,9 @@ public class ColorEditorHSVScreen extends BaseScreen
             default:
         }
 
-        this.addLabel(xLabel, y + 3, 0xFFC0C0C0, element.name() + ":");
+        LabelWidget label = new LabelWidget(0xFFC0C0C0).setLines(element.name() + ":");
+        label.setPosition(xLabel, y + 3);
+        this.addWidget(label);
         this.addWidget(textField);
 
         return this.heightSlider + this.gapSlider;

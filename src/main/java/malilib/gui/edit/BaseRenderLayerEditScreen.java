@@ -16,6 +16,7 @@ import malilib.gui.tab.ScreenTab;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.CheckBoxWidget;
 import malilib.gui.widget.IntegerTextFieldWidget;
+import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.button.OnOffButton;
 import malilib.util.ListUtils;
@@ -107,17 +108,23 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
-            String labelMin = StringUtils.translate("malilib.label.render_layers_screen.layer_min");
-            String labelMax = StringUtils.translate("malilib.label.render_layers_screen.layer_max");
-            int w1 = this.addLabel(x, y +  5, 0xFFFFFFFF, labelMax).getWidth();
-            int w2 = this.addLabel(x, y + 28, 0xFFFFFFFF, labelMin).getWidth();
+            LabelWidget label1 = new LabelWidget("malilib.label.render_layers_screen.layer_min");
+            LabelWidget label2 = new LabelWidget("malilib.label.render_layers_screen.layer_max");
+            label1.setPosition(x, y +  5);
+            label2.setPosition(x, y + 28);
+            this.addWidget(label1);
+            this.addWidget(label2);
+            int w1 = label1.getWidth();
+            int w2 = label2.getWidth();
 
             x += Math.max(w1, w2) + 4;
         }
         else
         {
-            String label = StringUtils.translate("malilib.label.render_layers_screen.layer");
-            x += this.addLabel(x, y + 5, 0xFFFFFFFF, label).getWidth() + 4;
+            LabelWidget label = new LabelWidget("malilib.label.render_layers_screen.layer");
+            label.setPosition(x, y + 5);
+            this.addWidget(label);
+            x += label.getWidth() + 4;
         }
 
         Icon valueAdjustIcon = this.getValueAdjustButtonIcon();
@@ -166,8 +173,10 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
             this.addWidget(button);
             y += 24;
 
-            String label = StringUtils.translate("malilib.label.render_layers_screen.player_follow_offset");
-            int w = this.addLabel(origX, y + 5, 0xFFFFFFFF, label).getWidth();
+            LabelWidget label = new LabelWidget("malilib.label.render_layers_screen.player_follow_offset");
+            label.setPosition(origX, y + 5);
+            this.addWidget(label);
+            int w = label.getWidth();
 
             final IntegerTextFieldWidget textField = new IntegerTextFieldWidget(40, 18, layerRange.getPlayerFollowOffset());
             textField.setPosition(origX + w + 4, y);

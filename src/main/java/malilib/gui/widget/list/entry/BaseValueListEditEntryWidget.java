@@ -30,7 +30,7 @@ public class BaseValueListEditEntryWidget<DATATYPE> extends BaseOrderableListEdi
         this.initialValue = initialValue;
         this.newEntryFactory = () -> this.defaultValue;
 
-        this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%3d:", this.originalListIndex + 1));
+        this.labelWidget = new LabelWidget(0xC0C0C0C0).setLines(String.format("%3d:", this.originalListIndex + 1));
         this.labelWidget.setAutomaticWidth(false);
         this.labelWidget.setWidth(24);
         this.labelWidget.setHorizontalAlignment(HorizontalAlignment.RIGHT);

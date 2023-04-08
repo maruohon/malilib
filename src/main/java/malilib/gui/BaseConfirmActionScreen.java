@@ -25,7 +25,7 @@ public abstract class BaseConfirmActionScreen extends BaseScreen
 
         List<StyledTextLine> lines = StyledTextLine.translate(messageKey, messageArgs);
         List<StyledTextLine> messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(lines, width - 30);
-        this.labelWidget = new LabelWidget(0xFFC0C0C0, messageLines);
+        this.labelWidget = new LabelWidget(0xFFC0C0C0).setLines(messageLines);
 
         this.confirmButton = GenericButton.create(confirmButtonTranslationKey, this::onConfirm);
         this.cancelButton = GenericButton.create(cancelButtonTranslationKey, this::onCancel);

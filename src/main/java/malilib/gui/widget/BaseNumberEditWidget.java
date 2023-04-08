@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
 import malilib.gui.widget.button.GenericButton;
-import malilib.render.text.StyledText;
 
 public abstract class BaseNumberEditWidget extends ContainerWidget
 {
@@ -172,7 +171,7 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
 
     public BaseNumberEditWidget setLabelText(String translationKey, Object... args)
     {
-        this.labelWidget.setLabelStyledText(StyledText.translate(translationKey, args));
+        this.labelWidget.translateSetLines(translationKey, args);
         this.addLabel = true;
         return this;
     }

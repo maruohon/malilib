@@ -157,7 +157,7 @@ public class StringListRenderer extends BaseWidget
 
     public void setText(String translationKey, Object... args)
     {
-        this.setStyledText(StyledText.translate(translationKey, args));
+        this.setStyledTextLines(StyledTextLine.translate(translationKey, args));
     }
 
     public void setText(List<String> lines)
@@ -185,13 +185,19 @@ public class StringListRenderer extends BaseWidget
         }
     }
 
+    public void parseAndSetLines(String translated)
+    {
+        this.clearText();
+        this.parseAndAddLine(translated);
+    }
+
     public void addLine(String translationKey, Object... args)
     {
         String translated = StringUtils.translate(translationKey, args);
         this.parseAndAddLine(translated);
     }
 
-    protected void parseAndAddLine(String translated)
+    public void parseAndAddLine(String translated)
     {
         this.addStyledTextLines(StyledTextLine.parseLines(translated));
     }

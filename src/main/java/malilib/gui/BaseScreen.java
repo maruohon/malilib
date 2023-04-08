@@ -2,9 +2,7 @@ package malilib.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -20,7 +18,6 @@ import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.BaseWidget;
 import malilib.gui.widget.InteractableWidget;
-import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.input.ActionResult;
 import malilib.input.Keys;
@@ -822,35 +819,6 @@ public abstract class BaseScreen extends GuiScreen
             this.addWidget(widget);
         }
 
-        return widget;
-    }
-
-    public <T extends BaseTextFieldWidget> T addTextField(T widget, Consumer<String> listener)
-    {
-        widget.setListener(listener);
-        this.addWidget(widget);
-        return widget;
-    }
-
-    public LabelWidget addLabel(int x, int y, int textColor, String... lines)
-    {
-        return this.addLabel(x, y, -1, -1, textColor, Arrays.asList(lines));
-    }
-
-    public LabelWidget addLabel(int x, int y, int textColor, List<String> lines)
-    {
-        return this.addLabel(x, y, -1, -1, textColor, lines);
-    }
-
-    public LabelWidget addLabel(int x, int y, int width, int height, int textColor, String... lines)
-    {
-        return this.addLabel(x, y, width, height, textColor, Arrays.asList(lines));
-    }
-
-    public LabelWidget addLabel(int x, int y, int width, int height, int textColor, List<String> lines)
-    {
-        LabelWidget widget = this.addWidget(new LabelWidget(x, y, width, height, textColor));
-        widget.setLabelText(lines);
         return widget;
     }
 

@@ -30,7 +30,7 @@ public abstract class BaseStringListEditEntryWidget<DATATYPE> extends BaseOrdera
 
         int textFieldWidth = this.getWidth() - 142;
 
-        this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%5d:", this.originalListIndex + 1));
+        this.labelWidget = new LabelWidget(0xC0C0C0C0).setLines(String.format("%5d:", this.originalListIndex + 1));
         this.textField = new BaseTextFieldWidget(textFieldWidth, 16, toStringConverter.apply(initialValue));
         this.textField.setShowCursorPosition(true);
 

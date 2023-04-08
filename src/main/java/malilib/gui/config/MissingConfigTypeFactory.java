@@ -4,7 +4,6 @@ import malilib.config.option.ConfigInfo;
 import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.gui.widget.list.entry.config.BaseConfigWidget;
-import malilib.util.StringUtils;
 
 public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<ConfigInfo>
 {
@@ -26,9 +25,8 @@ public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<Confi
         {
             super(config, constructData, ctx);
 
-            String label = StringUtils.translate("malilib.label.config.no_widget_factory_for_config",
-                                                 this.data.getClass().getName());
-            this.labelWidget = new LabelWidget(label);
+            this.labelWidget = new LabelWidget("malilib.label.config.no_widget_factory_for_config",
+                                               this.data.getClass().getName());
         }
 
         @Override

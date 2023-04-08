@@ -38,7 +38,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         this.nameLabelWidget = new LabelWidget(-1, this.getHeight(), 0xFFF0F0F0);
         this.nameLabelWidget.getPadding().setTop(2).setLeft(4);
-        this.nameLabelWidget.setLabelStyledTextLines(name, actionName);
+        this.nameLabelWidget.setLines(name, actionName);
 
         this.keybindButton = new KeyBindConfigButton(160, 20, data.getKeyBind(), screen);
         this.settingsWidget = new KeybindSettingsWidget(data.getKeyBind(), data.getName());
