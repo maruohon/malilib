@@ -218,15 +218,12 @@ public class ContainerWidget extends InteractableWidget
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.subWidgets.isEmpty() == false)
+        for (InteractableWidget widget : this.subWidgets)
         {
-            for (InteractableWidget widget : this.subWidgets)
+            if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
             {
-                if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
-                {
-                    // Don't call super if the button press got handled
-                    return true;
-                }
+                // Don't call super if the button press got handled
+                return true;
             }
         }
 
@@ -236,26 +233,20 @@ public class ContainerWidget extends InteractableWidget
     @Override
     public void onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.subWidgets.isEmpty() == false)
+        for (InteractableWidget widget : this.subWidgets)
         {
-            for (InteractableWidget widget : this.subWidgets)
-            {
-                widget.onMouseReleased(mouseX, mouseY, mouseButton);
-            }
+            widget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
     }
 
     @Override
     protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.subWidgets.isEmpty() == false)
+        for (InteractableWidget widget : this.subWidgets)
         {
-            for (InteractableWidget widget : this.subWidgets)
+            if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
-                if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -279,15 +270,12 @@ public class ContainerWidget extends InteractableWidget
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (this.subWidgets.isEmpty() == false)
+        for (InteractableWidget widget : this.subWidgets)
         {
-            for (InteractableWidget widget : this.subWidgets)
+            if (widget.onKeyTyped(keyCode, scanCode, modifiers))
             {
-                if (widget.onKeyTyped(keyCode, scanCode, modifiers))
-                {
-                    // Don't call super if the key press got handled
-                    return true;
-                }
+                // Don't call super if the key press got handled
+                return true;
             }
         }
 
@@ -297,14 +285,11 @@ public class ContainerWidget extends InteractableWidget
     @Override
     public boolean onCharTyped(char charIn, int modifiers)
     {
-        if (this.subWidgets.isEmpty() == false)
+        for (InteractableWidget widget : this.subWidgets)
         {
-            for (InteractableWidget widget : this.subWidgets)
+            if (widget.onCharTyped(charIn, modifiers))
             {
-                if (widget.onCharTyped(charIn, modifiers))
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -313,10 +298,12 @@ public class ContainerWidget extends InteractableWidget
 
     @Override
     @Nullable
-    public InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
+    public InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
+                                                       MousePredicate predicate,
+                                                       @Nullable InteractableWidget highestFoundWidget)
     {
-        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        return InteractableWidget.getTopHoveredWidgetFromList(this.subWidgets, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = super.getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
+        return InteractableWidget.getHighestMatchingWidgetFromList(mouseX, mouseY, predicate, highestFoundWidget, this.subWidgets);
     }
 
     @Override
@@ -324,12 +311,9 @@ public class ContainerWidget extends InteractableWidget
     {
         List<BaseTextFieldWidget> textFields = new ArrayList<>();
 
-        if (this.subWidgets.isEmpty() == false)
+        for (InteractableWidget widget : this.subWidgets)
         {
-            for (InteractableWidget widget : this.subWidgets)
-            {
-                textFields.addAll(widget.getAllTextFields());
-            }
+            textFields.addAll(widget.getAllTextFields());
         }
 
         return textFields;
@@ -345,16 +329,13 @@ public class ContainerWidget extends InteractableWidget
 
     protected void renderSubWidgets(int x, int y, float z, ScreenContext ctx)
     {
-        if (this.subWidgets.isEmpty() == false)
-        {
-            int xOffset = x - this.getX();
-            int yOffset = y - this.getY();
-            float zOffset = z - this.getZ();
+        int xOffset = x - this.getX();
+        int yOffset = y - this.getY();
+        float zOffset = z - this.getZ();
 
-            for (InteractableWidget widget : this.subWidgets)
-            {
-                widget.renderAtOffset(xOffset, yOffset, zOffset, ctx);
-            }
+        for (InteractableWidget widget : this.subWidgets)
+        {
+            widget.renderAtOffset(xOffset, yOffset, zOffset, ctx);
         }
     }
 

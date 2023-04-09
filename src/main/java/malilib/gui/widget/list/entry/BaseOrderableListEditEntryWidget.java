@@ -41,6 +41,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     {
         super(data, constructData);
 
+        this.canBeClicked = true;
         // This is a reference to the current entries list, which can be modified
         this.dataList = ((DataListWidget<DATATYPE>) constructData.listWidget).getNonFilteredDataList();
 

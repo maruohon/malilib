@@ -58,6 +58,12 @@ public class KeyBindConfigButton extends GenericButton
     }
 
     @Override
+    public boolean getShouldReceiveOutsideClicks()
+    {
+        return this.selected && super.getShouldReceiveOutsideClicks();
+    }
+
+    @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.isEnabled() == false)

@@ -73,6 +73,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         super(-1, height);
 
+        this.canBeClicked = true;
         this.entries = ImmutableList.copyOf(entries);
         this.lineHeight = height;
         this.stringFactory = stringFactory;
@@ -97,9 +98,9 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
         this.zLevelIncrement = 20;
-        this.shouldReceiveOutsideClicks = true;
         this.searchTipText = StyledTextLine.translateFirstLine("malilib.label.misc.dropdown.type_to_search");
 
+        this.setShouldReceiveOutsideClicks(true);
         this.setHoverInfoRequiresShift(true);
         this.setWidthNoUpdate(120); // The width will get updated later
         this.updateCurrentEntryBar();
@@ -233,6 +234,12 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         return y;
+    }
+
+    @Override
+    public boolean getShouldReceiveOutsideClicks()
+    {
+        return this.isOpen() && super.getShouldReceiveOutsideClicks();
     }
 
     @Override

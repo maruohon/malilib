@@ -75,6 +75,7 @@ public class BaseTextFieldWidget extends InteractableWidget
 
         this.lastNotifiedText = text;
 
+        this.canBeClicked = true;
         this.setShouldReceiveOutsideClicks(true);
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xFF000000);
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, this.colorUnfocused);
@@ -752,6 +753,12 @@ public class BaseTextFieldWidget extends InteractableWidget
         }
 
         this.insertText(BaseScreen.getStringFromClipboard());
+    }
+
+    @Override
+    public boolean getShouldReceiveOutsideClicks()
+    {
+        return this.isFocused && super.getShouldReceiveOutsideClicks();
     }
 
     @Override

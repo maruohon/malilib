@@ -9,6 +9,7 @@ import malilib.gui.tab.ScreenTab;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.InteractableWidget;
+import malilib.gui.widget.InteractableWidget.MousePredicate;
 import malilib.gui.widget.list.BaseListWidget;
 import malilib.input.Keys;
 
@@ -186,10 +187,12 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
-    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
+    protected InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
+                                                          MousePredicate predicate,
+                                                          @Nullable InteractableWidget highestFoundWidget)
     {
-        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        return this.getListWidget().getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = super.getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
+        return this.getListWidget().getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
     }
 
     @Override

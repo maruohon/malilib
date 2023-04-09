@@ -58,6 +58,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     {
         super(entry, constructData);
 
+        this.canBeClicked = true;
         this.fileBrowserWidget = fileBrowserWidget;
         this.getTextSettings().setTextShadowEnabled(false);
 

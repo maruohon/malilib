@@ -26,6 +26,7 @@ public class MenuEntryWidget extends InteractableWidget
     {
         super(width, height);
 
+        this.canBeClicked = true;
         this.action = action;
         this.setText(text);
         this.setWidth(this.text.renderWidth + 10);

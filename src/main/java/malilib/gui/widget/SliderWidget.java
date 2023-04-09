@@ -18,6 +18,7 @@ public class SliderWidget extends InteractableWidget
     {
         super(width, height);
 
+        this.canBeClicked = true;
         this.callback = callback;
         int usableWidth = this.getWidth() - 4;
         this.sliderWidth = MathHelper.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);

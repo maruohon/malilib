@@ -41,6 +41,7 @@ public class GenericButton extends InteractableWidget
     {
         super(width, height);
 
+        this.canBeClicked = true;
         this.textSettings.setTextColor(0xFFE0E0E0);
         this.textSettings.setHoveredTextColor(0xFFFFFFA0);
         this.textSettings.setUseHoverTextColor(true);

@@ -38,6 +38,7 @@ public class ScrollBarWidget extends InteractableWidget
     {
         super(width, height);
 
+        this.canBeClicked = true;
         this.barTexture = barTexture;
         this.arrowTextureUp = DefaultIcons.SMALL_ARROW_UP;
         this.arrowTextureDown = DefaultIcons.SMALL_ARROW_DOWN;

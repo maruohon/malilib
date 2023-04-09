@@ -640,11 +640,12 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     }
 
     @Override
-    public InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, InteractableWidget highestFoundWidget)
+    public InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
+                                                       MousePredicate predicate,
+                                                       @Nullable InteractableWidget highestFoundWidget)
     {
-        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        highestFoundWidget = InteractableWidget.getTopHoveredWidgetFromList(this.getEntryWidgetList(), mouseX, mouseY, highestFoundWidget);
-        return highestFoundWidget;
+        highestFoundWidget = super.getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
+        return InteractableWidget.getHighestMatchingWidgetFromList(mouseX, mouseY, predicate, highestFoundWidget, this.getEntryWidgetList());
     }
 
     @Override

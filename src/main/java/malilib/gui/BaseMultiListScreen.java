@@ -8,6 +8,7 @@ import malilib.gui.tab.ScreenTab;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.InteractableWidget;
+import malilib.gui.widget.InteractableWidget.MousePredicate;
 import malilib.gui.widget.list.BaseListWidget;
 import malilib.input.Keys;
 
@@ -170,16 +171,12 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     }
 
     @Override
-    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
+    protected InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
+                                                          MousePredicate predicate,
+                                                          @Nullable InteractableWidget highestFoundWidget)
     {
-        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-
-        for (BaseListWidget listWidget : this.listWidgets)
-        {
-            highestFoundWidget = listWidget.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        }
-
-        return highestFoundWidget;
+        highestFoundWidget = super.getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
+        return InteractableWidget.getHighestMatchingWidgetFromList(mouseX, mouseY, predicate, highestFoundWidget, this.listWidgets);
     }
 
     @Override

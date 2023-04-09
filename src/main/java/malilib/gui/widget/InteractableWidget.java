@@ -29,6 +29,7 @@ public abstract class InteractableWidget extends BackgroundWidget
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
     protected String hoverHelpTranslationKey = "malilib.hover.misc.hold_shift_for_info";
+    protected boolean canBeClicked;
     protected boolean canInteract = true;
     protected boolean enabled = true;
     protected boolean enabledLast = true;
@@ -77,6 +78,7 @@ public abstract class InteractableWidget extends BackgroundWidget
     public void setClickListener(@Nullable EventListener listener)
     {
         this.clickListener = listener;
+        this.canBeClicked |= (listener != null);
     }
 
     public void setShouldReceiveOutsideClicks(boolean shouldReceiveOutsideClicks)
@@ -174,6 +176,11 @@ public abstract class InteractableWidget extends BackgroundWidget
                mouseY >= y && mouseY < y + this.getHeight();
     }
 
+    public boolean canHandleMouseInput(int mouseX, int mouseY)
+    {
+        return this.canBeClicked && (this.getShouldReceiveOutsideClicks() || this.isMouseOver(mouseX, mouseY));
+    }
+
     public boolean tryMouseClick(int mouseX, int mouseY, int mouseButton)
     {
         if (this.getShouldReceiveOutsideClicks() || this.isMouseOver(mouseX, mouseY))
@@ -235,6 +242,11 @@ public abstract class InteractableWidget extends BackgroundWidget
     public boolean canHoverAt(int mouseX, int mouseY, int mouseButton)
     {
         return true;
+    }
+
+    public boolean hasHoverTextToRender(int mouseX, int mouseY)
+    {
+        return this.isMouseOver(mouseX, mouseY) && this.hasHoverText();
     }
 
     public boolean hasHoverText()
@@ -318,14 +330,12 @@ public abstract class InteractableWidget extends BackgroundWidget
             return this.renderHoverChecker.isHovered(ctx);
         }
 
-        return ctx.hoveredWidgetId == this.getId();/* ||
-               (ctx.isActiveScreen && this.isMouseOver(ctx.mouseX, ctx.mouseY));*/
+        return ctx.hoveredWidgetId == this.getId();
     }
 
     public boolean shouldRenderHoverInfo(ScreenContext ctx)
     {
-        return this.getId() == ctx.hoveredWidgetId &&
-               this.isHoveredForRender(ctx) &&
+        return this.isHoveredForRender(ctx) &&
                this.canHoverAt(ctx.mouseX, ctx.mouseY, 0);
     }
 
@@ -385,10 +395,11 @@ public abstract class InteractableWidget extends BackgroundWidget
     }
 
     @Nullable
-    public InteractableWidget getTopHoveredWidget(int mouseX, int mouseY,
-                                                  @Nullable InteractableWidget highestFoundWidget)
+    public InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
+                                                       MousePredicate predicate,
+                                                       @Nullable InteractableWidget highestFoundWidget)
     {
-        if (this.canInteract() && this.isMouseOver(mouseX, mouseY) &&
+        if (predicate.matches(this, mouseX, mouseY) &&
             (highestFoundWidget == null || this.getZ() > highestFoundWidget.getZ()))
         {
             return this;
@@ -398,16 +409,14 @@ public abstract class InteractableWidget extends BackgroundWidget
     }
 
     @Nullable
-    public static InteractableWidget getTopHoveredWidgetFromList(List<? extends InteractableWidget> widgets,
-                                                                 int mouseX, int mouseY,
-                                                                 @Nullable InteractableWidget highestFoundWidget)
+    public static InteractableWidget getHighestMatchingWidgetFromList(int mouseX, int mouseY,
+                                                                      MousePredicate predicate,
+                                                                      @Nullable InteractableWidget highestFoundWidget,
+                                                                      List<? extends InteractableWidget> widgets)
     {
-        if (widgets.isEmpty() == false)
+        for (InteractableWidget widget : widgets)
         {
-            for (InteractableWidget widget : widgets)
-            {
-                highestFoundWidget = widget.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-            }
+            highestFoundWidget = widget.getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
         }
 
         return highestFoundWidget;
@@ -429,5 +438,10 @@ public abstract class InteractableWidget extends BackgroundWidget
     public interface HoverChecker
     {
         boolean isHovered(ScreenContext ctx);
+    }
+
+    public interface MousePredicate
+    {
+        boolean matches(InteractableWidget widget, int mouseX, int mouseY);
     }
 }

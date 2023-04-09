@@ -28,6 +28,7 @@ public class KeybindSettingsWidget extends InteractableWidget
     {
         super(20, 20);
 
+        this.canBeClicked = true;
         this.keyBind = keyBind;
         this.keyBindName = keyBindName;
         this.setHoverStringProvider("hover_info", this::rebuildHoverStrings);

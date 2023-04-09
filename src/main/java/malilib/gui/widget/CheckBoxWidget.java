@@ -34,6 +34,7 @@ public class CheckBoxWidget extends InteractableWidget
     {
         super(0, 0);
 
+        this.canBeClicked = true;
         this.iconUnchecked = iconUnchecked;
         this.iconChecked = iconChecked;
         this.textOffset.setYOffset(2);

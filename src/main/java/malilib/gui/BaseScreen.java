@@ -18,6 +18,7 @@ import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.BaseWidget;
 import malilib.gui.widget.InteractableWidget;
+import malilib.gui.widget.InteractableWidget.MousePredicate;
 import malilib.gui.widget.button.GenericButton;
 import malilib.input.ActionResult;
 import malilib.input.Keys;
@@ -41,7 +42,8 @@ public abstract class BaseScreen extends GuiScreen
     private String titleString = "";
     @Nullable protected StyledTextLine titleText;
     @Nullable private GuiScreen parent;
-    @Nullable protected InteractableWidget hoveredWidget;
+    @Nullable protected InteractableWidget hoveredWidgetForHoverInfo;
+    @Nullable protected InteractableWidget primaryWidgetForMouseActions;
     @Nullable protected ScreenContext context;
     protected GenericButton closeButton;
     protected Vec2i dragStartOffset = Vec2i.ZERO;
@@ -434,15 +436,23 @@ public abstract class BaseScreen extends GuiScreen
         openScreen(this.getParent());
     }
 
-    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY,
-                                                     @Nullable InteractableWidget highestFoundWidget)
+    protected InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
+                                                          MousePredicate predicate,
+                                                          @Nullable InteractableWidget highestFoundWidget)
     {
-        return InteractableWidget.getTopHoveredWidgetFromList(this.widgets, mouseX, mouseY, highestFoundWidget);
+        return InteractableWidget.getHighestMatchingWidgetFromList(mouseX, mouseY, predicate, highestFoundWidget, this.widgets);
     }
 
-    protected void updateTopHoveredWidget(int mouseX, int mouseY, boolean isActiveScreen)
+    protected void updateTopHoveredWidgetForMouseActions(int mouseX, int mouseY, boolean isActiveScreen)
     {
-        this.hoveredWidget = isActiveScreen ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
+        MousePredicate predicate = InteractableWidget::canHandleMouseInput;
+        this.primaryWidgetForMouseActions = isActiveScreen ? this.getHighestMatchingWidget(mouseX, mouseY, predicate, null) : null;
+    }
+
+    protected void updateTopHoveredWidgetForHoverInfo(int mouseX, int mouseY, boolean isActiveScreen)
+    {
+        MousePredicate predicate = InteractableWidget::hasHoverTextToRender;
+        this.hoveredWidgetForHoverInfo = isActiveScreen ? this.getHighestMatchingWidget(mouseX, mouseY, predicate, null) : null;
     }
 
     public ScreenContext getContext()
@@ -450,7 +460,10 @@ public abstract class BaseScreen extends GuiScreen
         int mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
         int mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
         boolean isActiveScreen = GuiUtils.getCurrentScreen() == this;
-        int hoveredWidgetId = this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
+
+        MousePredicate predicate = InteractableWidget::isMouseOver;
+        InteractableWidget topWidget = isActiveScreen ? this.getHighestMatchingWidget(mouseX, mouseY, predicate, null) : null;
+        int hoveredWidgetId = topWidget != null ? topWidget.getId() : -1;
 
         if (this.context == null ||
             this.context.matches(mouseX, mouseY, isActiveScreen, hoveredWidgetId) == false)
@@ -513,12 +526,12 @@ public abstract class BaseScreen extends GuiScreen
     @Override
     public void handleMouseInput() throws IOException
     {
-        int mouseX = GuiUtils.getMouseScreenX();
-        int mouseY = GuiUtils.getMouseScreenY();
+        int mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
+        int mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
         int mouseWheelDelta = Mouse.getEventDWheel();
 
         boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
-        this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
+        this.updateTopHoveredWidgetForMouseActions(mouseX, mouseY, isActiveGui);
 
         if (mouseX != this.lastMouseX || mouseY != this.lastMouseY)
         {
@@ -534,7 +547,8 @@ public abstract class BaseScreen extends GuiScreen
 
         // Update again after the input is handled
         isActiveGui = GuiUtils.getCurrentScreen() == this;
-        this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
+
+        this.updateTopHoveredWidgetForHoverInfo(mouseX, mouseY, isActiveGui);
     }
 
     @Override
@@ -602,34 +616,8 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        List<BaseTextFieldWidget> textFields = this.getAllTextFields();
-        boolean handled = false;
-
-        // Clear the focus from all text fields
-        for (BaseTextFieldWidget tf : textFields)
-        {
-            tf.setFocused(false);
-        }
-
-        if (this.hoveredWidget != null &&
-            this.hoveredWidget.tryMouseClick(mouseX, mouseY, mouseButton))
-        {
-            handled = true;
-        }
-        else
-        {
-            for (InteractableWidget widget : this.widgets)
-            {
-                if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
-                {
-                    handled = true;
-                    break;
-                }
-            }
-        }
-
-        // Only call super if the click wasn't handled
-        if (handled)
+        if (this.primaryWidgetForMouseActions != null &&
+            this.primaryWidgetForMouseActions.tryMouseClick(mouseX, mouseY, mouseButton))
         {
             return true;
         }
@@ -656,8 +644,8 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.hoveredWidget != null &&
-            this.hoveredWidget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
+        if (this.primaryWidgetForMouseActions != null &&
+            this.primaryWidgetForMouseActions.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
         {
             return true;
         }
@@ -686,7 +674,8 @@ public abstract class BaseScreen extends GuiScreen
             return true;
         }
 
-        if (this.hoveredWidget != null && this.hoveredWidget.onMouseMoved(mouseX, mouseY))
+        if (this.primaryWidgetForMouseActions != null &&
+            this.primaryWidgetForMouseActions.onMouseMoved(mouseX, mouseY))
         {
             return true;
         }
@@ -910,9 +899,9 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void renderHoveredWidget(ScreenContext ctx)
     {
-        if (this.hoveredWidget != null)
+        if (this.hoveredWidgetForHoverInfo != null)
         {
-            this.hoveredWidget.postRenderHovered(ctx);
+            this.hoveredWidgetForHoverInfo.postRenderHovered(ctx);
             RenderUtils.disableItemLighting();
         }
     }

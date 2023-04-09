@@ -49,6 +49,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     {
         super(width - 160, 14, searchInputChangeListener, openCloseListener, iconSearch);
 
+        this.canBeClicked = true;
         this.openedHeight = openedHeight;
         this.configResetter = configResetter;
 
