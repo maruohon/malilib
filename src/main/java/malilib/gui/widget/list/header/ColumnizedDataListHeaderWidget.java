@@ -67,7 +67,7 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
         {
             int cx = x + column.getRelativeStartX();
             int tx = cx + 4;
-            boolean hovered = hoveredY && this.isMouseOverColumnOnX(column, x, ctx.mouseX);
+            boolean hovered = this.isHoveredForRender(ctx) && hoveredY && this.isMouseOverColumnOnX(column, x, ctx.mouseX);
             int textColor = this.getTextColorForRender(hovered);
             int borderColor = hovered ? this.getBorderRenderer().getHoverSettings().getColor().getTop() :
                                         this.getBorderRenderer().getNormalSettings().getColor().getTop();
