@@ -809,14 +809,14 @@ public class RenderUtils
                 RenderSystem.depthMask(false);
                 RenderSystem.disableDepthTest();
                 VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
-                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, modelMatrix, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, modelMatrix, immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 15728880);
                 immediate.draw();
                 RenderSystem.enableDepthTest();
                 RenderSystem.depthMask(true);
             }
 
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
-            textRenderer.draw(line, -strLenHalf, textY, textColor, false, modelMatrix, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+            textRenderer.draw(line, -strLenHalf, textY, textColor, false, modelMatrix, immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 15728880);
             immediate.draw();
             textY += textRenderer.fontHeight;
         }
