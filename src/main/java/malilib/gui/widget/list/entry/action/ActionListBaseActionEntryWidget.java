@@ -48,6 +48,7 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         this.createAliasButton = GenericButton.create(14, "malilib.button.action_list_screen_widget.create_alias",
                                                       this::openAddAliasScreen);
         this.createAliasButton.translateAndAddHoverString("malilib.hover.button.create_alias_for_action");
+        this.createAliasButton.setHoverInfoRequiresShift(true);
 
         this.editButton = GenericButton.create(14, "malilib.button.misc.edit", this::editAction);
 

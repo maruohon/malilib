@@ -34,6 +34,7 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
         this.parameterizedActionConsumer = Registry.ACTION_REGISTRY::addParameterizedAction;
         this.parameterizeButton = GenericButton.create(14, "malilib.button.action_list_screen_widget.parameterize",
                                                        this::openParameterizationPrompt);
+        this.parameterizeButton.setHoverInfoRequiresShift(true);
 
         this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
         this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFF00FF60);
