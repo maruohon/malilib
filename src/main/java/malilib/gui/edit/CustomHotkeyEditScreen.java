@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 
 import malilib.action.NamedAction;
+import malilib.action.ParameterizableNamedAction;
 import malilib.gui.BaseScreen;
 import malilib.gui.SettingsExportImportScreen;
 import malilib.gui.action.BaseActionListScreen;
@@ -16,6 +17,7 @@ import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.DataListWidget;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
+import malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import malilib.input.CustomHotkeyDefinition;
 import malilib.input.CustomHotkeyManager;
 import malilib.overlay.message.MessageDispatcher;
@@ -46,7 +48,7 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
 
         this.exportImportButton = GenericButton.create(15, "malilib.button.export_slash_import", this::openExportImportScreen);
 
-        this.leftSideListWidget.setDataListEntryWidgetFactory(ActionListBaseActionEntryWidget::new);
+        this.leftSideListWidget.setDataListEntryWidgetFactory(this::createLeftSideActionEntryWidget);
         this.rightSideListWidget = this.createRightSideActionListWidget();
 
         // fetch the backing list reference from the list widget
@@ -109,6 +111,13 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
         }
     }
 
+    protected boolean addAction(NamedAction action)
+    {
+        this.currentActionsList.add(action);
+        this.rightSideListWidget.refreshEntries();
+        return true;
+    }
+
     protected void openExportImportScreen()
     {
         String title = "malilib.title.screen.custom_hotkey_edit.export_import";
@@ -165,6 +174,27 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
         return null;
     }
 
+    protected ActionListBaseActionEntryWidget
+    createLeftSideActionEntryWidget(NamedAction data, DataListEntryWidgetData constructData)
+    {
+        ActionListBaseActionEntryWidget widget;
+
+        if (data instanceof ParameterizableNamedAction)
+        {
+            ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(data, constructData);
+            parWidget.setParameterizedActionConsumer(this::addAction);
+            parWidget.setParameterizationButtonHoverText("malilib.hover.button.parameterize_action_for_hotkey");
+            parWidget.setNoRemoveButtons();
+            widget = parWidget;
+        }
+        else
+        {
+            widget = new ActionListBaseActionEntryWidget(data, constructData);
+        }
+
+        return widget;
+    }
+
     @Override
     protected DataListWidget<NamedAction> createRightSideActionListWidget()
     {
@@ -180,6 +210,7 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
     {
         ActionListBaseActionEntryWidget widget = new ActionListBaseActionEntryWidget(data, constructData);
 
+        widget.setCanReOrder(true);
         widget.setActionRemoveFunction(this::removeAction);
 
         return widget;
