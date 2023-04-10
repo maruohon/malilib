@@ -188,6 +188,9 @@ public abstract class BaseTabbedScreen extends BaseScreen
 
                 if (screen != null)
                 {
+                    // Copy over the current parent screen, so that for example opening the
+                    // config menu via Mod Menu would still also return to the Mod Menu screen.
+                    screen.setParent(this.getParent());
                     openScreen(screen);
                 }
             }
