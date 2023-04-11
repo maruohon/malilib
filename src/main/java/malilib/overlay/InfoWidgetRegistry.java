@@ -31,12 +31,12 @@ public class InfoWidgetRegistry
         return this.widgetFactoriesByType.get(type);
     }
 
-    private void registerDefaultFactories()
+    protected void registerDefaultFactories()
     {
         this.registerWidgetFactory(ConfigStatusIndicatorContainerWidget::new,   MaLiLibReference.MOD_ID + ":csi_container");
-        this.registerWidgetFactory(MessageRendererWidget::new, MaLiLibReference.MOD_ID + ":message_renderer");
-        this.registerWidgetFactory(StringListRendererWidget::new, MaLiLibReference.MOD_ID + ":string_list_renderer");
-        this.registerWidgetFactory(ToastRendererWidget::new, MaLiLibReference.MOD_ID + ":toast_renderer");
+        this.registerWidgetFactory(MessageRendererWidget::new,                  MaLiLibReference.MOD_ID + ":message_renderer");
+        this.registerWidgetFactory(StringListRendererWidget::new,               MaLiLibReference.MOD_ID + ":string_list_renderer");
+        this.registerWidgetFactory(ToastRendererWidget::new,                    MaLiLibReference.MOD_ID + ":toast_renderer");
     }
 
     public interface InfoWidgetFactory

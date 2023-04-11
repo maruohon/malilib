@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
+import malilib.MaLiLibConfigs;
 import malilib.gui.BaseScreen;
 import malilib.gui.icon.Icon;
 import malilib.gui.util.ScreenContext;
@@ -21,13 +22,13 @@ import malilib.util.position.Vec2i;
 
 public abstract class InteractableWidget extends BackgroundWidget
 {
-    protected OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
     @Nullable protected BooleanSupplier enabledStatusSupplier;
     @Nullable protected EventListener clickListener;
     @Nullable protected BaseWidget hoverInfoWidget;
     @Nullable protected ImmutableList<StyledTextLine> hoverHelp;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
+    protected OrderedStringListFactory hoverInfoFactory;
     protected String hoverHelpTranslationKey = "malilib.hover.misc.hold_shift_for_info";
     protected boolean canBeClicked;
     protected boolean canInteract = true;
@@ -46,6 +47,8 @@ public abstract class InteractableWidget extends BackgroundWidget
     {
         super(x, y, width, height);
 
+        int maxHoverTextWidth = MaLiLibConfigs.Generic.HOVER_TEXT_MAX_WIDTH.getIntegerValue();
+        this.hoverInfoFactory = new OrderedStringListFactory(maxHoverTextWidth);
         this.hoverInfoFactory.setDynamic(true);
     }
 
@@ -283,15 +286,15 @@ public abstract class InteractableWidget extends BackgroundWidget
         return this.hoverInfoFactory;
     }
 
+    public void setHoverInfoFactory(OrderedStringListFactory hoverInfoFactory)
+    {
+        this.hoverInfoFactory = hoverInfoFactory;
+    }
+
     public void setHoverHelpTranslationKey(String hoverHelpTranslationKey)
     {
         this.hoverHelpTranslationKey = hoverHelpTranslationKey;
         this.hoverHelp = null;
-    }
-
-    public void setHoverInfoFactory(OrderedStringListFactory hoverInfoFactory)
-    {
-        this.hoverInfoFactory = hoverInfoFactory;
     }
 
     public void updateHoverStrings()

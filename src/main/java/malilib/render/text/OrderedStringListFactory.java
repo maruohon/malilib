@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.Pair;
 
-import malilib.MaLiLibConfigs;
 import malilib.util.StringUtils;
 
 public class OrderedStringListFactory
@@ -25,9 +24,9 @@ public class OrderedStringListFactory
     protected boolean dynamic;
     protected int maxTextRenderWidth;
 
-    public OrderedStringListFactory()
+    public OrderedStringListFactory(int maxTextRenderWidth)
     {
-        this.maxTextRenderWidth = MaLiLibConfigs.Generic.HOVER_TEXT_MAX_WIDTH.getIntegerValue();
+        this.maxTextRenderWidth = maxTextRenderWidth;
     }
 
     /**
@@ -173,7 +172,7 @@ public class OrderedStringListFactory
      */
     public void setTextLines(String key, StyledTextLine... lines)
     {
-        this.setTextLineProvider(key, () -> Arrays.asList(lines), DEFAULT_PRIORITY);
+        this.setTextLines(key, Arrays.asList(lines));
     }
 
     /**

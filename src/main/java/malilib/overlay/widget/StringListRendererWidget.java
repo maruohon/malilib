@@ -17,7 +17,7 @@ import malilib.util.data.EdgeInt;
 
 public class StringListRendererWidget extends InfoRendererWidget
 {
-    protected final OrderedStringListFactory stringListFactory = new OrderedStringListFactory();
+    protected final OrderedStringListFactory stringListFactory;
     protected final StringListRenderer stringListRenderer = new StringListRenderer();
     protected boolean stringListModified;
 
@@ -25,6 +25,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     {
         super();
 
+        this.stringListFactory = new OrderedStringListFactory(8192);
         this.textSettings = this.stringListRenderer.getNormalTextSettings();
         this.padding.setChangeListener(this::onPaddingChanged);
         this.padding.setAll(1, 2, 0, 2);
@@ -42,6 +43,11 @@ public class StringListRendererWidget extends InfoRendererWidget
     {
         widget.setCanConfigure(true);
         widget.setCanRemove(true);
+    }
+
+    public void setMaxRenderWidth(int maxRenderWidth)
+    {
+        this.stringListFactory.setMaxTextRenderWidth(maxRenderWidth);
     }
 
     /**
