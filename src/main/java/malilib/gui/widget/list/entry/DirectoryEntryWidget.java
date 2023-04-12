@@ -165,27 +165,41 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     public static String getFileSizeStringFor(DirectoryEntry entry)
     {
         long fileSize = FileUtils.size(entry.getFullPath());
+        if (fileSize >= 1024 * 1024 * 1024)
+            return FILE_SIZE_FORMAT.format((double) fileSize / 1024.0 / 1024.0 / 1024.0) + " GiB";
+        if (fileSize >= 1024 * 1024)
+            return FILE_SIZE_FORMAT.format((double) fileSize / 1024.0 / 1024.0) + " MiB";
         return FILE_SIZE_FORMAT.format((double) fileSize / 1024.0) + " KiB";
     }
 
     public static class WidgetInitializer implements ListEntryWidgetInitializer<DirectoryEntry>
     {
-        protected final int maxSizeColumnLength = StringUtils.getStringWidth("222,222,222 KiB");
-        protected final int maxTimeColumnLength = StringUtils.getStringWidth("2222-22-22 00:00:00");
-        protected final int timeTitleWidth = (TIME_COLUMN.getName().isPresent() ? TIME_COLUMN.getName().get().renderWidth : 0);
         protected boolean showFileSize;
         protected boolean showFileMTime;
 
         @Override
         public void onListContentsRefreshed(DataListWidget<DirectoryEntry> dataListWidget, int entryWidgetWidth)
         {
-            BaseFileBrowserWidget fileBrowserWidget = (BaseFileBrowserWidget) dataListWidget; 
+            BaseFileBrowserWidget fileBrowserWidget = (BaseFileBrowserWidget) dataListWidget;
+            SimpleDateFormat fmt = fileBrowserWidget.getDateFormat();
+            int maxSizeColumnLength = 0;
+            int maxTimeColumnLength = 0;
+            int timeTitleWidth = (TIME_COLUMN.getName().isPresent() ? TIME_COLUMN.getName().get().renderWidth : 0);
+
+            for (DirectoryEntry e : dataListWidget.getFilteredDataList())
+            {
+                int w = StringUtils.getStringWidth(getFileSizeStringFor(e));
+                maxSizeColumnLength = Math.max(maxSizeColumnLength, w);
+                w = StringUtils.getStringWidth(fmt.format(new Date(FileUtils.getMTime(e.getFullPath()))));
+                maxTimeColumnLength = Math.max(maxTimeColumnLength, w);
+            }
+
             this.showFileSize = fileBrowserWidget.getShowFileSize();
             this.showFileMTime = fileBrowserWidget.getShowFileModificationTime();
 
             final int padding = 6;
-            final int mTimeLen = Math.max(this.maxTimeColumnLength, this.timeTitleWidth) + padding;
-            final int sizeMaxWidth = this.maxSizeColumnLength + padding;
+            final int mTimeLen = Math.max(maxTimeColumnLength, timeTitleWidth) + padding;
+            final int sizeMaxWidth = maxSizeColumnLength + padding;
 
             int relativeRight = entryWidgetWidth - 2;
 
