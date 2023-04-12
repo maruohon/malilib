@@ -46,8 +46,6 @@ import malilib.util.FileUtils;
 
 public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implements DirectoryNavigator
 {
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     protected final Map<Pair<Path, Predicate<Path>>, List<Path>> directoryContentsCache = new HashMap<>();
     protected final Object2IntOpenHashMap<Path> keyboardNavigationPositions = new Object2IntOpenHashMap<>();
     protected final Object2IntOpenHashMap<Path> scrollPositions = new Object2IntOpenHashMap<>();
@@ -58,6 +56,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     @Nullable protected String rootDirectoryDisplayName;
     protected Predicate<Path> directoryFilter = FileUtils.DIRECTORY_FILTER;
     protected Predicate<Path> fileFilter = FileUtils.ALWAYS_FALSE_FILEFILTER;
+    protected SimpleDateFormat dateFormat;
     protected String browserContext;
     protected Path currentDirectory;
     protected boolean allowFileOperations;
@@ -84,6 +83,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     {
         super(Collections::emptyList, false);
 
+        this.dateFormat = this.createDateFormat();
         this.rootDirectory = rootDirectory;
         this.cache = cache;
         this.browserContext = browserContext != null ? browserContext : "";
@@ -124,6 +124,27 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.defaultSortColumn = DirectoryEntryWidget.NAME_COLUMN;
         this.setColumnSupplier(this::createFileBrowserColumns);
         this.updateActiveColumns();
+    }
+
+    protected SimpleDateFormat createDateFormat()
+    {
+        SimpleDateFormat fmt;
+
+        try
+        {
+            fmt = new SimpleDateFormat(MaLiLibConfigs.Generic.FILE_BROWSER_DATE_FORMAT.getValue());
+        }
+        catch (Exception ignore)
+        {
+            fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+
+        return fmt;
+    }
+
+    public SimpleDateFormat getDateFormat()
+    {
+        return this.dateFormat;
     }
 
     public BaseFileBrowserWidget setAllowFileOperations(boolean allowFileOperations)

@@ -40,11 +40,12 @@ public class MaLiLibConfigs
         public static final BooleanConfig CONFIG_WIDGET_BACKGROUND                  = new BooleanConfig("configWidgetBackground", true);
         public static final IntegerConfig CUSTOM_HOTBAR_MESSAGE_LIMIT               = new IntegerConfig("customHotbarMessageLimit", 3, 1, 16);
         public static final IntegerConfig CUSTOM_SCREEN_SCALE                       = new IntegerConfig("customScreenScale", 2, 0, 8);
-        public static final StringConfig  DATA_DUMP_CSV_DELIMITER                   = new StringConfig("dataDumpCsvDelimiter", ",");
+        public static final StringConfig  DATA_DUMP_CSV_DELIMITER                   = new StringConfig( "dataDumpCsvDelimiter", ",");
         public static final BooleanConfig DROP_DOWN_SEARCH_TIP                      = new BooleanConfig("dropDownSearchTip", true);
+        public static final StringConfig  FILE_BROWSER_DATE_FORMAT                  = new StringConfig( "fileBrowserDateFormat", "yyyy-MM-dd HH:mm:ss");
         public static final BooleanConfig FILE_BROWSER_SHOW_HIDDEN_FILES            = new BooleanConfig("fileBrowserShowHiddenFiles", false);
         public static final BooleanConfig HIDE_ALL_COORDINATES                      = new BooleanConfig("hideAllCoordinates", false);
-        public static final ColorConfig   HOVERED_LIST_ENTRY_COLOR                  = new ColorConfig("hoveredListEntryColor", "#C0404040");
+        public static final ColorConfig   HOVERED_LIST_ENTRY_COLOR                  = new ColorConfig(  "hoveredListEntryColor", "#C0404040");
         public static final IntegerConfig HOVER_TEXT_MAX_WIDTH                      = new IntegerConfig("hoverTextMaxWidth", 310, 16, 4096);
         public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY             = new BooleanConfig("keybindDisplayCallbackOnly", true);
         public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY               = new BooleanConfig("keybindDisplayCancelOnly", true);
@@ -74,6 +75,7 @@ public class MaLiLibConfigs
                 DATA_DUMP_CSV_DELIMITER,
                 DEFAULT_TOGGLE_MESSAGE_OUTPUT,
                 DROP_DOWN_SEARCH_TIP,
+                FILE_BROWSER_DATE_FORMAT,
                 FILE_BROWSER_SHOW_HIDDEN_FILES,
                 HIDE_ALL_COORDINATES,
                 HOVER_TEXT_MAX_WIDTH,

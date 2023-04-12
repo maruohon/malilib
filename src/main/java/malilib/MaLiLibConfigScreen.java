@@ -3,6 +3,7 @@ package malilib;
 import java.util.ArrayList;
 import com.google.common.collect.ImmutableList;
 
+import malilib.MaLiLibConfigs.Generic;
 import malilib.config.option.ConfigInfo;
 import malilib.config.util.ConfigUtils;
 import malilib.gui.BaseScreen;
@@ -90,6 +91,7 @@ public class MaLiLibConfigScreen
 
         list.add(ConfigUtils.extractOptionsToExpandableGroup(list, MOD_INFO, "appearance",
                                                              MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND,
+                                                             MaLiLibConfigs.Generic.FILE_BROWSER_DATE_FORMAT,
                                                              MaLiLibConfigs.Generic.HOVERED_LIST_ENTRY_COLOR,
                                                              MaLiLibConfigs.Generic.HOVER_TEXT_MAX_WIDTH,
                                                              MaLiLibConfigs.Generic.MESSAGE_FADE_OUT_TIME,

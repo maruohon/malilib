@@ -2,6 +2,7 @@ package malilib.gui.widget.list.entry;
 
 import java.nio.file.Files;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import javax.annotation.Nullable;
@@ -78,9 +79,9 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         }
 
         this.textOffset.setXOffset(textXOffset);
+        this.fileSizeText = StyledTextLine.parseFirstLine(getFileSizeStringFor(entry));
 
-        String mTimeStr = BaseFileBrowserWidget.DATE_FORMAT.format(new Date(FileUtils.getMTime(entry.getFullPath())));
-        this.fileSizeText = StyledTextLine.parseFirstLine(this.getFileSizeStringFor(entry));
+        String mTimeStr = fileBrowserWidget.getDateFormat().format(new Date(FileUtils.getMTime(entry.getFullPath())));
         this.modificationTimeText = StyledTextLine.parseFirstLine(mTimeStr);
     }
 
@@ -161,7 +162,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         }
     }
 
-    protected String getFileSizeStringFor(DirectoryEntry entry)
+    public static String getFileSizeStringFor(DirectoryEntry entry)
     {
         long fileSize = FileUtils.size(entry.getFullPath());
         return FILE_SIZE_FORMAT.format((double) fileSize / 1024.0) + " KiB";
