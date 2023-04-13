@@ -77,6 +77,11 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         this.allowKeyboardNavigation = allowKeyboardNavigation;
     }
 
+    public void setAreEntriesFixedHeight(boolean areEntriesFixedHeight)
+    {
+        this.areEntriesFixedHeight = areEntriesFixedHeight;
+    }
+
     public void setRequestedScrollBarPosition(int position)
     {
         this.requestedScrollBarPosition = position;
@@ -618,20 +623,28 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
             mouseX >= this.entryWidgetStartX &&
             mouseX < this.entryWidgetStartX + this.entryWidgetWidth)
         {
-
-            if (this.areEntriesFixedHeight)
+            /*
+            if (this.areEntriesFixedHeight && this.entryWidgetFixedHeight > 0)
             {
                 int relIndex = relativeY / this.entryWidgetFixedHeight;
-                return relIndex < this.getEntryWidgetList().size() ? this.getEntryWidgetList().get(relIndex) : null;
-            }
-            else
-            {
-                for (BaseListEntryWidget widget : this.getEntryWidgetList())
+
+                if (relIndex >= 0 && relIndex < this.getEntryWidgetList().size())
                 {
+                    BaseListEntryWidget widget = this.getEntryWidgetList().get(relIndex);
+
                     if (widget.isMouseOver(mouseX, mouseY))
                     {
                         return widget;
                     }
+                }
+            }
+            */
+
+            for (BaseListEntryWidget widget : this.getEntryWidgetList())
+            {
+                if (widget.isMouseOver(mouseX, mouseY))
+                {
+                    return widget;
                 }
             }
         }
