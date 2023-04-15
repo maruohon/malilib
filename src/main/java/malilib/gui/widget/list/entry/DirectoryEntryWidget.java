@@ -184,7 +184,8 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
             SimpleDateFormat fmt = fileBrowserWidget.getDateFormat();
             int maxSizeColumnLength = 0;
             int maxTimeColumnLength = 0;
-            int timeTitleWidth = (TIME_COLUMN.getName().isPresent() ? TIME_COLUMN.getName().get().renderWidth : 0);
+            int sizeTitleWidth = (SIZE_COLUMN.getName().isPresent() ? SIZE_COLUMN.getName().get().renderWidth + 10 : 0);
+            int timeTitleWidth = (TIME_COLUMN.getName().isPresent() ? TIME_COLUMN.getName().get().renderWidth + 10 : 0);
 
             for (DirectoryEntry e : dataListWidget.getFilteredDataList())
             {
@@ -199,7 +200,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 
             final int padding = 6;
             final int mTimeLen = Math.max(maxTimeColumnLength, timeTitleWidth) + padding;
-            final int sizeMaxWidth = maxSizeColumnLength + padding;
+            final int sizeMaxWidth = Math.max(maxSizeColumnLength, sizeTitleWidth) + padding;
 
             int relativeRight = entryWidgetWidth - 2;
 
