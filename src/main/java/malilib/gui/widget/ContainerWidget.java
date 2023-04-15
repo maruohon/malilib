@@ -3,6 +3,8 @@ package malilib.gui.widget;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import javax.annotation.Nullable;
 
 import malilib.gui.BaseScreen;
@@ -297,13 +299,10 @@ public class ContainerWidget extends InteractableWidget
     }
 
     @Override
-    @Nullable
-    public InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
-                                                       MousePredicate predicate,
-                                                       @Nullable InteractableWidget highestFoundWidget)
+    public void collectMatchingWidgets(Predicate<InteractableWidget> predicate, ToIntFunction<InteractableWidget> priorityFunction, List<InteractableWidget> outputList)
     {
-        highestFoundWidget = super.getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
-        return InteractableWidget.getHighestMatchingWidgetFromList(mouseX, mouseY, predicate, highestFoundWidget, this.subWidgets);
+        super.collectMatchingWidgets(predicate, priorityFunction, outputList);
+        this.subWidgets.forEach(w -> w.collectMatchingWidgets(predicate, priorityFunction, outputList));
     }
 
     @Override

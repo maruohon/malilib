@@ -194,7 +194,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                     return true;
                 }
 
-                if (this.primaryWidgetForMouseActions == null)
+                if (this.mouseActionHandlers.isEmpty())
                 {
                     this.selectionStart = new Vec2i(mouseX, mouseY);
                     this.dragSelecting = true;
@@ -240,7 +240,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
             return true;
         }
-        else if (isCtrlDown() == false && this.primaryWidgetForMouseActions == null)
+        else if (isCtrlDown() == false && this.mouseActionHandlers.isEmpty())
         {
             this.clearSelectedWidgets();
         }

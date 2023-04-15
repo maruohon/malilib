@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -56,6 +58,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     {
         super(width, height);
 
+        this.canBeClicked = true;
         // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
         this.zLevelIncrement = 10;
         this.listEntryWidgetFactory = this;
@@ -653,12 +656,10 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     }
 
     @Override
-    public InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
-                                                       MousePredicate predicate,
-                                                       @Nullable InteractableWidget highestFoundWidget)
+    public void collectMatchingWidgets(Predicate<InteractableWidget> predicate, ToIntFunction<InteractableWidget> priorityFunction, List<InteractableWidget> outputList)
     {
-        highestFoundWidget = super.getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
-        return InteractableWidget.getHighestMatchingWidgetFromList(mouseX, mouseY, predicate, highestFoundWidget, this.getEntryWidgetList());
+        super.collectMatchingWidgets(predicate, priorityFunction, outputList);
+        this.getEntryWidgetList().forEach(w -> w.collectMatchingWidgets(predicate, priorityFunction, outputList));
     }
 
     @Override

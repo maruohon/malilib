@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
@@ -168,6 +170,48 @@ public abstract class InteractableWidget extends BackgroundWidget
         }
 
         return enabled;
+    }
+
+    /**
+     * Collects all widgets passing the Predicate test to the {@code outputList}.
+     * The Predicate is checked first, and if it passes, then this widget
+     * will be added to the list at a position based on its priority,
+     * as given by {@code priorityFunction}.
+     * Widgets with a higher priority (higher int value) will be first on the list.
+     */
+    public void collectMatchingWidgets(Predicate<InteractableWidget> predicate,
+                                       ToIntFunction<InteractableWidget> priorityFunction,
+                                       List<InteractableWidget> outputList)
+    {
+        this.collectWidgetIfMatches(this, predicate, priorityFunction, outputList);
+    }
+
+    protected void collectWidgetIfMatches(InteractableWidget widget,
+                                          Predicate<InteractableWidget> predicate,
+                                          ToIntFunction<InteractableWidget> priorityFunction,
+                                          List<InteractableWidget> outputList)
+    {
+        if (predicate.test(widget))
+        {
+            int size = outputList.size();
+            int priority = priorityFunction.applyAsInt(widget);
+
+            for (int i = 0; i < size; ++i)
+            {
+                if (priority > priorityFunction.applyAsInt(outputList.get(i)))
+                {
+                    outputList.add(i, widget);
+                    return;
+                }
+            }
+
+            outputList.add(widget);
+        }
+    }
+
+    public int getMouseInputHandlingPriority()
+    {
+        return (int) this.getZ();
     }
 
     public boolean isMouseOver(int mouseX, int mouseY)
@@ -397,34 +441,6 @@ public abstract class InteractableWidget extends BackgroundWidget
         }
     }
 
-    @Nullable
-    public InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
-                                                       MousePredicate predicate,
-                                                       @Nullable InteractableWidget highestFoundWidget)
-    {
-        if (predicate.matches(this, mouseX, mouseY) &&
-            (highestFoundWidget == null || this.getZ() > highestFoundWidget.getZ()))
-        {
-            return this;
-        }
-
-        return highestFoundWidget;
-    }
-
-    @Nullable
-    public static InteractableWidget getHighestMatchingWidgetFromList(int mouseX, int mouseY,
-                                                                      MousePredicate predicate,
-                                                                      @Nullable InteractableWidget highestFoundWidget,
-                                                                      List<? extends InteractableWidget> widgets)
-    {
-        for (InteractableWidget widget : widgets)
-        {
-            highestFoundWidget = widget.getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
-        }
-
-        return highestFoundWidget;
-    }
-
     public static void renderHoverInfoWidget(BaseWidget widget, float z, ScreenContext ctx)
     {
         Vec2i pos = getHoverInfoWidgetRenderPosition(widget, ctx);
@@ -441,10 +457,5 @@ public abstract class InteractableWidget extends BackgroundWidget
     public interface HoverChecker
     {
         boolean isHovered(ScreenContext ctx);
-    }
-
-    public interface MousePredicate
-    {
-        boolean matches(InteractableWidget widget, int mouseX, int mouseY);
     }
 }

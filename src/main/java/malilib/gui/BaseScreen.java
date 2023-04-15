@@ -3,6 +3,8 @@ package malilib.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -18,7 +20,6 @@ import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.BaseWidget;
 import malilib.gui.widget.InteractableWidget;
-import malilib.gui.widget.InteractableWidget.MousePredicate;
 import malilib.gui.widget.button.GenericButton;
 import malilib.input.ActionResult;
 import malilib.input.Keys;
@@ -38,12 +39,13 @@ public abstract class BaseScreen extends GuiScreen
     protected final List<Runnable> preInitListeners = new ArrayList<>();
     protected final List<Runnable> postInitListeners = new ArrayList<>();
     protected final List<Runnable> preScreenCloseListeners = new ArrayList<>();
+    protected final List<InteractableWidget> mouseActionHandlers = new ArrayList<>(32);
     private final List<InteractableWidget> widgets = new ArrayList<>();
     private String titleString = "";
     @Nullable protected StyledTextLine titleText;
     @Nullable private GuiScreen parent;
+    @Nullable protected InteractableWidget hoveredWidgetForContext;
     @Nullable protected InteractableWidget hoveredWidgetForHoverInfo;
-    @Nullable protected InteractableWidget primaryWidgetForMouseActions;
     @Nullable protected ScreenContext context;
     protected GenericButton closeButton;
     protected Vec2i dragStartOffset = Vec2i.ZERO;
@@ -436,33 +438,18 @@ public abstract class BaseScreen extends GuiScreen
         openScreen(this.getParent());
     }
 
-    protected InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
-                                                          MousePredicate predicate,
-                                                          @Nullable InteractableWidget highestFoundWidget)
+    public boolean isActiveScreen()
     {
-        return InteractableWidget.getHighestMatchingWidgetFromList(mouseX, mouseY, predicate, highestFoundWidget, this.widgets);
-    }
-
-    protected void updateTopHoveredWidgetForMouseActions(int mouseX, int mouseY, boolean isActiveScreen)
-    {
-        MousePredicate predicate = InteractableWidget::canHandleMouseInput;
-        this.primaryWidgetForMouseActions = isActiveScreen ? this.getHighestMatchingWidget(mouseX, mouseY, predicate, null) : null;
-    }
-
-    protected void updateTopHoveredWidgetForHoverInfo(int mouseX, int mouseY, boolean isActiveScreen)
-    {
-        MousePredicate predicate = InteractableWidget::hasHoverTextToRender;
-        this.hoveredWidgetForHoverInfo = isActiveScreen ? this.getHighestMatchingWidget(mouseX, mouseY, predicate, null) : null;
+        return GuiUtils.getCurrentScreen() == this;
     }
 
     public ScreenContext getContext()
     {
         int mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
         int mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
-        boolean isActiveScreen = GuiUtils.getCurrentScreen() == this;
+        boolean isActiveScreen = this.isActiveScreen();
 
-        MousePredicate predicate = InteractableWidget::isMouseOver;
-        InteractableWidget topWidget = isActiveScreen ? this.getHighestMatchingWidget(mouseX, mouseY, predicate, null) : null;
+        InteractableWidget topWidget = isActiveScreen ? this.hoveredWidgetForContext : null;
         int hoveredWidgetId = topWidget != null ? topWidget.getId() : -1;
 
         if (this.context == null ||
@@ -523,15 +510,60 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
+    protected void updateTopHoveredWidgetForMouseActions(int mouseX, int mouseY)
+    {
+        this.mouseActionHandlers.clear();
+
+        if (this.isActiveScreen())
+        {
+            /*
+             * By default, the priority is directly the widget's z-position.
+             * But some widgets like open dropdown widgets might want to have a higher
+             * priority, so that a click outside an open dropdown widget will close it
+             * and not do anything else, even if the click is on top of another widget
+             * that would normally have a higher priority by its z-position.
+             */
+            Predicate<InteractableWidget> predicate = w -> w.canHandleMouseInput(mouseX, mouseY);
+            ToIntFunction<InteractableWidget> priorityFunction = InteractableWidget::getMouseInputHandlingPriority;
+            this.widgets.forEach(w -> w.collectMatchingWidgets(predicate, priorityFunction, this.mouseActionHandlers));
+        }
+    }
+
+    protected void updateTopHoveredWidgetForHoverInfo(int mouseX, int mouseY)
+    {
+        Predicate<InteractableWidget> predicate = w -> w.hasHoverTextToRender(mouseX, mouseY);
+        this.hoveredWidgetForHoverInfo = this.getTopHoveredWidget(predicate);
+    }
+
+    protected void updateTopHoveredWidgetForContext(int mouseX, int mouseY)
+    {
+        Predicate<InteractableWidget> predicate = w -> w.isMouseOver(mouseX, mouseY);
+        this.hoveredWidgetForContext = this.getTopHoveredWidget(predicate);
+    }
+
+    @Nullable
+    protected InteractableWidget getTopHoveredWidget(Predicate<InteractableWidget> predicate)
+    {
+        if (this.isActiveScreen())
+        {
+            ArrayList<InteractableWidget> list = new ArrayList<>();
+            ToIntFunction<InteractableWidget> priorityFunction = w -> (int) w.getZ();
+            this.widgets.forEach(w -> w.collectMatchingWidgets(predicate, priorityFunction, list));
+
+            return list.isEmpty() ? null : list.get(0);
+        }
+
+        return null;
+    }
+
     @Override
-    public void handleMouseInput() throws IOException
+    public void handleMouseInput()// throws IOException
     {
         int mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
         int mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
         int mouseWheelDelta = Mouse.getEventDWheel();
-
-        boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
-        this.updateTopHoveredWidgetForMouseActions(mouseX, mouseY, isActiveGui);
+        int mouseButton = Mouse.getEventButton();
+        boolean buttonState = Mouse.getEventButtonState();
 
         if (mouseX != this.lastMouseX || mouseY != this.lastMouseY)
         {
@@ -540,17 +572,33 @@ public abstract class BaseScreen extends GuiScreen
             this.lastMouseY = mouseY;
         }
 
-        if (mouseWheelDelta == 0 || this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta) == false)
+        if (buttonState || mouseWheelDelta != 0)
         {
-            super.handleMouseInput();
+            this.updateTopHoveredWidgetForMouseActions(mouseX, mouseY);
         }
 
-        // Update again after the input is handled
-        isActiveGui = GuiUtils.getCurrentScreen() == this;
+        if (buttonState)
+        {
+            //this.mouseClicked(mouseX, mouseY, mouseButton);
+            this.onMouseClicked(mouseX, mouseY, mouseButton);
+        }
+        else if (mouseButton != -1)
+        {
+            //this.mouseReleased(mouseX, mouseY, mouseButton);
+            this.onMouseReleased(mouseX, mouseY, mouseButton);
+        }
 
-        this.updateTopHoveredWidgetForHoverInfo(mouseX, mouseY, isActiveGui);
+        if (mouseWheelDelta != 0)
+        {
+            this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
+        }
+
+        // Update after the input is handled
+        this.updateTopHoveredWidgetForHoverInfo(mouseX, mouseY);
+        this.updateTopHoveredWidgetForContext(mouseX, mouseY);
     }
 
+    /*
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
@@ -582,6 +630,7 @@ public abstract class BaseScreen extends GuiScreen
             super.mouseReleased(mouseX, mouseY, mouseButton);
         }
     }
+    */
 
     @Override
     public void handleKeyboardInput() throws IOException
@@ -593,6 +642,10 @@ public abstract class BaseScreen extends GuiScreen
         }
 
         super.handleKeyboardInput();
+
+        // Update after the input is handled
+        //this.updateTopHoveredWidgetForHoverInfo(this.lastMouseX, this.lastMouseY);
+        //this.updateTopHoveredWidgetForContext(this.lastMouseX, this.lastMouseY);
     }
 
     @Override
@@ -616,10 +669,12 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.primaryWidgetForMouseActions != null &&
-            this.primaryWidgetForMouseActions.tryMouseClick(mouseX, mouseY, mouseButton))
+        for (InteractableWidget widget : this.mouseActionHandlers)
         {
-            return true;
+            if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
+            {
+                return true;
+            }
         }
 
         if (this.canDragMove && this.isMouseOver(mouseX, mouseY))
@@ -634,6 +689,9 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
+        this.dragging = false;
+
+        // Call this for all widgets, not only for the hovered or "receives outside clicks" widgets
         for (InteractableWidget widget : this.widgets)
         {
             widget.onMouseReleased(mouseX, mouseY, mouseButton);
@@ -644,17 +702,10 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.primaryWidgetForMouseActions != null &&
-            this.primaryWidgetForMouseActions.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
-        {
-            return true;
-        }
-
-        for (InteractableWidget widget : this.widgets)
+        for (InteractableWidget widget : this.mouseActionHandlers)
         {
             if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
-                // Don't call super if the action got handled
                 return true;
             }
         }
@@ -674,12 +725,8 @@ public abstract class BaseScreen extends GuiScreen
             return true;
         }
 
-        if (this.primaryWidgetForMouseActions != null &&
-            this.primaryWidgetForMouseActions.onMouseMoved(mouseX, mouseY))
-        {
-            return true;
-        }
-
+        // FIXME Should this be called for all widgets?
+        // Call this for all widgets, not only for the hovered or "receives outside clicks" widgets
         for (InteractableWidget widget : this.widgets)
         {
             if (widget.onMouseMoved(mouseX, mouseY))
@@ -734,7 +781,6 @@ public abstract class BaseScreen extends GuiScreen
         {
             if (widget.onCharTyped(charIn, modifiers))
             {
-                // Don't call super if the button press got handled
                 return true;
             }
         }

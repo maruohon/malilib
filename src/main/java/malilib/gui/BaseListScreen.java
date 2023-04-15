@@ -1,17 +1,12 @@
 package malilib.gui;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
 import malilib.gui.tab.ScreenTab;
 import malilib.gui.util.ScreenContext;
-import malilib.gui.widget.BaseTextFieldWidget;
-import malilib.gui.widget.InteractableWidget;
-import malilib.gui.widget.InteractableWidget.MousePredicate;
 import malilib.gui.widget.list.BaseListWidget;
-import malilib.input.Keys;
 
 public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseTabbedScreen
 {
@@ -41,85 +36,17 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
+    protected void reAddActiveWidgets()
+    {
+        super.reAddActiveWidgets();
+        this.addWidget(this.getListWidget());
+    }
+
+    @Override
     protected void updateWidgetPositions()
     {
         super.updateWidgetPositions();
         this.getListWidget().setPositionAndSize(this.getListX(), this.getListY(), this.getListWidth(), this.getListHeight());
-    }
-
-    @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
-        {
-            return true;
-        }
-
-        return this.getListWidget().tryMouseClick(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
-    {
-        if (super.onMouseReleased(mouseX, mouseY, mouseButton))
-        {
-            return true;
-        }
-
-        this.getListWidget().onMouseReleased(mouseX, mouseY, mouseButton);
-
-        return false;
-    }
-
-    @Override
-    public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
-    {
-        if (super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
-        {
-            return true;
-        }
-
-        return this.getListWidget().tryMouseScroll(mouseX, mouseY, mouseWheelDelta);
-    }
-
-    @Override
-    public boolean onMouseMoved(int mouseX, int mouseY)
-    {
-        if (super.onMouseMoved(mouseX, mouseY))
-        {
-            return true;
-        }
-
-        return this.getListWidget().onMouseMoved(mouseX, mouseY);
-    }
-
-    @Override
-    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
-    {
-        // Try to handle everything except ESC in the parent first
-        if (keyCode != Keys.KEY_ESCAPE && super.onKeyTyped(keyCode, scanCode, modifiers))
-        {
-            return true;
-        }
-
-        if (this.getListWidget().onKeyTyped(keyCode, scanCode, modifiers))
-        {
-            return true;
-        }
-
-        // If the list widget or its sub widgets didn't consume the ESC, then send that to the parent (to close the GUI)
-        return keyCode == Keys.KEY_ESCAPE && super.onKeyTyped(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean onCharTyped(char charIn, int modifiers)
-    {
-        if (super.onCharTyped(charIn, modifiers))
-        {
-            return true;
-        }
-
-        return this.getListWidget().onCharTyped(charIn, modifiers);
     }
 
     public LISTWIDGET getListWidget()
@@ -184,31 +111,6 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     protected void setCurrentScrollbarPosition(int position)
     {
         this.getListWidget().setRequestedScrollBarPosition(position);
-    }
-
-    @Override
-    protected InteractableWidget getHighestMatchingWidget(int mouseX, int mouseY,
-                                                          MousePredicate predicate,
-                                                          @Nullable InteractableWidget highestFoundWidget)
-    {
-        highestFoundWidget = super.getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
-        return this.getListWidget().getHighestMatchingWidget(mouseX, mouseY, predicate, highestFoundWidget);
-    }
-
-    @Override
-    protected List<BaseTextFieldWidget> getAllTextFields()
-    {
-        List<BaseTextFieldWidget> textFields = new ArrayList<>(super.getAllTextFields());
-
-        textFields.addAll(this.getListWidget().getAllTextFields());
-
-        return textFields;
-    }
-
-    @Override
-    protected void renderCustomContents(ScreenContext ctx)
-    {
-        this.getListWidget().render(ctx);
     }
 
     @Override
