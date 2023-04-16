@@ -194,12 +194,14 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                     return true;
                 }
 
+                /* FIXME TODO update this
                 if (this.mouseActionHandlers.isEmpty())
                 {
                     this.selectionStart = new Vec2i(mouseX, mouseY);
                     this.dragSelecting = true;
                     return true;
                 }
+                */
             }
             else if (mouseButton == 1 && isShiftDown() == false)
             {
@@ -240,10 +242,12 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
             return true;
         }
+        /* FIXME TODO update this
         else if (isCtrlDown() == false && this.mouseActionHandlers.isEmpty())
         {
             this.clearSelectedWidgets();
         }
+        */
 
         return false;
     }

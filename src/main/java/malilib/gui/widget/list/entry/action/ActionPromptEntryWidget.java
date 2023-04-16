@@ -15,7 +15,7 @@ public class ActionPromptEntryWidget extends BaseDataListEntryWidget<NamedAction
     {
         super(data, constructData);
 
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
         this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFFF0B000);
         this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
 

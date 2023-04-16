@@ -32,7 +32,9 @@ public abstract class InteractableWidget extends BackgroundWidget
     @Nullable protected Consumer<Runnable> taskQueue;
     protected OrderedStringListFactory hoverInfoFactory;
     protected String hoverHelpTranslationKey = "malilib.hover.misc.hold_shift_for_info";
-    protected boolean canBeClicked;
+    protected boolean canReceiveMouseClicks;
+    protected boolean canReceiveMouseMoves;
+    protected boolean canReceiveMouseScrolls;
     protected boolean canInteract = true;
     protected boolean enabled = true;
     protected boolean enabledLast = true;
@@ -83,7 +85,7 @@ public abstract class InteractableWidget extends BackgroundWidget
     public void setClickListener(@Nullable EventListener listener)
     {
         this.clickListener = listener;
-        this.canBeClicked |= (listener != null);
+        this.canReceiveMouseClicks |= (listener != null);
     }
 
     public void setShouldReceiveOutsideClicks(boolean shouldReceiveOutsideClicks)
@@ -209,7 +211,12 @@ public abstract class InteractableWidget extends BackgroundWidget
         }
     }
 
-    public int getMouseInputHandlingPriority()
+    public int getMouseClickHandlingPriority(int mouseX, int mouseY)
+    {
+        return (int) this.getZ();
+    }
+
+    public int getMouseScrollHandlingPriority(int mouseX, int mouseY)
     {
         return (int) this.getZ();
     }
@@ -223,16 +230,35 @@ public abstract class InteractableWidget extends BackgroundWidget
                mouseY >= y && mouseY < y + this.getHeight();
     }
 
-    public boolean canHandleMouseInput(int mouseX, int mouseY)
+    public boolean canHandleMouseClickAt(int mouseX, int mouseY)
     {
-        return this.canBeClicked && (this.getShouldReceiveOutsideClicks() || this.isMouseOver(mouseX, mouseY));
+        return this.canReceiveMouseClicks &&
+               (this.getShouldReceiveOutsideClicks() || this.isMouseOver(mouseX, mouseY));
+    }
+
+    public boolean canHandleMouseScrollAt(int mouseX, int mouseY)
+    {
+        return this.canReceiveMouseScrolls &&
+               (this.getShouldReceiveOutsideScrolls() || this.isMouseOver(mouseX, mouseY));
+    }
+
+    public boolean canHandleMouseMoves()
+    {
+        return this.canReceiveMouseMoves;
     }
 
     public boolean tryMouseClick(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.getShouldReceiveOutsideClicks() || this.isMouseOver(mouseX, mouseY))
+        if (this.canHandleMouseClickAt(mouseX, mouseY))
         {
-            return this.onMouseClicked(mouseX, mouseY, mouseButton);
+            if (this.isMouseOver(mouseX, mouseY))
+            {
+                return this.onMouseClicked(mouseX, mouseY, mouseButton);
+            }
+            else if (this.getShouldReceiveOutsideClicks())
+            {
+                return this.onMouseClickedOutside(mouseX, mouseY, mouseButton);
+            }
         }
 
         return false;
@@ -249,13 +275,18 @@ public abstract class InteractableWidget extends BackgroundWidget
         return false;
     }
 
+    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    {
+        return false;
+    }
+
     public void onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
     }
 
     public boolean tryMouseScroll(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.getShouldReceiveOutsideScrolls() || this.isMouseOver(mouseX, mouseY))
+        if (this.canHandleMouseScrollAt(mouseX, mouseY))
         {
             return this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
         }
@@ -457,5 +488,10 @@ public abstract class InteractableWidget extends BackgroundWidget
     public interface HoverChecker
     {
         boolean isHovered(ScreenContext ctx);
+    }
+
+    public interface MouseInputPriorityFunction
+    {
+        int getPriority(InteractableWidget widget, int mouseX, int mouseY);
     }
 }

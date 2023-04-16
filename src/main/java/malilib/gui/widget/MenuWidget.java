@@ -5,13 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import malilib.listener.EventListener;
 import malilib.util.data.EdgeInt;
 
 public class MenuWidget extends ContainerWidget
 {
     protected final List<MenuEntryWidget> menuEntries = new ArrayList<>();
-    @Nullable protected EventListener menuCloseHook;
+    @Nullable protected Runnable menuCloseHook;
     protected boolean renderEntryBackground = true;
     protected int hoveredEntryBackgroundColor = 0xFF206060;
     protected int normalEntryBackgroundColor = 0xFF000000;
@@ -23,6 +22,7 @@ public class MenuWidget extends ContainerWidget
         // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
         this.zLevelIncrement = 50;
 
+        this.canReceiveMouseClicks = true;
         this.setShouldReceiveOutsideClicks(true);
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFFC0C0C0);
     }
@@ -83,6 +83,12 @@ public class MenuWidget extends ContainerWidget
         this.reAddSubWidgets();
     }
 
+    public void setMenuCloseHook(@Nullable Runnable menuCloseHook)
+    {
+        this.menuCloseHook = menuCloseHook;
+        this.setCloseHookToEntries();
+    }
+
     protected void setCloseHookToEntries()
     {
         for (MenuEntryWidget widget : this.menuEntries)
@@ -109,12 +115,6 @@ public class MenuWidget extends ContainerWidget
         return this;
     }
 
-    public void setMenuCloseHook(@Nullable EventListener menuCloseHook)
-    {
-        this.menuCloseHook = menuCloseHook;
-        this.setCloseHookToEntries();
-    }
-
     @Override
     public void updateSize()
     {
@@ -135,21 +135,48 @@ public class MenuWidget extends ContainerWidget
         this.setSizeNoUpdate(width, height);
     }
 
-    /* This won't do anything, since the entry widgets are consuming the click
+    @Override
+    public int getMouseClickHandlingPriority(int mouseX, int mouseY)
+    {
+        int priority = super.getMouseClickHandlingPriority(mouseX, mouseY);
+
+        // Raise the priority only when the mouse is outside the widget,
+        // so that the widget will receive the outside click to close itself,
+        // even if that click was on top of some other widget that is near the
+        // same "normal z height" as the menu widget
+        if (this.isMouseOver(mouseX, mouseY) == false)
+        {
+            priority += 100;
+        }
+
+        return priority;
+    }
+
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        super.onMouseClicked(mouseX, mouseY, mouseButton);
+        // Close the menu if the entry widget did not consume the click to indicate it wants the menu to stay open
         this.tryCloseMenu();
         return true;
+    }
+
+    @Override
+    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    {
+        if (mouseButton == 0)
+        {
+            this.tryCloseMenu();
+            return true;
+        }
+
+        return false;
     }
 
     public void tryCloseMenu()
     {
         if (this.menuCloseHook != null)
         {
-            this.scheduleTask(this.menuCloseHook::onEvent);
+            this.scheduleTask(this.menuCloseHook);
         }
     }
-    */
 }

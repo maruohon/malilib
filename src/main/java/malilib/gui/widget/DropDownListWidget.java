@@ -73,7 +73,8 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         super(-1, height);
 
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
+        this.canReceiveMouseScrolls = true;
         this.entries = ImmutableList.copyOf(entries);
         this.lineHeight = height;
         this.stringFactory = stringFactory;
@@ -270,18 +271,6 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        // Close the dropdown when clicking outside the widget
-        if (this.isMouseOver(mouseX, mouseY) == false)
-        {
-            if (this.isOpen())
-            {
-                this.setOpen(false);
-                return true;
-            }
-
-            return false;
-        }
-
         // This handles the open/close button in the no-entry-bar case, plus the entry bar clicks 
         if (super.onMouseClicked(mouseX, mouseY, mouseButton))
         {
@@ -294,6 +283,19 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         return true;
+    }
+
+    @Override
+    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    {
+        // Close the dropdown when clicking outside the widget
+        if (this.isOpen())
+        {
+            this.setOpen(false);
+            return true;
+        }
+
+        return false;
     }
 
     @Override

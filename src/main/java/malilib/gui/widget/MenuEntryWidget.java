@@ -8,7 +8,7 @@ import malilib.render.text.StyledTextLine;
 public class MenuEntryWidget extends InteractableWidget
 {
     protected final EventListener action;
-    @Nullable protected EventListener menuCloseHook;
+    @Nullable protected Runnable menuCloseHook;
 
     public MenuEntryWidget(StyledTextLine text, EventListener action)
     {
@@ -26,7 +26,7 @@ public class MenuEntryWidget extends InteractableWidget
     {
         super(width, height);
 
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
         this.action = action;
         this.setText(text);
         this.setWidth(this.text.renderWidth + 10);
@@ -51,7 +51,7 @@ public class MenuEntryWidget extends InteractableWidget
         return true;
     }
 
-    public void setMenuCloseHook(@Nullable EventListener menuCloseHook)
+    public void setMenuCloseHook(@Nullable Runnable menuCloseHook)
     {
         this.menuCloseHook = menuCloseHook;
     }
@@ -60,7 +60,7 @@ public class MenuEntryWidget extends InteractableWidget
     {
         if (this.menuCloseHook != null)
         {
-            this.scheduleTask(this.menuCloseHook::onEvent);
+            this.scheduleTask(this.menuCloseHook);
         }
     }
 }

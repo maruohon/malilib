@@ -47,7 +47,8 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
     {
         super(40, 20);
 
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
+        this.canReceiveMouseMoves = true;
         this.getBorderRenderer().getNormalSettings().setDefaults(true, 1, DEFAULT_NORMAL_BORDER_COLOR);
         this.getBorderRenderer().getHoverSettings().setDefaults(true, 2, DEFAULT_HOVER_BORDER_COLOR);
         this.getBackgroundRenderer().getNormalSettings().setDefaultEnabledAndColor(true, DEFAULT_BACKGROUND_COLOR);

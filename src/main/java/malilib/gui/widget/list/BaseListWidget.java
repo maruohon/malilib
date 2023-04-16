@@ -58,7 +58,9 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     {
         super(width, height);
 
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
+        this.canReceiveMouseScrolls = true;
+        this.canReceiveMouseMoves = true;
         // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
         this.zLevelIncrement = 10;
         this.listEntryWidgetFactory = this;

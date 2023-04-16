@@ -21,7 +21,7 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
     {
         super(width, height, listWidget);
 
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
         this.columns = columns;
         this.getBorderRenderer().getNormalSettings().setColor(0x50C0C0C0);
     }

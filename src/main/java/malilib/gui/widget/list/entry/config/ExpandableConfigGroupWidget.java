@@ -25,7 +25,7 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         super(config, constructData, ctx);
 
         this.config = config;
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
 
         this.getBorderRenderer().getNormalSettings().setColor(0xFFFFFFFF);
         this.getBorderRenderer().getHoverSettings().setBorderWidth(1);

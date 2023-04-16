@@ -75,7 +75,8 @@ public class BaseTextFieldWidget extends InteractableWidget
 
         this.lastNotifiedText = text;
 
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
+        this.canReceiveMouseScrolls = true;
         this.setShouldReceiveOutsideClicks(true);
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xFF000000);
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, this.colorUnfocused);
@@ -769,34 +770,34 @@ public class BaseTextFieldWidget extends InteractableWidget
             return false;
         }
 
-        boolean isMouseOver = this.isMouseOver(mouseX, mouseY);
-
-        if (isMouseOver)
+        if (this.isFocused() == false)
         {
-            if (this.isFocused() == false)
-            {
-                this.setFocused(true);
-            }
-
-            // Clear the text field on right click
-            if (mouseButton == 1)
-            {
-                this.setTextInternal("");
-                this.setCursorToEnd();
-            }
-            else
-            {
-                int clickedIndex = this.getClickedTextIndex(mouseX);
-                boolean selectText = BaseScreen.isShiftDown();
-                this.setCursorPosition(clickedIndex, selectText);
-            }
-
-            return true;
+            this.setFocused(true);
         }
-        // Remove focus
-        else if (this.isFocused())
+
+        // Clear the text field on right click
+        if (mouseButton == 1)
+        {
+            this.setTextInternal("");
+            this.setCursorToEnd();
+        }
+        else
+        {
+            int clickedIndex = this.getClickedTextIndex(mouseX);
+            boolean selectText = BaseScreen.isShiftDown();
+            this.setCursorPosition(clickedIndex, selectText);
+        }
+
+        return true;
+    }
+
+    @Override
+    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    {
+        if (this.isEnabled() && this.isFocused())
         {
             this.setFocused(false);
+            return true;
         }
 
         return false;

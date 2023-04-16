@@ -88,7 +88,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.cache = cache;
         this.browserContext = browserContext != null ? browserContext : "";
         this.currentDirectory = cache != null ? cache.getCurrentDirectoryForContext(this.browserContext) : null;
-        this.canBeClicked = true;
         this.allowKeyboardNavigation = true;
         this.rememberScrollPosition = MaLiLibConfigs.Generic.REMEMBER_FILE_BROWSER_SCROLL_POSITIONS.getBooleanValue();
         this.showHiddenFiles = MaLiLibConfigs.Generic.FILE_BROWSER_SHOW_HIDDEN_FILES.getBooleanValue();

@@ -18,7 +18,11 @@ public class SliderWidget extends InteractableWidget
     {
         super(width, height);
 
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
+        this.canReceiveMouseScrolls = true;
+        this.canReceiveMouseMoves = true;
+        // This is for receiving release events when the mouse is outside the widget
+        this.setShouldReceiveOutsideClicks(true);
         this.callback = callback;
         int usableWidth = this.getWidth() - 4;
         this.sliderWidth = MathHelper.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);
@@ -40,9 +44,11 @@ public class SliderWidget extends InteractableWidget
             this.callback.setRelativeValue(this.getRelativePosition(mouseX));
             this.lastMouseX = mouseX;
             this.dragging = true;
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     @Override

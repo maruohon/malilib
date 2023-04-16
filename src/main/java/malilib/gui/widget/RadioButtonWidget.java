@@ -35,7 +35,7 @@ public class RadioButtonWidget<T> extends InteractableWidget
     {
         super(10, 10);
 
-        this.canBeClicked = true;
+        this.canReceiveMouseClicks = true;
         this.options = ImmutableList.copyOf(options);
 
         ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();

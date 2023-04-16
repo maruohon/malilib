@@ -33,6 +33,7 @@ public class KeyBindConfigButton extends GenericButton
     {
         super(width, height);
 
+        this.canReceiveMouseScrolls = true;
         this.host = host;
         this.keyBind = keyBind;
 
@@ -64,6 +65,19 @@ public class KeyBindConfigButton extends GenericButton
     }
 
     @Override
+    public int getMouseClickHandlingPriority(int mouseX, int mouseY)
+    {
+        int priority = super.getMouseClickHandlingPriority(mouseX, mouseY);
+
+        if (this.isEnabled() && this.selected && this.isMouseOver(mouseX, mouseY) == false)
+        {
+            priority += 100;
+        }
+
+        return priority;
+    }
+
+    @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.isEnabled() == false)
@@ -80,14 +94,10 @@ public class KeyBindConfigButton extends GenericButton
                 this.addKey(mouseButton - 100);
                 this.updateButtonState();
             }
-            else if (this.host != null)
-            {
-                this.host.setActiveKeyBindButton(null);
-            }
 
             handled = true;
         }
-        else if (mouseButton == 0 && this.isMouseOver(mouseX, mouseY))
+        else if (mouseButton == 0)
         {
             if (this.host != null)
             {
@@ -96,7 +106,7 @@ public class KeyBindConfigButton extends GenericButton
 
             handled = true;
         }
-        else if (mouseButton == 2 && this.isMouseOver(mouseX, mouseY))
+        else if (mouseButton == 2)
         {
             this.keyBind.clearKeys();
             this.updateButtonState();
@@ -111,6 +121,25 @@ public class KeyBindConfigButton extends GenericButton
         }
 
         return handled;
+    }
+
+    @Override
+    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    {
+        if (this.isEnabled() && this.isSelected())
+        {
+            if (this.host != null)
+            {
+                this.host.setActiveKeyBindButton(null);
+            }
+
+            // Play the click sound
+            super.onMouseClicked(mouseX, mouseY, mouseButton);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
