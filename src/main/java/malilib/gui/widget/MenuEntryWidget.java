@@ -1,28 +1,24 @@
 package malilib.gui.widget;
 
-import javax.annotation.Nullable;
-
-import malilib.listener.EventListener;
 import malilib.render.text.StyledTextLine;
 
 public class MenuEntryWidget extends InteractableWidget
 {
-    protected final EventListener action;
-    @Nullable protected Runnable menuCloseHook;
+    protected final Runnable action;
 
-    public MenuEntryWidget(StyledTextLine text, EventListener action)
+    public MenuEntryWidget(StyledTextLine text, Runnable action)
     {
         this(text, action, true);
     }
 
-    public MenuEntryWidget(StyledTextLine text, EventListener action, boolean enabled)
+    public MenuEntryWidget(StyledTextLine text, Runnable action, boolean enabled)
     {
         this(10, 12, text, action);
 
         this.setEnabled(enabled);
     }
 
-    public MenuEntryWidget(int width, int height, StyledTextLine text, EventListener action)
+    public MenuEntryWidget(int width, int height, StyledTextLine text, Runnable action)
     {
         super(width, height);
 
@@ -39,28 +35,20 @@ public class MenuEntryWidget extends InteractableWidget
         this.getTextSettings().setTextColor(color);
     }
 
+    /**
+     * Handle the mouse click.<br>
+     * <b>Note:</b> MenuEntryWidget should return false, if it wants the MenuWidget to close the menu,
+     * or return true if it wants the menu to stay open.
+     */
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.isEnabled())
         {
-            this.action.onEvent();
-            this.tryCloseMenu();
+            this.action.run();
+            return false;
         }
 
         return true;
-    }
-
-    public void setMenuCloseHook(@Nullable Runnable menuCloseHook)
-    {
-        this.menuCloseHook = menuCloseHook;
-    }
-
-    public void tryCloseMenu()
-    {
-        if (this.menuCloseHook != null)
-        {
-            this.scheduleTask(this.menuCloseHook);
-        }
     }
 }

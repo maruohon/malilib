@@ -76,7 +76,6 @@ public class MenuWidget extends ContainerWidget
         this.menuEntries.clear();
         this.menuEntries.addAll(menuEntries);
 
-        this.setCloseHookToEntries();
         this.updateSize();
         this.clampToScreen();
         this.updateSubWidgetPositions();
@@ -86,15 +85,6 @@ public class MenuWidget extends ContainerWidget
     public void setMenuCloseHook(@Nullable Runnable menuCloseHook)
     {
         this.menuCloseHook = menuCloseHook;
-        this.setCloseHookToEntries();
-    }
-
-    protected void setCloseHookToEntries()
-    {
-        for (MenuEntryWidget widget : this.menuEntries)
-        {
-            widget.setMenuCloseHook(this.menuCloseHook);
-        }
     }
 
     public MenuWidget setRenderEntryBackground(boolean renderEntryBackground)
