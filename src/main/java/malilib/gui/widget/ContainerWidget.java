@@ -100,6 +100,15 @@ public class ContainerWidget extends InteractableWidget
         }
     }
 
+    public void createAndOpenContextMenu(int mouseX, int mouseY, List<MenuEntryWidget> entries)
+    {
+        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY);
+        menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
+        menuWidget.setMenuEntries(entries);
+
+        this.openContextMenu(menuWidget);
+    }
+
     @Override
     protected void onPositionChanged(int oldX, int oldY)
     {

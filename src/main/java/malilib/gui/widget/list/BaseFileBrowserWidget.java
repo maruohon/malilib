@@ -26,7 +26,6 @@ import malilib.gui.TextInputScreen;
 import malilib.gui.icon.DefaultFileBrowserIconProvider;
 import malilib.gui.icon.FileBrowserIconProvider;
 import malilib.gui.widget.MenuEntryWidget;
-import malilib.gui.widget.MenuWidget;
 import malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import malilib.gui.widget.list.entry.DirectoryEntryWidget;
 import malilib.gui.widget.list.header.ColumnizedDataListHeaderWidget;
@@ -468,10 +467,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected void openSettingsContextMenu(int mouseX, int mouseY)
     {
-        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY);
-        menuWidget.setMenuEntries(this.getSettingsMenuEntries());
-        menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
-        this.openContextMenu(menuWidget);
+        this.createAndOpenContextMenu(mouseX, mouseY, this.getSettingsMenuEntries());
     }
 
     public void openContextMenuForEntry(int mouseX, int mouseY, int listIndex)
@@ -496,11 +492,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                                         this.getFileOperationMenuEntriesForNonFile());
         entries.addAll(this.getSettingsMenuEntries());
 
-        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY);
-        menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
-        menuWidget.setMenuEntries(entries);
-
-        this.openContextMenu(menuWidget);
+        this.createAndOpenContextMenu(mouseX, mouseY, entries);
     }
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForNonFile()
