@@ -15,9 +15,9 @@ public class MenuWidget extends ContainerWidget
     protected int hoveredEntryBackgroundColor = 0xFF206060;
     protected int normalEntryBackgroundColor = 0xFF000000;
 
-    public MenuWidget(int x, int y, int width, int height)
+    public MenuWidget(int x, int y)
     {
-        super(x, y, width, height);
+        super(x, y, 10, 10); // The width and height will get updated when the entries are set
 
         // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
         this.zLevelIncrement = 50;

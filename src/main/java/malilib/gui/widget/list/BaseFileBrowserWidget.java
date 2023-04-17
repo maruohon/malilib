@@ -468,7 +468,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected void openSettingsContextMenu(int mouseX, int mouseY)
     {
-        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
+        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY);
         menuWidget.setMenuEntries(this.getSettingsMenuEntries());
         menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
         this.openContextMenu(menuWidget);
@@ -496,7 +496,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                                         this.getFileOperationMenuEntriesForNonFile());
         entries.addAll(this.getSettingsMenuEntries());
 
-        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
+        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY);
         menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
         menuWidget.setMenuEntries(entries);
 

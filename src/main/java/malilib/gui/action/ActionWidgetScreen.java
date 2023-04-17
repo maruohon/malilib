@@ -388,7 +388,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
     protected void openSingleWidgetMenu(int mouseX, int mouseY, BaseActionExecutionWidget widget)
     {
-        this.menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
+        this.menuWidget = new MenuWidget(mouseX + 4, mouseY);
 
         StyledTextLine textEdit = StyledTextLine.translateFirstLine("malilib.label.misc.edit");
         StyledTextLine textRemove = StyledTextLine.translateFirstLine("malilib.label.misc.delete.colored");
@@ -402,7 +402,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
     protected void openGroupMenu(int mouseX, int mouseY)
     {
-        this.menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
+        this.menuWidget = new MenuWidget(mouseX + 4, mouseY);
 
         StyledTextLine textEdit = StyledTextLine.translateFirstLine("malilib.label.misc.edit_selected");
         StyledTextLine textRemove = StyledTextLine.translateFirstLine("malilib.label.misc.delete_selected.colored");
