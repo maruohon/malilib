@@ -300,6 +300,7 @@ malilib.label.keybind_settings.value.option_list=§9%s
 malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
+malilib.label.list_widget.clear_selection=Clear Selection
 malilib.label.message_debug.add_key_to_chat=Add the translation key to the chat input field
 malilib.label.message_redirect.add_redirect_for_key=Add a message redirect for the given translation key. You can easily see and copy the translation key for a given message by enabling the Debug -> '§eMessage Key To Chat§r' option in the malilib configs, and then causing the message to get shown.
 malilib.label.misc.argument=Argument:

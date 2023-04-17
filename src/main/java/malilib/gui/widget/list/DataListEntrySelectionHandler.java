@@ -120,6 +120,11 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return this.getDataList().size();
     }
 
+    public boolean isNonModifierMultiSelection()
+    {
+        return this.allowSelection && this.allowMultiSelection && this.modifierKeyMultiSelection == false;
+    }
+
     public boolean isEntrySelected(@Nullable DATATYPE entry)
     {
         if (entry == null)

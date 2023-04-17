@@ -10,15 +10,19 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 import malilib.config.value.SortDirection;
 import malilib.gui.widget.InteractableWidget;
+import malilib.gui.widget.MenuEntryWidget;
+import malilib.gui.widget.MenuWidget;
 import malilib.gui.widget.list.entry.BaseListEntryWidget;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import malilib.gui.widget.list.header.DataColumn;
 import malilib.gui.widget.list.header.DataListHeaderWidget;
+import malilib.render.text.StyledTextLine;
 
 public class DataListWidget<DATATYPE> extends BaseListWidget
 {
@@ -425,6 +429,32 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
 
         return null;
+    }
+
+    @Override
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
+        if (mouseButton == 1 && this.getEntrySelectionHandler().isNonModifierMultiSelection())
+        {
+            this.openSelectionContextMenu(mouseX, mouseY);
+            return true;
+        }
+
+        return super.onMouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    protected void openSelectionContextMenu(int mouseX, int mouseY)
+    {
+        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY);
+        menuWidget.setMenuEntries(this.getSelectionContextMenuEntries());
+        menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
+        this.openContextMenu(menuWidget);
+    }
+
+    protected List<MenuEntryWidget> getSelectionContextMenuEntries()
+    {
+        StyledTextLine text = StyledTextLine.translateFirstLine("malilib.label.list_widget.clear_selection");
+        return ImmutableList.of(new MenuEntryWidget(text, this.getEntrySelectionHandler()::clearSelection));
     }
 
     public void updateActiveColumns()
