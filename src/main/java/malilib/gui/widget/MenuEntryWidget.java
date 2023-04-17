@@ -43,7 +43,7 @@ public class MenuEntryWidget extends InteractableWidget
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.isEnabled())
+        if (this.isEnabled() && mouseButton == 0)
         {
             this.action.run();
             return false;
