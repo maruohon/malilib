@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
@@ -35,6 +36,7 @@ import malilib.gui.widget.list.header.DirectoryNavigationWidget;
 import malilib.gui.widget.util.DirectoryCache;
 import malilib.gui.widget.util.DirectoryNavigator;
 import malilib.input.Keys;
+import malilib.listener.EventListener;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
@@ -42,6 +44,7 @@ import malilib.util.DataIteratingTask;
 import malilib.util.DirectoryCreator;
 import malilib.util.FileNameUtils;
 import malilib.util.FileUtils;
+import malilib.util.data.ResultingStringConsumer;
 
 public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implements DirectoryNavigator
 {
@@ -497,25 +500,30 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForNonFile()
     {
-        StyledTextLine textPaste  = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.paste");
+        StyledTextLine textPaste   = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.paste");
+        StyledTextLine textPasteAs = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.paste_as");
         boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
-        return ImmutableList.of(new MenuEntryWidget(textPaste, this::pasteFiles, hasFiles));
+
+        return ImmutableList.of(new MenuEntryWidget(textPaste,   this::pasteFiles, hasFiles),
+                                new MenuEntryWidget(textPasteAs, this::pasteAs, hasFiles));
     }
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForFile()
     {
-        StyledTextLine textCopy   = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.copy");
-        StyledTextLine textCut    = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.cut");
-        StyledTextLine textDelete = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.delete");
-        StyledTextLine textPaste  = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.paste");
-        StyledTextLine textRename = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.rename");
+        StyledTextLine textCopy    = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.copy");
+        StyledTextLine textCut     = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.cut");
+        StyledTextLine textDelete  = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.delete");
+        StyledTextLine textPaste   = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.paste");
+        StyledTextLine textPasteAs = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.paste_as");
+        StyledTextLine textRename  = StyledTextLine.translateFirstLine("malilib.label.file_browser.context_menu.rename");
         boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
 
-        return ImmutableList.of(new MenuEntryWidget(textCopy,   this::copyFiles),
-                                new MenuEntryWidget(textCut,    this::cutFiles),
-                                new MenuEntryWidget(textPaste,  this::pasteFiles, hasFiles),
-                                new MenuEntryWidget(textDelete, this::deleteFiles),
-                                new MenuEntryWidget(textRename, this::renameFiles));
+        return ImmutableList.of(new MenuEntryWidget(textCopy,    this::copyFiles),
+                                new MenuEntryWidget(textCut,     this::cutFiles),
+                                new MenuEntryWidget(textPaste,   this::pasteFiles, hasFiles),
+                                new MenuEntryWidget(textPasteAs, this::pasteAs, hasFiles),
+                                new MenuEntryWidget(textDelete,  this::deleteFiles),
+                                new MenuEntryWidget(textRename,  this::renameFiles));
     }
 
     protected List<MenuEntryWidget> getSettingsMenuEntries()
@@ -590,44 +598,32 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         task.advance();
     }
 
-    protected void renameFile(Path file, DataIteratingTask<Path> task)
+    protected void pasteAs()
     {
-        String originalFileName = file.getFileName().toString();
-        String name = FileNameUtils.getFileNameWithoutExtension(originalFileName);
+        List<Path> files = new ArrayList<>(this.operatedOnFiles);
+        files.sort(Comparator.comparing(Path::getFileName));
 
-        boolean isDir = Files.isDirectory(file);
-        String titleKey = isDir ? "malilib.title.screen.rename_directory" :
-                                  "malilib.title.screen.rename_file";
-        String infoKey = isDir ? "malilib.label.file_browser.rename.info.directory" :
-                                 "malilib.label.file_browser.rename.info.file";
-        TextInputScreen screen = new TextInputScreen(titleKey, name, (n) -> this.renameFile(file, n));
-        screen.setInfoText(StyledText.translate(infoKey, originalFileName));
-        screen.setLabelText(StyledText.translate("malilib.label.file_browser.rename.new_name"));
-        screen.setConfirmListener(task::advance);
-        screen.setCancelListener(task::cancel);
+        BiConsumer<Path, DataIteratingTask<Path>> func = this.pendingOperationIsCut ? this::moveFileAs : this::copyFileAs;
+        DataIteratingTask<Path> task = new DataIteratingTask<>(files, func, this::endFileOperation);
 
-        BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
+        task.advance();
     }
 
-    protected boolean renameFile(Path file, String newName)
+    protected void renameFile(Path file, DataIteratingTask<Path> task)
     {
-        String originalFileName = file.getFileName().toString();
+        confirmAndRenameFile(file, task::advance, task::cancel, task.getProgressString());
+    }
 
-        // Same name, NO-OP
-        if (newName.equals(FileNameUtils.getFileNameWithoutExtension(originalFileName)))
-        {
-            return true;
-        }
+    protected void copyFileAs(Path file, DataIteratingTask<Path> task)
+    {
+        copyFileAs(file, str -> FileUtils.copyFileWithMessage(file, this.getCurrentDirectory(), str),
+                   task::advance, task::cancel, task.getProgressString());
+    }
 
-        Path dir = file.getParent();
-        String extension = FileNameUtils.getFileNameExtension(originalFileName);
-
-        if (extension.length() > 0)
-        {
-            extension = "." + extension;
-        }
-
-        return FileUtils.move(file, dir.resolve(newName + extension), false, MessageDispatcher.error()::send);
+    protected void moveFileAs(Path file, DataIteratingTask<Path> task)
+    {
+        moveFileAs(file, str -> FileUtils.moveFileWithMessage(file, this.getCurrentDirectory(), str),
+                   task::advance, task::cancel, task.getProgressString());
     }
 
     protected void endFileOperation(List<String> messages)
@@ -645,10 +641,10 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected void endFileOperation()
     {
+        this.pendingOperationIsCut = false;
         this.operatedOnFiles.clear();
         this.directoryContentsCache.clear();
         this.getEntrySelectionHandler().clearSelection();
-        this.pendingOperationIsCut = false;
         this.refreshEntries();
     }
 
@@ -775,6 +771,93 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
 
         return false;
+    }
+
+    public static void confirmAndRenameFile(Path file,
+                                            EventListener confirmListener,
+                                            EventListener cancelListener,
+                                            String progressText)
+    {
+        boolean isDir = Files.isDirectory(file);
+        String titleKey = isDir ? "malilib.title.screen.rename_directory" :
+                                  "malilib.title.screen.rename_file";
+        String infoKey = isDir ? "malilib.label.file_browser.rename.info.directory" :
+                                 "malilib.label.file_browser.rename.info.file";
+
+        confirmNewNameForFile(file, titleKey, infoKey, progressText, str -> renameFile(file, str),
+                              confirmListener, cancelListener);
+    }
+
+    public static void copyFileAs(Path file,
+                                  ResultingStringConsumer operation,
+                                  EventListener confirmListener,
+                                  EventListener cancelListener,
+                                  String progressText)
+    {
+        boolean isDir = Files.isDirectory(file);
+        String titleKey = isDir ? "malilib.title.screen.copy_as.directory" :
+                                  "malilib.title.screen.copy_as.file";
+        String infoKey = isDir ? "malilib.label.file_browser.copy_as.info.directory" :
+                                 "malilib.label.file_browser.copy_as.info.file";
+
+        confirmNewNameForFile(file, titleKey, infoKey, progressText, operation, confirmListener, cancelListener);
+    }
+
+    public static void moveFileAs(Path file,
+                                  ResultingStringConsumer operation,
+                                  EventListener confirmListener,
+                                  EventListener cancelListener,
+                                  String progressText)
+    {
+        boolean isDir = Files.isDirectory(file);
+        String titleKey = isDir ? "malilib.title.screen.move_as.directory" :
+                                  "malilib.title.screen.move_as.file";
+        String infoKey = isDir ? "malilib.label.file_browser.move_as.info.directory" :
+                                 "malilib.label.file_browser.move_as.info.file";
+
+        confirmNewNameForFile(file, titleKey, infoKey, progressText, operation, confirmListener, cancelListener);
+    }
+
+    public static void confirmNewNameForFile(Path file,
+                                             String titleKey,
+                                             String infoKey,
+                                             String progressText,
+                                             ResultingStringConsumer operation,
+                                             EventListener confirmListener,
+                                             EventListener cancelListener)
+    {
+        String originalFileName = file.getFileName().toString();
+        String name = FileNameUtils.getFileNameWithoutExtension(originalFileName);
+        TextInputScreen screen = new TextInputScreen(titleKey, name, operation);
+        screen.setTitle(titleKey, progressText);
+        screen.setInfoText(StyledText.translate(infoKey, originalFileName));
+        screen.setLabelText(StyledText.translate("malilib.label.file_browser.new_file_name"));
+        screen.setConfirmListener(confirmListener);
+        screen.setCancelListener(cancelListener);
+
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen);
+    }
+
+    public static boolean renameFile(Path file, String newName)
+    {
+        String originalFileName = file.getFileName().toString();
+
+        // Same name, NO-OP
+        if (newName.equals(FileNameUtils.getFileNameWithoutExtension(originalFileName)))
+        {
+            MessageDispatcher.error(8000).translate("malilib.message.error.file_rename.same_name", originalFileName);
+            return false;
+        }
+
+        Path dir = file.getParent();
+        String extension = FileNameUtils.getFileNameExtension(originalFileName);
+
+        if (extension.length() > 0)
+        {
+            extension = "." + extension;
+        }
+
+        return FileUtils.move(file, dir.resolve(newName + extension), false, MessageDispatcher.error()::send);
     }
 
     public static class DirectoryEntry implements Comparable<DirectoryEntry>

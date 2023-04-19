@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
 
 import malilib.MaLiLib;
 import malilib.config.value.FileWriteType;
+import malilib.overlay.message.MessageDispatcher;
 import malilib.util.game.wrap.GameUtils;
 
 public class FileUtils
@@ -142,11 +143,16 @@ public class FileUtils
         {
             if (overwrite)
             {
-                Files.copy(srcFile, dstFile, StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(srcFile, dstFile, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+            }
+            else if (Files.exists(dstFile))
+            {
+                messageConsumer.accept(StringUtils.translate("malilib.message.error.file_or_directory_already_exists",
+                                                             dstFile.toAbsolutePath()));
             }
             else
             {
-                Files.copy(srcFile, dstFile);
+                Files.copy(srcFile, dstFile, StandardCopyOption.COPY_ATTRIBUTES);
             }
 
             return true;
@@ -176,6 +182,11 @@ public class FileUtils
             if (overwrite)
             {
                 Files.move(srcFile, dstFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+            else if (Files.exists(dstFile))
+            {
+                messageConsumer.accept(StringUtils.translate("malilib.message.error.file_or_directory_already_exists",
+                                                             dstFile.toAbsolutePath()));
             }
             else
             {
@@ -211,6 +222,44 @@ public class FileUtils
         }
     }
 
+    public static boolean copyFileWithMessage(Path oldFile, Path newDir, String newName)
+    {
+        String originalFileName = oldFile.getFileName().toString();
+        String extension = FileNameUtils.getFileNameExtension(originalFileName);
+
+        if (extension.length() > 0)
+        {
+            extension = "." + extension;
+        }
+
+        Path newFile = newDir.resolve(newName + extension);
+        return copyFileWithMessage(oldFile, newFile);
+    }
+
+    public static boolean copyFileWithMessage(Path oldFile, Path newFile)
+    {
+        return copy(oldFile, newFile, false, MessageDispatcher.error(8000)::send);
+    }
+
+    public static boolean moveFileWithMessage(Path oldFile, Path newDir, String newName)
+    {
+        String originalFileName = oldFile.getFileName().toString();
+        String extension = FileNameUtils.getFileNameExtension(originalFileName);
+
+        if (extension.length() > 0)
+        {
+            extension = "." + extension;
+        }
+
+        Path newFile = newDir.resolve(newName + extension);
+        return moveFileWithMessage(oldFile, newFile);
+    }
+
+    public static boolean moveFileWithMessage(Path oldFile, Path newFile)
+    {
+        return move(oldFile, newFile, false, MessageDispatcher.error(8000)::send);
+    }
+
     /**
      * Checks that the target directory exists, and the file either doesn't exist,
      * or the canOverwrite argument is true and the file is writable
@@ -231,7 +280,7 @@ public class FileUtils
     {
         Path dir = file.getParent();
 
-        if (FileUtils.createDirectoriesIfMissing(dir) == false)
+        if (createDirectoriesIfMissing(dir) == false)
         {
             return false;
         }
@@ -252,7 +301,7 @@ public class FileUtils
                 fileTmp = file.getParent().resolve(UUID.randomUUID() + ".tmp");
             }
 
-            return writeDataToExactFile(fileTmp, dataWriter) && FileUtils.move(fileTmp, file);
+            return writeDataToExactFile(fileTmp, dataWriter) && move(fileTmp, file);
         }
 
         return false;
@@ -442,7 +491,7 @@ public class FileUtils
 
             try
             {
-                Files.copy(sourceFile, destinationFile);
+                Files.copy(sourceFile, destinationFile, StandardCopyOption.COPY_ATTRIBUTES);
                 return true;
             }
             catch (Exception e)
@@ -626,7 +675,7 @@ public class FileUtils
     public static String readFileAsString(Path file, int maxFileSize)
     {
         if (Files.isReadable(file) &&
-            (maxFileSize == -1 || FileUtils.size(file) <= maxFileSize))
+            (maxFileSize == -1 || size(file) <= maxFileSize))
         {
             try
             {
