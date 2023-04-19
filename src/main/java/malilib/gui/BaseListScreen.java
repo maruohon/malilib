@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import malilib.gui.tab.ScreenTab;
-import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.list.BaseListWidget;
 
 public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseTabbedScreen
@@ -111,16 +110,5 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     protected void setCurrentScrollbarPosition(int position)
     {
         this.getListWidget().setRequestedScrollBarPosition(position);
-    }
-
-    @Override
-    public void renderDebug(ScreenContext ctx)
-    {
-        super.renderDebug(ctx);
-
-        if (ctx.isActiveScreen)
-        {
-            this.getListWidget().renderDebug(this.getListWidget().isMouseOver(ctx.mouseX, ctx.mouseY), ctx);
-        }
     }
 }
