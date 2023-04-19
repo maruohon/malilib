@@ -4,6 +4,7 @@ import java.util.Collection;
 import com.google.common.collect.ImmutableList;
 
 import malilib.MaLiLibConfigScreen;
+import malilib.MaLiLibConfigs;
 import malilib.MaLiLibReference;
 import malilib.action.ActionGroup;
 import malilib.action.MacroAction;
@@ -31,8 +32,8 @@ public class ActionListScreen extends BaseActionListScreen
         this.setTitle("malilib.title.screen.configs.action_list_screen", MaLiLibReference.MOD_VERSION);
 
         this.userAddedActionTypesDropdown = new DropDownListWidget<>(14, 10, ActionGroup.VALUES_USER_ADDED, ActionGroup::getDisplayName);
-        this.userAddedActionTypesDropdown.setSelectedEntry(ActionGroup.USER_ADDED);
-        this.userAddedActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
+        this.userAddedActionTypesDropdown.setSelectedEntry(MaLiLibConfigs.Internal.ACTION_LIST_RIGHT_SIDE_DROPDOWN.getValue());
+        this.userAddedActionTypesDropdown.setSelectionListener(this::onRightSideDropdownActionGroupSet);
         this.userAddedActionTypesDropdown.translateAndAddHoverString("malilib.hover.action.action_types_explanation");
 
         this.addMacroButton = GenericButton.create(14, "malilib.button.action_list_screen.create_macro", this::openMacroNameInput);
@@ -118,6 +119,16 @@ public class ActionListScreen extends BaseActionListScreen
         {
             action.execute();
         }
+    }
+
+    protected void onRightSideDropdownActionGroupSet(ActionGroup group)
+    {
+        if (ActionGroup.VALUES_USER_ADDED.contains(group))
+        {
+            MaLiLibConfigs.Internal.ACTION_LIST_RIGHT_SIDE_DROPDOWN.setValue(group);
+        }
+
+        this.initScreen();
     }
 
     protected void openMacroNameInput()

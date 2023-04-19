@@ -4,35 +4,30 @@ import java.util.List;
 import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
 
+import malilib.config.value.BaseOptionListConfigValue;
 import malilib.registry.Registry;
-import malilib.util.StringUtils;
 
-public enum ActionGroup
+public class ActionGroup extends BaseOptionListConfigValue
 {
-    ALL             ("malilib.name.action_group.all", Registry.ACTION_REGISTRY::getAllActions),
-    BASE            ("malilib.name.action_group.base",            Registry.ACTION_REGISTRY::getBaseActions),
-    ALIAS           ("malilib.name.action_group.alias",           Registry.ACTION_REGISTRY::getAliases),
-    MACRO           ("malilib.name.action_group.macro",           Registry.ACTION_REGISTRY::getMacros),
-    PARAMETERIZED   ("malilib.name.action_group.parameterized",   Registry.ACTION_REGISTRY::getParameterizedActions),
-    PARAMETERIZABLE ("malilib.name.action_group.parameterizable", ActionUtils::getParameterizableActions),
-    USER_ADDED      ("malilib.name.action_group.user_added",      ActionUtils::getUserAddedActions),
-    SIMPLE          ("malilib.name.action_group.simple",          ActionUtils::getSimpleActions);
+    public static final ActionGroup ALL             = new ActionGroup("all",             "malilib.name.action_group.all",             Registry.ACTION_REGISTRY::getAllActions);
+    public static final ActionGroup BASE            = new ActionGroup("base",            "malilib.name.action_group.base",            Registry.ACTION_REGISTRY::getBaseActions);
+    public static final ActionGroup ALIAS           = new ActionGroup("alias",           "malilib.name.action_group.alias",           Registry.ACTION_REGISTRY::getAliases);
+    public static final ActionGroup MACRO           = new ActionGroup("macro",           "malilib.name.action_group.macro",           Registry.ACTION_REGISTRY::getMacros);
+    public static final ActionGroup PARAMETERIZED   = new ActionGroup("parameterized",   "malilib.name.action_group.parameterized",   Registry.ACTION_REGISTRY::getParameterizedActions);
+    public static final ActionGroup PARAMETERIZABLE = new ActionGroup("parameterizable", "malilib.name.action_group.parameterizable", ActionUtils::getParameterizableActions);
+    public static final ActionGroup USER_ADDED      = new ActionGroup("user_added",      "malilib.name.action_group.user_added",      ActionUtils::getUserAddedActions);
+    public static final ActionGroup SIMPLE          = new ActionGroup("simple",          "malilib.name.action_group.simple",          ActionUtils::getSimpleActions);
 
-    public static final ImmutableList<ActionGroup> VALUES = ImmutableList.copyOf(values());
+    public static final ImmutableList<ActionGroup> VALUES = ImmutableList.of(ALL, BASE, ALIAS, MACRO, PARAMETERIZED, PARAMETERIZABLE, USER_ADDED, SIMPLE);
     public static final ImmutableList<ActionGroup> VALUES_USER_ADDED = ImmutableList.of(ALIAS, MACRO, PARAMETERIZED, USER_ADDED);
 
     private final Supplier<List<? extends NamedAction>> listSource;
-    private final String translationKey;
 
-    ActionGroup(String translationKey, Supplier<List<? extends NamedAction>> listSource)
+    private ActionGroup(String name, String translationKey, Supplier<List<? extends NamedAction>> listSource)
     {
-        this.translationKey = translationKey;
+        super(name, translationKey);
+
         this.listSource = listSource;
-    }
-
-    public String getDisplayName()
-    {
-        return StringUtils.translate(this.translationKey);
     }
 
     public ImmutableList<NamedAction> getActions()

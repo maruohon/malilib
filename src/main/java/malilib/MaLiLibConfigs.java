@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableList;
 
+import malilib.action.ActionGroup;
 import malilib.config.category.BaseConfigOptionCategory;
 import malilib.config.category.ConfigOptionCategory;
 import malilib.config.option.BooleanConfig;
@@ -156,6 +157,8 @@ public class MaLiLibConfigs
 
     public static class Internal
     {
+        public static final OptionListConfig<ActionGroup> ACTION_LIST_RIGHT_SIDE_DROPDOWN   = new OptionListConfig<>("actionListRightSideDropdown", ActionGroup.USER_ADDED, ActionGroup.VALUES_USER_ADDED);
+
         public static final StringConfig ACTIVE_CONFIG_PROFILE          = new StringConfig("activeConfigProfile", "");
         public static final StringConfig ACTION_PROMPT_SEARCH_TEXT      = new StringConfig("actionPromptSearchText", "");
         public static final StringConfig ACTION_PROMPT_SELECTED_LIST    = new StringConfig("actionPromptSelectedList", "all");
@@ -165,7 +168,9 @@ public class MaLiLibConfigs
                 ACTIVE_CONFIG_PROFILE,
                 ACTION_PROMPT_SEARCH_TEXT,
                 ACTION_PROMPT_SELECTED_LIST,
-                PREVIOUS_ACTION_WIDGET_SCREEN
+                PREVIOUS_ACTION_WIDGET_SCREEN,
+
+                ACTION_LIST_RIGHT_SIDE_DROPDOWN
         );
     }
 
