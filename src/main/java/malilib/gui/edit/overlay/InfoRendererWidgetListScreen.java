@@ -1,5 +1,6 @@
 package malilib.gui.edit.overlay;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -118,6 +119,8 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         DataListWidget<WIDGET> listWidget = new DataListWidget<>(this.widgetSupplier, true);
 
         listWidget.setDataListEntryWidgetFactory(this.entryWidgetFactory);
+        listWidget.addDefaultSearchBar();
+        listWidget.setEntryFilterStringFunction(w -> Collections.singletonList(w.getName()));
 
         return listWidget;
     }
