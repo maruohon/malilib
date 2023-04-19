@@ -144,6 +144,8 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
         
         listWidget.setListEntryWidgetFixedHeight(22);
         listWidget.setDataListEntryWidgetFactory(this::createWidget);
+        listWidget.setEntryFilterStringFunction(CustomHotkeyDefinition::getSearchStrings);
+        listWidget.addDefaultSearchBar();
 
         return listWidget;
     }

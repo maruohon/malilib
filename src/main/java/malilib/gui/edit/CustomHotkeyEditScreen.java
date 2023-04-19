@@ -38,7 +38,7 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
 
         this.hotkey = hotkey;
         this.originalActionsList = hotkey.getActionList();
-        this.setTitle("malilib.title.screen.custom_hotkey_edit");
+        this.setTitle("malilib.title.screen.custom_hotkey_edit", hotkey.getDisplayName());
 
         this.actionsLabelWidget = new LabelWidget(0xFFF0F0F0, "malilib.label.custom_hotkeys.edit.bound_actions");
 
