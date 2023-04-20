@@ -315,10 +315,18 @@ public class KeyBindConfigButton extends GenericButton
             return;
         }
 
+        List<String> overlapInfo = new ArrayList<>();
+
+        this.getMalilibHotkeyOverlaps(overlapInfo);
+        this.buildOverlapInfoHoverStrings(overlapInfo);
+
+        this.hoverInfoFactory.updateList();
+    }
+
+    protected void getMalilibHotkeyOverlaps(List<String> overlapInfoOut)
+    {
         ImmutableList<HotkeyCategory> categories = Registry.HOTKEY_MANAGER.getHotkeyCategories();
         List<Hotkey> overlaps = new ArrayList<>();
-        List<String> hoverStrings = new ArrayList<>();
-        List<String> overlapInfo = new ArrayList<>();
 
         for (HotkeyCategory category : categories)
         {
@@ -334,29 +342,31 @@ public class KeyBindConfigButton extends GenericButton
 
             if (overlaps.size() > 0)
             {
-                if (overlapInfo.size() > 0)
+                if (overlapInfoOut.size() > 0)
                 {
-                    overlapInfo.add("--------");
+                    overlapInfoOut.add("--------");
                 }
 
-                overlapInfo.add(category.getModInfo().getModName());
-                overlapInfo.add(StringUtils.translate("malilib.hover.button.keybind.overlap.category",
-                                                      category.getCategoryName()));
+                overlapInfoOut.add(category.getModInfo().getModName());
+                overlapInfoOut.add(StringUtils.translate("malilib.hover.button.keybind.overlap.category",
+                                                         category.getCategoryName()));
 
                 for (Hotkey overlap : overlaps)
                 {
                     String translationKey = "malilib.hover.button.keybind.overlap.keybind";
                     String name = overlap.getDisplayName();
                     String keys = overlap.getKeyBind().getKeysDisplayString();
-                    overlapInfo.add(StringUtils.translate(translationKey, name, keys));
+                    overlapInfoOut.add(StringUtils.translate(translationKey, name, keys));
                 }
 
                 overlaps.clear();
             }
         }
+    }
 
-        this.overlapInfoSize = overlapInfo.size();
-
+    protected void buildOverlapInfoHoverStrings(List<String> overlapInfo)
+    {
+        List<String> hoverStrings = new ArrayList<>();
         boolean modified = this.keyBind.isModified();
         boolean nonEmpty = this.keyBind.hasKeys();
 
@@ -377,6 +387,8 @@ public class KeyBindConfigButton extends GenericButton
             hoverStrings.add(StringUtils.translate("malilib.hover.button.keybind.middle_click_to_clear"));
         }
 
+        this.overlapInfoSize = overlapInfo.size();
+
         if (this.overlapInfoSize > 0)
         {
             if (modified || nonEmpty)
@@ -391,6 +403,5 @@ public class KeyBindConfigButton extends GenericButton
 
         this.hoverStrings.clear();
         this.hoverStrings.addAll(hoverStrings);
-        this.hoverInfoFactory.updateList();
     }
 }
