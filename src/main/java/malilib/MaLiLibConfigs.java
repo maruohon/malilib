@@ -33,6 +33,7 @@ public class MaLiLibConfigs
         public static final OptionListConfig<MessageOutput>      DEFAULT_TOGGLE_MESSAGE_OUTPUT  = new OptionListConfig<>("defaultToggleMessageOutput", MessageOutput.CUSTOM_HOTBAR, getUsableDefaultToggleMessageOutputs());
         public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY                = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE, KeybindDisplayMode.VALUES);
 
+        public static final BooleanConfig ACTION_PROMPT_CLOSE_ON_EXECUTE            = new BooleanConfig("actionPromptCloseOnExecute", true);
         public static final BooleanConfig ACTION_PROMPT_FUZZY_SEARCH                = new BooleanConfig("actionPromptFuzzySearch", false);
         public static final BooleanConfig ACTION_PROMPT_REMEMBER_SEARCH             = new BooleanConfig("actionPromptRememberSearch", false);
         public static final BooleanConfig ACTION_PROMPT_SEARCH_DISPLAY_NAME         = new BooleanConfig("actionPromptSearchDisplayName", false);
@@ -63,6 +64,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig SORT_EXTENSION_MOD_OPTIONS                = new BooleanConfig("sortExtensionModOptions", false);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
+                ACTION_PROMPT_CLOSE_ON_EXECUTE,
                 ACTION_PROMPT_FUZZY_SEARCH,
                 ACTION_PROMPT_REMEMBER_SEARCH,
                 ACTION_PROMPT_SEARCH_DISPLAY_NAME,

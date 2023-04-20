@@ -25,6 +25,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
     protected final List<NamedAction> filteredActions = new ArrayList<>();
     protected final DropDownListWidget<ActionList> dropDownWidget;
     protected final BaseTextFieldWidget searchTextField;
+    protected final CheckBoxWidget closeOnExecuteCheckBoxWidget;
     protected final CheckBoxWidget fuzzySearchCheckBoxWidget;
     protected final CheckBoxWidget rememberSearchCheckBoxWidget;
     protected final CheckBoxWidget searchDisplayNameCheckBoxWidget;
@@ -54,6 +55,11 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         this.searchDisplayNameCheckBoxWidget = new CheckBoxWidget(label, hoverKey);
         this.searchDisplayNameCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_SEARCH_DISPLAY_NAME);
         this.searchDisplayNameCheckBoxWidget.setListener((v) -> this.updateFilteredList());
+
+        label = "malilib.checkbox.action_prompt_screen.close_on_execute";
+        hoverKey = "malilib.hover.action.prompt_screen.close_on_execute";
+        this.closeOnExecuteCheckBoxWidget = new CheckBoxWidget(label, hoverKey);
+        this.closeOnExecuteCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_CLOSE_ON_EXECUTE);
 
         int screenWidth = 320;
         this.searchTextField = new BaseTextFieldWidget(screenWidth - this.rememberSearchCheckBoxWidget.getIconWidth(), 16);
@@ -87,8 +93,9 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
         this.addWidget(this.dropDownWidget);
         this.addWidget(this.searchTextField);
-        this.addWidget(this.rememberSearchCheckBoxWidget);
+        this.addWidget(this.closeOnExecuteCheckBoxWidget);
         this.addWidget(this.fuzzySearchCheckBoxWidget);
+        this.addWidget(this.rememberSearchCheckBoxWidget);
         this.addWidget(this.searchDisplayNameCheckBoxWidget);
     }
 
@@ -99,6 +106,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
         int x = this.getRight() - this.rememberSearchCheckBoxWidget.getIconWidth();
         int y = this.y;
+        this.closeOnExecuteCheckBoxWidget.setPosition(x, y - 11);
         this.rememberSearchCheckBoxWidget.setPosition(x, y);
         this.fuzzySearchCheckBoxWidget.setPosition(x, y + 11);
         this.searchDisplayNameCheckBoxWidget.setPosition(x, y + 22);
@@ -122,8 +130,11 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
     {
         if (keyCode == Keys.KEY_ENTER)
         {
-            // Close the screen before running the action, in case the action opens another screen
-            this.closeScreen();
+            if (MaLiLibConfigs.Generic.ACTION_PROMPT_CLOSE_ON_EXECUTE.getBooleanValue())
+            {
+                // Close the screen before running the action, in case the action opens another screen
+                this.closeScreen();
+            }
 
             NamedAction action = this.getListWidget().getKeyboardNavigationEntry();
 

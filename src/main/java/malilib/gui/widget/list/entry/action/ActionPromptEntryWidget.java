@@ -1,5 +1,6 @@
 package malilib.gui.widget.list.entry.action;
 
+import malilib.MaLiLibConfigs;
 import malilib.action.NamedAction;
 import malilib.gui.BaseScreen;
 import malilib.gui.widget.list.entry.BaseDataListEntryWidget;
@@ -28,8 +29,12 @@ public class ActionPromptEntryWidget extends BaseDataListEntryWidget<NamedAction
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        // Close the current screen first, in case the action opens another screen
-        BaseScreen.openScreen(null);
+        if (MaLiLibConfigs.Generic.ACTION_PROMPT_CLOSE_ON_EXECUTE.getBooleanValue())
+        {
+            // Close the current screen first, in case the action opens another screen
+            BaseScreen.openScreen(null);
+        }
+
         this.data.execute();
         return true;
     }
