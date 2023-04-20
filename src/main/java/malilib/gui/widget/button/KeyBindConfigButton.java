@@ -1,10 +1,15 @@
 package malilib.gui.widget.button;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.settings.KeyBinding;
 
 import malilib.MaLiLibConfigs;
 import malilib.gui.config.KeybindEditScreen;
@@ -16,6 +21,7 @@ import malilib.listener.EventListener;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.util.StringUtils;
+import malilib.util.game.wrap.GameUtils;
 
 public class KeyBindConfigButton extends GenericButton
 {
@@ -318,6 +324,7 @@ public class KeyBindConfigButton extends GenericButton
         List<String> overlapInfo = new ArrayList<>();
 
         this.getMalilibHotkeyOverlaps(overlapInfo);
+        this.getVanillaKeybindOverlaps(overlapInfo);
         this.buildOverlapInfoHoverStrings(overlapInfo);
 
         this.hoverInfoFactory.updateList();
@@ -360,6 +367,46 @@ public class KeyBindConfigButton extends GenericButton
                 }
 
                 overlaps.clear();
+            }
+        }
+    }
+
+    protected void getVanillaKeybindOverlaps(List<String> overlapInfoOut)
+    {
+        IntArrayList keyList = new IntArrayList();
+        Map<String, List<KeyBinding>> overlaps = new HashMap<>();
+
+        this.keyBind.getKeysToList(keyList);
+
+        for (KeyBinding vanillaKey : GameUtils.getOptions().keyBindings)
+        {
+            if (keyList.contains(vanillaKey.getKeyCode()))
+            {
+                overlaps.computeIfAbsent(vanillaKey.getKeyCategory(), k -> new ArrayList<>()).add(vanillaKey);
+            }
+        }
+
+        if (overlaps.size() > 0)
+        {
+            if (overlapInfoOut.size() > 0)
+            {
+                overlapInfoOut.add("--------");
+            }
+
+            overlapInfoOut.add(StringUtils.translate("malilib.hover.button.keybind.overlap.category.vanilla"));
+
+            for (String category : overlaps.keySet())
+            {
+                overlapInfoOut.add(StringUtils.translate("malilib.hover.button.keybind.overlap.category",
+                                                         StringUtils.translate(category)));
+
+                for (KeyBinding overlap : overlaps.get(category))
+                {
+                    String translationKey = "malilib.hover.button.keybind.overlap.keybind";
+                    String name = StringUtils.translate(overlap.getKeyDescription());
+                    String keys = GameSettings.getKeyDisplayString(overlap.getKeyCode());
+                    overlapInfoOut.add(StringUtils.translate(translationKey, name, keys));
+                }
             }
         }
     }

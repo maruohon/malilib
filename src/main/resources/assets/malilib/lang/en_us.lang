@@ -116,6 +116,7 @@ malilib.hover.button.info_renderers_menu=Edit/manage Info Renderer Widgets
 malilib.hover.button.keybind.default_value=Default: [ §6%s§r ]
 malilib.hover.button.keybind.middle_click_to_clear=(Middle click to clear)
 malilib.hover.button.keybind.overlap.category= + %s
+malilib.hover.button.keybind.overlap.category.vanilla=Minecraft (and non-malilib mods)
 malilib.hover.button.keybind.overlap.keybind=    - %s [ §6%s§r ]
 malilib.hover.button.keybind.possible_overlaps=Possible overlaps [<c=eee>most are fine though!!</c>]:
 malilib.hover.button.list.add_after=Add an entry after
