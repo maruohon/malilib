@@ -27,7 +27,7 @@ public abstract class BaseKeyBindConfigWidget extends BaseConfigWidget<ConfigInf
         keyBind.getKeysToList(this.initialValue);
 
         this.keybindButton = new KeyBindConfigButton(120, 20, keyBind, ctx.getKeybindEditingScreen());
-        this.keybindButton.setValueChangeListener(this::updateWidgetState);
+        this.keybindButton.setValueChangeListener(this::onKeybindModified);
         this.keybindButton.setHoverInfoRequiresShift(true);
 
         this.settingsWidget = new KeybindSettingsWidget(keyBind, config.getDisplayName());
@@ -68,5 +68,17 @@ public abstract class BaseKeyBindConfigWidget extends BaseConfigWidget<ConfigInf
     public boolean wasModified()
     {
         return this.keyBind.matches(this.initialValue) == false;
+    }
+
+    @Override
+    protected void onResetButtonClicked()
+    {
+        this.config.resetToDefault();
+        this.ctx.getListWidget().refreshEntries();
+    }
+
+    protected void onKeybindModified()
+    {
+        this.ctx.getListWidget().refreshEntries();
     }
 }

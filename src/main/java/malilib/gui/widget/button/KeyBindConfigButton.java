@@ -381,11 +381,11 @@ public class KeyBindConfigButton extends GenericButton
         {
             if (modified || nonEmpty)
             {
-                hoverStrings.add("----------------");
+                hoverStrings.add("------------------------------------");
             }
 
             hoverStrings.add(StringUtils.translate("malilib.hover.button.keybind.possible_overlaps"));
-            hoverStrings.add("----------------");
+            hoverStrings.add("");
             hoverStrings.addAll(overlapInfo);
         }
 
