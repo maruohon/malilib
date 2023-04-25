@@ -211,6 +211,11 @@ public abstract class InteractableWidget extends BackgroundWidget
         }
     }
 
+    public int getTopHoveredWidgetPriority(int mouseX, int mouseY)
+    {
+        return (int) this.getZ();
+    }
+
     public int getMouseClickHandlingPriority(int mouseX, int mouseY)
     {
         return (int) this.getZ();

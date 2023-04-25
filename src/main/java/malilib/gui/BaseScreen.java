@@ -514,24 +514,25 @@ public abstract class BaseScreen extends GuiScreen
     protected void updateTopHoveredWidgetForHoverInfo(int mouseX, int mouseY)
     {
         Predicate<InteractableWidget> predicate = w -> w.hasHoverTextToRender(mouseX, mouseY);
-        this.hoveredWidgetForHoverInfo = this.getTopHoveredWidget(predicate);
+        ToIntFunction<InteractableWidget> priorityFunction = w -> (int) w.getZ();
+        this.hoveredWidgetForHoverInfo = this.getTopHoveredWidget(predicate, priorityFunction);
     }
 
     protected void updateTopHoveredWidgetForContext(int mouseX, int mouseY)
     {
         Predicate<InteractableWidget> predicate = w -> w.isMouseOver(mouseX, mouseY);
-        this.hoveredWidgetForContext = this.getTopHoveredWidget(predicate);
+        ToIntFunction<InteractableWidget> priorityFunction = w -> w.getTopHoveredWidgetPriority(mouseX, mouseY);
+        this.hoveredWidgetForContext = this.getTopHoveredWidget(predicate, priorityFunction);
     }
 
     @Nullable
-    protected InteractableWidget getTopHoveredWidget(Predicate<InteractableWidget> predicate)
+    protected InteractableWidget getTopHoveredWidget(Predicate<InteractableWidget> predicate,
+                                                     ToIntFunction<InteractableWidget> priorityFunction)
     {
         if (this.isActiveScreen())
         {
             ArrayList<InteractableWidget> list = new ArrayList<>();
-            ToIntFunction<InteractableWidget> priorityFunction = w -> (int) w.getZ();
             this.widgets.forEach(w -> w.collectMatchingWidgets(predicate, priorityFunction, list));
-
             return list.isEmpty() ? null : list.get(0);
         }
 

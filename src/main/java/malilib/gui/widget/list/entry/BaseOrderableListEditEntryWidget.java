@@ -130,6 +130,25 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     }
 
     @Override
+    public boolean isMouseOver(int mouseX, int mouseY)
+    {
+        return this.dragged || super.isMouseOver(mouseX, mouseY);
+    }
+
+    @Override
+    public int getTopHoveredWidgetPriority(int mouseX, int mouseY)
+    {
+        int priority = super.getTopHoveredWidgetPriority(mouseX, mouseY);
+
+        if (this.dragged)
+        {
+            priority += 200;
+        }
+
+        return priority;
+    }
+
+    @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.canReOrder() && this.canDragAt(mouseX, mouseY))
