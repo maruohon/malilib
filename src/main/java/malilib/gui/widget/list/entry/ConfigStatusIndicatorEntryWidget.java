@@ -69,7 +69,11 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
 
     public void removeInfoRendererWidget()
     {
+        // First apply any possible pending changes, like re-ordered list
+        this.containerWidget.setStatusIndicatorWidgets(this.listWidget.getNonFilteredDataList());
         this.containerWidget.removeWidget(this.data);
+        // Force fetch the new list from the container widget
+        this.listWidget.fetchCurrentEntriesFromSupplier();
         this.listWidget.refreshEntries();
     }
 
