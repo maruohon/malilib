@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.Minecraft;
 
+import malilib.MaLiLibConfigs;
 import malilib.gui.icon.Icon;
 import malilib.gui.util.ElementOffset;
 import malilib.gui.util.GuiUtils;
@@ -760,7 +761,7 @@ public class BaseWidget
         {
             renderDebugOutline(x, y, z, w, h, hovered, ctx);
 
-            if (this.padding.isEmpty() == false)
+            if (this.padding.isEmpty() == false && MaLiLibConfigs.Debug.GUI_DEBUG_PADDING.getBooleanValue())
             {
                 int left = this.padding.getLeft();
                 int top = this.padding.getTop();
