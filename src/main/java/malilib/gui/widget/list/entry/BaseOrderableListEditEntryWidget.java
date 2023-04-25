@@ -12,6 +12,7 @@ import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.DataListWidget;
+import malilib.input.Keys;
 import malilib.listener.EventListener;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
@@ -179,6 +180,19 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         }
 
         super.onMouseReleased(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
+    {
+        if (this.dragged && keyCode == Keys.KEY_ESCAPE)
+        {
+            // Cancel the drag
+            this.dragged = false;
+            return true;
+        }
+
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
     protected void updateSubWidgetsToGeometryChangesPre(int x, int y)
