@@ -109,6 +109,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     public void removeWidget(BaseConfigStatusIndicatorWidget<?> widget)
     {
         this.allWidgets.remove(widget);
+        this.configs.remove(widget.getConfigOnTab());
 
         if (widget.isEnabled())
         {
@@ -118,10 +119,9 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         this.requestUnconditionalReLayout();
     }
 
-    public ArrayList<BaseConfigStatusIndicatorWidget<?>> getStatusIndicatorWidgetsForEditScreen()
+    public List<BaseConfigStatusIndicatorWidget<?>> getStatusIndicatorWidgets()
     {
-        // return a separate, modifiable list
-        return new ArrayList<>(this.allWidgets);
+        return this.allWidgets;
     }
 
     @Override

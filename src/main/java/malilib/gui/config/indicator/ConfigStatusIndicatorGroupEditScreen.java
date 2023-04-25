@@ -284,7 +284,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     protected DataListWidget<BaseConfigStatusIndicatorWidget<?>> createListWidget()
     {
         DataListWidget<BaseConfigStatusIndicatorWidget<?>> listWidget
-                = new DataListWidget<>(this.widget::getStatusIndicatorWidgetsForEditScreen, false);
+                = new DataListWidget<>(this.widget::getStatusIndicatorWidgets, false);
 
         listWidget.setListEntryWidgetFixedHeight(16);
         listWidget.setDataListEntryWidgetFactory((data, constructData) ->
