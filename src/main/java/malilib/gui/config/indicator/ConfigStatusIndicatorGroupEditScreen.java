@@ -1,5 +1,6 @@
 package malilib.gui.config.indicator;
 
+import java.util.Collection;
 import javax.annotation.Nullable;
 
 import malilib.MaLiLibReference;
@@ -26,6 +27,7 @@ import malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import malilib.registry.Registry;
 import malilib.render.text.MultiLineTextRenderSettings;
+import malilib.util.data.ConfigOnTab;
 
 public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>> implements KeybindEditScreen
 {
@@ -237,6 +239,12 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         Registry.HOTKEY_MANAGER.updateUsedKeys();
     }
 
+    protected void addConfigsToWidget(Collection<ConfigOnTab> configs)
+    {
+        this.widget.addWidgetsForConfigs(configs);
+        this.getListWidget().fetchCurrentEntriesFromSupplier();
+    }
+
     protected void updateHoverStrings()
     {
         this.marginEditButton.updateHoverStrings();
@@ -255,7 +263,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
 
     protected void openAddConfigsScreen()
     {
-        BaseScreen.openScreenWithParent(new ConfigStatusIndicatorGroupAddConfigsScreen(this.widget));
+        BaseScreen.openScreenWithParent(new ConfigStatusIndicatorGroupAddConfigsScreen(this.widget, this::addConfigsToWidget));
     }
 
     protected void openMarginEditScreen()
@@ -276,7 +284,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     protected DataListWidget<BaseConfigStatusIndicatorWidget<?>> createListWidget()
     {
         DataListWidget<BaseConfigStatusIndicatorWidget<?>> listWidget
-                = new DataListWidget<>(this.widget::getStatusIndicatorWidgetsForEditScreen, true);
+                = new DataListWidget<>(this.widget::getStatusIndicatorWidgetsForEditScreen, false);
 
         listWidget.setListEntryWidgetFixedHeight(16);
         listWidget.setDataListEntryWidgetFactory((data, constructData) ->

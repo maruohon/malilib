@@ -74,6 +74,22 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
     public void addWidgetForConfig(ConfigOnTab config)
     {
+        this.addWidgetForConfigImpl(config);
+        this.notifyEnabledWidgetsChanged();
+    }
+
+    public void addWidgetsForConfigs(Collection<ConfigOnTab> configs)
+    {
+        for (ConfigOnTab cfg : configs)
+        {
+            this.addWidgetForConfigImpl(cfg);
+        }
+
+        this.notifyEnabledWidgetsChanged();
+    }
+
+    protected void addWidgetForConfigImpl(ConfigOnTab config)
+    {
         if (this.configs.contains(config) == false)
         {
             ConfigStatusWidgetFactory<ConfigInfo> factory = Registry.CONFIG_STATUS_WIDGET.getConfigStatusWidgetFactory(config.getConfig());
@@ -86,8 +102,6 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
                 widget.setHeight(this.getLineHeight());
                 this.allWidgets.add(widget);
                 this.configs.add(config);
-                this.notifyEnabledWidgetsChanged();
-                this.requestUnconditionalReLayout();
             }
         }
     }

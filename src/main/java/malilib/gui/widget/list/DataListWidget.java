@@ -355,9 +355,14 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     {
         if (this.fetchFromSupplierOnRefresh)
         {
-            this.fullDataList.clear();
-            this.fullDataList.addAll(this.entrySupplier.get());
+            this.fetchCurrentEntriesFromSupplier();
         }
+    }
+
+    public void fetchCurrentEntriesFromSupplier()
+    {
+        this.fullDataList.clear();
+        this.fullDataList.addAll(this.entrySupplier.get());
     }
 
     @Override

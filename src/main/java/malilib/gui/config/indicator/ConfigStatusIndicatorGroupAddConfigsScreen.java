@@ -1,6 +1,7 @@
 package malilib.gui.config.indicator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -26,15 +27,18 @@ import malilib.util.data.NameIdentifiable;
 public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<DataListWidget<ConfigOnTab>>
 {
     protected final ConfigStatusIndicatorContainerWidget widget;
+    protected final Consumer<Collection<ConfigOnTab>> widgetAddConsumer;
     protected final DropDownListWidget<ModInfo> modsDropDownWidget;
     protected final DropDownListWidget<ConfigTab> categoriesDropDownWidget;
     protected final GenericButton addEntriesButton;
 
-    protected ConfigStatusIndicatorGroupAddConfigsScreen(ConfigStatusIndicatorContainerWidget widget)
+    protected ConfigStatusIndicatorGroupAddConfigsScreen(ConfigStatusIndicatorContainerWidget widget,
+                                                         Consumer<Collection<ConfigOnTab>> widgetAddConsumer)
     {
         super(10, 68, 20, 70);
 
         this.widget = widget;
+        this.widgetAddConsumer = widgetAddConsumer;
         this.useTitleHierarchy = false;
         this.setTitle("malilib.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
 
@@ -129,12 +133,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
     {
         ArrayList<ConfigOnTab> list = new ArrayList<>(this.getListWidget().getSelectedEntries());
         list.sort(Comparator.comparing(cot -> cot.getConfig().getDisplayName()));
-
-        for (ConfigOnTab config : list)
-        {
-            this.widget.addWidgetForConfig(config);
-        }
-
+        this.widgetAddConsumer.accept(list);
         this.refreshList();
     }
 
