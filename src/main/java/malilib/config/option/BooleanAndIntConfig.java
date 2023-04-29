@@ -117,10 +117,10 @@ public class BooleanAndIntConfig extends BaseBooleanAndNumberConfig<BooleanAndIn
     }
 
     @Override
-    public void toggleBooleanValue()
+    public boolean toggleBooleanValue()
     {
         BooleanAndInt oldValue = this.getValue();
-        this.setValue(new BooleanAndInt(! oldValue.booleanValue, oldValue.intValue));
+        return this.setValue(new BooleanAndInt(! oldValue.booleanValue, oldValue.intValue));
     }
 
     protected int getClampedValue(int value)

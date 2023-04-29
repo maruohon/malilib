@@ -41,10 +41,10 @@ public class BooleanAndFileConfig extends BaseGenericConfig<BooleanAndFile> impl
     }
 
     @Override
-    public void toggleBooleanValue()
+    public boolean toggleBooleanValue()
     {
         BooleanAndFile oldValue = this.getValue();
-        this.setValue(new BooleanAndFile(! oldValue.booleanValue, oldValue.fileValue));
+        return this.setValue(new BooleanAndFile(! oldValue.booleanValue, oldValue.fileValue));
     }
 
     public static class BooleanAndFile

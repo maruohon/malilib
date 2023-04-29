@@ -123,10 +123,10 @@ public class BooleanAndDoubleConfig extends BaseBooleanAndNumberConfig<BooleanAn
     }
 
     @Override
-    public void toggleBooleanValue()
+    public boolean toggleBooleanValue()
     {
         BooleanAndDouble oldValue = this.getValue();
-        this.setValue(new BooleanAndDouble(! oldValue.booleanValue, oldValue.doubleValue));
+        return this.setValue(new BooleanAndDouble(! oldValue.booleanValue, oldValue.doubleValue));
     }
 
     protected double getClampedValue(double value)

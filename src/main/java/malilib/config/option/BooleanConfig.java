@@ -56,9 +56,9 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
     }
 
     @Override
-    public void toggleBooleanValue()
+    public boolean toggleBooleanValue()
     {
-        this.setBooleanValue(! this.value);
+        return this.setBooleanValue(! this.value);
     }
 
     @Override

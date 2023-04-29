@@ -14,8 +14,13 @@ public interface BooleanStorage
      */
     boolean setBooleanValue(boolean value);
 
-    default void toggleBooleanValue()
+    /**
+     * Toggles the value to the opposite value
+     * @return true if the value changed (which in this case is always,
+     * unless the config is locked or overridden!)
+     */
+    default boolean toggleBooleanValue()
     {
-        this.setBooleanValue(! this.getBooleanValue());
+        return this.setBooleanValue(! this.getBooleanValue());
     }
 }
