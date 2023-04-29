@@ -10,8 +10,8 @@ import malilib.util.StringUtils;
 
 public class ActionList
 {
-    public static final ActionList ALL_ACTIONS = new ActionList("all", "malilib.label.actions.lists.all_actions", Registry.ACTION_REGISTRY::getAllActions);
-    public static final ActionList ALIASES = new ActionList("aliases", "malilib.label.actions.lists.all_aliases", Registry.ACTION_REGISTRY::getAliases);
+    public static final ActionList ALL_ACTIONS = new ActionList("all",     "malilib.label.actions.lists.all_actions", Registry.ACTION_REGISTRY::getAllActions);
+    public static final ActionList ALIASES     = new ActionList("aliases", "malilib.label.actions.lists.all_aliases", Registry.ACTION_REGISTRY::getAliases);
 
     protected final String name;
     protected final String displayName;

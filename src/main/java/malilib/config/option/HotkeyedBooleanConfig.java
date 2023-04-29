@@ -3,7 +3,7 @@ package malilib.config.option;
 import javax.annotation.Nullable;
 
 import malilib.action.Action;
-import malilib.action.BooleanToggleAction;
+import malilib.action.builtin.BooleanToggleAction;
 import malilib.input.Hotkey;
 import malilib.input.KeyBind;
 import malilib.input.KeyBindImpl;

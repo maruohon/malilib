@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 
-import malilib.action.ActionUtils;
+import malilib.action.util.ActionUtils;
 import malilib.action.MacroAction;
 import malilib.action.NamedAction;
 import malilib.action.ParameterizableNamedAction;

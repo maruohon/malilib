@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 
 import malilib.MaLiLibReference;
 import malilib.action.ActionContext;
-import malilib.action.ActionUtils;
+import malilib.action.util.ActionUtils;
 import malilib.action.NamedAction;
 import malilib.config.option.CommonDescription;
 import malilib.config.option.ConfigInfo;

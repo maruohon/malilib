@@ -1,4 +1,4 @@
-package malilib.action;
+package malilib.action.builtin;
 
 import java.util.ArrayList;
 
@@ -14,6 +14,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 
+import malilib.action.ActionContext;
 import malilib.input.ActionResult;
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.game.wrap.GameUtils;

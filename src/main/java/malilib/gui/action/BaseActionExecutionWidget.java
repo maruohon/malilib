@@ -11,7 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import malilib.action.ActionContext;
-import malilib.action.ActionUtils;
+import malilib.action.util.ActionUtils;
 import malilib.action.NamedAction;
 import malilib.gui.BaseScreen;
 import malilib.gui.icon.Icon;

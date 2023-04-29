@@ -1,8 +1,10 @@
-package malilib.action;
+package malilib.action.builtin;
 
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
+import malilib.action.Action;
+import malilib.action.ActionContext;
 import malilib.config.option.BooleanContainingConfig;
 import malilib.input.ActionResult;
 import malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;

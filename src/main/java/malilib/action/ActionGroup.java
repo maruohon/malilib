@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
 
+import malilib.action.util.ActionUtils;
 import malilib.config.value.BaseOptionListConfigValue;
 import malilib.registry.Registry;
 

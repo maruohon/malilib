@@ -1,5 +1,7 @@
-package malilib.action;
+package malilib.action.builtin;
 
+import malilib.action.Action;
+import malilib.action.ActionContext;
 import malilib.input.ActionResult;
 import malilib.listener.EventListener;
 

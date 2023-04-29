@@ -1,7 +1,8 @@
-package malilib.action;
+package malilib.action.builtin;
 
 import java.util.Locale;
 
+import malilib.action.ParameterizedAction;
 import malilib.config.option.OptionListConfig;
 import malilib.config.option.StringConfig;
 import malilib.config.value.BaseOptionListConfigValue;

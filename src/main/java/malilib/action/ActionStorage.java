@@ -19,7 +19,7 @@ class ActionStorage<T extends NamedAction>
     {
         if (this.actionList == null)
         {
-            this.actionList = ActionRegistry.getActionsSortedByName(this.actionMap.values());
+            this.actionList = ActionRegistry.getActionsSortedByName(this.getMapValues());
         }
 
         return this.actionList;

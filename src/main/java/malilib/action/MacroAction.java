@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 
+import malilib.action.util.ActionUtils;
 import malilib.input.ActionResult;
 import malilib.render.text.StyledTextLine;
 import malilib.util.StringUtils;

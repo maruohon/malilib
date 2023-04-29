@@ -1,4 +1,4 @@
-package malilib.action;
+package malilib.action.util;
 
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +9,16 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 
+import malilib.action.Action;
+import malilib.action.ActionType;
+import malilib.action.MacroAction;
+import malilib.action.NamedAction;
+import malilib.action.ParameterizableNamedAction;
+import malilib.action.ParameterizedAction;
+import malilib.action.SimpleNamedAction;
+import malilib.action.builtin.BooleanDisableAction;
+import malilib.action.builtin.BooleanEnableAction;
+import malilib.action.builtin.BooleanToggleAction;
 import malilib.config.option.BooleanConfig;
 import malilib.config.option.BooleanContainingConfig;
 import malilib.config.option.ConfigInfo;
