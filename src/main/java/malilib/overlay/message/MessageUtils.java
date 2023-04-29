@@ -137,6 +137,19 @@ public class MessageUtils
         }
     }
 
+    public static void printBooleanConfigAlreadyAtValueMessage(MessageOutput type,
+                                                               BooleanContainingConfig<?> config)
+    {
+        String key = config.getBooleanValue() ? "malilib.message.info.config_already_on" :
+                                                "malilib.message.info.config_already_off";
+        String msg = StringUtils.translate(key, config.getPrettyName());
+
+        if (org.apache.commons.lang3.StringUtils.isBlank(msg) == false)
+        {
+            MessageDispatcher.generic(5000).type(type).send(msg);
+        }
+    }
+
     public static void getErrorMessageIfConfigDisabled(HotkeyedBooleanConfig config,
                                                        String translationKey,
                                                        Consumer<StyledText> consumer)

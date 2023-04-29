@@ -16,6 +16,7 @@ import net.minecraft.util.math.MathHelper;
 import malilib.MaLiLibConfigs;
 import malilib.action.Action;
 import malilib.action.ActionContext;
+import malilib.action.builtin.BooleanToggleAction;
 import malilib.config.option.BooleanContainingConfig;
 import malilib.config.option.OptionListConfig;
 import malilib.input.ActionResult;
@@ -24,7 +25,6 @@ import malilib.input.KeyBind;
 import malilib.listener.EventListener;
 import malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
 import malilib.overlay.message.MessageOutput;
-import malilib.overlay.message.MessageUtils;
 import malilib.util.data.DoubleStorage;
 import malilib.util.data.IntegerStorage;
 import malilib.util.data.RangedDoubleStorage;
@@ -137,9 +137,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         }
         else if (this.toggleConfig != null)
         {
-            this.toggleConfig.toggleBooleanValue();
-            this.printToggleMessage(key);
-            return ActionResult.SUCCESS;
+            return this.toggleValue(key);
         }
 
         return ActionResult.PASS;
@@ -150,10 +148,11 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         return this.enabledCondition == null || this.enabledCondition.getAsBoolean();
     }
 
-    protected void printToggleMessage(KeyBind key)
+    protected ActionResult toggleValue(KeyBind key)
     {
         MessageOutput messageOutput = key.getSettings().getMessageType();
-        MessageUtils.printBooleanConfigToggleMessage(messageOutput, this.toggleConfig, this.toggleMessageFactory);
+        Action toggleAction = BooleanToggleAction.of(this.toggleConfig, this.toggleMessageFactory, () -> messageOutput);
+        return toggleAction.execute(ActionContext.COMMON);
     }
 
     protected ActionResult adjustValue(int amount)

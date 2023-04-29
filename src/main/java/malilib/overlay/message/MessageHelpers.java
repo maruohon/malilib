@@ -74,37 +74,35 @@ public class MessageHelpers
     public static String getBooleanConfigToggleMessage(BooleanContainingConfig<?> config,
                                                        @Nullable BooleanConfigMessageFactory messageFactory)
     {
-        boolean newValue = config.getBooleanValue();
-        String message;
-
-        if (config.hasOverride())
+        if (messageFactory != null && config.hasOverride() == false && config.isLocked() == false)
         {
-            String msgKey = newValue ? "malilib.message.info.config_overridden_on" :
-                                       "malilib.message.info.config_overridden_off";
-            message = StringUtils.translate(msgKey, config.getPrettyName());
-        }
-        else if (config.isLocked())
-        {
-            String msgKey = newValue ? "malilib.message.info.config_locked_on" :
-                                       "malilib.message.info.config_locked_off";
-            message = StringUtils.translate(msgKey, config.getPrettyName());
-        }
-        else if (messageFactory != null)
-        {
-            message = messageFactory.getMessage(config);
-        }
-        else
-        {
-            message = getBasicBooleanConfigToggleMessage(config);
+            return messageFactory.getMessage(config);
         }
 
-        return message;
+        return getBasicBooleanConfigToggleMessage(config);
     }
 
     public static String getBasicBooleanConfigToggleMessage(BooleanContainingConfig<?> config)
     {
-        String msgKey = config.getBooleanValue() ? "malilib.message.info.toggled_config_on" :
-                                                   "malilib.message.info.toggled_config_off";
+        boolean newValue = config.getBooleanValue();
+        String msgKey;
+
+        if (config.hasOverride())
+        {
+            msgKey = newValue ? "malilib.message.info.config_overridden_on" :
+                                "malilib.message.info.config_overridden_off";
+        }
+        else if (config.isLocked())
+        {
+            msgKey = newValue ? "malilib.message.info.config_locked_on" :
+                                "malilib.message.info.config_locked_off";
+        }
+        else
+        {
+            msgKey = newValue ? "malilib.message.info.toggled_config_on" :
+                                "malilib.message.info.toggled_config_off";
+        }
+
         return StringUtils.translate(msgKey, config.getPrettyName());
     }
 

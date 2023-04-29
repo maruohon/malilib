@@ -2,13 +2,15 @@ package malilib.input.callback;
 
 import javax.annotation.Nullable;
 
+import malilib.action.Action;
+import malilib.action.ActionContext;
+import malilib.action.builtin.BooleanToggleAction;
 import malilib.config.option.BooleanContainingConfig;
 import malilib.input.ActionResult;
 import malilib.input.KeyAction;
 import malilib.input.KeyBind;
 import malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
 import malilib.overlay.message.MessageOutput;
-import malilib.overlay.message.MessageUtils;
 
 public class ToggleBooleanWithMessageKeyCallback implements HotkeyCallback
 {
@@ -30,14 +32,10 @@ public class ToggleBooleanWithMessageKeyCallback implements HotkeyCallback
     @Override
     public ActionResult onKeyAction(KeyAction action, KeyBind key)
     {
-        this.config.toggleBooleanValue();
         MessageOutput messageOutput = key.getSettings().getMessageType();
+        // The action needs to be created here to capture the MessageOutput from the KeyBind
+        Action toggleAction = BooleanToggleAction.of(this.config, this.messageFactory, () -> messageOutput);
 
-        if (messageOutput != MessageOutput.NONE)
-        {
-            MessageUtils.printBooleanConfigToggleMessage(messageOutput, this.config, this.messageFactory);
-        }
-
-        return ActionResult.SUCCESS;
+        return toggleAction.execute(ActionContext.COMMON);
     }
 }

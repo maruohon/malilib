@@ -20,7 +20,7 @@ public interface HotkeyCallback
     /**
      * Wraps an Action as a HotkeyCallback
      */
-    static HotkeyCallback of(final Action action)
+    static HotkeyCallback of(Action action)
     {
         return new ActionHotkeyCallback(action);
     }
@@ -28,7 +28,7 @@ public interface HotkeyCallback
     /**
      * Wraps an NamedAction as a HotkeyCallback
      */
-    static HotkeyCallback of(final NamedAction action)
+    static HotkeyCallback of(NamedAction action)
     {
         return new NamedActionHotkeyCallback(action);
     }
