@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.awt.Color;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
@@ -11,18 +12,16 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
+
 import fi.dy.masa.malilib.config.IConfigInteger;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiColorEditorHSV extends GuiDialogBase
 {
-    protected static final ShaderProgram SHADER_HUE = new ShaderProgram("malilib", null, "shaders/sv_selector.frag");
-
     protected final IConfigInteger config;
     @Nullable protected final IDialogHandler dialogHandler;
     @Nullable protected Element clickedElement;
