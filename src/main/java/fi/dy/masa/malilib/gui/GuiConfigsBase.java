@@ -26,10 +26,8 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected final List<Runnable> hotkeyChangeListeners = new ArrayList<>();
     protected final ButtonPressDirtyListenerSimple dirtyListener = new ButtonPressDirtyListenerSimple();
     protected final String modId;
-    protected final List<String> initialConfigValues = new ArrayList<>();
     protected ConfigButtonKeybind activeKeybindButton;
     protected int configWidth = 204;
-    @Nullable protected Screen parentScreen;
     @Nullable protected IConfigInfoProvider hoverInfoProvider;
     @Nullable protected IDialogHandler dialogHandler;
 
@@ -38,7 +36,6 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         super(listX, listY);
 
         this.modId = modId;
-        this.parentScreen = parent;
         this.title = StringUtils.translate(titleKey, args);
     }
 
@@ -64,11 +61,6 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         return this.configWidth;
     }
 
-    public void setParentGui(Screen parent)
-    {
-        this.parentScreen = parent;
-    }
-
     public GuiConfigsBase setConfigWidth(int configWidth)
     {
         this.configWidth = configWidth;
@@ -81,13 +73,14 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         return this;
     }
 
+    @Nullable
     @Override
     public IDialogHandler getDialogHandler()
     {
         return this.dialogHandler;
     }
 
-    public void setDialogHandler(IDialogHandler handler)
+    public void setDialogHandler(@Nullable IDialogHandler handler)
     {
         this.dialogHandler = handler;
     }
@@ -148,9 +141,9 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
                 return true;
             }
 
-            if (keyCode == KeyCodes.KEY_ESCAPE && this.parentScreen != GuiUtils.getCurrentScreen())
+            if (keyCode == KeyCodes.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
             {
-                GuiBase.openGui(this.parentScreen);
+                this.closeGui(true);
                 return true;
             }
 
