@@ -311,6 +311,8 @@ public class StringUtils
             {
                 return server.address.replace(':', '_');
             }
+
+            return "multiplayer_fallback";
         }
 
         return null;
