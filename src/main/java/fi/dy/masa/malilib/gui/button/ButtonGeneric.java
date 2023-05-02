@@ -2,8 +2,9 @@ package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.util.math.MatrixStack;
+
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -98,10 +99,6 @@ public class ButtonGeneric extends ButtonBase
             int buttonStyle = this.getTextureOffset(this.hovered);
 
             RenderUtils.color(1f, 1f, 1f, 1f);
-            RenderUtils.setupBlend();
-            RenderUtils.setupBlendSimple();
-            RenderSystem.depthMask(true);
-            RenderSystem.enableDepthTest();
 
             if (this.renderDefaultBackground)
             {

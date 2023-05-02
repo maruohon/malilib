@@ -218,9 +218,8 @@ public class RenderUtils
 
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
+            RenderSystem.enableDepthTest();
             TextRenderer font = mc.textRenderer;
-            disableDiffuseLighting();
-            RenderSystem.disableDepthTest();
             int maxLineLength = 0;
             int maxWidth = GuiUtils.getCurrentScreen().width;
             List<String> linesNew = new ArrayList<>();
@@ -254,6 +253,10 @@ public class RenderUtils
                 textStartX = Math.max(2, maxWidth - maxLineLength - 8);
             }
 
+            matrixStack.push();
+            matrixStack.translate(0, 0, 300);
+            RenderSystem.applyModelViewMatrix();
+
             double zLevel = 300;
             int borderColor = 0xF0100010;
             drawGradientRect(textStartX - 3, textStartY - 4, textStartX + maxLineLength + 3, textStartY - 3, zLevel, borderColor, borderColor);
@@ -269,18 +272,18 @@ public class RenderUtils
             drawGradientRect(textStartX - 3, textStartY - 3, textStartX + maxLineLength + 3, textStartY - 3 + 1, zLevel, fillColor1, fillColor1);
             drawGradientRect(textStartX - 3, textStartY + textHeight + 2, textStartX + maxLineLength + 3, textStartY + textHeight + 3, zLevel, fillColor2, fillColor2);
 
-            matrixStack.push();
-            matrixStack.translate(0, 0, 300);
             for (int i = 0; i < textLines.size(); ++i)
             {
                 String str = textLines.get(i);
                 font.drawWithShadow(matrixStack, str, textStartX, textStartY, 0xFFFFFFFF);
                 textStartY += lineHeight;
             }
-            matrixStack.pop();
 
-            RenderSystem.enableDepthTest();
-            enableDiffuseLightingGui3D();
+            matrixStack.pop();
+            RenderSystem.applyModelViewMatrix();
+
+            //RenderSystem.enableDepthTest();
+            //enableDiffuseLightingGui3D();
         }
     }
 

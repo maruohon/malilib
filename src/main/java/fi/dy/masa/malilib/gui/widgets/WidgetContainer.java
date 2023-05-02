@@ -3,10 +3,11 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+
 import net.minecraft.client.util.math.MatrixStack;
+
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class WidgetContainer extends WidgetBase
 {
@@ -199,7 +200,6 @@ public abstract class WidgetContainer extends WidgetBase
         if (this.hoveredSubWidget != null)
         {
             this.hoveredSubWidget.postRenderHovered(mouseX, mouseY, false, matrixStack);
-            RenderUtils.disableDiffuseLighting();
         }
     }
 }
