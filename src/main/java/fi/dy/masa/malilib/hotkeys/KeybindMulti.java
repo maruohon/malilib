@@ -418,6 +418,11 @@ public class KeybindMulti implements IKeybind
 
     public static boolean isKeyDown(int keyCode)
     {
+        if (keyCode == -1)
+        {
+            return false;
+        }
+
         long window = MinecraftClient.getInstance().getWindow().getHandle();
 
         if (keyCode >= 0)
@@ -435,7 +440,17 @@ public class KeybindMulti implements IKeybind
      */
     public static void onKeyInputPre(int keyCode, int scanCode, boolean state)
     {
-        Integer valObj = Integer.valueOf(keyCode);
+        if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
+        {
+            printKeybindDebugMessage(keyCode, scanCode, state);
+        }
+
+        if (keyCode == -1)
+        {
+            return;
+        }
+
+        Integer valObj = keyCode;
 
         if (state)
         {
@@ -452,11 +467,6 @@ public class KeybindMulti implements IKeybind
         else
         {
             PRESSED_KEYS.remove(valObj);
-        }
-
-        if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
-        {
-            printKeybindDebugMessage(keyCode, scanCode, state);
         }
     }
 
@@ -489,9 +499,10 @@ public class KeybindMulti implements IKeybind
         String keyName = keyCode != KeyCodes.KEY_NONE ? KeyCodes.getNameForKey(keyCode) : "<unknown>";
         String type = keyState ? "PRESS" : "RELEASE";
         String held = getActiveKeysString();
-        String msg = String.format("%s %s (%d), held keys: %s", type, keyName, keyCode, held);
+        String msg = String.format("%s %s (%d), held: %s", type, keyName, keyCode, held);
+        String msgConsole = String.format("%s %s (keyCode: %d, scanCode: %d), held keys: %s", type, keyName, keyCode, scanCode, held);
 
-        MaLiLib.logger.info(msg);
+        MaLiLib.logger.info(msgConsole);
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
         {
