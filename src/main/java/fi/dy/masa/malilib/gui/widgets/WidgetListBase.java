@@ -377,6 +377,13 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     }
 
     @Override
+    protected boolean shouldRenderHoverStuff()
+    {
+        // Don't do the "is current screen" check for widgets - the container screen does that already
+        return true;
+    }
+
+    @Override
     public void drawContents(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
@@ -387,13 +394,12 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         }
 
         WidgetBase hovered = null;
-        boolean hoveredSelected = false;
         int scrollbarHeight = this.browserHeight - this.browserEntriesOffsetY - 8;
         int totalHeight = 0;
 
-        for (int i = 0; i < this.listContents.size(); ++i)
+        for (TYPE listContent : this.listContents)
         {
-            totalHeight += this.getBrowserEntryHeightFor(this.listContents.get(i));
+            totalHeight += this.getBrowserEntryHeightFor(listContent);
         }
 
         totalHeight = Math.max(totalHeight, scrollbarHeight);
@@ -410,9 +416,8 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         }
 
         // Draw the currently visible directory entries
-        for (int i = 0; i < this.listWidgets.size(); i++)
+        for (WIDGET widget : this.listWidgets)
         {
-            WIDGET widget = this.listWidgets.get(i);
             TYPE entry = widget.getEntry();
             boolean isSelected = this.allowMultiSelection ? this.selectedEntries.contains(entry) : entry != null && entry.equals(this.getLastSelectedEntry());
             widget.render(mouseX, mouseY, isSelected, matrixStack);
@@ -420,7 +425,6 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             if (widget.isMouseOver(mouseX, mouseY))
             {
                 hovered = widget;
-                hoveredSelected = isSelected;
             }
         }
 
@@ -429,10 +433,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             hovered = this.widgetSearchBar;
         }
 
-        if (hovered != null)
-        {
-            hovered.postRenderHovered(mouseX, mouseY, hoveredSelected, matrixStack);
-        }
+        this.hoveredWidget = hovered;
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
