@@ -3,7 +3,8 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.util.math.MatrixStack;
+
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -65,7 +66,7 @@ public class WidgetKeybindSettings extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(TEXTURE);
@@ -98,7 +99,7 @@ public class WidgetKeybindSettings extends WidgetBase
     }
 
     @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
         List<String> text = new ArrayList<>();
         String name, val;
@@ -143,6 +144,6 @@ public class WidgetKeybindSettings extends WidgetBase
             text.add(parts[i]);
         }
 
-        RenderUtils.drawHoverText(mouseX + 10, mouseY, text, matrixStack);
+        RenderUtils.drawHoverText(mouseX + 10, mouseY, text, drawContext);
     }
 }

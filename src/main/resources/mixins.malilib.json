@@ -1,19 +1,19 @@
 {
-	"required": true,
-	"package": "fi.dy.masa.malilib.mixin",
-	"compatibilityLevel": "JAVA_17",
-	"minVersion": "0.8",
-	"client": [
-		"MixinClientPlayNetworkHandler",
-		"MixinCreativeInventoryScreen",
-		"MixinInGameHud",
-		"MixinKeyboard",
-		"MixinMinecraftClient",
-		"MixinMouse",
-		"MixinScreen",
-		"MixinWorldRenderer"
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "fi.dy.masa.malilib.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "MixinClientPlayNetworkHandler",
+    "MixinDrawContext",
+    "MixinHandledScreen",
+    "MixinInGameHud",
+    "MixinKeyboard",
+    "MixinMinecraftClient",
+    "MixinMouse",
+    "MixinWorldRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }

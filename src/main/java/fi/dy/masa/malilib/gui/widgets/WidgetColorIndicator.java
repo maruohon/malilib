@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.function.IntConsumer;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import fi.dy.masa.malilib.config.IConfigInteger;
 import fi.dy.masa.malilib.config.options.ConfigInteger;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -41,13 +41,13 @@ public class WidgetColorIndicator extends WidgetBase
     }
 
     @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
-        RenderUtils.drawHoverText(mouseX, mouseY, this.hoverText, matrixStack);
+        RenderUtils.drawHoverText(mouseX, mouseY, this.hoverText, drawContext);
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
         int x = this.getX();
         int y = this.getY();

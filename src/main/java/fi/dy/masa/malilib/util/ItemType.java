@@ -78,7 +78,7 @@ public class ItemType
                 return false;
             }
 
-            return this.checkNBT() == false || ItemStack.areNbtEqual(this.stack, other.stack);
+            return this.checkNBT() == false || ItemStack.areEqual(this.stack, other.stack);
         }
     }
 
