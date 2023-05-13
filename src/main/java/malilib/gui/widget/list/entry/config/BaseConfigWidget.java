@@ -58,6 +58,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
         config.getComment().ifPresent(comments::add);
 
+        this.configOwnerAndNameLabelWidget.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0x30FFFFFF);
         this.configOwnerAndNameLabelWidget.getHoverInfoFactory().addStrings(comments);
 
         boolean bgEnabled = MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue();
