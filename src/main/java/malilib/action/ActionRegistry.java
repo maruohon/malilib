@@ -88,7 +88,8 @@ public class ActionRegistry
     }
 
     /**
-     * Adds a macro action, which is basically a list of other actions
+     * Adds a parameterized action. Constructs a registry name based on the mod id,
+     * action name, and bound argument, using a '&lt;parameterized&gt;:' prefix.
      * @return true on success, false on failure (if an action already exists by that name)
      */
     public boolean addParameterizedAction(@Nullable ParameterizedNamedAction action)
