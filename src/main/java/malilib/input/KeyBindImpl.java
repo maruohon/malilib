@@ -46,6 +46,7 @@ public class KeyBindImpl implements KeyBind
     private String nameTranslationKey = "";
     private boolean pressed;
     private boolean pressedToggle;
+    private boolean pressedLastForWasTriggered;
 
     private KeyBindImpl(String defaultStorageString, KeyBindSettings settings)
     {
@@ -97,7 +98,7 @@ public class KeyBindImpl implements KeyBind
     public void clearKeys()
     {
         this.keyCodes.clear();
-        this.pressed = false;
+        this.clearPressed();
     }
 
     @Override
@@ -222,6 +223,20 @@ public class KeyBindImpl implements KeyBind
         return this.pressed;
     }
 
+    @Override
+    public boolean wasTriggered()
+    {
+        boolean triggered = this.pressed && this.pressedLastForWasTriggered == false;
+        this.pressedLastForWasTriggered = this.pressed;
+        return triggered;
+    }
+
+    private void clearPressed()
+    {
+        this.pressed = false;
+        this.pressedLastForWasTriggered = false;
+    }
+
     /**
      * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
      */
@@ -232,7 +247,7 @@ public class KeyBindImpl implements KeyBind
             (this.settings.getContext() != Context.ANY &&
             ((this.settings.getContext() == Context.INGAME) != (GuiUtils.getCurrentScreen() == null))))
         {
-            this.pressed = false;
+            this.clearPressed();
             return NO_ACTION;
         }
 
@@ -266,14 +281,14 @@ public class KeyBindImpl implements KeyBind
                     System.out.printf("km fail: key: %s, ae: %s, aoo: %s, cont: %s, keys: %s, pressed: %s, triggeredCount: %d\n",
                             keyCodeObj, allowExtraKeys, allowOutOfOrder, this.keyCodes.contains(keyCodeObj), this.keyCodes, pressedKeys, triggeredCount);
                     */
-                    this.pressed = false;
+                    this.clearPressed();
                     break;
                 }
             }
         }
         else
         {
-            this.pressed = false;
+            this.clearPressed();
         }
 
         if (this.pressed && pressedLast == false)

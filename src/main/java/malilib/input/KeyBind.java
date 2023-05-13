@@ -44,6 +44,11 @@ public interface KeyBind
     boolean isPhysicallyHeld();
 
     /**
+     * @return true if this keybind was just triggered (since the last time this method was called)
+     */
+    boolean wasTriggered();
+
+    /**
      * Checks and updates the pressed status, and fires the callback, if one is set.
      * Returns a value for whether further processing of the just pressed key should be cancelled.
      * The cancellation request is determined by the KeybindSettings together
