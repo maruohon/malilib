@@ -12,7 +12,6 @@ import malilib.gui.BaseListScreen;
 import malilib.gui.BaseScreen;
 import malilib.gui.TextInputScreen;
 import malilib.gui.config.KeybindEditScreen;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.button.KeyBindConfigButton;
 import malilib.gui.widget.list.DataListWidget;
@@ -23,7 +22,6 @@ import malilib.input.CustomHotkeyManager;
 import malilib.input.KeyBind;
 import malilib.input.KeyBindImpl;
 import malilib.input.KeyBindSettings;
-import malilib.input.Keys;
 
 public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditScreen
 {
@@ -95,21 +93,8 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
             this.activeKeyBindButton.onKeyTyped(keyCode, scanCode, modifiers);
             return true;
         }
-        else
-        {
-            if (this.getListWidget().onKeyTyped(keyCode, scanCode, modifiers))
-            {
-                return true;
-            }
 
-            if (keyCode == Keys.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
-            {
-                this.openParentScreen();
-                return true;
-            }
-
-            return super.onKeyTyped(keyCode, scanCode, modifiers);
-        }
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
     @Override

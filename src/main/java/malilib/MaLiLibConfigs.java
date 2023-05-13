@@ -107,6 +107,7 @@ public class MaLiLibConfigs
         public static final HotkeyConfig IGNORED_KEYS                   = new HotkeyConfig("ignoredKeys", "");
         public static final HotkeyConfig OPEN_ACTION_PROMPT_SCREEN      = new HotkeyConfig("openActionPromptScreen", "");
         public static final HotkeyConfig OPEN_CONFIG_SCREEN             = new HotkeyConfig("openConfigScreen", "A,C");
+        public static final HotkeyConfig SCREEN_GO_BACK                 = new HotkeyConfig("screenGoBack", "L_ALT,LEFT", KeyBindSettings.GUI_DEFAULT);
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_DECREASE   = new HotkeyConfig("scrollValueAdjustDecrease", "SCROLL_DOWN", SCROLL_ADJUST);
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_INCREASE   = new HotkeyConfig("scrollValueAdjustIncrease", "SCROLL_UP", SCROLL_ADJUST);
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_MODIFIER   = new HotkeyConfig("scrollValueAdjustModifier", "", KeyBindSettings.INGAME_MODIFIER_EMPTY);
@@ -114,6 +115,7 @@ public class MaLiLibConfigs
         public static final ImmutableList<HotkeyConfig> FUNCTIONAL_HOTKEYS = ImmutableList.of(
                 OPEN_ACTION_PROMPT_SCREEN,
                 OPEN_CONFIG_SCREEN,
+                SCREEN_GO_BACK,
                 SCROLL_VALUE_ADJUST_DECREASE,
                 SCROLL_VALUE_ADJUST_INCREASE,
                 SCROLL_VALUE_ADJUST_MODIFIER

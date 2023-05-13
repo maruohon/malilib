@@ -747,7 +747,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             return true;
         }
 
-        if ((keyCode == Keys.KEY_BACKSPACE || keyCode == Keys.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
+        if ((keyCode == Keys.KEY_BACKSPACE || keyCode == Keys.KEY_LEFT) &&
+            MaLiLibConfigs.Hotkeys.SCREEN_GO_BACK.getKeyBind().isPhysicallyHeld() == false &&
+            this.currentDirectoryIsRoot() == false)
         {
             this.switchToParentDirectory();
             return true;

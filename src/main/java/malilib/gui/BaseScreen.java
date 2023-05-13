@@ -741,6 +741,12 @@ public abstract class BaseScreen extends GuiScreen
             }
         }
 
+        if (MaLiLibConfigs.Hotkeys.SCREEN_GO_BACK.getKeyBind().wasTriggered() && this.getParent() != null)
+        {
+            this.openParentScreen();
+            return true;
+        }
+
         if (keyCode == Keys.KEY_ESCAPE)
         {
             this.closeScreenOrShowParent();

@@ -7,13 +7,10 @@ import javax.annotation.Nullable;
 import malilib.MaLiLibConfigs;
 import malilib.config.ConfigManagerImpl;
 import malilib.gui.BaseListScreen;
-import malilib.gui.BaseScreen;
 import malilib.gui.tab.ScreenTab;
-import malilib.gui.util.GuiUtils;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.button.KeyBindConfigButton;
 import malilib.gui.widget.list.ConfigOptionListWidget;
-import malilib.input.Keys;
 import malilib.listener.EventListener;
 import malilib.registry.Registry;
 import malilib.util.ListUtils;
@@ -58,21 +55,8 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget> imp
             this.activeKeyBindButton.onKeyTyped(keyCode, scanCode, modifiers);
             return true;
         }
-        else
-        {
-            if (this.getListWidget().onKeyTyped(keyCode, scanCode, modifiers))
-            {
-                return true;
-            }
 
-            if (keyCode == Keys.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
-            {
-                BaseScreen.openScreen(this.getParent());
-                return true;
-            }
-
-            return super.onKeyTyped(keyCode, scanCode, modifiers);
-        }
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
     @Override
