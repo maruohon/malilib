@@ -64,6 +64,11 @@ public interface Icon
     Identifier getTexture();
 
     /**
+     * @return The icon serialized into a JSON object
+     */
+    JsonObject toJson();
+
+    /**
      * Renders this icon at the given position
      */
     default void renderAt(int x, int y, float z)
@@ -188,6 +193,4 @@ public interface Icon
         ShapeRenderUtils.renderTexturedRectangle(x + w1, y     , z, uRight, v      , w2, h1, pw, ph); // top right
         ShapeRenderUtils.renderTexturedRectangle(x + w1, y + h1, z, uRight, vBottom, w2, h2, pw, ph); // bottom right
     }
-
-    JsonObject toJson();
 }

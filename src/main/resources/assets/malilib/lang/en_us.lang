@@ -175,6 +175,7 @@ malilib.hover.config.string.default_value=Default: §a%s
 malilib.hover.config_status_indicator.background_odd=Use a different background color for odd rows
 malilib.hover.custom_hotkey_edit_screen.add_actions=Add the selected actions to the hotkey
 malilib.hover.custom_hotkey_export_import_screen.append_overwrite=- Append = add the actions from the import to the end of the current actions in the hotkey\n- Overwrite = replace all the actions in the hotkey with the imported actions
+malilib.hover.custom_icon.info=Texture u: §b%s§r\nTexture v: §b%s§r\nWidth: §b%s§r\nHeight: §b%s§r\nSheet width: §b%s§r\nSheet height: §b%s§r\nTexture sheet: §e%s
 malilib.hover.item_tooltip_lines=§7%s
 malilib.hover.macro_action_export_import_screen.append_overwrite=- Append = add the actions from the imported macro to the end of the current actions in the macro\n- Overwrite = replace all the actions in the macro with the imported actions
 malilib.hover.macro_edit_screen.add_actions=Add the selected actions to the macro
@@ -257,6 +258,7 @@ malilib.label.custom_hotkeys.widget.hotkey_name=%s
 malilib.label.custom_icon_edit.coordinate.u=U:
 malilib.label.custom_icon_edit.coordinate.v=V:
 malilib.label.custom_icon_edit.icon_height=Icon Height:
+malilib.label.custom_icon_edit.icon_name=Name:
 malilib.label.custom_icon_edit.icon_preview=Preview (downscaled to 64):
 malilib.label.custom_icon_edit.icon_width=Icon Width:
 malilib.label.custom_icon_edit.texture_name=Texture Name:

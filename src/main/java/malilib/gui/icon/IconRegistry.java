@@ -20,10 +20,10 @@ import malilib.util.data.json.JsonUtils;
 public class IconRegistry
 {
     protected final List<Icon> modIcons = new ArrayList<>();
-    protected final List<Icon> userIcons = new ArrayList<>();
+    protected final List<NamedIcon> userIcons = new ArrayList<>();
     protected final Map<String, Icon> iconMap = new HashMap<>();
     protected ImmutableList<Icon> allIcons = ImmutableList.of();
-    protected ImmutableList<Icon> userIconsImmutable = ImmutableList.of();
+    protected ImmutableList<NamedIcon> userIconsImmutable = ImmutableList.of();
     protected boolean dirty;
     protected boolean needsRebuild = true;
 
@@ -38,7 +38,7 @@ public class IconRegistry
         return icon;
     }
 
-    public <T extends Icon> T registerUserIcon(T icon)
+    public <T extends NamedIcon> T registerUserIcon(T icon)
     {
         if (this.userIcons.contains(icon) == false)
         {
@@ -55,7 +55,7 @@ public class IconRegistry
         this.needsRebuild = true;
     }
 
-    public void unregisterUserIcon(Icon icon)
+    public void unregisterUserIcon(NamedIcon icon)
     {
         this.userIcons.remove(icon);
         this.markDirty();
@@ -73,7 +73,7 @@ public class IconRegistry
         return this.allIcons;
     }
 
-    public ImmutableList<Icon> getUserIcons()
+    public ImmutableList<NamedIcon> getUserIcons()
     {
         this.updateLists();
         return this.userIconsImmutable;
@@ -96,19 +96,21 @@ public class IconRegistry
     {
         if (this.needsRebuild)
         {
-            List<Icon> icons = new ArrayList<>(this.userIcons);
-            icons.sort(Comparator.comparing(i -> i.getTexture().toString()));
+            List<NamedIcon> userIcons = new ArrayList<>(this.userIcons);
+            userIcons.sort(Comparator.comparing(NamedIcon::getName));
 
-            this.userIconsImmutable = ImmutableList.copyOf(icons);
+            List<Icon> modIcons = new ArrayList<>(this.modIcons);
+            modIcons.sort(Comparator.comparing(i -> i.getTexture().toString()));
 
-            icons.addAll(this.modIcons);
-            icons.sort(Comparator.comparing(i -> i.getTexture().toString()));
+            List<Icon> allIcons = new ArrayList<>(userIcons);
+            allIcons.addAll(userIcons);
+            allIcons.addAll(modIcons);
 
-            this.allIcons = ImmutableList.copyOf(icons);
-
+            this.userIconsImmutable = ImmutableList.copyOf(userIcons);
+            this.allIcons = ImmutableList.copyOf(allIcons);
             this.iconMap.clear();
 
-            for (Icon icon : this.allIcons)
+            for (Icon icon : allIcons)
             {
                 String key = getKeyForIcon(icon);
                 this.iconMap.put(key, icon);
@@ -150,7 +152,7 @@ public class IconRegistry
 
     protected void readAndAddIcon(JsonElement el)
     {
-        BaseIcon icon = BaseIcon.fromJson(el);
+        NamedBaseIcon icon = NamedBaseIcon.namedBaseIconFromJson(el);
 
         if (icon != null && this.userIcons.contains(icon) == false)
         {

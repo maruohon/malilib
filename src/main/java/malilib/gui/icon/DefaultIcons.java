@@ -114,7 +114,7 @@ public class DefaultIcons
         return register(new BaseIcon(u, v, w, h, 0, 0, new Identifier(MaLiLibReference.MOD_ID, texture)));
     }
 
-    public static <T extends Icon> T register(T icon)
+    private static <T extends Icon> T register(T icon)
     {
         return Registry.ICON.registerModIcon(icon);
     }

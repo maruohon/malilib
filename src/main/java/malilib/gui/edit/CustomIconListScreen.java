@@ -1,18 +1,20 @@
 package malilib.gui.edit;
 
+import com.google.common.collect.ImmutableList;
+
 import malilib.MaLiLibConfigScreen;
 import malilib.MaLiLibReference;
 import malilib.action.ActionContext;
 import malilib.gui.BaseListScreen;
 import malilib.gui.BaseScreen;
-import malilib.gui.icon.Icon;
+import malilib.gui.icon.NamedIcon;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.DataListWidget;
 import malilib.gui.widget.list.entry.IconEntryWidget;
 import malilib.input.ActionResult;
 import malilib.registry.Registry;
 
-public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
+public class CustomIconListScreen extends BaseListScreen<DataListWidget<NamedIcon>>
 {
     protected final GenericButton addIconButton;
 
@@ -44,17 +46,19 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
     }
 
     @Override
-    protected DataListWidget<Icon> createListWidget()
+    protected DataListWidget<NamedIcon> createListWidget()
     {
-        DataListWidget<Icon> listWidget = new DataListWidget<>(Registry.ICON::getUserIcons, true);
+        DataListWidget<NamedIcon> listWidget = new DataListWidget<>(Registry.ICON::getUserIcons, true);
 
         listWidget.setListEntryWidgetFixedHeight(22);
         listWidget.setDataListEntryWidgetFactory(IconEntryWidget::new);
+        listWidget.addDefaultSearchBar();
+        listWidget.setEntryFilterStringFunction(i -> ImmutableList.of(i.getName(), i.getTexture().toString()));
 
         return listWidget;
     }
 
-    public void addIcon(Icon icon)
+    public void addIcon(NamedIcon icon)
     {
         Registry.ICON.registerUserIcon(icon);
         this.getListWidget().refreshEntries();

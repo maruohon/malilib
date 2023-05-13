@@ -25,7 +25,7 @@ public class BaseIcon implements Icon
     protected final int textureSheetHeight;
     protected final float texturePixelWidth;
     protected final float texturePixelHeight;
-    protected Identifier texture;
+    protected final Identifier texture;
 
     BaseIcon(int u, int v, int w, int h)
     {
@@ -186,7 +186,7 @@ public class BaseIcon implements Icon
     }
 
     @Nullable
-    public static BaseIcon fromJson(JsonElement el)
+    public static BaseIcon baseIconFromJson(JsonElement el)
     {
         if (el.isJsonObject() == false)
         {

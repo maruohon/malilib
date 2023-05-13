@@ -4,34 +4,41 @@ import malilib.gui.BaseScreen;
 import malilib.gui.edit.CustomIconEditScreen;
 import malilib.gui.edit.CustomIconListScreen;
 import malilib.gui.icon.Icon;
+import malilib.gui.icon.NamedIcon;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.button.GenericButton;
 import malilib.registry.Registry;
 import malilib.render.text.StyledTextLine;
 
-public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
+public class IconEntryWidget extends BaseDataListEntryWidget<NamedIcon>
 {
     protected final GenericButton editButton;
     protected final GenericButton removeButton;
 
-    public IconEntryWidget(Icon data, DataListEntryWidgetData constructData)
+    public IconEntryWidget(NamedIcon data, DataListEntryWidgetData constructData)
     {
         super(data, constructData);
 
         this.editButton = GenericButton.create(20, "malilib.button.misc.edit", this::openEditScreen);
         this.removeButton = GenericButton.create(20, "malilib.button.misc.remove", this::removeIcon);
 
+        this.iconOffset.setXOffset(4);
+        this.textOffset.setXOffset(28);
+        this.setIcon(data);
+        this.setText(StyledTextLine.unParsed(data.getName()));
+
         int w = data.getWidth();
         int h = data.getHeight();
         int u = data.getU();
         int v = data.getV();
+        int sw = data.getTextureSheetWidth();
+        int sh = data.getTextureSheetHeight();
         String texture = data.getTexture().toString();
 
-        this.iconOffset.setXOffset(4);
-        this.textOffset.setXOffset(28);
-        this.setIcon(data);
-        this.setText(StyledTextLine.parseFirstLine(String.format("%d x %d @ [ %d, %d ] @ %s", w, h, u, v, texture)));
+        this.getHoverInfoFactory().addTextLines(StyledTextLine.translate("malilib.hover.custom_icon.info",
+                                                                         u, v, w, h, sw, sh, texture));
+
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x30707070 : 0x50707070);
         this.getBackgroundRenderer().getHoverSettings().setColor(0x50909090);
@@ -99,7 +106,7 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
         }
     }
 
-    protected void replaceIcon(Icon icon)
+    protected void replaceIcon(NamedIcon icon)
     {
         this.scheduleTask(() -> {
             Registry.ICON.unregisterUserIcon(this.data);

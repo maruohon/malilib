@@ -4,9 +4,8 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import malilib.gui.BaseScreen;
-import malilib.gui.icon.BaseIcon;
-import malilib.gui.icon.DefaultIcons;
-import malilib.gui.icon.Icon;
+import malilib.gui.icon.NamedBaseIcon;
+import malilib.gui.icon.NamedIcon;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.IntegerEditWidget;
@@ -18,8 +17,9 @@ import malilib.util.data.Identifier;
 
 public class CustomIconEditScreen extends BaseScreen
 {
-    protected final Icon originalIcon;
-    protected final Consumer<Icon> iconConsumer;
+    @Nullable protected final NamedIcon originalIcon;
+    protected final Consumer<NamedIcon> iconConsumer;
+    protected final LabelWidget iconNameLabel;
     protected final LabelWidget textureNameLabel;
     protected final LabelWidget uLabel;
     protected final LabelWidget vLabel;
@@ -37,45 +37,55 @@ public class CustomIconEditScreen extends BaseScreen
     protected final IntegerEditWidget textureSheetHeightEditWidget;
     protected final IntegerEditWidget variantOffsetUEditWidget;
     protected final IntegerEditWidget variantOffsetVEditWidget;
+    protected final BaseTextFieldWidget iconNameTextField;
     protected final BaseTextFieldWidget textureNameTextField;
     @Nullable protected Identifier texture;
     protected int u;
     protected int v;
-    protected int iconWidth;
-    protected int iconHeight;
-    protected int textureSheetWidth;
-    protected int textureSheetHeight;
+    protected int iconWidth = 10;
+    protected int iconHeight = 10;
+    protected int textureSheetWidth = 256;
+    protected int textureSheetHeight = 256;
     protected int variantOffsetU;
     protected int variantOffsetV;
+    protected String iconName = "name";
 
-    public CustomIconEditScreen(Consumer<Icon> iconConsumer)
+    public CustomIconEditScreen(Consumer<NamedIcon> iconConsumer)
     {
-        this(DefaultIcons.INFO_11, iconConsumer);
+        this(null, iconConsumer);
     }
 
-    public CustomIconEditScreen(Icon icon, Consumer<Icon> iconConsumer)
+    public CustomIconEditScreen(@Nullable NamedIcon originalIcon, Consumer<NamedIcon> iconConsumer)
     {
-        this(icon, iconConsumer,
-             icon.getVariantU(1) - icon.getU(),
-             icon.getVariantV(1) - icon.getV());
+        this(originalIcon, iconConsumer,
+             originalIcon != null ? originalIcon.getVariantU(1) - originalIcon.getU() : 0,
+             originalIcon != null ? originalIcon.getVariantV(1) - originalIcon.getV() : 0);
     }
 
-    public CustomIconEditScreen(Icon icon, Consumer<Icon> iconConsumer, int variantOffsetU, int variantOffsetV)
+    public CustomIconEditScreen(@Nullable NamedIcon originalIcon, Consumer<NamedIcon> iconConsumer,
+                                int variantOffsetU, int variantOffsetV)
     {
         this.setTitle("malilib.title.screen.custom_icons_edit_screen");
 
-        this.originalIcon = icon;
-        this.texture = icon.getTexture();
-        this.u = icon.getU();
-        this.v = icon.getV();
-        this.iconWidth = icon.getWidth();
-        this.iconHeight = icon.getHeight();
-        this.textureSheetWidth = icon.getTextureSheetWidth();
-        this.textureSheetHeight = icon.getTextureSheetHeight();
+        this.originalIcon = originalIcon;
+
+        if (originalIcon != null)
+        {
+            this.texture = originalIcon.getTexture();
+            this.u = originalIcon.getU();
+            this.v = originalIcon.getV();
+            this.iconWidth = originalIcon.getWidth();
+            this.iconHeight = originalIcon.getHeight();
+            this.textureSheetWidth = originalIcon.getTextureSheetWidth();
+            this.textureSheetHeight = originalIcon.getTextureSheetHeight();
+            this.iconName = originalIcon.getName();
+        }
+
         this.variantOffsetU = variantOffsetU;
         this.variantOffsetV = variantOffsetV;
         this.iconConsumer = iconConsumer;
 
+        this.iconNameLabel              = new LabelWidget("malilib.label.custom_icon_edit.icon_name");
         this.textureNameLabel           = new LabelWidget("malilib.label.custom_icon_edit.texture_name");
         this.uLabel                     = new LabelWidget("malilib.label.custom_icon_edit.coordinate.u");
         this.vLabel                     = new LabelWidget("malilib.label.custom_icon_edit.coordinate.v");
@@ -86,8 +96,16 @@ public class CustomIconEditScreen extends BaseScreen
         this.variantOffsetLabel         = new LabelWidget("malilib.label.custom_icon_edit.variant_offset_uv");
         this.previewLabel               = new LabelWidget("malilib.label.custom_icon_edit.icon_preview");
 
-        this.textureNameTextField = new BaseTextFieldWidget(280, 16, this.texture.toString());
+        this.iconNameTextField = new BaseTextFieldWidget(280, 16, this.iconName);
+        this.iconNameTextField.setListener(this::setIconName);
+
+        this.textureNameTextField = new BaseTextFieldWidget(280, 16);
         this.textureNameTextField.setListener(this::setTextureName);
+
+        if (this.texture != null)
+        {
+            this.textureNameTextField.setTextNoNotify(this.texture.toString());
+        }
 
         int fieldWidth = 80;
         this.uEditWidget                    = new IntegerEditWidget(fieldWidth, 16, this.u, 0, 32767, (val) -> this.u = val);
@@ -111,6 +129,9 @@ public class CustomIconEditScreen extends BaseScreen
     protected void reAddActiveWidgets()
     {
         super.reAddActiveWidgets();
+
+        this.addWidget(this.iconNameLabel);
+        this.addWidget(this.iconNameTextField);
 
         this.addWidget(this.textureNameLabel);
         this.addWidget(this.textureNameTextField);
@@ -150,8 +171,12 @@ public class CustomIconEditScreen extends BaseScreen
         int rightX = x + Math.max(this.iconWidthLabel.getWidth(), this.textureSheetWidthLabel.getWidth()) + 10;
         rightX = Math.max(rightX, x + 100);
 
-        this.textureNameLabel.setPosition(x, y);
+        this.iconNameLabel.setPosition(x, y);
+        y += 10;
+        this.iconNameTextField.setPosition(x, y);
 
+        y += 22;
+        this.textureNameLabel.setPosition(x, y);
         y += 10;
         this.textureNameTextField.setPosition(x, y);
 
@@ -187,7 +212,7 @@ public class CustomIconEditScreen extends BaseScreen
 
     protected void createAndApplyIcon()
     {
-        Icon icon = this.createIcon();
+        NamedIcon icon = this.createIcon();
 
         if (icon != null && icon.equals(this.originalIcon) == false)
         {
@@ -196,14 +221,14 @@ public class CustomIconEditScreen extends BaseScreen
     }
 
     @Nullable
-    protected Icon createIcon()
+    protected NamedIcon createIcon()
     {
         if (this.hasValidData())
         {
-            return new BaseIcon(this.u, this.v, this.iconWidth, this.iconHeight,
-                                this.variantOffsetU, this.variantOffsetV,
-                                this.textureSheetWidth, this.textureSheetHeight,
-                                this.texture);
+            return new NamedBaseIcon(this.u, this.v, this.iconWidth, this.iconHeight,
+                                     this.variantOffsetU, this.variantOffsetV,
+                                     this.textureSheetWidth, this.textureSheetHeight,
+                                     this.texture, this.iconName);
         }
 
         return null;
@@ -211,9 +236,14 @@ public class CustomIconEditScreen extends BaseScreen
 
     protected boolean hasValidData()
     {
-        return this.texture != null &&
+        return this.texture != null && this.iconName != null &&
                this.iconWidth > 0 && this.iconHeight > 0 &&
                this.textureSheetWidth > 0 && this.textureSheetHeight > 0;
+    }
+
+    protected void setIconName(String str)
+    {
+        this.iconName = str;
     }
 
     protected void setTextureName(String str)
