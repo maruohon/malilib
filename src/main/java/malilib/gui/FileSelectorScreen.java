@@ -45,11 +45,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
         super.reAddActiveWidgets();
 
         this.addWidget(this.confirmButton);
-
-        if (this.allowCreatingFiles)
-        {
-            this.addWidget(this.fileNameTextField);
-        }
+        this.addWidgetIf(this.fileNameTextField, this.allowCreatingFiles);
     }
 
     @Override
@@ -86,7 +82,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
     {
         this.allowCreatingFiles = true;
         this.fileNameExtension = fileNameExtension;
-        this.getListWidget().getEntrySelectionHandler().setSelectionListener(this::onSelectionChange);
+        //this.getListWidget().getEntrySelectionHandler().setSelectionListener(this::onSelectionChange);
     }
 
     public void setConfirmButtonLabel(String translationKey)
@@ -151,11 +147,16 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
     @Override
     protected BaseFileBrowserWidget createListWidget()
     {
-        BaseFileBrowserWidget widget = new BaseFileBrowserWidget(this.currentDirectory, this.rootDirectory, null, null);
+        BaseFileBrowserWidget listWidget = new BaseFileBrowserWidget(this.currentDirectory, this.rootDirectory, null, null);
 
-        widget.setParentScreen(this.getParent());
-        widget.setFileFilter(this.getFileFilter());
+        listWidget.setFileFilter(this.getFileFilter());
+        listWidget.setParentScreen(this.getParent());
 
-        return widget;
+        if (this.allowCreatingFiles)
+        {
+            listWidget.getEntrySelectionHandler().setSelectionListener(this::onSelectionChange);
+        }
+
+        return listWidget;
     }
 }
