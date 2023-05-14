@@ -280,9 +280,14 @@ public class FileUtils
     {
         Path dir = file.getParent();
 
-        if (createDirectoriesIfMissing(dir) == false)
+        if (dir != null && createDirectoriesIfMissing(dir) == false)
         {
             return false;
+        }
+
+        if (dir == null)
+        {
+            dir = Paths.get(".");
         }
 
         if (writeType == FileWriteType.NORMAL_WRITE || Files.isSymbolicLink(file))
@@ -298,7 +303,7 @@ public class FileUtils
 
             if (Files.exists(fileTmp))
             {
-                fileTmp = file.getParent().resolve(UUID.randomUUID() + ".tmp");
+                fileTmp = dir.resolve(UUID.randomUUID() + ".tmp");
             }
 
             return writeDataToExactFile(fileTmp, dataWriter) && move(fileTmp, file);
@@ -309,9 +314,8 @@ public class FileUtils
 
     public static boolean writeDataToExactFile(final Path file, Consumer<BufferedWriter> dataWriter)
     {
-        try
+        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8))
         {
-            BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
             dataWriter.accept(writer);
             writer.close();
             return true;
@@ -607,7 +611,14 @@ public class FileUtils
             newName = newName + ext;
         }
 
-        Path newFile = oldFile.getParent().resolve(newName);
+        Path dir = oldFile.getParent();
+
+        if (dir == null)
+        {
+            dir = Paths.get(".");
+        }
+
+        Path newFile = dir.resolve(newName);
 
         if (Files.exists(newFile) == false)
         {
@@ -689,7 +700,14 @@ public class FileUtils
 
     public static boolean writeStringToFile(String str, Path file, boolean override)
     {
-        if (Files.isDirectory(file.getParent()) == false)
+        Path dir = file.getParent();
+
+        if (dir == null)
+        {
+            dir = Paths.get(".");
+        }
+
+        if (Files.isDirectory(dir) == false)
         {
             return false;
         }
