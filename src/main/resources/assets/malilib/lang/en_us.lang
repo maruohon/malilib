@@ -385,6 +385,7 @@ malilib.label.render_layers_screen.layer=Layer
 malilib.label.render_layers_screen.layer_max=Max layer
 malilib.label.render_layers_screen.layer_min=Min layer
 malilib.label.render_layers_screen.player_follow_offset=Offset
+malilib.label.text_field.empty_value=<c=777><i>%s
 malilib.label.toast.pressed_keys=§6Keys: §b%s
 
 malilib.name.action_group.alias=Alias Actions

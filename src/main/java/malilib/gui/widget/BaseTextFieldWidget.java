@@ -46,6 +46,7 @@ public class BaseTextFieldWidget extends InteractableWidget
     protected final MessageRendererWidget messageRenderer = new MessageRendererWidget();
     private String text = "";
     protected String lastNotifiedText;
+    protected String emptyValueDisplayString = "";
     @Nullable protected IInputCharacterValidator inputValidator;
     @Nullable protected TextFieldValidator textValidator;
     @Nullable protected Consumer<String> listener;
@@ -175,6 +176,11 @@ public class BaseTextFieldWidget extends InteractableWidget
     {
         this.showCursorPosition = showCursorPosition;
         return this;
+    }
+
+    public void setEmptyValueDisplayString(String emptyValueDisplayString)
+    {
+        this.emptyValueDisplayString = emptyValueDisplayString;
     }
 
     public BaseTextFieldWidget setText(String newText)
@@ -1010,6 +1016,13 @@ public class BaseTextFieldWidget extends InteractableWidget
         this.renderTextLine(x, y, z, textColor, false, this.visibleText.getStyledText(), ctx);
     }
 
+    protected void renderEmptyValueDisplayString(int x, int y, float z, int textColor, ScreenContext ctx)
+    {
+        StyledTextLine text = StyledTextLine.translateFirstLine("malilib.label.text_field.empty_value",
+                                                                this.emptyValueDisplayString);
+        this.renderTextLine(x, y, z, textColor, false, text, ctx);
+    }
+
     protected void renderCursorPositionInfo(int x, int y, float z, ScreenContext ctx)
     {
         int pos = this.cursorPosition;
@@ -1047,19 +1060,7 @@ public class BaseTextFieldWidget extends InteractableWidget
 
         super.renderAt(x, y, z, ctx);
 
-        int color;
-
-        if (this.isValidInput)
-        {
-            color = this.isEnabled() ? (this.isFocused() ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
-        }
-        else
-        {
-            color = this.isEnabled() ? this.colorError : this.colorErrorDisabled;
-        }
-
         int textX = x + this.getTextStartRelativeX();
-
         int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
         int fontHeight = this.getFontHeight();
         // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
@@ -1072,7 +1073,24 @@ public class BaseTextFieldWidget extends InteractableWidget
 
         if (this.text.isEmpty() == false)
         {
+            int color;
+
+            if (this.isValidInput)
+            {
+                color = this.isEnabled() ? (this.isFocused() ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
+            }
+            else
+            {
+                color = this.isEnabled() ? this.colorError : this.colorErrorDisabled;
+            }
+
             this.renderVisibleText(textX, y + yOffset, z + 0.1f, color, ctx);
+        }
+        else if (org.apache.commons.lang3.StringUtils.isBlank(this.emptyValueDisplayString) == false &&
+                 this.isFocused() == false)
+        {
+            // The translation entry sets the actual color
+            this.renderEmptyValueDisplayString(textX, y + yOffset, z + 0.1f, 0xFF707070, ctx);
         }
 
         if (this.isFocused())
