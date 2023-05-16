@@ -112,7 +112,8 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 
             Path dir = this.getListWidget().getCurrentDirectory();
 
-            if (name.endsWith("." + this.fileNameExtension) == false)
+            if (org.apache.commons.lang3.StringUtils.isBlank(this.fileNameExtension) == false &&
+                name.endsWith("." + this.fileNameExtension) == false)
             {
                 name += "." + this.fileNameExtension;
             }
