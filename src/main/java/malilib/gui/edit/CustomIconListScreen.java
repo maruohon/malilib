@@ -1,5 +1,6 @@
 package malilib.gui.edit;
 
+import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import malilib.MaLiLibConfigScreen;
@@ -7,22 +8,31 @@ import malilib.MaLiLibReference;
 import malilib.action.ActionContext;
 import malilib.gui.BaseListScreen;
 import malilib.gui.BaseScreen;
+import malilib.gui.ExportEntriesListScreen;
+import malilib.gui.ImportEntriesListScreen;
+import malilib.gui.icon.NamedBaseIcon;
 import malilib.gui.icon.NamedIcon;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.DataListWidget;
 import malilib.gui.widget.list.entry.IconEntryWidget;
 import malilib.input.ActionResult;
+import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
+import malilib.util.data.AppendOverwrite;
 
 public class CustomIconListScreen extends BaseListScreen<DataListWidget<NamedIcon>>
 {
     protected final GenericButton addIconButton;
+    protected final GenericButton exportButton;
+    protected final GenericButton importButton;
 
     public CustomIconListScreen()
     {
         super(10, 74, 20, 80, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
         this.addIconButton = GenericButton.create(16, "malilib.button.custom_icons.add_icon", this::openAddIconScreen);
+        this.exportButton  = GenericButton.create(16, "malilib.button.misc.export", this::openExportScreen);
+        this.importButton  = GenericButton.create(16, "malilib.button.misc.import", this::openImportScreen);
 
         this.addPreScreenCloseListener(Registry.ICON::saveToFileIfDirty);
         this.createSwitchModConfigScreenDropDown(MaLiLibReference.MOD_INFO);
@@ -35,6 +45,8 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<NamedIco
         super.reAddActiveWidgets();
 
         this.addWidget(this.addIconButton);
+        this.addWidget(this.importButton);
+        this.addWidget(this.exportButton);
     }
 
     @Override
@@ -42,7 +54,12 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<NamedIco
     {
         super.updateWidgetPositions();
 
-        this.addIconButton.setPosition(this.x + 10, this.y + 57);
+        int y = this.y + 57;
+        this.addIconButton.setPosition(this.x + 10, y);
+        this.exportButton.setRight(this.getListWidget().getRight());
+        this.exportButton.setY(y);
+        this.importButton.setRight(this.exportButton.getX() - 2);
+        this.importButton.setY(y);
     }
 
     @Override
@@ -69,6 +86,57 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<NamedIco
         CustomIconEditScreen screen = new CustomIconEditScreen(this::addIcon);
         screen.setParent(this);
         BaseScreen.openPopupScreen(screen);
+    }
+
+    protected void openExportScreen()
+    {
+        ExportEntriesListScreen<NamedIcon> screen = new ExportEntriesListScreen<>(Registry.ICON.getUserIcons(),
+                                                                                  NamedIcon::getName,
+                                                                                  NamedIcon::toJson);
+        screen.setHoverInfoFunction(IconEntryWidget::getHoverInfoForIcon);
+        screen.setEntryIconFunction(e -> e);
+        screen.setListEntryWidgetHeight(22);
+        
+        BaseScreen.openScreenWithParent(screen);
+    }
+
+    protected void openImportScreen()
+    {
+        ImportEntriesListScreen<NamedIcon> screen = new ImportEntriesListScreen<>(NamedIcon::getName,
+                                                                                  NamedBaseIcon::namedBaseIconFromJson,
+                                                                                  this::importEntries);
+        screen.setHoverInfoFunction(IconEntryWidget::getHoverInfoForIcon);
+        screen.setEntryIconFunction(e -> e);
+        screen.setListEntryWidgetHeight(22);
+
+        BaseScreen.openScreenWithParent(screen);
+    }
+
+    protected void importEntries(List<NamedIcon> list, AppendOverwrite mode)
+    {
+        if (mode == AppendOverwrite.OVERWRITE)
+        {
+            Registry.ICON.clearAllUserIcons();
+        }
+
+        int count = 0;
+
+        for (NamedIcon icon : list)
+        {
+            if (Registry.ICON.registerUserIcon(icon))
+            {
+                ++count;
+            }
+        }
+
+        if (count > 0)
+        {
+            MessageDispatcher.success("malilib.message.info.successfully_imported_n_entries", count);
+        }
+        else
+        {
+            MessageDispatcher.warning("malilib.message.warn.import_entries.didnt_import_any_entries");
+        }
     }
 
     public static ActionResult openCustomIconListScreenAction(ActionContext ctx)

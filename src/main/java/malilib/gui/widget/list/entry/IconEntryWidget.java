@@ -1,12 +1,13 @@
 package malilib.gui.widget.list.entry;
 
+import com.google.common.collect.ImmutableList;
+
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.CustomIconEditScreen;
 import malilib.gui.edit.CustomIconListScreen;
 import malilib.gui.icon.Icon;
 import malilib.gui.icon.NamedIcon;
 import malilib.gui.util.GuiUtils;
-import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.button.GenericButton;
 import malilib.registry.Registry;
 import malilib.render.text.StyledTextLine;
@@ -23,21 +24,12 @@ public class IconEntryWidget extends BaseDataListEntryWidget<NamedIcon>
         this.editButton = GenericButton.create(20, "malilib.button.misc.edit", this::openEditScreen);
         this.removeButton = GenericButton.create(20, "malilib.button.misc.remove", this::removeIcon);
 
+        this.downScaleIcon = true;
         this.iconOffset.setXOffset(4);
         this.textOffset.setXOffset(28);
         this.setIcon(data);
         this.setText(StyledTextLine.unParsed(data.getName()));
-
-        int w = data.getWidth();
-        int h = data.getHeight();
-        int u = data.getU();
-        int v = data.getV();
-        int sw = data.getTextureSheetWidth();
-        int sh = data.getTextureSheetHeight();
-        String texture = data.getTexture().toString();
-
-        this.getHoverInfoFactory().addTextLines(StyledTextLine.translate("malilib.hover.custom_icon.info",
-                                                                         u, v, w, h, sw, sh, texture));
+        this.getHoverInfoFactory().addTextLines(getHoverInfoForIcon(data));
 
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x30707070 : 0x50707070);
@@ -67,33 +59,6 @@ public class IconEntryWidget extends BaseDataListEntryWidget<NamedIcon>
         this.editButton.setY(y);
     }
 
-    @Override
-    protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
-    {
-        Icon icon = this.getIcon();
-
-        if (icon != null)
-        {
-            int width = icon.getWidth();
-            int height = icon.getHeight();
-            int maxSize = this.getHeight() - 2;
-
-            if (width > maxSize || height > maxSize)
-            {
-                double scale = (double) maxSize / (double) Math.max(width, height);
-                width = (int) Math.floor(scale * width);
-                height = (int) Math.floor(scale * height);
-            }
-
-            int usableWidth = this.getWidth() - this.padding.getHorizontalTotal();
-            int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
-            x = this.getIconPositionX(x, usableWidth, width);
-            y = this.getIconPositionY(y, usableHeight, height);
-
-            icon.renderScaledAt(x, y, z + 0.025f, width, height);
-        }
-    }
-
     protected void openEditScreen()
     {
         CustomIconListScreen screen = GuiUtils.getCurrentScreenIfMatches(CustomIconListScreen.class);
@@ -121,5 +86,18 @@ public class IconEntryWidget extends BaseDataListEntryWidget<NamedIcon>
             Registry.ICON.unregisterUserIcon(this.data);
             this.listWidget.refreshEntries();
         });
+    }
+
+    public static ImmutableList<StyledTextLine> getHoverInfoForIcon(Icon icon)
+    {
+        int w = icon.getWidth();
+        int h = icon.getHeight();
+        int u = icon.getU();
+        int v = icon.getV();
+        int sw = icon.getTextureSheetWidth();
+        int sh = icon.getTextureSheetHeight();
+        String texture = icon.getTexture().toString();
+
+        return StyledTextLine.translate("malilib.hover.custom_icon.info", u, v, w, h, sw, sh, texture);
     }
 }

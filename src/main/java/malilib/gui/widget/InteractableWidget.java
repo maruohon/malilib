@@ -36,6 +36,7 @@ public abstract class InteractableWidget extends BackgroundWidget
     protected boolean canReceiveMouseMoves;
     protected boolean canReceiveMouseScrolls;
     protected boolean canInteract = true;
+    protected boolean downScaleIcon;
     protected boolean enabled = true;
     protected boolean enabledLast = true;
     protected boolean hoverInfoRequiresShift;
@@ -437,6 +438,32 @@ public abstract class InteractableWidget extends BackgroundWidget
         }
     }
 
+    protected void renderDownScaledIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
+    {
+        Icon icon = this.getIcon();
+
+        if (icon != null)
+        {
+            int width = icon.getWidth();
+            int height = icon.getHeight();
+            int maxSize = this.getHeight() - 2;
+
+            if (width > maxSize || height > maxSize)
+            {
+                double scale = (double) maxSize / (double) Math.max(width, height);
+                width = (int) Math.floor(scale * width);
+                height = (int) Math.floor(scale * height);
+            }
+
+            int usableWidth = this.getWidth() - this.padding.getHorizontalTotal();
+            int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
+            x = this.getIconPositionX(x, usableWidth, width);
+            y = this.getIconPositionY(y, usableHeight, height);
+
+            icon.renderScaledAt(x, y, z + 0.025f, width, height, IconWidget.getVariantIndex(enabled, hovered));
+        }
+    }
+
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
@@ -445,7 +472,15 @@ public abstract class InteractableWidget extends BackgroundWidget
         boolean hovered = this.isHoveredForRender(ctx);
         int color = this.getTextColorForRender(hovered);
 
-        this.renderIcon(x, y, z, true, false, ctx);
+        if (this.downScaleIcon)
+        {
+            this.renderDownScaledIcon(x, y, z, true, false, ctx);
+        }
+        else
+        {
+            this.renderIcon(x, y, z, true, false, ctx);
+        }
+
         this.renderText(x, y, z, color, ctx);
     }
 

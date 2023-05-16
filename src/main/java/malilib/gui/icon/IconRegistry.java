@@ -38,15 +38,16 @@ public class IconRegistry
         return icon;
     }
 
-    public <T extends NamedIcon> T registerUserIcon(T icon)
+    public <T extends NamedIcon> boolean registerUserIcon(T icon)
     {
         if (this.userIcons.contains(icon) == false)
         {
             this.userIcons.add(icon);
             this.markDirty();
+            return true;
         }
 
-        return icon;
+        return false;
     }
 
     public void unregisterModIcon(Icon icon)
@@ -71,6 +72,12 @@ public class IconRegistry
     {
         this.updateLists();
         return this.allIcons;
+    }
+
+    public void clearAllUserIcons()
+    {
+        this.userIcons.clear();
+        this.markDirty();
     }
 
     public ImmutableList<NamedIcon> getUserIcons()

@@ -4,13 +4,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
 
 import malilib.gui.widget.RadioButtonWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.util.FileUtils;
-import malilib.util.StringUtils;
+import malilib.util.data.AppendOverwrite;
 import malilib.util.data.ResultingStringConsumer;
 import malilib.util.data.ToBooleanFunction;
 
@@ -231,25 +230,5 @@ public class SettingsExportImportScreen extends TextInputScreen
         screen.setFileFilter(FileUtils.JSON_FILEFILTER);
         screen.setParent(this);
         return screen;
-    }
-
-    protected enum AppendOverwrite
-    {
-        APPEND    ("malilib.name.append_overwrite.append"),
-        OVERWRITE ("malilib.name.append_overwrite.overwrite");
-
-        public static final ImmutableList<AppendOverwrite> VALUES = ImmutableList.copyOf(values());
-
-        private final String translationKey;
-
-        AppendOverwrite(String translationKey)
-        {
-            this.translationKey = translationKey;
-        }
-
-        public String getDisplayName()
-        {
-            return StringUtils.translate(this.translationKey);
-        }
     }
 }
