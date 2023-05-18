@@ -1,8 +1,10 @@
 package malilib.gui.widget.list.entry;
 
 import java.util.ArrayList;
+import com.google.common.collect.ImmutableList;
 
 import malilib.action.MacroAction;
+import malilib.action.NamedAction;
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.CustomHotkeyEditScreen;
 import malilib.gui.edit.CustomHotkeysListScreen;
@@ -49,9 +51,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0xFF101010 : 0xFF181818);
         this.getBackgroundRenderer().getHoverSettings().setColor(0xFF303030);
 
-        ArrayList<StyledTextLine> lines = new ArrayList<>();
-        MacroAction.getContainedActionsTooltip(lines, data.getActionList(), 8);
-        this.hoverInfoFactory.addTextLines(lines);
+        this.addHoverInfo(data);
     }
 
     @Override
@@ -87,6 +87,8 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         this.editButton.setRight(this.keybindButton.getX() - 2);
         this.editButton.centerVerticallyInside(this);
+
+        this.nameLabelWidget.setWidth(this.editButton.getX() - this.nameLabelWidget.getX() - 4);
     }
 
     @Override
@@ -96,6 +98,23 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         this.updateHoverStrings();
         this.keybindButton.updateHoverStrings();
+    }
+
+    protected void addHoverInfo(CustomHotkeyDefinition hotkey)
+    {
+        ImmutableList<NamedAction> actions = hotkey.getActionList();
+
+        if (actions.size() == 1)
+        {
+            NamedAction action = actions.get(0);
+            this.nameLabelWidget.getHoverInfoFactory().addTextLines(action.getHoverInfo());
+        }
+        else if (actions.size() > 1)
+        {
+            ArrayList<StyledTextLine> lines = new ArrayList<>();
+            MacroAction.getContainedActionsTooltip(lines, actions, 8);
+            this.nameLabelWidget.getHoverInfoFactory().addTextLines(lines);
+        }
     }
 
     protected void removeHotkey()
