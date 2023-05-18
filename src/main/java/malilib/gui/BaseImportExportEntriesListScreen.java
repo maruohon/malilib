@@ -21,6 +21,7 @@ public abstract class BaseImportExportEntriesListScreen<T> extends BaseListScree
     @Nullable protected Function<T, String> entryNameFunction;
     @Nullable protected Function<T, Icon> entryIconFunction;
     @Nullable protected Function<T, ImmutableList<StyledTextLine>> hoverInfoFunction;
+    @Nullable protected Function<T, List<String>> entryFilterStringFunction;
     @Nullable protected DataListEntryWidgetFactory<T> widgetFactory;
     protected int listEntryWidgetHeight = 16;
 
@@ -66,6 +67,11 @@ public abstract class BaseImportExportEntriesListScreen<T> extends BaseListScree
         this.listEntryWidgetHeight = listEntryWidgetHeight;
     }
 
+    public void setEntryFilterStringFunction(@Nullable Function<T, List<String>> filterStringFunction)
+    {
+        this.entryFilterStringFunction = filterStringFunction;
+    }
+
     public void setWidgetFactory(@Nullable DataListEntryWidgetFactory<T> widgetFactory)
     {
         this.widgetFactory = widgetFactory;
@@ -102,11 +108,19 @@ public abstract class BaseImportExportEntriesListScreen<T> extends BaseListScree
         DataListWidget<T> listWidget = new DataListWidget<>(this::getEntryList, true);
 
         listWidget.addDefaultSearchBar();
-        listWidget.setEntryFilterStringFunction(i -> ImmutableList.of(this.entryNameFunction.apply(i)));
         listWidget.getEntrySelectionHandler()
                 .setAllowSelection(true)
                 .setAllowMultiSelection(true)
                 .setModifierKeyMultiSelection(true);
+
+        if (this.entryFilterStringFunction != null)
+        {
+            listWidget.setEntryFilterStringFunction(this.entryFilterStringFunction);
+        }
+        else if (this.entryNameFunction != null)
+        {
+            listWidget.setEntryFilterStringFunction(i -> ImmutableList.of(this.entryNameFunction.apply(i)));
+        }
 
         if (this.widgetFactory != null)
         {

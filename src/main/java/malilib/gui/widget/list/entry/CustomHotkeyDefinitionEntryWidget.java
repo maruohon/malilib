@@ -1,6 +1,7 @@
 package malilib.gui.widget.list.entry;
 
 import java.util.ArrayList;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import malilib.action.MacroAction;
@@ -19,20 +20,18 @@ import malilib.render.text.TextStyle;
 
 public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<CustomHotkeyDefinition>
 {
-    protected final CustomHotkeysListScreen screen;
     protected final LabelWidget nameLabelWidget;
     protected final KeyBindConfigButton keybindButton;
     protected final KeybindSettingsWidget settingsWidget;
     protected final GenericButton editButton;
     protected final GenericButton removeButton;
+    protected boolean addEditElements = true;
 
     public CustomHotkeyDefinitionEntryWidget(CustomHotkeyDefinition data,
                                              DataListEntryWidgetData constructData,
-                                             CustomHotkeysListScreen screen)
+                                             @Nullable CustomHotkeysListScreen screen)
     {
         super(data, constructData);
-
-        this.screen = screen;
 
         TextStyle actionStyle = TextStyle.normal(0xFFC0C0C0);
         StyledTextLine name = StyledTextLine.translateFirstLine("malilib.label.custom_hotkeys.widget.hotkey_name", data.getName());
@@ -50,6 +49,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0xFF101010 : 0xFF181818);
         this.getBackgroundRenderer().getHoverSettings().setColor(0xFF303030);
+        this.selectedBgSettings.setColor(this.isOdd ? 0xFF202020 : 0xFF282828);
 
         this.addHoverInfo(data);
     }
@@ -60,10 +60,14 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         super.reAddSubWidgets();
 
         this.addWidget(this.nameLabelWidget);
-        this.addWidget(this.keybindButton);
-        this.addWidget(this.settingsWidget);
-        this.addWidget(this.editButton);
-        this.addWidget(this.removeButton);
+
+        if (this.addEditElements)
+        {
+            this.addWidget(this.keybindButton);
+            this.addWidget(this.settingsWidget);
+            this.addWidget(this.editButton);
+            this.addWidget(this.removeButton);
+        }
     }
 
     @Override
@@ -76,17 +80,20 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         this.nameLabelWidget.setPosition(x, y);
 
-        this.removeButton.setRight(this.getRight() - 2);
-        this.removeButton.centerVerticallyInside(this);
+        if (this.addEditElements)
+        {
+            this.removeButton.setRight(this.getRight() - 2);
+            this.removeButton.centerVerticallyInside(this);
 
-        this.settingsWidget.setRight(this.removeButton.getX() - 2);
-        this.settingsWidget.centerVerticallyInside(this);
+            this.settingsWidget.setRight(this.removeButton.getX() - 2);
+            this.settingsWidget.centerVerticallyInside(this);
 
-        this.keybindButton.setRight(this.settingsWidget.getX() - 2);
-        this.keybindButton.centerVerticallyInside(this);
+            this.keybindButton.setRight(this.settingsWidget.getX() - 2);
+            this.keybindButton.centerVerticallyInside(this);
 
-        this.editButton.setRight(this.keybindButton.getX() - 2);
-        this.editButton.centerVerticallyInside(this);
+            this.editButton.setRight(this.keybindButton.getX() - 2);
+            this.editButton.centerVerticallyInside(this);
+        }
 
         this.nameLabelWidget.setWidth(this.editButton.getX() - this.nameLabelWidget.getX() - 4);
     }
@@ -97,7 +104,16 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         super.updateWidgetState();
 
         this.updateHoverStrings();
-        this.keybindButton.updateHoverStrings();
+
+        if (this.addEditElements)
+        {
+            this.keybindButton.updateHoverStrings();
+        }
+    }
+
+    public void setAddEditElements(boolean addEditElements)
+    {
+        this.addEditElements = addEditElements;
     }
 
     protected void addHoverInfo(CustomHotkeyDefinition hotkey)
@@ -121,7 +137,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
     {
         this.scheduleTask(() -> {
             CustomHotkeyManager.INSTANCE.removeCustomHotkey(this.data);
-            this.screen.getListWidget().refreshEntries();
+            this.listWidget.refreshEntries();
         });
     }
 
