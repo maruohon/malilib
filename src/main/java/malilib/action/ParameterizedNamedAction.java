@@ -58,22 +58,28 @@ public class ParameterizedNamedAction extends NamedAction
     public List<StyledTextLine> getHoverInfo()
     {
         List<StyledTextLine> lines = new ArrayList<>();
+        String baseActionName = this.baseAction.getName();
+        String baseActionDisplayName = this.baseAction.getDisplayName();
+        String baseActionRegistryName = this.baseAction.getRegistryName();
 
         StyledTextLine.translate(lines, "malilib.hover.action.name", this.getName());
-        StyledTextLine.translate(lines, "malilib.hover.action.mod", this.baseAction.getModInfo().getModName());
-        StyledTextLine.translate(lines, "malilib.hover.action.display_name", this.baseAction.getDisplayName());
         StyledTextLine.translate(lines, "malilib.hover.action.action_type", this.type.getDisplayName());
-        StyledTextLine.translate(lines, "malilib.hover.action.base_action_name", this.baseAction.getName());
-
-        String regName = this.baseAction.getRegistryName();
-
-        if (regName != null)
-        {
-            StyledTextLine.translate(lines, "malilib.hover.action.base_action_registry_name", regName);
-        }
 
         StyledTextLine start = StyledTextLine.translateFirstLine("malilib.hover.action.parameterized_action_argument");
         lines.add(start.append(StyledTextLine.unParsedWithStyle(this.argument, TextStyle.normal(0xFFF0F040))));
+
+        StyledTextLine.translate(lines, "malilib.hover.action.base_action_mod", this.baseAction.getModInfo().getModName());
+        StyledTextLine.translate(lines, "malilib.hover.action.base_action_name", baseActionName);
+
+        if (baseActionName.equals(baseActionDisplayName) == false)
+        {
+            StyledTextLine.translate(lines, "malilib.hover.action.base_action_display_name", baseActionDisplayName);
+        }
+
+        if (baseActionRegistryName != null)
+        {
+            StyledTextLine.translate(lines, "malilib.hover.action.base_action_registry_name", baseActionRegistryName);
+        }
 
         return lines;
     }

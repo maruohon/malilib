@@ -67,13 +67,13 @@ public class MacroAction extends NamedAction
     {
         List<StyledTextLine> lines = new ArrayList<>();
         StyledTextLine.translate(lines, "malilib.hover.action.name", this.getName());
-        StyledTextLine.translate(lines, "malilib.hover.action.action_type", this.type.getDisplayName());
 
         if (this.registryName != null)
         {
             StyledTextLine.translate(lines, "malilib.hover.action.registry_name", this.registryName);
         }
 
+        StyledTextLine.translate(lines, "malilib.hover.action.action_type", this.type.getDisplayName());
         getContainedActionsTooltip(lines, this.actionList, 8);
 
         return lines;

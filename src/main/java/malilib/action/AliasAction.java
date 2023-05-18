@@ -51,17 +51,23 @@ public class AliasAction extends NamedAction
     public List<StyledTextLine> getHoverInfo()
     {
         List<StyledTextLine> lines = new ArrayList<>();
+        String name = this.getName();
+        String displayName = this.baseAction.getDisplayName();
 
-        StyledTextLine.translate(lines, "malilib.hover.action.alias", this.getName());
-        StyledTextLine.translate(lines, "malilib.hover.action.mod", this.baseAction.getModInfo().getModName());
-        StyledTextLine.translate(lines, "malilib.hover.action.display_name", this.baseAction.getDisplayName());
-        StyledTextLine.translate(lines, "malilib.hover.action.action_type", this.type.getDisplayName());
+        StyledTextLine.translate(lines, "malilib.hover.action.alias", name);
+
+        if (name.equals(displayName) == false)
+        {
+            StyledTextLine.translate(lines, "malilib.hover.action.display_name", displayName);
+        }
 
         if (this.registryName != null)
         {
             StyledTextLine.translate(lines, "malilib.hover.action.registry_name", this.registryName);
         }
 
+        StyledTextLine.translate(lines, "malilib.hover.action.action_type", this.type.getDisplayName());
+        StyledTextLine.translate(lines, "malilib.hover.action.base_action_mod", this.baseAction.getModInfo().getModName());
         StyledTextLine.translate(lines, "malilib.hover.action.base_action_name", this.baseAction.getName());
 
         String origRegName = this.baseAction.getRegistryName();
