@@ -248,6 +248,7 @@ public class OrderedStringListFactory
     {
         this.providers.clear();
         this.styledLines = ImmutableList.of();
+        this.markDirty();
     }
 
     /**

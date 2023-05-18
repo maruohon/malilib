@@ -26,10 +26,8 @@ public class PopupConfigGroupWidget extends BaseConfigWidget<PopupConfigGroup>
         this.groupOpenButton = GenericButton.create("malilib.button.config.popup_group.show_configs",
                                                     this::openConfigGroupEditScreen);
         this.groupOpenButton.getHoverInfoFactory().setTextLineProvider("config_list", this::getContainedConfigsHoverInfo);
-        this.groupOpenButton.getHoverInfoFactory().setDynamic(false);
 
         this.getHoverInfoFactory().setTextLineProvider("config_list", this::getContainedConfigsHoverInfo);
-        this.getHoverInfoFactory().setDynamic(false);
     }
 
     @Override

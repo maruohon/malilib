@@ -54,7 +54,6 @@ public abstract class InteractableWidget extends BackgroundWidget
 
         int maxHoverTextWidth = MaLiLibConfigs.Generic.HOVER_TEXT_MAX_WIDTH.getIntegerValue();
         this.hoverInfoFactory = new OrderedStringListFactory(maxHoverTextWidth);
-        this.hoverInfoFactory.setDynamic(true);
     }
 
     @Override

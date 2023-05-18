@@ -30,7 +30,6 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         this.getBorderRenderer().getNormalSettings().setColor(0xFFFFFFFF);
         this.getBorderRenderer().getHoverSettings().setBorderWidth(1);
         this.getHoverInfoFactory().setTextLineProvider("config_list", this::getContainedConfigsHoverInfo);
-        this.getHoverInfoFactory().setDynamic(false);
 
         this.arrowIconWidget = new IconWidget(this.getArrowIcon());
         this.arrowIconWidget.setUseEnabledVariant(true);
