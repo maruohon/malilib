@@ -322,7 +322,7 @@ public abstract class InteractableWidget extends BackgroundWidget
     /**
      * Returns true if this widget can be hovered (for hover info etc.) at the given point
      */
-    public boolean canHoverAt(int mouseX, int mouseY, int mouseButton)
+    public boolean canHoverAt(int mouseX, int mouseY)
     {
         return true;
     }
