@@ -27,11 +27,10 @@ public class ImportEntriesListScreen<T> extends BaseImportExportEntriesListScree
     protected final BaseTextFieldWidget contentsTextField;
     protected final RadioButtonWidget<AppendOverwrite> appendOverwriteRadioWidget;
 
-    public ImportEntriesListScreen(Function<T, String> entryNameFunction,
-                                   Function<JsonElement, T> entryDeSerializer,
+    public ImportEntriesListScreen(Function<JsonElement, T> entryDeSerializer,
                                    BiConsumer<List<T>, AppendOverwrite> entryConsumer)
     {
-        super(10, 98, 20, 105, new ArrayList<>(), entryNameFunction);
+        super(10, 98, 20, 105, new ArrayList<>());
 
         this.entryDeSerializer = entryDeSerializer;
         this.entryConsumer = entryConsumer;

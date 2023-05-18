@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import malilib.MaLiLibConfigScreen;
 import malilib.MaLiLibReference;
 import malilib.action.ActionContext;
+import malilib.gui.BaseImportExportEntriesListScreen;
 import malilib.gui.BaseListScreen;
 import malilib.gui.BaseScreen;
 import malilib.gui.ExportEntriesListScreen;
@@ -90,23 +91,21 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<NamedIco
 
     protected void openExportScreen()
     {
-        ExportEntriesListScreen<NamedIcon> screen = new ExportEntriesListScreen<>(Registry.ICON.getUserIcons(),
-                                                                                  NamedIcon::getName,
-                                                                                  NamedIcon::toJson);
-        screen.setHoverInfoFunction(IconEntryWidget::getHoverInfoForIcon);
-        screen.setEntryIconFunction(e -> e);
-        screen.setListEntryWidgetHeight(22);
-        
-        BaseScreen.openScreenWithParent(screen);
+        this.initAndOpenExportOrImportScreen(new ExportEntriesListScreen<>(Registry.ICON.getUserIcons(),
+                                                                           NamedIcon::toJson));
     }
 
     protected void openImportScreen()
     {
-        ImportEntriesListScreen<NamedIcon> screen = new ImportEntriesListScreen<>(NamedIcon::getName,
-                                                                                  NamedBaseIcon::namedBaseIconFromJson,
-                                                                                  this::importEntries);
-        screen.setHoverInfoFunction(IconEntryWidget::getHoverInfoForIcon);
+        this.initAndOpenExportOrImportScreen(new ImportEntriesListScreen<>(NamedBaseIcon::namedBaseIconFromJson,
+                                                                           this::importEntries));
+    }
+
+    protected void initAndOpenExportOrImportScreen(BaseImportExportEntriesListScreen<NamedIcon> screen)
+    {
+        screen.setEntryNameFunction(NamedIcon::getName);
         screen.setEntryIconFunction(e -> e);
+        screen.setHoverInfoFunction(IconEntryWidget::getHoverInfoForIcon);
         screen.setListEntryWidgetHeight(22);
 
         BaseScreen.openScreenWithParent(screen);

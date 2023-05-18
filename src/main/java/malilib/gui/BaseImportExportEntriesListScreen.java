@@ -8,29 +8,28 @@ import com.google.common.collect.ImmutableList;
 import malilib.gui.icon.Icon;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.DataListWidget;
+import malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import malilib.gui.widget.list.entry.GenericListEntryWidget;
 import malilib.render.text.StyledTextLine;
 
 public abstract class BaseImportExportEntriesListScreen<T> extends BaseListScreen<DataListWidget<T>>
 {
     protected final List<T> entries;
-    protected final Function<T, String> entryNameFunction;
-
     protected final GenericButton deselectAllButton;
     protected final GenericButton selectAllButton;
 
+    @Nullable protected Function<T, String> entryNameFunction;
     @Nullable protected Function<T, Icon> entryIconFunction;
     @Nullable protected Function<T, ImmutableList<StyledTextLine>> hoverInfoFunction;
+    @Nullable protected DataListEntryWidgetFactory<T> widgetFactory;
     protected int listEntryWidgetHeight = 16;
 
     public BaseImportExportEntriesListScreen(int listX, int listY, int totalListMarginX, int totalListMarginY,
-                                             List<T> entries,
-                                             Function<T, String> entryNameFunction)
+                                             List<T> entries)
     {
         super(listX, listY, totalListMarginX, totalListMarginY);
 
         this.entries = entries;
-        this.entryNameFunction = entryNameFunction;
 
         this.deselectAllButton = GenericButton.create(16, "malilib.button.export_entries.deselect_all", this::deselectAll);
         this.selectAllButton   = GenericButton.create(16, "malilib.button.export_entries.select_all", this::selectAll);
@@ -67,6 +66,16 @@ public abstract class BaseImportExportEntriesListScreen<T> extends BaseListScree
         this.listEntryWidgetHeight = listEntryWidgetHeight;
     }
 
+    public void setWidgetFactory(@Nullable DataListEntryWidgetFactory<T> widgetFactory)
+    {
+        this.widgetFactory = widgetFactory;
+    }
+
+    public void setEntryNameFunction(@Nullable Function<T, String> entryNameFunction)
+    {
+        this.entryNameFunction = entryNameFunction;
+    }
+
     public void setEntryIconFunction(@Nullable Function<T, Icon> entryIconFunction)
     {
         this.entryIconFunction = entryIconFunction;
@@ -92,15 +101,23 @@ public abstract class BaseImportExportEntriesListScreen<T> extends BaseListScree
     {
         DataListWidget<T> listWidget = new DataListWidget<>(this::getEntryList, true);
 
-        listWidget.setListEntryWidgetFixedHeight(this.listEntryWidgetHeight);
-        listWidget.setDataListEntryWidgetFactory((d, cd) -> new GenericListEntryWidget<>(
-                d, cd, this.entryNameFunction, this.entryIconFunction, this.hoverInfoFunction));
         listWidget.addDefaultSearchBar();
         listWidget.setEntryFilterStringFunction(i -> ImmutableList.of(this.entryNameFunction.apply(i)));
         listWidget.getEntrySelectionHandler()
                 .setAllowSelection(true)
                 .setAllowMultiSelection(true)
                 .setModifierKeyMultiSelection(true);
+
+        if (this.widgetFactory != null)
+        {
+            listWidget.setDataListEntryWidgetFactory(this.widgetFactory);
+        }
+        else if (this.entryNameFunction != null)
+        {
+            listWidget.setListEntryWidgetFixedHeight(this.listEntryWidgetHeight);
+            listWidget.setDataListEntryWidgetFactory((d, cd) -> new GenericListEntryWidget<>(
+                    d, cd, this.entryNameFunction, this.entryIconFunction, this.hoverInfoFunction));
+        }
 
         return listWidget;
     }

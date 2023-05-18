@@ -26,11 +26,9 @@ public class ExportEntriesListScreen<T> extends BaseImportExportEntriesListScree
     protected final GenericButton selectOutputFileButton;
     protected final BaseTextFieldWidget exportFileTextField;
 
-    public ExportEntriesListScreen(List<T> entries,
-                                   Function<T, String> entryNameFunction,
-                                   Function<T, JsonElement> entrySerializer)
+    public ExportEntriesListScreen(List<T> entries, Function<T, JsonElement> entrySerializer)
     {
-        super(10, 62, 20, 70, entries, entryNameFunction);
+        super(10, 62, 20, 70, entries);
 
         this.entrySerializer = entrySerializer;
 
