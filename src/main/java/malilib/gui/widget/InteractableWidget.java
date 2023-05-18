@@ -327,6 +327,16 @@ public abstract class InteractableWidget extends BackgroundWidget
         return true;
     }
 
+    /**
+     * @return true if hover text from widgets below this widget should not be allowed to render.
+     * This is mainly meant for the ContainerWidget to block other widgets below it from rendering 
+     * their hover text, in case nothing inside the container widget has any hover text.
+     */
+    public boolean blockHoverTextFromBelow()
+    {
+        return false;
+    }
+
     public boolean hasHoverTextToRender(int mouseX, int mouseY)
     {
         return this.isMouseOver(mouseX, mouseY) && this.hasHoverText();
@@ -418,8 +428,7 @@ public abstract class InteractableWidget extends BackgroundWidget
 
     public boolean shouldRenderHoverInfo(ScreenContext ctx)
     {
-        return this.isHoveredForRender(ctx) &&
-               this.canHoverAt(ctx.mouseX, ctx.mouseY, 0);
+        return this.canHoverAt(ctx.mouseX, ctx.mouseY) && ctx.getRenderDebug() == false;
     }
 
     protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
@@ -489,11 +498,11 @@ public abstract class InteractableWidget extends BackgroundWidget
         {
             if (this.hoverInfoWidget != null)
             {
-                renderHoverInfoWidget(this.hoverInfoWidget, this.getZ() + 50f, ctx);
+                renderHoverInfoWidget(this.hoverInfoWidget, this.getZ() + 100f, ctx);
             }
             else if (this.hasHoverText())
             {
-                TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 50f,
+                TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 100f,
                                                       this.getHoverText(), ctx);
             }
         }
@@ -504,7 +513,8 @@ public abstract class InteractableWidget extends BackgroundWidget
     {
         super.renderDebug(x, y, z, hovered, ctx);
 
-        if (hovered && this.hoverInfoWidget != null && this.shouldRenderHoverInfo(ctx))
+        if ((hovered || ctx.getDebugRenderAll()) &&
+            this.hoverInfoWidget != null)
         {
             Vec2i pos = getHoverInfoWidgetRenderPosition(this.hoverInfoWidget, ctx);
             this.hoverInfoWidget.renderDebug(pos.x, pos.y, z, true, ctx);

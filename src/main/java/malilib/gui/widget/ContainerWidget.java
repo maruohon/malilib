@@ -235,6 +235,12 @@ public class ContainerWidget extends InteractableWidget
     }
 
     @Override
+    public boolean blockHoverTextFromBelow()
+    {
+        return true;
+    }
+
+    @Override
     public void collectMatchingWidgets(Predicate<InteractableWidget> predicate, ToIntFunction<InteractableWidget> priorityFunction, List<InteractableWidget> outputList)
     {
         super.collectMatchingWidgets(predicate, priorityFunction, outputList);

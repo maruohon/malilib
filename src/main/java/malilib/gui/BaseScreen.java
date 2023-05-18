@@ -497,8 +497,7 @@ public abstract class BaseScreen extends GuiScreen
 
         this.renderHoveredWidget(ctx);
 
-        if (MaLiLibConfigs.Debug.GUI_DEBUG.getBooleanValue() &&
-            MaLiLibConfigs.Debug.GUI_DEBUG_KEY.isHeld())
+        if (ctx.getRenderDebug())
         {
             this.renderDebug(ctx);
         }
@@ -513,7 +512,8 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void updateTopHoveredWidgetForHoverInfo(int mouseX, int mouseY)
     {
-        Predicate<InteractableWidget> predicate = w -> w.hasHoverTextToRender(mouseX, mouseY);
+        Predicate<InteractableWidget> predicate = w -> w.hasHoverTextToRender(mouseX, mouseY) ||
+                                                       (w.blockHoverTextFromBelow() && w.isMouseOver(mouseX, mouseY));
         ToIntFunction<InteractableWidget> priorityFunction = w -> (int) w.getZ();
         this.hoveredWidgetForHoverInfo = this.getTopHoveredWidget(predicate, priorityFunction);
     }

@@ -18,6 +18,12 @@ public class ScreenContext extends RenderContext
         this.isActiveScreen = isActiveScreen;
     }
 
+    public boolean getRenderDebug()
+    {
+        return MaLiLibConfigs.Debug.GUI_DEBUG.getBooleanValue() &&
+               MaLiLibConfigs.Debug.GUI_DEBUG_KEY.isHeld();
+    }
+
     public boolean getDebugRenderAll()
     {
         return MaLiLibConfigs.Debug.GUI_DEBUG_ALL.getBooleanValue();

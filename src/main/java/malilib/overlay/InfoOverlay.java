@@ -25,6 +25,8 @@ import malilib.util.game.wrap.GameUtils;
 
 public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer, ClientTickHandler
 {
+    protected static final ScreenContext DUMMY_CONTEXT = new ScreenContext(0, 0, -1, true);
+
     protected final HashMap<ScreenLocation, InfoArea> infoAreas = new HashMap<>();
     protected final List<InfoRendererWidget> enabledInGameWidgets = new ArrayList<>();
     protected final List<InfoRendererWidget> enabledGuiWidgets = new ArrayList<>();
@@ -151,7 +153,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
         {
             boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
             boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
-            ScreenContext screenContext = new ScreenContext(0, 0, -1, true);
+            ScreenContext screenContext = DUMMY_CONTEXT;
 
             if (debug)
             {
@@ -185,7 +187,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     {
         boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
         boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
-        ScreenContext screenCtx = new ScreenContext(0, 0, -1, true);
+        ScreenContext screenCtx = DUMMY_CONTEXT;
         RenderUtils.disableItemLighting();
 
         if (debug)
