@@ -43,10 +43,10 @@ public class MaLiLibConfigScreen
             HOTKEYS,
             DEBUG,
             ACTIONS,
-            CSI,
-            ICONS,
             CUSTOM_HOTKEYS,
-            INFO_RENDERERS
+            CSI,
+            INFO_RENDERERS,
+            ICONS
     );
 
     public static void open()
