@@ -36,20 +36,9 @@ public class BaseInfoRendererWidgetEntryWidget extends BaseDataListEntryWidget<I
     {
         super.reAddSubWidgets();
 
-        if (this.canToggle)
-        {
-            this.addWidget(this.toggleButton);
-        }
-
-        if (this.canConfigure)
-        {
-            this.addWidget(this.configureButton);
-        }
-
-        if (this.canRemove)
-        {
-            this.addWidget(this.removeButton);
-        }
+        this.addWidgetIf(this.toggleButton, this.canToggle);
+        this.addWidgetIf(this.configureButton, this.canConfigure);
+        this.addWidgetIf(this.removeButton, this.canRemove);
     }
 
     @Override

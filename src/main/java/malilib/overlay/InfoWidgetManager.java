@@ -2,8 +2,9 @@ package malilib.overlay;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import com.google.common.collect.ArrayListMultimap;
+import java.util.function.Predicate;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,7 +18,7 @@ import malilib.util.data.json.JsonUtils;
 
 public class InfoWidgetManager
 {
-    protected final ArrayListMultimap<Class<? extends InfoRendererWidget>, InfoRendererWidget> widgets = ArrayListMultimap.create();
+    protected final List<InfoRendererWidget> widgets = new ArrayList<>();
     protected final InfoOverlay infoOverlay;
     protected boolean dirty;
 
@@ -28,9 +29,9 @@ public class InfoWidgetManager
 
     public void addWidget(InfoRendererWidget widget)
     {
-        if (this.widgets.containsEntry(widget.getClass(), widget) == false)
+        if (this.widgets.contains(widget) == false)
         {
-            this.widgets.put(widget.getClass(), widget);
+            this.widgets.add(widget);
             this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).addWidget(widget);
             this.dirty = true;
         }
@@ -38,23 +39,32 @@ public class InfoWidgetManager
 
     public void removeWidget(InfoRendererWidget widget)
     {
-        this.widgets.remove(widget.getClass(), widget);
+        this.widgets.remove(widget);
         this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).removeWidget(widget);
         widget.invalidate();
         this.dirty = true;
     }
 
-    @SuppressWarnings("unchecked")
     public <WIDGET extends InfoRendererWidget> List<WIDGET> getAllWidgetsOfExactType(Class<WIDGET> clazz)
     {
-        return (List<WIDGET>) this.widgets.get(clazz);
+        ArrayList<WIDGET> list = new ArrayList<>();
+
+        for (InfoRendererWidget widget : this.widgets)
+        {
+            if (widget.getClass() == clazz)
+            {
+                list.add(clazz.cast(widget));
+            }
+        }
+
+        return list;
     }
 
     public <WIDGET extends InfoRendererWidget> List<WIDGET> getAllWidgetsExtendingType(Class<WIDGET> clazz)
     {
         ArrayList<WIDGET> list = new ArrayList<>();
 
-        for (InfoRendererWidget widget : this.widgets.values())
+        for (InfoRendererWidget widget : this.widgets)
         {
             if (clazz.isInstance(widget))
             {
@@ -65,14 +75,33 @@ public class InfoWidgetManager
         return list;
     }
 
-    protected void clearWidgets()
+    public void removeMatchingWidgets(Predicate<InfoRendererWidget> filter)
     {
-        for (InfoRendererWidget widget : this.widgets.values())
+        Iterator<InfoRendererWidget> it = this.widgets.iterator();
+
+        while (it.hasNext())
+        {
+            InfoRendererWidget widget = it.next();
+
+            if (filter.test(widget))
+            {
+                this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).removeWidget(widget);
+                it.remove();
+            }
+        }
+
+        this.dirty = true;
+    }
+
+    public void clearWidgets()
+    {
+        for (InfoRendererWidget widget : this.widgets)
         {
             this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).removeWidget(widget);
         }
 
         this.widgets.clear();
+        this.dirty = true;
     }
 
     public JsonObject toJson()
@@ -80,7 +109,7 @@ public class InfoWidgetManager
         JsonObject obj = new JsonObject();
         JsonArray arr = new JsonArray();
 
-        for (InfoRendererWidget widget : this.widgets.values())
+        for (InfoRendererWidget widget : this.widgets)
         {
             if (widget.getShouldSerialize())
             {
@@ -115,7 +144,7 @@ public class InfoWidgetManager
 
         if (widget != null)
         {
-            this.widgets.put(widget.getClass(), widget);
+            this.widgets.add(widget);
             this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).addWidget(widget);
         }
     }

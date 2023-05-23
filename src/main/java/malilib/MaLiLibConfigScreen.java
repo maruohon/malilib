@@ -3,7 +3,6 @@ package malilib;
 import java.util.ArrayList;
 import com.google.common.collect.ImmutableList;
 
-import malilib.MaLiLibConfigs.Generic;
 import malilib.config.option.ConfigInfo;
 import malilib.config.util.ConfigUtils;
 import malilib.gui.BaseScreen;
@@ -14,12 +13,10 @@ import malilib.gui.config.BaseConfigTab;
 import malilib.gui.config.ConfigTab;
 import malilib.gui.edit.CustomHotkeysListScreen;
 import malilib.gui.edit.CustomIconListScreen;
-import malilib.gui.edit.overlay.InfoRendererWidgetListScreen;
+import malilib.gui.edit.overlay.AllInfoWidgetsListScreen;
+import malilib.gui.edit.overlay.ConfigStatusIndicatorWidgetListScreen;
 import malilib.gui.tab.BaseScreenTab;
 import malilib.gui.tab.ScreenTab;
-import malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
-import malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
-import malilib.overlay.widget.InfoRendererWidget;
 import malilib.util.data.ModInfo;
 
 public class MaLiLibConfigScreen
@@ -33,7 +30,7 @@ public class MaLiLibConfigScreen
     public static final BaseScreenTab CSI               = new BaseScreenTab(MOD_INFO, "config_status_indicator.abbr", (scr) -> scr instanceof ConfigStatusIndicatorWidgetListScreen, MaLiLibConfigScreen::createConfigStatusIndicatorListScreen).setHoverText("malilib.hover.button.config_status_indicator_menu");
     public static final BaseScreenTab ICONS             = new BaseScreenTab(MOD_INFO, "custom_icons", (scr) -> scr instanceof CustomIconListScreen, CustomIconListScreen::openCustomIconListScreen).setHoverText("malilib.hover.button.custom_icons_menu");
     public static final BaseScreenTab CUSTOM_HOTKEYS    = new BaseScreenTab(MOD_INFO, "custom_hotkeys", (scr) -> scr instanceof CustomHotkeysListScreen, MaLiLibConfigScreen::createCustomHotkeysEditScreen).setHoverText("malilib.hover.button.custom_hotkeys_menu");
-    public static final BaseScreenTab INFO_RENDERERS    = new BaseScreenTab(MOD_INFO, "info_renderers",               (scr) -> scr instanceof AllInfoWidgetsListScreen, MaLiLibConfigScreen::createInfoRendererWidgetsListScreen).setHoverText("malilib.hover.button.info_renderers_menu");
+    public static final BaseScreenTab INFO_RENDERERS    = new BaseScreenTab(MOD_INFO, "info_renderers", (scr) -> scr instanceof AllInfoWidgetsListScreen, MaLiLibConfigScreen::createInfoRendererWidgetsListScreen).setHoverText("malilib.hover.button.info_renderers_menu");
 
     private static final ImmutableList<ConfigTab> CONFIG_TABS = ImmutableList.of(
             GENERIC,
@@ -103,30 +100,5 @@ public class MaLiLibConfigScreen
         ConfigUtils.sortConfigsByDisplayName(list);
 
         return ImmutableList.copyOf(list);
-    }
-
-    public static class ConfigStatusIndicatorWidgetListScreen extends InfoRendererWidgetListScreen<ConfigStatusIndicatorContainerWidget>
-    {
-        public ConfigStatusIndicatorWidgetListScreen()
-        {
-            super(InfoRendererWidgetListScreen.createSupplierFromInfoManagerForExactType(ConfigStatusIndicatorContainerWidget.class),
-                  ConfigStatusIndicatorContainerWidget::new,
-                  BaseInfoRendererWidgetEntryWidget::new);
-
-            this.setTitle("malilib.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
-            this.canCreateNewWidgets = true;
-        }
-    }
-
-    public static class AllInfoWidgetsListScreen extends InfoRendererWidgetListScreen<InfoRendererWidget>
-    {
-        public AllInfoWidgetsListScreen()
-        {
-            super(InfoRendererWidgetListScreen.createSupplierFromInfoManagerForSubtypes(InfoRendererWidget.class),
-                  null,
-                  BaseInfoRendererWidgetEntryWidget::new);
-
-            this.setTitle("malilib.title.screen.configs.info_renderer_widgets", MaLiLibReference.MOD_VERSION);
-        }
     }
 }
