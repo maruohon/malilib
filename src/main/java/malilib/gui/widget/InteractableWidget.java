@@ -24,14 +24,15 @@ import malilib.util.position.Vec2i;
 
 public abstract class InteractableWidget extends BackgroundWidget
 {
+    protected OrderedStringListFactory hoverInfoFactory;
+    protected String hoverHelpTranslationKey = "malilib.hover.misc.hold_shift_for_info";
     @Nullable protected BooleanSupplier enabledStatusSupplier;
     @Nullable protected EventListener clickListener;
     @Nullable protected BaseWidget hoverInfoWidget;
     @Nullable protected ImmutableList<StyledTextLine> hoverHelp;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
-    protected OrderedStringListFactory hoverInfoFactory;
-    protected String hoverHelpTranslationKey = "malilib.hover.misc.hold_shift_for_info";
+    protected boolean blockHoverContentFromBelow;
     protected boolean canReceiveMouseClicks;
     protected boolean canReceiveMouseMoves;
     protected boolean canReceiveMouseScrolls;
@@ -39,6 +40,9 @@ public abstract class InteractableWidget extends BackgroundWidget
     protected boolean downScaleIcon;
     protected boolean enabled = true;
     protected boolean enabledLast = true;
+    /** Set this to true if the widget has other hover content than text from the hoverInfoFactory.
+     * Alternatively override {@link InteractableWidget#hasHoverContent()} to return true. */
+    protected boolean hasHoverContent;
     protected boolean hoverInfoRequiresShift;
     protected boolean shouldReceiveOutsideClicks;
     protected boolean shouldReceiveOutsideScrolls;
@@ -324,7 +328,7 @@ public abstract class InteractableWidget extends BackgroundWidget
      */
     public boolean canHoverAt(int mouseX, int mouseY)
     {
-        return true;
+        return this.isMouseOver(mouseX, mouseY);
     }
 
     /**
@@ -332,14 +336,19 @@ public abstract class InteractableWidget extends BackgroundWidget
      * This is mainly meant for the ContainerWidget to block other widgets below it from rendering 
      * their hover text, in case nothing inside the container widget has any hover text.
      */
-    public boolean blockHoverTextFromBelow()
+    public boolean getBlockHoverContentFromBelow()
     {
-        return false;
+        return this.blockHoverContentFromBelow;
     }
 
-    public boolean hasHoverTextToRender(int mouseX, int mouseY)
+    public boolean hasHoverContentToRender(int mouseX, int mouseY)
     {
-        return this.isMouseOver(mouseX, mouseY) && this.hasHoverText();
+        return this.canHoverAt(mouseX, mouseY) && this.hasHoverContent();
+    }
+
+    public boolean hasHoverContent()
+    {
+        return this.hasHoverContent || this.hoverInfoWidget != null || this.hasHoverText();
     }
 
     public boolean hasHoverText()
@@ -500,7 +509,8 @@ public abstract class InteractableWidget extends BackgroundWidget
             {
                 renderHoverInfoWidget(this.hoverInfoWidget, this.getZ() + 100f, ctx);
             }
-            else if (this.hasHoverText())
+
+            if (this.hasHoverText())
             {
                 TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 100f,
                                                       this.getHoverText(), ctx);

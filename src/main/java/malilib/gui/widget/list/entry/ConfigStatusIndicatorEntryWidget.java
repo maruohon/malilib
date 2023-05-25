@@ -23,6 +23,7 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         this.useAddButton = false;
         this.useRemoveButton = false;
         this.useMoveButtons = false;
+        this.hasHoverContent = true;
         this.containerWidget = containerWidget;
 
         this.toggleButton = OnOffButton.simpleSlider(16, this.data::isEnabled, this.data::toggleEnabled);
@@ -65,6 +66,12 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
 
         this.nextWidgetX = this.toggleButton.getX() - 36;
         this.draggableRegionEndX = this.nextWidgetX - 1;
+    }
+
+    @Override
+    public boolean canHoverAt(int mouseX, int mouseY)
+    {
+        return mouseX < this.toggleButton.getX() && super.canHoverAt(mouseX, mouseY);
     }
 
     public void removeInfoRendererWidget()

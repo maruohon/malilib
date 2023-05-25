@@ -512,8 +512,10 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void updateTopHoveredWidgetForHoverInfo(int mouseX, int mouseY)
     {
-        Predicate<InteractableWidget> predicate = w -> w.hasHoverTextToRender(mouseX, mouseY) ||
-                                                       (w.blockHoverTextFromBelow() && w.isMouseOver(mouseX, mouseY));
+        Predicate<InteractableWidget> predicate = w -> w.hasHoverContentToRender(mouseX, mouseY) ||
+                                                       (w.getBlockHoverContentFromBelow() &&
+                                                        w.hasHoverContent() == false &&
+                                                        w.isMouseOver(mouseX, mouseY));
         ToIntFunction<InteractableWidget> priorityFunction = w -> (int) w.getZ();
         this.hoveredWidgetForHoverInfo = this.getTopHoveredWidget(predicate, priorityFunction);
     }

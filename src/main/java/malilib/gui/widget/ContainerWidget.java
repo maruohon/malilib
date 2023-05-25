@@ -17,12 +17,14 @@ public class ContainerWidget extends InteractableWidget
 
     public ContainerWidget(int width, int height)
     {
-        super(width, height);
+        this(0, 0, width, height);
     }
 
     public ContainerWidget(int x, int y, int width, int height)
     {
         super(x, y, width, height);
+
+        this.blockHoverContentFromBelow = true;
     }
 
     public void clearWidgets()
@@ -232,12 +234,6 @@ public class ContainerWidget extends InteractableWidget
         }
 
         return false;
-    }
-
-    @Override
-    public boolean blockHoverTextFromBelow()
-    {
-        return true;
     }
 
     @Override
