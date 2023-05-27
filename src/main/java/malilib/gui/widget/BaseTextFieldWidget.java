@@ -805,7 +805,6 @@ public class BaseTextFieldWidget extends InteractableWidget
         if (this.isEnabled() && this.isFocused())
         {
             this.setFocused(false);
-            return true;
         }
 
         return false;
