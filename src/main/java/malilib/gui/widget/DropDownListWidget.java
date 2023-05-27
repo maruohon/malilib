@@ -75,6 +75,8 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         this.canReceiveMouseClicks = true;
         this.canReceiveMouseScrolls = true;
+        this.blockHoverContentFromBelow = true;
+
         this.entries = ImmutableList.copyOf(entries);
         this.lineHeight = height;
         this.stringFactory = stringFactory;

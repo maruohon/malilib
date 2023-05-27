@@ -78,6 +78,8 @@ public class BaseTextFieldWidget extends InteractableWidget
 
         this.canReceiveMouseClicks = true;
         this.canReceiveMouseScrolls = true;
+        this.blockHoverContentFromBelow = true;
+
         this.setShouldReceiveOutsideClicks(true);
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xFF000000);
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, this.colorUnfocused);

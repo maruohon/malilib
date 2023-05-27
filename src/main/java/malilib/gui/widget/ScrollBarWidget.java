@@ -41,6 +41,8 @@ public class ScrollBarWidget extends InteractableWidget
         this.canReceiveMouseClicks = true;
         this.canReceiveMouseScrolls = true;
         this.canReceiveMouseMoves = true;
+        this.blockHoverContentFromBelow = true;
+
         // This is for receiving release events when the mouse is outside the widget
         this.setShouldReceiveOutsideClicks(true);
         this.barTexture = barTexture;
