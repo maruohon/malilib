@@ -66,20 +66,9 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     {
         super.reAddSubWidgets();
 
-        if (this.addCreateAliasButton)
-        {
-            this.addWidget(this.createAliasButton);
-        }
-
-        if (this.addEditButton)
-        {
-            this.addWidget(this.editButton);
-        }
-
-        if (this.addRemoveButton)
-        {
-            this.addWidget(this.removeActionButton);
-        }
+        this.addWidgetIf(this.createAliasButton, this.addCreateAliasButton);
+        this.addWidgetIf(this.editButton,this.addEditButton );
+        this.addWidgetIf(this.removeActionButton, this.addRemoveButton);
     }
 
     @Override

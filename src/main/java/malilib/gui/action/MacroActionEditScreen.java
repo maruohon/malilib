@@ -6,18 +6,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonElement;
 
-import malilib.action.util.ActionUtils;
 import malilib.action.MacroAction;
 import malilib.action.NamedAction;
 import malilib.action.ParameterizableNamedAction;
 import malilib.action.ParameterizedNamedAction;
+import malilib.action.util.ActionUtils;
 import malilib.gui.BaseScreen;
 import malilib.gui.DualTextInputScreen;
-import malilib.gui.SettingsExportImportScreen;
 import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.DataListWidget;
@@ -27,7 +24,7 @@ import malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
 import malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
-import malilib.util.data.json.JsonUtils;
+import malilib.util.data.AppendOverwrite;
 
 public class MacroActionEditScreen extends BaseActionListScreen
 {
@@ -35,7 +32,6 @@ public class MacroActionEditScreen extends BaseActionListScreen
     protected final List<NamedAction> macroActionsList;
     protected final LabelWidget macroActionsLabelWidget;
     protected final GenericButton addActionsButton;
-    protected final GenericButton exportImportButton;
     protected final MacroAction macro;
 
     public MacroActionEditScreen(MacroAction macro)
@@ -53,10 +49,10 @@ public class MacroActionEditScreen extends BaseActionListScreen
         this.addActionsButton.translateAndAddHoverString("malilib.hover.macro_edit_screen.add_actions");
         this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
 
-        this.exportImportButton = GenericButton.create(15, "malilib.button.export_slash_import", this::openExportImportScreen);
-
         this.leftSideListWidget.setDataListEntryWidgetFactory(this::createMacroSourceActionsWidget);
         this.rightSideListWidget = this.createRightSideActionListWidget();
+
+        this.importRadioWidgetHoverText = "malilib.hover.macro_action_export_import_screen.append_overwrite";
 
         // fetch the backing list reference from the list widget
         this.macroActionsList = this.rightSideListWidget.getNonFilteredDataList();
@@ -70,7 +66,6 @@ public class MacroActionEditScreen extends BaseActionListScreen
 
         this.addWidget(this.macroActionsLabelWidget);
         this.addWidget(this.addActionsButton);
-        this.addWidget(this.exportImportButton);
         this.addListWidget(this.rightSideListWidget);
     }
 
@@ -87,8 +82,6 @@ public class MacroActionEditScreen extends BaseActionListScreen
         int h = this.screenHeight - y - 6;
         this.rightSideListWidget.setPositionAndSize(x, y, w, h);
         this.macroActionsLabelWidget.setPosition(x + 2, y - 10);
-        this.exportImportButton.setY(y - 16);
-        this.exportImportButton.setRight(this.rightSideListWidget.getRight());
     }
 
     @Override
@@ -210,62 +203,26 @@ public class MacroActionEditScreen extends BaseActionListScreen
         return false;
     }
 
-    protected void openExportImportScreen()
+    @Override
+    protected void importEntries(List<NamedAction> list, AppendOverwrite mode)
     {
-        String title = "malilib.title.screen.macro_edit.export_import";
-        MacroAction macro = new MacroAction(this.macro.getName(), ImmutableList.copyOf(this.macroActionsList));
-        String settingsStr = JsonUtils.jsonToString(macro.toJson(), true);
-        SettingsExportImportScreen screen = new SettingsExportImportScreen(title, settingsStr, this::importOverwrite);
-        screen.setAppendStringConsumer(this::importAppend);
-        screen.setRadioWidgetHoverText("malilib.hover.macro_action_export_import_screen.append_overwrite");
-        screen.setParent(this);
-        BaseScreen.openPopupScreen(screen);
-    }
-
-    protected boolean importOverwrite(String settingsStr)
-    {
-        MacroAction macro = this.readMacroFromSettings(settingsStr);
-
-        if (macro != null)
+        if (mode == AppendOverwrite.OVERWRITE)
         {
             this.macroActionsList.clear();
-            this.macroActionsList.addAll(macro.getActionList());
-            this.rightSideListWidget.refreshEntries();
-            return true;
         }
 
-        MessageDispatcher.error("malilib.message.error.macro_import_from_string_failed");
+        int count = list.size();
+        this.macroActionsList.addAll(list);
+        this.rightSideListWidget.refreshEntries();
 
-        return false;
-    }
-
-    protected boolean importAppend(String settingsStr)
-    {
-        MacroAction macro = this.readMacroFromSettings(settingsStr);
-
-        if (macro != null)
+        if (count > 0)
         {
-            this.macroActionsList.addAll(macro.getActionList());
-            this.rightSideListWidget.refreshEntries();
-            return true;
+            MessageDispatcher.success("malilib.message.info.successfully_imported_n_entries", count);
         }
-
-        MessageDispatcher.error("malilib.message.error.macro_import_from_string_failed");
-
-        return false;
-    }
-
-    @Nullable
-    protected MacroAction readMacroFromSettings(String settingsStr)
-    {
-        JsonElement el = JsonUtils.parseJsonFromString(settingsStr);
-
-        if (el != null && el.isJsonObject())
+        else
         {
-            return MacroAction.macroActionFromJson(el.getAsJsonObject());
+            MessageDispatcher.warning("malilib.message.warn.import_entries.didnt_import_any_entries");
         }
-
-        return null;
     }
 
     @Override

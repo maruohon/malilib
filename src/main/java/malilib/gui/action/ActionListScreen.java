@@ -1,14 +1,18 @@
 package malilib.gui.action;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import malilib.MaLiLibConfigScreen;
 import malilib.MaLiLibConfigs;
 import malilib.MaLiLibReference;
 import malilib.action.ActionGroup;
+import malilib.action.AliasAction;
 import malilib.action.MacroAction;
 import malilib.action.NamedAction;
+import malilib.action.ParameterizedNamedAction;
 import malilib.gui.BaseScreen;
 import malilib.gui.BaseTabbedScreen;
 import malilib.gui.TextInputScreen;
@@ -16,8 +20,10 @@ import malilib.gui.widget.DropDownListWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.DataListWidget;
 import malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
+import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.util.StringUtils;
+import malilib.util.data.AppendOverwrite;
 
 public class ActionListScreen extends BaseActionListScreen
 {
@@ -156,6 +162,95 @@ public class ActionListScreen extends BaseActionListScreen
         }
 
         return false;
+    }
+
+    @Override
+    protected void importEntries(List<NamedAction> list, AppendOverwrite mode)
+    {
+        ActionGroup group = this.userAddedActionTypesDropdown.getSelectedEntry();
+
+        if (mode == AppendOverwrite.OVERWRITE)
+        {
+            this.removeActionsOfTypeForOverwrite(group);
+        }
+
+        int count = 0;
+
+        for (NamedAction action : list)
+        {
+            if ((group == ActionGroup.ALIAS || group == ActionGroup.USER_ADDED)
+                && action instanceof AliasAction
+                && Registry.ACTION_REGISTRY.addAlias((AliasAction) action))
+            {
+                ++count;
+                continue;
+            }
+
+            if ((group == ActionGroup.MACRO || group == ActionGroup.USER_ADDED)
+                && action instanceof MacroAction
+                && Registry.ACTION_REGISTRY.addMacro((MacroAction) action))
+            {
+                ++count;
+                continue;
+            }
+
+            if ((group == ActionGroup.PARAMETERIZED || group == ActionGroup.USER_ADDED)
+                && action instanceof ParameterizedNamedAction
+                && Registry.ACTION_REGISTRY.addParameterizedAction((ParameterizedNamedAction) action))
+            {
+                ++count;
+            }
+        }
+
+        if (count > 0)
+        {
+            MessageDispatcher.success("malilib.message.info.successfully_imported_n_entries", count);
+        }
+        else
+        {
+            MessageDispatcher.warning("malilib.message.warn.import_entries.didnt_import_any_entries");
+        }
+    }
+
+    protected void removeActionsOfTypeForOverwrite(ActionGroup group)
+    {
+        // Create a copy of the list since we will be removing stuff
+        ArrayList<NamedAction> allActions = new ArrayList<>(Registry.ACTION_REGISTRY.getAllActions());
+
+        if (group == ActionGroup.ALIAS)
+        {
+            for (NamedAction action : allActions)
+            {
+                if (action instanceof AliasAction)
+                {
+                    Registry.ACTION_REGISTRY.removeAlias(action);
+                }
+            }
+        }
+        else if (group == ActionGroup.MACRO)
+        {
+            for (NamedAction action : allActions)
+            {
+                if (action instanceof MacroAction)
+                {
+                    Registry.ACTION_REGISTRY.removeMacro(action);
+                }
+            }
+        }
+        else if (group == ActionGroup.PARAMETERIZED)
+        {
+            for (NamedAction action : allActions)
+            {
+                if (action instanceof ParameterizedNamedAction)
+                {
+                    Registry.ACTION_REGISTRY.removeParameterizedAction(action);
+                }
+            }
+        }
+        else if (group == ActionGroup.USER_ADDED)
+        {
+            Registry.ACTION_REGISTRY.clearUserAddedActions();
+        }
     }
 
     public static BaseTabbedScreen createActionListScreen()

@@ -27,7 +27,7 @@ public class ActionRegistry
     protected final ActionStorage<ParameterizedNamedAction> parameterized = new ActionStorage<>();
     protected boolean dirty;
 
-    protected void clearUserAddedActions()
+    public void clearUserAddedActions()
     {
         this.allActions.clear();
         this.aliases.clear();

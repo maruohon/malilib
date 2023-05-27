@@ -3,14 +3,10 @@ package malilib.gui.edit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonElement;
 
 import malilib.action.NamedAction;
 import malilib.action.ParameterizableNamedAction;
-import malilib.gui.BaseScreen;
-import malilib.gui.SettingsExportImportScreen;
 import malilib.gui.action.BaseActionListScreen;
 import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
@@ -21,7 +17,7 @@ import malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import malilib.input.CustomHotkeyDefinition;
 import malilib.input.CustomHotkeyManager;
 import malilib.overlay.message.MessageDispatcher;
-import malilib.util.data.json.JsonUtils;
+import malilib.util.data.AppendOverwrite;
 
 public class CustomHotkeyEditScreen extends BaseActionListScreen
 {
@@ -29,7 +25,6 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
     protected final List<NamedAction> currentActionsList;
     protected final CustomHotkeyDefinition hotkey;
     protected final GenericButton addActionsButton;
-    protected final GenericButton exportImportButton;
     protected final LabelWidget actionsLabelWidget;
 
     public CustomHotkeyEditScreen(CustomHotkeyDefinition hotkey)
@@ -46,10 +41,10 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
         this.addActionsButton.translateAndAddHoverString("malilib.hover.custom_hotkey_edit_screen.add_actions");
         this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
 
-        this.exportImportButton = GenericButton.create(15, "malilib.button.export_slash_import", this::openExportImportScreen);
-
         this.leftSideListWidget.setDataListEntryWidgetFactory(this::createLeftSideActionEntryWidget);
         this.rightSideListWidget = this.createRightSideActionListWidget();
+
+        this.importRadioWidgetHoverText = "malilib.hover.custom_hotkey_export_import_screen.append_overwrite";
 
         // fetch the backing list reference from the list widget
         this.currentActionsList = this.rightSideListWidget.getNonFilteredDataList();
@@ -63,7 +58,6 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
 
         this.addWidget(this.actionsLabelWidget);
         this.addWidget(this.addActionsButton);
-        this.addWidget(this.exportImportButton);
         this.addListWidget(this.rightSideListWidget);
     }
 
@@ -81,8 +75,6 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
 
         this.rightSideListWidget.setPositionAndSize(x, y, w, h);
         this.actionsLabelWidget.setPosition(x + 2, y - 10);
-        this.exportImportButton.setY(y - 16);
-        this.exportImportButton.setRight(this.rightSideListWidget.getRight());
     }
 
     @Override
@@ -118,60 +110,26 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
         return true;
     }
 
-    protected void openExportImportScreen()
+    @Override
+    protected void importEntries(List<NamedAction> list, AppendOverwrite mode)
     {
-        String title = "malilib.title.screen.custom_hotkey_edit.export_import";
-        this.hotkey.setActionList(ImmutableList.copyOf(this.currentActionsList));
-        String settingsStr = JsonUtils.jsonToString(this.hotkey.toJson(), true);
-        SettingsExportImportScreen screen = new SettingsExportImportScreen(title, settingsStr, this::importOverwrite);
-        screen.setAppendStringConsumer(this::importAppend);
-        screen.setRadioWidgetHoverText("malilib.hover.custom_hotkey_export_import_screen.append_overwrite");
-        screen.setParent(this);
-        BaseScreen.openPopupScreen(screen);
-    }
-
-    protected boolean importOverwrite(String settingsStr)
-    {
-        return this.importHotkeySettings(settingsStr, true);
-    }
-
-    protected boolean importAppend(String settingsStr)
-    {
-        return this.importHotkeySettings(settingsStr, false);
-    }
-
-    protected boolean importHotkeySettings(String settingsStr, boolean overwrite)
-    {
-        CustomHotkeyDefinition hotkey = this.readHotkeyFromSettings(settingsStr);
-
-        if (hotkey == null)
-        {
-            MessageDispatcher.error("malilib.message.error.custom_hotkey_import_from_string_failed");
-            return false;
-        }
-
-        if (overwrite)
+        if (mode == AppendOverwrite.OVERWRITE)
         {
             this.currentActionsList.clear();
         }
 
-        this.currentActionsList.addAll(hotkey.getActionList());
+        int count = list.size();
+        this.currentActionsList.addAll(list);
         this.rightSideListWidget.refreshEntries();
 
-        return true;
-    }
-
-    @Nullable
-    protected CustomHotkeyDefinition readHotkeyFromSettings(String settingsStr)
-    {
-        JsonElement el = JsonUtils.parseJsonFromString(settingsStr);
-
-        if (el != null && el.isJsonObject())
+        if (count > 0)
         {
-            return CustomHotkeyDefinition.fromJson(el.getAsJsonObject());
+            MessageDispatcher.success("malilib.message.info.successfully_imported_n_entries", count);
         }
-
-        return null;
+        else
+        {
+            MessageDispatcher.warning("malilib.message.warn.import_entries.didnt_import_any_entries");
+        }
     }
 
     protected ActionListBaseActionEntryWidget
