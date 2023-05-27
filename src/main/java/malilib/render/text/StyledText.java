@@ -69,6 +69,21 @@ public class StyledText
         return new StyledText(builder.build());
     }
 
+    /**
+     * @return a copy of the text without a style (or rather with the default style)
+     */
+    public StyledText withoutStyle()
+    {
+        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
+
+        for (StyledTextLine line : this.lines)
+        {
+            builder.add(line.withoutStyle());
+        }
+
+        return new StyledText((builder.build()));
+    }
+
     @Override
     public String toString()
     {
