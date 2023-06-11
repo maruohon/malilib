@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -401,8 +403,9 @@ public class StringUtils
         return net.minecraft.client.MinecraftClient.getInstance().textRenderer.getWidth(text);
     }
 
-    public static void drawString(int x, int y, int color, String text, net.minecraft.client.util.math.MatrixStack matrixStack)
+    public static void drawString(int x, int y, int color, String text, DrawContext context)
     {
-        net.minecraft.client.MinecraftClient.getInstance().textRenderer.draw(matrixStack, text, x, y, color);
+        TextRenderer textRenderer = net.minecraft.client.MinecraftClient.getInstance().textRenderer;
+        context.drawText(textRenderer, text, x, y, color, false);
     }
 }

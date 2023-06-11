@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.Color4f;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 import java.util.List;
 
@@ -201,7 +201,7 @@ public class WidgetColorListEditEntry extends WidgetConfigOptionBase<Color4f>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext context)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -215,9 +215,9 @@ public class WidgetColorListEditEntry extends WidgetConfigOptionBase<Color4f>
             RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x30FFFFFF);
         }
 
-        this.drawSubWidgets(mouseX, mouseY, matrixStack);
-        this.drawTextFields(mouseX, mouseY, matrixStack);
-        super.render(mouseX, mouseY, selected, matrixStack);
+        this.drawSubWidgets(mouseX, mouseY, context);
+        this.drawTextFields(mouseX, mouseY, context);
+        super.render(mouseX, mouseY, selected, context);
     }
 
     public static class ChangeListenerTextField extends ConfigOptionChangeListenerTextField

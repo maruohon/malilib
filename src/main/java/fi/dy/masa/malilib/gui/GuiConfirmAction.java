@@ -3,8 +3,9 @@ package fi.dy.masa.malilib.gui;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -82,30 +83,30 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
     }
 
     @Override
-    public void drawContents(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void drawContents(DrawContext context, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
+            this.getParent().render(context, mouseX, mouseY, partialTicks);
         }
 
-        matrixStack.push();
-        matrixStack.translate(0, 0, 1.f);
+        context.getMatrices().push();
+        context.getMatrices().translate(0, 0, 1.f);
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
-        this.drawStringWithShadow(matrixStack, this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
+        this.drawStringWithShadow(context, this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
         int y = this.dialogTop + 20;
 
         for (String text : this.messageLines)
         {
-            this.drawString(matrixStack, text, this.dialogLeft + 10, y, this.textColor);
+            this.drawString(context, text, this.dialogLeft + 10, y, this.textColor);
             y += this.fontHeight + 1;
         }
 
-        this.drawButtons(mouseX, mouseY, partialTicks, matrixStack);
-        matrixStack.pop();
+        this.drawButtons(mouseX, mouseY, partialTicks, context);
+        context.getMatrices().pop();
     }
 
     protected ButtonListener createActionListener(ButtonType type)

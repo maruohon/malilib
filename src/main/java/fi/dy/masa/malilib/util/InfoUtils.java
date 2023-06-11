@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
@@ -177,12 +178,12 @@ public class InfoUtils
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public static void renderInGameMessages(net.minecraft.client.util.math.MatrixStack matrixStack)
+    public static void renderInGameMessages(DrawContext context)
     {
         int x = GuiUtils.getScaledWindowWidth() / 2;
         int y = GuiUtils.getScaledWindowHeight() - 76;
 
-        IN_GAME_MESSAGES.drawMessages(x, y, matrixStack);
+        IN_GAME_MESSAGES.drawMessages(x, y, context);
     }
 
     public static void sendVanillaMessage(MutableText message)

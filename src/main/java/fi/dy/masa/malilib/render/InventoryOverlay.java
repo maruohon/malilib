@@ -16,6 +16,8 @@ import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
@@ -175,7 +177,7 @@ public class InventoryOverlay
         RenderUtils.drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
     }
 
-    public static void renderEquipmentOverlayBackground(int x, int y, LivingEntity entity, MatrixStack matrixStack)
+    public static void renderEquipmentOverlayBackground(int x, int y, LivingEntity entity, DrawContext context)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -208,7 +210,7 @@ public class InventoryOverlay
         if (entity.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())
         {
             Identifier texture = new Identifier("minecraft:item/empty_armor_slot_shield");
-            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, texture, matrixStack);
+            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, texture, context);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -218,7 +220,7 @@ public class InventoryOverlay
             if (entity.getEquippedStack(eqSlot).isEmpty())
             {
                 Identifier texture = EMPTY_SLOT_TEXTURES[eqSlot.getEntitySlotId()];
-                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, texture, matrixStack);
+                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, texture, context);
             }
         }
     }
@@ -375,21 +377,21 @@ public class InventoryOverlay
         return INV_PROPS_TEMP;
     }
 
-    public static void renderInventoryStacks(InventoryRenderType type, Inventory inv, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, MinecraftClient mc)
+    public static void renderInventoryStacks(InventoryRenderType type, Inventory inv, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, MinecraftClient mc, DrawContext context)
     {
         if (type == InventoryRenderType.FURNACE)
         {
-            renderStackAt(inv.getStack(0), startX +   8, startY +  8, 1, mc);
-            renderStackAt(inv.getStack(1), startX +   8, startY + 44, 1, mc);
-            renderStackAt(inv.getStack(2), startX +  68, startY + 26, 1, mc);
+            renderStackAt(inv.getStack(0), startX +   8, startY +  8, 1, mc, context);
+            renderStackAt(inv.getStack(1), startX +   8, startY + 44, 1, mc, context);
+            renderStackAt(inv.getStack(2), startX +  68, startY + 26, 1, mc, context);
         }
         else if (type == InventoryRenderType.BREWING_STAND)
         {
-            renderStackAt(inv.getStack(0), startX +  47, startY + 42, 1, mc);
-            renderStackAt(inv.getStack(1), startX +  70, startY + 49, 1, mc);
-            renderStackAt(inv.getStack(2), startX +  93, startY + 42, 1, mc);
-            renderStackAt(inv.getStack(3), startX +  70, startY +  8, 1, mc);
-            renderStackAt(inv.getStack(4), startX +   8, startY +  8, 1, mc);
+            renderStackAt(inv.getStack(0), startX +  47, startY + 42, 1, mc, context);
+            renderStackAt(inv.getStack(1), startX +  70, startY + 49, 1, mc, context);
+            renderStackAt(inv.getStack(2), startX +  93, startY + 42, 1, mc, context);
+            renderStackAt(inv.getStack(3), startX +  70, startY +  8, 1, mc, context);
+            renderStackAt(inv.getStack(4), startX +   8, startY +  8, 1, mc, context);
         }
         else
         {
@@ -410,7 +412,7 @@ public class InventoryOverlay
 
                     if (stack.isEmpty() == false)
                     {
-                        renderStackAt(stack, x, y, 1, mc);
+                        renderStackAt(stack, x, y, 1, mc, context);
                     }
 
                     x += 18;
@@ -422,7 +424,7 @@ public class InventoryOverlay
         }
     }
 
-    public static void renderEquipmentStacks(LivingEntity entity, int x, int y, MinecraftClient mc)
+    public static void renderEquipmentStacks(LivingEntity entity, int x, int y, MinecraftClient mc, DrawContext context)
     {
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
         {
@@ -431,7 +433,7 @@ public class InventoryOverlay
 
             if (stack.isEmpty() == false)
             {
-                renderStackAt(stack, x + xOff + 1, y + yOff + 1, 1, mc);
+                renderStackAt(stack, x + xOff + 1, y + yOff + 1, 1, mc, context);
             }
         }
 
@@ -439,18 +441,18 @@ public class InventoryOverlay
 
         if (stack.isEmpty() == false)
         {
-            renderStackAt(stack, x + 28, y + 2 * 18 + 7 + 1, 1, mc);
+            renderStackAt(stack, x + 28, y + 2 * 18 + 7 + 1, 1, mc, context);
         }
 
         stack = entity.getEquippedStack(EquipmentSlot.OFFHAND);
 
         if (stack.isEmpty() == false)
         {
-            renderStackAt(stack, x + 28, y + 3 * 18 + 7 + 1, 1, mc);
+            renderStackAt(stack, x + 28, y + 3 * 18 + 7 + 1, 1, mc, context);
         }
     }
 
-    public static void renderItemStacks(DefaultedList<ItemStack> items, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, MinecraftClient mc)
+    public static void renderItemStacks(DefaultedList<ItemStack> items, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, MinecraftClient mc, DrawContext context)
     {
         final int slots = items.size();
         int x = startX;
@@ -469,7 +471,7 @@ public class InventoryOverlay
 
                 if (stack.isEmpty() == false)
                 {
-                    renderStackAt(stack, x, y, 1, mc);
+                    renderStackAt(stack, x, y, 1, mc, context);
                 }
 
                 x += 18;
@@ -480,7 +482,7 @@ public class InventoryOverlay
         }
     }
 
-    public static void renderStackAt(ItemStack stack, float x, float y, float scale, MinecraftClient mc)
+    public static void renderStackAt(ItemStack stack, float x, float y, float scale, MinecraftClient mc, DrawContext context)
     {
         MatrixStack matrixStack = new MatrixStack();
         matrixStack.translate(x, y, 0.f);
@@ -489,15 +491,13 @@ public class InventoryOverlay
         RenderUtils.enableDiffuseLightingGui3D();
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        mc.getItemRenderer().renderInGui(matrixStack, stack, 0, 0);
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        mc.getItemRenderer().renderGuiItemOverlay(matrixStack, mc.textRenderer, stack, 0, 0, null);
+        TextRenderer textRenderer = mc.textRenderer;
+        context.drawItemInSlot(textRenderer, stack, 0, 0, null);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
-    public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc, MatrixStack matrixStack)
+    public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc, DrawContext context)
     {
         List<Text> list = stack.getTooltip(mc.player, mc.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
         List<String> lines = new ArrayList<>();
@@ -514,7 +514,7 @@ public class InventoryOverlay
             }
         }
 
-        RenderUtils.drawHoverText(x, y, lines, matrixStack);
+        RenderUtils.drawHoverText(x, y, lines, context);
     }
 
     public static class InventoryProperties

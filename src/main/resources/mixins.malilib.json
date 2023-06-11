@@ -5,7 +5,6 @@
 	"minVersion": "0.8",
 	"client": [
 		"MixinClientPlayNetworkHandler",
-		"MixinCreativeInventoryScreen",
 		"MixinInGameHud",
 		"MixinKeyboard",
 		"MixinMinecraftClient",

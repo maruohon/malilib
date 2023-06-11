@@ -11,8 +11,8 @@ import fi.dy.masa.malilib.util.Color4f;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 
 import javax.annotation.Nullable;
 
@@ -118,14 +118,14 @@ public class GuiColorListEdit extends GuiListBase<Color4f, WidgetColorListEditEn
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
+            this.getParent().render(context, mouseX, mouseY, partialTicks);
         }
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(context, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -135,9 +135,9 @@ public class GuiColorListEdit extends GuiListBase<Color4f, WidgetColorListEditEn
     }
 
     @Override
-    protected void drawTitle(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    protected void drawTitle(DrawContext context, int mouseX, int mouseY, float partialTicks)
     {
-        this.drawStringWithShadow(matrixStack, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawStringWithShadow(context, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override
