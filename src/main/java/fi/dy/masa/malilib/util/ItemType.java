@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.util;
 
+import java.util.Objects;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -78,7 +80,7 @@ public class ItemType
                 return false;
             }
 
-            return this.checkNBT() == false || ItemStack.areEqual(this.stack, other.stack);
+            return this.checkNBT() == false || Objects.equals(this.stack.getNbt(), other.stack.getNbt());
         }
     }
 
