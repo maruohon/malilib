@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -154,11 +156,11 @@ public abstract class ButtonBase extends WidgetBase
     }
 
     @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
         if (this.hasHoverText() && this.isMouseOver())
         {
-            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings(), matrixStack);
+            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings(), drawContext);
         }
     }
 }

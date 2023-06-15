@@ -1,7 +1,9 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.util.math.MatrixStack;
+
+import net.minecraft.client.gui.DrawContext;
+
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -127,11 +129,11 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
         return false;
     }
 
-    protected void drawTextFields(int mouseX, int mouseY, MatrixStack matrixStack)
+    protected void drawTextFields(int mouseX, int mouseY, DrawContext drawContext)
     {
         if (this.textField != null)
         {
-            this.textField.getTextField().render(matrixStack, mouseX, mouseY, 0f);
+            this.textField.getTextField().render(drawContext, mouseX, mouseY, 0f);
         }
     }
 }

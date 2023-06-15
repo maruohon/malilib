@@ -2,13 +2,14 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.IConfigColorList;
-import fi.dy.masa.malilib.gui.button.ConfigButtonColorList;
+
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
+
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
+import fi.dy.masa.malilib.config.IConfigColorList;
 import fi.dy.masa.malilib.config.IConfigDouble;
 import fi.dy.masa.malilib.config.IConfigInteger;
 import fi.dy.masa.malilib.config.IConfigOptionList;
@@ -34,6 +35,7 @@ import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
+import fi.dy.masa.malilib.gui.button.ConfigButtonColorList;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.ConfigButtonStringList;
@@ -378,16 +380,16 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        this.drawSubWidgets(mouseX, mouseY, matrixStack);
+        this.drawSubWidgets(mouseX, mouseY, drawContext);
 
         if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            this.drawTextFields(mouseX, mouseY, matrixStack);
-            super.render(mouseX, mouseY, selected, matrixStack);
+            this.drawTextFields(mouseX, mouseY, drawContext);
+            super.render(mouseX, mouseY, selected, drawContext);
         }
     }
 

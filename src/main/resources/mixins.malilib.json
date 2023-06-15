@@ -5,12 +5,12 @@
 	"minVersion": "0.8",
 	"client": [
 		"MixinClientPlayNetworkHandler",
-		"MixinCreativeInventoryScreen",
+		"MixinDrawContext",
+		"MixinHandledScreen",
 		"MixinInGameHud",
 		"MixinKeyboard",
 		"MixinMinecraftClient",
 		"MixinMouse",
-		"MixinScreen",
 		"MixinWorldRenderer"
 	],
 	"injectors": {

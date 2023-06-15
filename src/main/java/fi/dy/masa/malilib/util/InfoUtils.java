@@ -177,12 +177,12 @@ public class InfoUtils
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public static void renderInGameMessages(net.minecraft.client.util.math.MatrixStack matrixStack)
+    public static void renderInGameMessages(net.minecraft.client.gui.DrawContext drawContext)
     {
         int x = GuiUtils.getScaledWindowWidth() / 2;
         int y = GuiUtils.getScaledWindowHeight() - 76;
 
-        IN_GAME_MESSAGES.drawMessages(x, y, matrixStack);
+        IN_GAME_MESSAGES.drawMessages(x, y, drawContext);
     }
 
     public static void sendVanillaMessage(MutableText message)

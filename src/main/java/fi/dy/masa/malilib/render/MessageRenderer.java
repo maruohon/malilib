@@ -2,7 +2,9 @@ package fi.dy.masa.malilib.render;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.util.math.MatrixStack;
+
+import net.minecraft.client.gui.DrawContext;
+
 import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 
@@ -109,7 +111,7 @@ public class MessageRenderer
         return height;
     }
 
-    public void drawMessages(int x, int y, MatrixStack matrixStack)
+    public void drawMessages(int x, int y, DrawContext drawContext)
     {
         if (this.messages.isEmpty() == false)
         {
@@ -148,7 +150,7 @@ public class MessageRenderer
             for (int i = 0; i < this.messages.size(); ++i)
             {
                 Message message = this.messages.get(i);
-                y = message.renderAt(x, y, 0xFFFFFFFF, matrixStack);
+                y = message.renderAt(x, y, 0xFFFFFFFF, drawContext);
 
                 if (message.hasExpired(currentTime))
                 {

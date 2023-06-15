@@ -1,7 +1,9 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
-import net.minecraft.client.util.math.MatrixStack;
+
+import net.minecraft.client.gui.DrawContext;
+
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -49,7 +51,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
         // Draw a lighter background for the hovered and the selected entry
         if (selected || this.isMouseOver(mouseX, mouseY))
@@ -95,9 +97,9 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         }
 
         int yOffset = (this.height - this.fontHeight) / 2 + 1;
-        this.drawString(this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF, this.getDisplayName(), matrixStack);
+        this.drawString(this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF, this.getDisplayName(), drawContext);
 
-        super.render(mouseX, mouseY, selected, matrixStack);
+        super.render(mouseX, mouseY, selected, drawContext);
     }
 
     protected String getDisplayName()

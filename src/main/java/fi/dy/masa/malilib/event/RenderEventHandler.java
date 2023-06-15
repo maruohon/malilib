@@ -6,6 +6,7 @@ import org.joml.Matrix4f;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
@@ -56,7 +57,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost(MatrixStack matrixStack, MinecraftClient mc, float partialTicks)
+    public void onRenderGameOverlayPost(DrawContext drawContext, MinecraftClient mc, float partialTicks)
     {
         mc.getProfiler().push("malilib_rendergameoverlaypost");
 
@@ -65,13 +66,13 @@ public class RenderEventHandler implements IRenderDispatcher
             for (IRenderer renderer : this.overlayRenderers)
             {
                 mc.getProfiler().push(renderer.getProfilerSectionSupplier());
-                renderer.onRenderGameOverlayPost(matrixStack);
+                renderer.onRenderGameOverlayPost(drawContext);
                 mc.getProfiler().pop();
             }
         }
 
         mc.getProfiler().push("malilib_ingamemessages");
-        InfoUtils.renderInGameMessages(matrixStack);
+        InfoUtils.renderInGameMessages(drawContext);
         mc.getProfiler().pop();
 
         mc.getProfiler().pop();
@@ -80,13 +81,13 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderTooltipLast(MatrixStack matrixStack, ItemStack stack, int x, int y)
+    public void onRenderTooltipLast(DrawContext drawContext, ItemStack stack, int x, int y)
     {
         if (this.tooltipLastRenderers.isEmpty() == false)
         {
             for (IRenderer renderer : this.tooltipLastRenderers)
             {
-                renderer.onRenderTooltipLast(stack, x, y);
+                renderer.onRenderTooltipLast(drawContext ,stack, x, y);
             }
         }
     }

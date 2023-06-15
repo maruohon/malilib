@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -57,25 +59,26 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     }
 
     @Override
-    public void drawContents(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void drawContents(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
+            this.getParent().render(drawContext, mouseX, mouseY, partialTicks);
         }
 
+        MatrixStack matrixStack = drawContext.getMatrices();
         matrixStack.push();
         matrixStack.translate(0, 0, 1.f);
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
-        this.drawStringWithShadow(matrixStack, this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
+        this.drawStringWithShadow(drawContext, this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
 
         //super.drawScreen(mouseX, mouseY, partialTicks);
-        this.textField.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.textField.render(drawContext, mouseX, mouseY, partialTicks);
 
-        this.drawButtons(mouseX, mouseY, partialTicks, matrixStack);
+        this.drawButtons(mouseX, mouseY, partialTicks, drawContext);
         matrixStack.pop();
     }
 

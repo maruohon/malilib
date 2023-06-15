@@ -3,7 +3,9 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.client.util.math.MatrixStack;
+
+import net.minecraft.client.gui.DrawContext;
+
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -56,7 +58,7 @@ public class WidgetLabel extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
         if (this.visible)
         {
@@ -73,11 +75,11 @@ public class WidgetLabel extends WidgetBase
 
                 if (this.centered)
                 {
-                    this.drawCenteredStringWithShadow(this.x + this.width / 2, yTextStart + i * fontHeight, this.textColor, text, matrixStack);
+                    this.drawCenteredStringWithShadow(this.x + this.width / 2, yTextStart + i * fontHeight, this.textColor, text, drawContext);
                 }
                 else
                 {
-                    this.drawStringWithShadow(this.x, yTextStart + i * fontHeight, this.textColor, text, matrixStack);
+                    this.drawStringWithShadow(this.x, yTextStart + i * fontHeight, this.textColor, text, drawContext);
                 }
             }
         }

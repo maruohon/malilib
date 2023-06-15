@@ -3,7 +3,9 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.io.File;
 import java.util.Arrays;
 import javax.annotation.Nullable;
-import net.minecraft.client.util.math.MatrixStack;
+
+import net.minecraft.client.gui.DrawContext;
+
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextInputFeedback;
 import fi.dy.masa.malilib.gui.LeftRight;
@@ -94,9 +96,9 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
-        super.render(mouseX, mouseY, selected, matrixStack);
+        super.render(mouseX, mouseY, selected, drawContext);
 
         if (this.searchOpen == false)
         {
@@ -114,14 +116,14 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             int textColor = 0xC0C0C0C0;
             int maxLen = (this.width - 40) / this.getStringWidth("a") - 4; // FIXME
             String path = FileUtils.getJoinedTrailingPathElements(this.currentDir, this.rootDir, maxLen, " / ");
-            this.drawString(pathStartX + 3, this.y + 3, textColor, path, matrixStack);
+            this.drawString(pathStartX + 3, this.y + 3, textColor, path, drawContext);
         }
     }
 
     @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
-        super.postRenderHovered(mouseX, mouseY, selected, matrixStack);
+        super.postRenderHovered(mouseX, mouseY, selected, drawContext);
 
         if (this.searchOpen == false)
         {
@@ -129,15 +131,15 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
 
             if (hoveredIcon == this.iconRoot)
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.root")), matrixStack);
+                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.root")), drawContext);
             }
             else if (hoveredIcon == this.iconUp)
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.up")), matrixStack);
+                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.up")), drawContext);
             }
             else if (hoveredIcon == this.iconCreateDir)
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.create_directory")), matrixStack);
+                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.create_directory")), drawContext);
             }
         }
     }

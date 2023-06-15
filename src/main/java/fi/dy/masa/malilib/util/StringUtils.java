@@ -401,8 +401,8 @@ public class StringUtils
         return net.minecraft.client.MinecraftClient.getInstance().textRenderer.getWidth(text);
     }
 
-    public static void drawString(int x, int y, int color, String text, net.minecraft.client.util.math.MatrixStack matrixStack)
+    public static void drawString(int x, int y, int color, String text, net.minecraft.client.gui.DrawContext drawContext)
     {
-        net.minecraft.client.MinecraftClient.getInstance().textRenderer.draw(matrixStack, text, x, y, color);
+        drawContext.drawText(net.minecraft.client.MinecraftClient.getInstance().textRenderer, text, x, y, color, false);
     }
 }

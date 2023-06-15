@@ -2,7 +2,9 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.util.math.MatrixStack;
+
+import net.minecraft.client.gui.DrawContext;
+
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -52,13 +54,13 @@ public class WidgetHoverInfo extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
     }
 
     @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
-        RenderUtils.drawHoverText(mouseX, mouseY, this.lines, matrixStack);
+        RenderUtils.drawHoverText(mouseX, mouseY, this.lines, drawContext);
     }
 }

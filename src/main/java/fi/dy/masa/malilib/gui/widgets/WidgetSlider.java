@@ -1,8 +1,9 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+
 import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
 import fi.dy.masa.malilib.render.RenderUtils;
 
@@ -41,7 +42,7 @@ public class WidgetSlider extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
         if (this.dragging && mouseX != this.lastMouseX)
         {
@@ -65,7 +66,7 @@ public class WidgetSlider extends WidgetBase
 
         String str = this.callback.getFormattedDisplayValue();
         int w = this.getStringWidth(str);
-        this.drawString(this.x + (this.width / 2) - w / 2, this.y + 6, 0xFFFFFFA0, str, matrixStack);
+        this.drawString(this.x + (this.width / 2) - w / 2, this.y + 6, 0xFFFFFFA0, str, drawContext);
     }
 
     protected double getRelativePosition(int mouseX)

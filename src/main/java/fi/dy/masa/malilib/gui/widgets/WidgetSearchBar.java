@@ -1,7 +1,8 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
+
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.LeftRight;
@@ -120,14 +121,14 @@ public class WidgetSearchBar extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, DrawContext drawContext)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
         this.iconSearch.render(false, this.iconSearch.isMouseOver(mouseX, mouseY));
 
         if (this.searchOpen)
         {
-            this.searchBox.render(matrixStack, mouseX, mouseY, 0);
+            this.searchBox.render(drawContext, mouseX, mouseY, 0);
         }
     }
 }

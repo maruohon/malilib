@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
@@ -100,20 +101,21 @@ public class GuiTextFieldGeneric extends TextFieldWidget
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
     {
         if (this.zLevel != 0)
         {
+            MatrixStack matrixStack = drawContext.getMatrices();
             matrixStack.push();
             matrixStack.translate(0, 0, this.zLevel);
 
-            super.render(matrixStack, mouseX, mouseY, partialTicks);
+            super.render(drawContext, mouseX, mouseY, partialTicks);
 
             matrixStack.pop();
         }
         else
         {
-            super.render(matrixStack, mouseX, mouseY, partialTicks);
+            super.render(drawContext, mouseX, mouseY, partialTicks);
         }
     }
 }
