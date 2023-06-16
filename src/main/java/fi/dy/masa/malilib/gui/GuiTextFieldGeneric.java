@@ -31,10 +31,15 @@ public class GuiTextFieldGeneric extends TextFieldWidget
     {
         boolean ret = super.mouseClicked(mouseX, mouseY, mouseButton);
 
-        if (mouseButton == 1 && this.isMouseOver((int) mouseX, (int) mouseY))
+        if (this.isMouseOver((int) mouseX, (int) mouseY))
         {
-            this.setText("");
+            if (mouseButton == 1)
+            {
+                this.setText("");
+            }
+
             this.setFocused(true);
+
             return true;
         }
 
