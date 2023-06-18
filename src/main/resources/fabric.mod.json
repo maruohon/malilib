@@ -27,6 +27,11 @@
 			"fi.dy.masa.malilib.compat.modmenu.ModMenuImpl"
 		]
 	},
+	"custom": {
+		"modmenu": {
+			"badges": [ "library" ]
+		}
+	},
 	"mixins": [
 		"mixins.malilib.json"
 	],
