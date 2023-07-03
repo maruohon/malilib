@@ -161,6 +161,9 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     @Override
     public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
     {
+        // Use a custom DrawContext that doesn't always disable depth test when drawing...
+        drawContext = new MalilibDrawContext(this.client, drawContext.getVertexConsumers());
+
         this.drawScreenBackground(mouseX, mouseY);
         this.drawTitle(drawContext, mouseX, mouseY, partialTicks);
 
