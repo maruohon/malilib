@@ -1,6 +1,9 @@
 package fi.dy.masa.malilib.util;
 
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import net.minecraft.block.BlockState;
@@ -28,13 +31,11 @@ import net.minecraft.world.World;
 
 public class InventoryUtils
 {
+    public static final ImmutableSet<String> DAMAGE_KEY = ImmutableSet.of("Damage");
     private static final DefaultedList<ItemStack> EMPTY_LIST = DefaultedList.of();
 
     /**
-     * Check whether the stacks are identical otherwise, but ignoring the stack size
-     * @param stack1
-     * @param stack2
-     * @return
+     * @return true if the stacks are identical otherwise, but ignoring the stack size
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
@@ -42,15 +43,54 @@ public class InventoryUtils
     }
 
     /**
-     * Checks whether the stacks are identical otherwise, but ignoring the stack size,
-     * and if the item is damageable, then ignoring the durability too.
-     * @param stack1
-     * @param stack2
-     * @return
+     * @return true if the stacks are identical otherwise, but ignoring the stack size,
+     * and if the item is damageable, then ignoring the damage too.
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqual(stack1, stack2);
+        if (ItemStack.areItemsEqual(stack1, stack2) == false)
+        {
+            return false;
+        }
+
+        NbtCompound tag1 = stack1.getNbt();
+        NbtCompound tag2 = stack2.getNbt();
+
+        if (tag1 == null || tag2 == null)
+        {
+            return tag1 == tag2;
+        }
+
+        if (stack1.isDamageable() == false && stack2.isDamageable() == false)
+        {
+            return Objects.equals(tag1, tag2);
+        }
+
+        return areNbtEqualIgnoreKeys(tag1, tag2, DAMAGE_KEY);
+    }
+
+    public static boolean areNbtEqualIgnoreKeys(NbtCompound tag1, NbtCompound tag2, Set<String> ignoredKeys)
+    {
+        Set<String> keys1 = tag1.getKeys();
+        Set<String> keys2 = tag2.getKeys();
+
+        keys1.removeAll(ignoredKeys);
+        keys2.removeAll(ignoredKeys);
+
+        if (Objects.equals(keys1, keys2) == false)
+        {
+            return false;
+        }
+
+        for (String key : keys1)
+        {
+            if (Objects.equals(tag1.get(key), tag2.get(key)) == false)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
