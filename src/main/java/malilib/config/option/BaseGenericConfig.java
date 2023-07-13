@@ -38,8 +38,7 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
         this.defaultValue = defaultValue;
         this.value = defaultValue;
         this.effectiveValue = defaultValue;
-
-        this.cacheSavedValue();
+        this.lastSavedValue = defaultValue;
     }
 
     @Override
@@ -128,7 +127,7 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
 
         if (this.hasOverride && this.overrideMessage != null)
         {
-            this.lockOverrideMessages.add(StringUtils.translate(this.overrideMessage));
+            StringUtils.translateAndLineSplit(this.lockOverrideMessages::add, this.overrideMessage);
         }
     }
 
@@ -168,13 +167,13 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
         this.value = value;
         this.cacheSavedValue();
         this.updateEffectiveValue();
-        this.onValueLoaded(this.effectiveValue);
+        this.onValueLoaded(value);
     }
 
     /**
      * @return the actual user-set underlying value, used for config serialization to file.
-     * This is needed if there are active config overrides, as then the normal {@link #getValue()}
-     * method will return the overridden value.
+     * This is needed if there are active config overrides, as the normal {@link #getValue()}
+     * method will then return the override value.
      */
     public T getValueForSerialization()
     {

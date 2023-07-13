@@ -14,10 +14,6 @@ public class ConfigManagerImpl implements ConfigManager
 {
     protected final Map<ModInfo, ModConfig> configHandlers = new LinkedHashMap<>();
 
-    public ConfigManagerImpl()
-    {
-    }
-
     @Override
     public void registerConfigHandler(ModConfig handler)
     {

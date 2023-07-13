@@ -25,108 +25,46 @@ import malilib.util.position.Vec2i;
 import malilib.util.restriction.UsageRestriction;
 import malilib.util.restriction.UsageRestriction.ListType;
 
-public class DataJsonDeserializers
+public class JsonDeserializers
 {
-    public static Optional<Boolean> readBooleanValue(JsonElement element)
+    public static <T> Optional<T> readPrimitiveValue(JsonElement element,
+                                                     Function<JsonElement, T> deserializer)
     {
         try
         {
             if (element.isJsonPrimitive())
             {
-                return Optional.of(element.getAsBoolean());
+                return Optional.ofNullable(deserializer.apply(element));
             }
             else
             {
-                MaLiLib.LOGGER.warn("Failed to read boolean value from the JSON element '{}'", element);
+                MaLiLib.LOGGER.warn("Failed to deserialize value from the JSON element '{}' - not a JSON primitive", element);
             }
         }
         catch (Exception e)
         {
-            MaLiLib.LOGGER.warn("Failed to read boolean value from the JSON element '{}'", element, e);
+            MaLiLib.LOGGER.warn("Exception while trying to deserialize a primitive value from the JSON element '{}'", element, e);
         }
 
         return Optional.empty();
     }
 
-    public static Optional<Integer> readIntValue(JsonElement element)
+    public static Optional<Path> readPath(JsonElement element)
     {
         try
         {
             if (element.isJsonPrimitive())
             {
-                return Optional.of(element.getAsInt());
+                return Optional.ofNullable(Paths.get(element.getAsString()));
             }
             else
             {
-                MaLiLib.LOGGER.warn("Failed to read int value from the JSON element '{}'", element);
+                MaLiLib.LOGGER.warn("Failed to deserialize a path from the JSON element '{}' - not a JSON primitive", element);
             }
         }
         catch (Exception e)
         {
-            MaLiLib.LOGGER.warn("Failed to read int value from the JSON element '{}'", element, e);
-        }
-
-        return Optional.empty();
-    }
-
-    public static Optional<Float> readFloatValue(JsonElement element)
-    {
-        try
-        {
-            if (element.isJsonPrimitive())
-            {
-                return Optional.of(element.getAsFloat());
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to read float value from the JSON element '{}'", element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to read float value from the JSON element '{}'", element, e);
-        }
-
-        return Optional.empty();
-    }
-
-    public static Optional<Double> readDoubleValue(JsonElement element)
-    {
-        try
-        {
-            if (element.isJsonPrimitive())
-            {
-                return Optional.of(element.getAsDouble());
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to read double value from the JSON element '{}'", element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to read double value from the JSON element '{}'", element, e);
-        }
-
-        return Optional.empty();
-    }
-
-    public static Optional<String> readStringValue(JsonElement element)
-    {
-        try
-        {
-            if (element.isJsonPrimitive())
-            {
-                return Optional.of(element.getAsString());
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to read String value from the JSON element '{}'", element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to read String value from the JSON element '{}'", element, e);
+            MaLiLib.LOGGER.warn("Exception while trying to deserialize a path from the JSON element '{}'", element, e);
         }
 
         return Optional.empty();

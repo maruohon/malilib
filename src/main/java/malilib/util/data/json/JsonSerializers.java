@@ -17,33 +17,8 @@ import malilib.util.data.Color4f;
 import malilib.util.position.Vec2d;
 import malilib.util.position.Vec2i;
 
-public class DataJsonSerializers
+public class JsonSerializers
 {
-    public static JsonElement serializeBooleanValue(boolean value)
-    {
-        return new JsonPrimitive(value);
-    }
-
-    public static JsonElement serializeIntValue(int value)
-    {
-        return new JsonPrimitive(value);
-    }
-
-    public static JsonElement serializeFloatValue(float value)
-    {
-        return new JsonPrimitive(value);
-    }
-
-    public static JsonElement serializeDoubleValue(double value)
-    {
-        return new JsonPrimitive(value);
-    }
-
-    public static JsonElement serializeStringValue(String value)
-    {
-        return new JsonPrimitive(value);
-    }
-
     public static JsonElement serializeDualColorValue(Pair<Color4f, Color4f> value)
     {
         JsonObject obj = new JsonObject();

@@ -11,8 +11,8 @@ import malilib.MaLiLib;
 import malilib.config.category.ConfigOptionCategory;
 import malilib.config.option.ConfigInfo;
 import malilib.config.option.ConfigOption;
-import malilib.config.serialization.JsonConfigSerializerRegistry.JsonConfigDeSerializer;
-import malilib.config.serialization.JsonConfigSerializerRegistry.JsonConfigSerializer;
+import malilib.config.serialization.JsonConfigSerializerRegistry.ConfigFromJsonLoader;
+import malilib.config.serialization.JsonConfigSerializerRegistry.ConfigToJsonSerializer;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.util.data.json.JsonUtils;
@@ -74,15 +74,15 @@ public class JsonConfigUtils
 
     public static <T, C extends ConfigOption<T>> void tryLoadConfig(JsonObject obj, C config, String categoryName)
     {
-        JsonConfigDeSerializer<C> deSerializer = Registry.JSON_CONFIG_SERIALIZER.getDeSerializer(config);
+        ConfigFromJsonLoader<C> valueLoader = Registry.JSON_CONFIG_SERIALIZER.getConfigValueLoader(config);
 
-        if (deSerializer != null)
+        if (valueLoader != null)
         {
             String name = config.getName();
 
             if (obj.has(name))
             {
-                deSerializer.deSerializeConfigValue(config, obj.get(name), name);
+                valueLoader.loadConfigValue(config, obj.get(name));
                 return;
             }
             else
@@ -91,7 +91,7 @@ public class JsonConfigUtils
                 {
                     if (obj.has(oldName))
                     {
-                        deSerializer.deSerializeConfigValue(config, obj.get(name), name);
+                        valueLoader.loadConfigValue(config, obj.get(name));
                         return;
                     }
                 }
@@ -151,12 +151,12 @@ public class JsonConfigUtils
 
     public static <C extends ConfigInfo> boolean tryWriteConfig(JsonObject obj, C config, String categoryName)
     {
-        JsonConfigSerializer<C> serializer = Registry.JSON_CONFIG_SERIALIZER.getSerializer(config);
+        ConfigToJsonSerializer<C> serializer = Registry.JSON_CONFIG_SERIALIZER.getSerializer(config);
 
         if (serializer != null)
         {
             String name = config.getName();
-            obj.add(name, serializer.serializeConfigValue(config));
+            obj.add(name, serializer.configValueToJson(config));
             return true;
         }
         else
