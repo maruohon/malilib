@@ -44,7 +44,7 @@ public class ConfigOverridePacketHandler extends BasePacketHandler
                     ConfigOverrideUtils.resetConfigOverrides();
                 }
 
-                ConfigOverrideUtils.applyConfigOverrides(el.getAsJsonObject());
+                ConfigOverrideUtils.applyConfigOverridesFromServer(el.getAsJsonObject());
 
                 return;
             }

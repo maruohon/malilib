@@ -27,7 +27,7 @@ public interface ModConfig
      * Returns all the configs in this mod grouped by their categories.
      * This method is used for the config file saving and loading related operations.
      * <br>
-     * These categories can be different than what is shown
+     * These categories can be different from what is shown
      * on the config screens, as the config screen tabs are defined separately.
      */
     List<ConfigOptionCategory> getConfigOptionCategories();

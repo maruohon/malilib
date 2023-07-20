@@ -1,5 +1,6 @@
 package malilib.util.game.wrap;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -197,6 +198,19 @@ public class GameUtils
     public static void openFile(Path file)
     {
         OpenGlHelper.openFile(file.toFile());
+    }
+
+    @Nullable
+    public static Path getCurrentSinglePlayerWorldDirectory()
+    {
+        if (isSinglePlayer())
+        {
+            MinecraftServer server = getIntegratedServer();
+            File file = server.getActiveAnvilConverter().getFile(server.getFolderName(), "icon.png");
+            return file.getParentFile().toPath();
+        }
+
+        return null;
     }
 
     public static class Options

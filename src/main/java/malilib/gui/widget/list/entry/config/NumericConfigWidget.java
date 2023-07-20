@@ -40,6 +40,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseGenericConfig<TY
 
         this.textField = new BaseTextFieldWidget(60, 16);
         this.textField.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
+        this.textField.setEnabled(config.isLocked() == false);
         this.textField.setListener((str) -> {
             this.fromStringSetter.accept(this.config, str);
             this.updateWidgetState();
