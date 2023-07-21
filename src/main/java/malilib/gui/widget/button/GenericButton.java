@@ -15,9 +15,11 @@ import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.IconWidget;
 import malilib.gui.widget.InteractableWidget;
 import malilib.listener.EventListener;
+import malilib.render.ShapeRenderUtils;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.StyledTextUtils;
 import malilib.util.StringUtils;
+import malilib.util.data.EdgeInt;
 import malilib.util.data.Int2BooleanFunction;
 import malilib.util.data.LeftRight;
 
@@ -28,11 +30,13 @@ public class GenericButton extends InteractableWidget
     @Nullable protected Supplier<String> displayStringSupplier;
     @Nullable protected Icon buttonIcon;
     @Nullable protected String fullDisplayString;
+    @Nullable protected StyledTextLine fullText;
     protected Icon backgroundIcon = DefaultIcons.BUTTON_BACKGROUND;
     protected LeftRight iconAlignment = LeftRight.LEFT;
     protected boolean canScrollToClick;
     protected boolean playClickSound = true;
     protected boolean renderButtonBackgroundTexture = true;
+    protected boolean renderFullTextOnHover = true;
     protected boolean rightAligned;
     protected int disabledTextColor = 0xFF606060;
     protected int iconVsLabelPadding = 5;
@@ -150,6 +154,16 @@ public class GenericButton extends InteractableWidget
     public GenericButton setRenderButtonBackgroundTexture(boolean renderButtonBackgroundTexture)
     {
         this.renderButtonBackgroundTexture = renderButtonBackgroundTexture;
+        return this;
+    }
+
+    /**
+     * Sets whether overly long and clamped text should be rendered in full (with a hover background)
+     * when the button is hovered over.
+     */
+    public GenericButton setRenderFullTextOnHover(boolean render)
+    {
+        this.renderFullTextOnHover = render;
         return this;
     }
 
@@ -334,6 +348,8 @@ public class GenericButton extends InteractableWidget
 
     protected void updateDisplayString()
     {
+        this.fullText = null;
+
         if (this.displayStringSupplier != null)
         {
             this.fullDisplayString = this.displayStringSupplier.get();
@@ -349,6 +365,8 @@ public class GenericButton extends InteractableWidget
 
                 if (text.renderWidth > maxWidth)
                 {
+                    // Only set fullText if the text is clamped
+                    this.fullText = text;
                     text = StyledTextUtils.clampStyledTextToMaxWidth(text, maxWidth, LeftRight.RIGHT, " ...");
                 }
             }
@@ -463,6 +481,39 @@ public class GenericButton extends InteractableWidget
 
             this.renderButtonBackgroundIcon(x, y, z, width, height, hovered, ctx);
         }
+    }
+
+    @Override
+    protected void renderText(int x, int y, float z, int color, ScreenContext ctx)
+    {
+        if (this.renderFullTextOnHover && this.fullText != null && this.isHoveredForRender(ctx))
+        {
+            this.renderFullTextWithBackground(x, y, z, color,this.fullText, ctx);
+        }
+        else
+        {
+            super.renderText(x, y, z, color, ctx);
+        }
+    }
+
+    protected void renderFullTextWithBackground(int x, int y, float z, int color, StyledTextLine text, ScreenContext ctx)
+    {
+        EdgeInt padding = this.padding;
+        int usableWidth = this.getWidth() - padding.getHorizontalTotal();
+        int usableHeight = this.getHeight() - padding.getVerticalTotal();
+        x = this.getTextPositionX(x + padding.getLeft(), usableWidth, text.renderWidth);
+        y = this.getTextPositionY(y + padding.getTop(), usableHeight, this.getLineHeight());
+        int width = this.fullText.renderWidth + 8;
+        int height = this.getLineHeight() + 6;
+
+        this.renderFullTextBackground(x - 4, y - 4, z, width, height, ctx);
+        this.renderTextLine(x, y, z + 2, color, true, text, ctx);
+    }
+
+    protected void renderFullTextBackground(int x, int y, float z, int width, int height, ScreenContext ctx)
+    {
+        ShapeRenderUtils.renderRectangle(x, y, z + 1, width, height, 0xF0000000);
+        ShapeRenderUtils.renderOutline(x, y, z + 1, width, height, 1, 0xFF30E0E0);
     }
 
     public static GenericButton create(int width, int height, String translationKey)
