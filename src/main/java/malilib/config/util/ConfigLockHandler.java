@@ -21,6 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.multiplayer.ServerData;
 
 import malilib.MaLiLib;
+import malilib.MaLiLibConfigs;
 import malilib.MaLiLibReference;
 import malilib.action.NamedAction;
 import malilib.config.ConfigManagerImpl;
@@ -40,7 +41,7 @@ import malilib.util.data.ModInfo;
 import malilib.util.data.json.JsonUtils;
 import malilib.util.game.wrap.GameUtils;
 
-public class ConfigOverrideHandler
+public class ConfigLockHandler
 {
     protected final Map<Pair<ConfigOptionCategory, BaseGenericConfig<?>>, Pair<JsonElement, String>> configOverrides = new HashMap<>();
     protected final Map<ModInfo, Map<ConfigOptionCategory, List<BaseGenericConfig<?>>>> overridableConfigs = new HashMap<>();
@@ -49,24 +50,24 @@ public class ConfigOverrideHandler
     protected final Map<NamedAction, String> lockedActions = new HashMap<>();
     protected final Map<Hotkey, String> lockedHotkeys = new HashMap<>();
 
-    public void readAndApplyConfigOverrides()
+    public void readAndApplyLocks()
     {
-        this.initOverride();
+        this.initLocks();
 
         // Overrides that come later will override previous definitions.
         // The server overrides are handled last so that they have priority over other types.
         try
         {
-            this.readOverridesFromLocalCommonConfig();
-            this.readOverridesFromLocalPerWorldConfig();
+            this.readLocksFromLocalCommonConfig();
+            this.readLocksFromLocalPerWorldConfig();
 
             if (GameUtils.isSinglePlayer())
             {
-                this.readOverridesFromSinglePlayerWorldConfig();
+                this.readLocksFromSinglePlayerWorldConfig();
             }
             else
             {
-                this.readOverridesFromServer();
+                this.readLocksFromServer();
             }
         }
         catch (Exception e)
@@ -74,40 +75,49 @@ public class ConfigOverrideHandler
             MaLiLib.LOGGER.error("Exception while trying to apply config overrides", e);
         }
 
-        this.applyOverridesAndPrintMessage();
+        this.applyLocksAndPrintMessage();
     }
 
-    public void applyOverridesFromServer(JsonObject obj)
+    public void applyLocksFromServer(JsonObject obj)
     {
-        this.initOverride();
-        this.readOverridesFromJson(obj);
-        this.applyOverridesAndPrintMessage();
+        this.initLocks();
+        this.readLockConfigFromJson(obj);
+        this.applyLocksAndPrintMessage();
     }
 
-    public void clearConfigOverrides()
+    public void clearLocks()
     {
-        this.fetchAllOverridableConfigs();
+        this.fetchAllLockableConfigs();
         this.overridableConfigs.values().forEach(map -> map.values().forEach(list -> list.forEach(BaseGenericConfig::disableOverride)));
 
         Registry.ACTION_REGISTRY.clearActionLocks();
         ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).clearHotkeyLocks();
     }
 
-    protected void initOverride()
+    protected void initLocks()
     {
         this.configOverrides.clear();
         this.lockedActions.clear();
         this.lockedHotkeys.clear();
 
-        this.fetchAllOverridableConfigs();
+        this.fetchAllLockableConfigs();
         this.fetchAllActions();
         this.fetchAllHotkeys();
 
-        int configCount = this.overridableConfigs.values().stream().mapToInt(m -> m.values().stream().mapToInt(List::size).sum()).sum();
-        MaLiLib.debugLog("  > There are {} overridable configs in the game", configCount);
+        if (MaLiLibConfigs.Debug.DEBUG_MESSAGES.getBooleanValue())
+        {
+            int configCount = this.overridableConfigs.values().stream().mapToInt(m -> m.values().stream().mapToInt(List::size).sum()).sum();
+            MaLiLib.debugLog("  > There are {} overridable configs in the game", configCount);
+
+            int actionCount = this.allBaseActions.values().stream().mapToInt(List::size).sum();
+            MaLiLib.debugLog("  > There are {} lockable actions in the game", actionCount);
+
+            int hotkeyCount = this.allHotkeys.values().stream().mapToInt(List::size).sum();
+            MaLiLib.debugLog("  > There are {} lockable hotkeys in the game", hotkeyCount);
+        }
     }
 
-    protected void fetchAllOverridableConfigs()
+    protected void fetchAllLockableConfigs()
     {
         this.overridableConfigs.clear();
 
@@ -165,7 +175,7 @@ public class ConfigOverrideHandler
         }
     }
 
-    protected void applyOverridesAndPrintMessage()
+    protected void applyLocksAndPrintMessage()
     {
         try
         {
@@ -199,39 +209,39 @@ public class ConfigOverrideHandler
         }
         catch (Exception e)
         {
-            MaLiLib.LOGGER.error("Exception while trying to apply config overrides", e);
+            MaLiLib.LOGGER.error("Exception while trying to apply config locks", e);
         }
     }
 
-    protected void readOverridesFromSinglePlayerWorldConfig()
+    protected void readLocksFromSinglePlayerWorldConfig()
     {
         Path worldDir = GameUtils.getCurrentSinglePlayerWorldDirectory();
-        String fileName = "malilib_config_overrides.json";
+        String fileName = "malilib_config_locks.json";
         Path file = worldDir.resolve(fileName);
 
-        this.readOverridesFromFile(file);
+        this.readLockConfigFromFile(file);
     }
 
-    protected void readOverridesFromLocalPerWorldConfig()
+    protected void readLocksFromLocalPerWorldConfig()
     {
         Path configDir = ConfigUtils.getActiveConfigDirectory();
         String worldName = malilib.util.StringUtils.getWorldOrServerNameOrDefault("fallback");
         worldName = FileNameUtils.generateSimpleSafeFileName(worldName);
-        String fileName = "config_overrides_world_" + worldName + ".json";
+        String fileName = "config_locks_world_" + worldName + ".json";
         Path file = configDir.resolve(MaLiLibReference.MOD_ID).resolve(fileName);
 
-        this.readOverridesFromFile(file);
+        this.readLockConfigFromFile(file);
     }
 
-    protected void readOverridesFromLocalCommonConfig()
+    protected void readLocksFromLocalCommonConfig()
     {
         Path configDir = ConfigUtils.getActiveConfigDirectory();
-        Path file = configDir.resolve(MaLiLibReference.MOD_ID).resolve("config_overrides_common.json");
+        Path file = configDir.resolve(MaLiLibReference.MOD_ID).resolve("config_locks_common.json");
 
-        this.readOverridesFromFile(file);
+        this.readLockConfigFromFile(file);
     }
 
-    protected void readOverridesFromServer()
+    protected void readLocksFromServer()
     {
         ServerData serverData = GameUtils.getClient().getCurrentServerData();
 
@@ -244,12 +254,12 @@ public class ConfigOverrideHandler
             {
                 String str = lines[index];
 
-                if (this.readOverridesFromString(str))
+                if (this.readLockConfigFromString(str))
                 {
                     return;
                 }
 
-                if (this.readOverridesFromURL(str))
+                if (this.readLockConfigFromURL(str))
                 {
                     return;
                 }
@@ -257,7 +267,7 @@ public class ConfigOverrideHandler
         }
     }
 
-    protected void readOverridesFromFile(Path file)
+    protected void readLockConfigFromFile(Path file)
     {
         if (Files.isRegularFile(file))
         {
@@ -265,12 +275,12 @@ public class ConfigOverrideHandler
 
             if (str != null)
             {
-                this.readOverridesFromString(str);
+                this.readLockConfigFromString(str);
             }
         }
     }
 
-    protected boolean readOverridesFromURL(String str)
+    protected boolean readLockConfigFromURL(String str)
     {
         str = str.trim();
 
@@ -286,14 +296,14 @@ public class ConfigOverrideHandler
 
             if (pageContent != null)
             {
-                return this.readOverridesFromString(pageContent);
+                return this.readLockConfigFromString(pageContent);
             }
         }
 
         return false;
     }
 
-    protected boolean readOverridesFromString(String str)
+    protected boolean readLockConfigFromString(String str)
     {
         str = str.trim();
 
@@ -317,36 +327,36 @@ public class ConfigOverrideHandler
 
         JsonElement el = JsonUtils.parseJsonFromString(str);
 
-        MaLiLib.debugLog("Cleaned up overrides JSON string: '{}'", str);
-        MaLiLib.debugLog("Parsed override JSON: '{}'", el);
+        MaLiLib.debugLog("Cleaned up lock config JSON as string: '{}'", str);
+        MaLiLib.debugLog("Parsed lock JSON: '{}'", el);
 
         if (el != null && el.isJsonObject())
         {
-            return this.readOverridesFromJson(el.getAsJsonObject());
+            return this.readLockConfigFromJson(el.getAsJsonObject());
         }
 
         return false;
     }
 
-    protected boolean readOverridesFromJson(JsonObject root)
+    protected boolean readLockConfigFromJson(JsonObject root)
     {
         boolean foundOverrides = false;
 
-        foundOverrides |= this.overrideReader(root, "malilib_config_overrides", this::readConfigOverridesFrom);
-        foundOverrides |= this.overrideReader(root, "malilib_action_locks", this::readActionLocksFrom);
-        foundOverrides |= this.overrideReader(root, "malilib_hotkey_locks", this::readHotkeyLocksFrom);
+        foundOverrides |= this.lockReader(root, "malilib_config_overrides", this::readLocksFrom);
+        foundOverrides |= this.lockReader(root, "malilib_action_locks", this::readActionLocksFrom);
+        foundOverrides |= this.lockReader(root, "malilib_hotkey_locks", this::readHotkeyLocksFrom);
 
         return foundOverrides;
     }
 
-    protected boolean overrideReader(JsonObject root, String arrayName, BiFunction<JsonObject, OverrideTestsAndMessage, OverrideTestsAndMessage> overrideHandler)
+    protected boolean lockReader(JsonObject root, String arrayName, BiFunction<JsonObject, TestsAndMessage, TestsAndMessage> overrideHandler)
     {
         if (JsonUtils.hasArray(root, arrayName))
         {
             JsonArray overridesArray = root.get(arrayName).getAsJsonArray();
-            MaLiLib.debugLog("  > Found {} top level override definitions", overridesArray.size());
-            OverrideTestsAndMessage data = new OverrideTestsAndMessage(s -> true, s -> true, s -> true, null);
-            JsonUtils.getArrayElementsAsObjects(overridesArray, o -> this.readOverridesFromArrayElement(o, data, overrideHandler));
+            MaLiLib.debugLog("  > Found {} top level lock definitions", overridesArray.size());
+            TestsAndMessage data = new TestsAndMessage(s -> true, s -> true, s -> true, null);
+            JsonUtils.getArrayElementsAsObjects(overridesArray, o -> this.readLockFromArrayElement(o, data, overrideHandler));
 
             return true;
         }
@@ -354,28 +364,28 @@ public class ConfigOverrideHandler
         return false;
     }
 
-    protected void readOverridesFromArrayElement(JsonObject obj,
-                                                 OverrideTestsAndMessage data,
-                                                 BiFunction<JsonObject, OverrideTestsAndMessage, OverrideTestsAndMessage> overrideHandler)
+    protected void readLockFromArrayElement(JsonObject obj,
+                                            TestsAndMessage data,
+                                            BiFunction<JsonObject, TestsAndMessage, TestsAndMessage> overrideHandler)
     {
-        OverrideTestsAndMessage data2 = overrideHandler.apply(obj, data);
+        TestsAndMessage data2 = overrideHandler.apply(obj, data);
 
         if (JsonUtils.hasArray(obj, "overrides"))
         {
             JsonArray overrideArr = obj.get("overrides").getAsJsonArray();
             MaLiLib.debugLog("    > Found {} policy overrides", overrideArr.size());
-            JsonUtils.getArrayElementsAsObjects(overrideArr, o -> this.readOverridesFromArrayElement(o, data2, overrideHandler));
+            JsonUtils.getArrayElementsAsObjects(overrideArr, o -> this.readLockFromArrayElement(o, data2, overrideHandler));
         }
     }
 
-    protected OverrideTestsAndMessage readConfigOverridesFrom(JsonObject obj, OverrideTestsAndMessage data)
+    protected TestsAndMessage readLocksFrom(JsonObject obj, TestsAndMessage data)
     {
         Predicate<String> modTest = this.getModTestOrDefault(obj, data.modTest);
         Predicate<String> categoryTest = this.getCategoryTestOrDefault(obj, data.categoryTest);
         Predicate<String> nameTest = this.getNameTestOrDefault(obj, data.nameTest);
         String message = JsonUtils.getStringOrDefault(obj, "message", data.message);
 
-        data = new OverrideTestsAndMessage(modTest, categoryTest, nameTest, message);
+        data = new TestsAndMessage(modTest, categoryTest, nameTest, message);
 
         JsonElement overrideValue = obj.get("override_value");
         Pair<JsonElement, String> overrideData = Pair.of(overrideValue, message);
@@ -445,13 +455,13 @@ public class ConfigOverrideHandler
         return data;
     }
 
-    protected OverrideTestsAndMessage readActionLocksFrom(JsonObject obj, OverrideTestsAndMessage data)
+    protected TestsAndMessage readActionLocksFrom(JsonObject obj, TestsAndMessage data)
     {
         Predicate<String> modTest = this.getModTestOrDefault(obj, data.modTest);
         Predicate<String> nameTest = this.getNameTestOrDefault(obj, data.nameTest);
         String message = JsonUtils.getStringOrDefault(obj, "message", data.message);
 
-        data = new OverrideTestsAndMessage(modTest, null, nameTest, message);
+        data = new TestsAndMessage(modTest, null, nameTest, message);
 
         String policy = JsonUtils.getStringOrDefault(obj, "policy", "");
         boolean shouldDisable = "disable".equalsIgnoreCase(policy);
@@ -500,13 +510,13 @@ public class ConfigOverrideHandler
         return data;
     }
 
-    protected OverrideTestsAndMessage readHotkeyLocksFrom(JsonObject obj, OverrideTestsAndMessage data)
+    protected TestsAndMessage readHotkeyLocksFrom(JsonObject obj, TestsAndMessage data)
     {
         Predicate<String> modTest = this.getModTestOrDefault(obj, data.modTest);
         Predicate<String> nameTest = this.getNameTestOrDefault(obj, data.nameTest);
         String message = JsonUtils.getStringOrDefault(obj, "message", data.message);
 
-        data = new OverrideTestsAndMessage(modTest, null, nameTest, message);
+        data = new TestsAndMessage(modTest, null, nameTest, message);
 
         String policy = JsonUtils.getStringOrDefault(obj, "policy", "");
         boolean shouldDisable = "disable".equalsIgnoreCase(policy);
@@ -693,17 +703,17 @@ public class ConfigOverrideHandler
         return filter != null ? filter : defaultFilter;
     }
 
-    protected static class OverrideTestsAndMessage
+    protected static class TestsAndMessage
     {
         @Nullable public final Predicate<String> modTest;
         @Nullable public final Predicate<String> categoryTest;
         @Nullable public final Predicate<String> nameTest;
         @Nullable public final String message;
 
-        public OverrideTestsAndMessage(@Nullable Predicate<String> modTest,
-                                       @Nullable Predicate<String> categoryTest,
-                                       @Nullable Predicate<String> nameTest,
-                                       @Nullable String message)
+        public TestsAndMessage(@Nullable Predicate<String> modTest,
+                               @Nullable Predicate<String> categoryTest,
+                               @Nullable Predicate<String> nameTest,
+                               @Nullable String message)
         {
             this.modTest = modTest;
             this.categoryTest = categoryTest;

@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.multiplayer.WorldClient;
 
-import malilib.config.util.ConfigOverrideUtils;
+import malilib.config.util.ConfigLockUtils;
 import malilib.config.util.ConfigUtils;
 import malilib.event.ClientWorldChangeHandler;
 import malilib.render.overlay.OverlayRendererContainer;
@@ -86,7 +86,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
 
     protected void onExitWorld()
     {
-        ConfigOverrideUtils.resetConfigOverrides();
+        ConfigLockUtils.resetConfigLocks();
         ConfigUtils.saveAllConfigsToFileIfDirty();
     }
 
@@ -95,6 +95,6 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         ConfigUtils.loadAllConfigsFromFile();
         OverlayRendererContainer.INSTANCE.loadFromFile(false);
         OverlayRendererContainer.INSTANCE.resetRenderTimeout();
-        ConfigOverrideUtils.applyConfigOverrides();
+        ConfigLockUtils.applyConfigLocks();
     }
 }

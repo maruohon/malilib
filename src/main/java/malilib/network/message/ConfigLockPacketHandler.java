@@ -8,17 +8,17 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 import malilib.MaLiLib;
-import malilib.config.util.ConfigOverrideUtils;
+import malilib.config.util.ConfigLockUtils;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.util.data.json.JsonUtils;
 
-public class ConfigOverridePacketHandler extends BasePacketHandler
+public class ConfigLockPacketHandler extends BasePacketHandler
 {
-    public static final String CHANNEL_NAME = "malilib:cfgovrrd";
+    public static final String CHANNEL_NAME = "malilib:cfglock";
     public static final List<ResourceLocation> CHANNELS = ImmutableList.of(new ResourceLocation(CHANNEL_NAME));
 
-    private static final ConfigOverridePacketHandler INSTANCE = new ConfigOverridePacketHandler();
+    private static final ConfigLockPacketHandler INSTANCE = new ConfigLockPacketHandler();
 
     @Override
     public List<ResourceLocation> getChannels()
@@ -35,27 +35,27 @@ public class ConfigOverridePacketHandler extends BasePacketHandler
             String str = buf.readString(256 * 1024);
             JsonElement el = JsonUtils.parseJsonFromString(str);
 
-            MaLiLib.debugLog("Received a config override packet from the server (reset first: {})", resetFirst);
+            MaLiLib.debugLog("Received a config lock packet from the server (reset first: {})", resetFirst);
 
             if (el != null && el.isJsonObject())
             {
                 if (resetFirst)
                 {
-                    ConfigOverrideUtils.resetConfigOverrides();
+                    ConfigLockUtils.resetConfigLocks();
                 }
 
-                ConfigOverrideUtils.applyConfigOverridesFromServer(el.getAsJsonObject());
+                ConfigLockUtils.applyConfigLocksFromServer(el.getAsJsonObject());
 
                 return;
             }
         }
         catch (Exception e)
         {
-            MessageDispatcher.error().console(e).translate("malilib.message.error.invalid_config_override_packet");
+            MessageDispatcher.error().console(e).translate("malilib.message.error.invalid_config_lock_packet");
             return;
         }
 
-        MessageDispatcher.error().console().translate("malilib.message.error.invalid_config_override_packet");
+        MessageDispatcher.error().console().translate("malilib.message.error.invalid_config_lock_packet");
     }
 
     public static void updateRegistration(boolean enabled)

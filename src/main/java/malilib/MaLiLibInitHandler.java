@@ -3,7 +3,7 @@ package malilib;
 import malilib.config.BaseModConfig;
 import malilib.event.InitializationHandler;
 import malilib.input.CustomHotkeyManager;
-import malilib.network.message.ConfigOverridePacketHandler;
+import malilib.network.message.ConfigLockPacketHandler;
 import malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import malilib.registry.Registry;
 
@@ -27,6 +27,6 @@ public class MaLiLibInitHandler implements InitializationHandler
         MaLiLibConfigInit.init();
         MaLiLibActions.init();
 
-        ConfigOverridePacketHandler.updateRegistration(true);
+        ConfigLockPacketHandler.updateRegistration(true);
     }
 }

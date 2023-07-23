@@ -46,8 +46,8 @@ public class ConfigUpdateUtils
 
     /**
      * This updater will reset all the KeyBindSettings of the hotkeys from the given Supplier
-     * back to their current default values, if the config version read from file is older than
-     * the given minimumConfigVersion.
+     * back to their current default values, if the config version read from file is at most (<=)
+     * the given maximumConfigVersion.
      */
     public static class KeyBindSettingsResetter implements ConfigDataUpdater
     {
