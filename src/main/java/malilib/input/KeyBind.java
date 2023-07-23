@@ -10,6 +10,11 @@ import malilib.util.data.ModInfo;
 public interface KeyBind
 {
     /**
+     * @return the mod owning this keybind
+     */
+    ModInfo getModInfo();
+
+    /**
      * Sets the ModInfo owning this keybind. Used for the popup toast rendering.
      */
     void setModInfo(ModInfo modInfo);

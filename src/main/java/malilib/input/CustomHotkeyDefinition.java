@@ -1,5 +1,7 @@
 package malilib.input;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
@@ -7,19 +9,23 @@ import com.google.gson.JsonObject;
 
 import malilib.MaLiLibReference;
 import malilib.action.ActionContext;
-import malilib.action.util.ActionUtils;
 import malilib.action.NamedAction;
+import malilib.action.util.ActionUtils;
 import malilib.config.option.CommonDescription;
 import malilib.config.option.ConfigInfo;
 import malilib.input.callback.HotkeyCallback;
 import malilib.render.text.StyledTextLine;
+import malilib.util.StringUtils;
 import malilib.util.data.json.JsonUtils;
 
 public class CustomHotkeyDefinition extends CommonDescription implements Hotkey, ConfigInfo
 {
     protected final String name;
     protected final KeyBind keyBind;
+    protected final List<String> lockOverrideMessages = new ArrayList<>(0);
+    @Nullable protected String lockMessage;
     protected ImmutableList<NamedAction> actions;
+    protected boolean locked;
 
     public CustomHotkeyDefinition(String name, KeyBind keyBind, ImmutableList<NamedAction> actions)
     {
@@ -62,6 +68,41 @@ public class CustomHotkeyDefinition extends CommonDescription implements Hotkey,
     public KeyBind getKeyBind()
     {
         return this.keyBind;
+    }
+
+    @Override
+    public boolean isLocked()
+    {
+        return this.locked;
+    }
+
+    @Override
+    public void setLocked(boolean isLocked)
+    {
+        this.locked = isLocked;
+        this.rebuildLockOverrideMessages();
+    }
+
+    @Override
+    public void setLockMessage(@Nullable String lockMessage)
+    {
+        this.lockMessage = lockMessage;
+    }
+
+    @Override
+    public List<String> getLockAndOverrideMessages()
+    {
+        return this.lockOverrideMessages;
+    }
+
+    protected void rebuildLockOverrideMessages()
+    {
+        this.lockOverrideMessages.clear();
+
+        if (this.isLocked() && this.lockMessage != null)
+        {
+            StringUtils.translateAndLineSplit(this.lockOverrideMessages::add, this.lockMessage);
+        }
     }
 
     public ImmutableList<NamedAction> getActionList()

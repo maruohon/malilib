@@ -4,7 +4,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
@@ -25,6 +27,7 @@ public class ActionRegistry
     protected final ActionStorage<AliasAction> aliases = new ActionStorage<>();
     protected final ActionStorage<MacroAction> macros = new ActionStorage<>();
     protected final ActionStorage<ParameterizedNamedAction> parameterized = new ActionStorage<>();
+    protected final Map<NamedAction, String> lockedActions = new HashMap<>();
     protected boolean dirty;
 
     public void clearUserAddedActions()
@@ -227,6 +230,28 @@ public class ActionRegistry
     public ImmutableList<NamedAction> getAllActions()
     {
         return this.allActions.getActionList();
+    }
+
+    public boolean isAllowed(NamedAction action)
+    {
+        return this.lockedActions.containsKey(action) == false;
+    }
+
+    @Nullable
+    public String getLockMessage(NamedAction action)
+    {
+        return this.lockedActions.get(action);
+    }
+
+    public void setLockedActions(Map<NamedAction, String> lockedActions)
+    {
+        this.clearActionLocks();
+        this.lockedActions.putAll(lockedActions);
+    }
+
+    public void clearActionLocks()
+    {
+        this.lockedActions.clear();
     }
 
     public JsonObject toJson()

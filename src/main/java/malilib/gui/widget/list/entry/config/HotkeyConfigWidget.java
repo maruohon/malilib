@@ -13,5 +13,11 @@ public class HotkeyConfigWidget extends BaseKeyBindConfigWidget
         super(config, constructData, ctx, config.getKeyBind());
 
         this.keybindButton.setHoverStringProvider("locked", config::getLockAndOverrideMessages);
+        this.keybindButton.setEnabled(config.isLocked() == false);
+
+        if (config.isLocked())
+        {
+            this.keybindButton.setHoverInfoRequiresShift(false);
+        }
     }
 }

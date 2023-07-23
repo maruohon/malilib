@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 
 import malilib.config.option.CommonDescription;
 import malilib.input.ActionResult;
+import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.render.text.StyledTextLine;
 import malilib.util.data.ModInfo;
@@ -42,6 +43,24 @@ public abstract class NamedAction extends CommonDescription
     public ActionResult execute()
     {
         return this.execute(ActionContext.COMMON);
+    }
+
+    protected boolean checkIsAllowedOrPrintMessage()
+    {
+        return this.checkIsAllowedOrPrintMessage(this);
+    }
+
+    protected boolean checkIsAllowedOrPrintMessage(NamedAction action)
+    {
+        boolean allowed = Registry.ACTION_REGISTRY.isAllowed(action);
+
+        if (allowed == false)
+        {
+            MessageDispatcher.error("malilib.message.error.action_locked",
+                                    action.getRegistryName(), Registry.ACTION_REGISTRY.getLockMessage(action));
+        }
+
+        return allowed;
     }
 
     @Nullable

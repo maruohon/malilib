@@ -59,6 +59,12 @@ public class KeyBindImpl implements KeyBind
     }
 
     @Override
+    public ModInfo getModInfo()
+    {
+        return this.modInfo;
+    }
+
+    @Override
     public void setModInfo(ModInfo modInfo)
     {
         this.modInfo = modInfo;

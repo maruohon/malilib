@@ -46,6 +46,13 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.editButton = GenericButton.create("malilib.button.misc.edit", this::editHotkey);
         this.removeButton = GenericButton.create("malilib.button.misc.remove", this::removeHotkey);
 
+        this.keybindButton.setEnabled(data.isLocked() == false);
+
+        if (data.isLocked())
+        {
+            this.keybindButton.setHoverInfoRequiresShift(false);
+        }
+
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0xFF101010 : 0xFF181818);
         this.getBackgroundRenderer().getHoverSettings().setColor(0xFF303030);

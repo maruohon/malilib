@@ -2,16 +2,21 @@ package malilib.input;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
+import malilib.MaLiLib;
+
 public class HotkeyManagerImpl implements HotkeyManager
 {
     protected final List<HotkeyCategory> keyBindCategories = new ArrayList<>();
     protected final List<HotkeyProvider> keyBindProviders = new ArrayList<>();
+    protected final Map<Hotkey, String> lockedHotkeys = new HashMap<>();
     protected Int2ObjectOpenHashMap<ArrayList<KeyBind>> hotkeyMap = new Int2ObjectOpenHashMap<>();
     @Nullable protected ImmutableList<HotkeyCategory> immutableKeyBindCategories;
 
@@ -57,7 +62,7 @@ public class HotkeyManagerImpl implements HotkeyManager
         {
             for (Hotkey hotkey : handler.getAllHotkeys())
             {
-                this.addKeyBindToMap(hotkey.getKeyBind(), hotkeyMap);
+                this.addHotkeyToMap(hotkey, hotkeyMap);
             }
         }
 
@@ -65,10 +70,39 @@ public class HotkeyManagerImpl implements HotkeyManager
         this.hotkeyMap = hotkeyMap;
     }
 
-    protected void addKeyBindToMap(KeyBind keybind, Int2ObjectOpenHashMap<ArrayList<KeyBind>> hotkeyMap)
+    public void clearHotkeyLocks()
     {
+        this.lockedHotkeys.clear();
+        this.updateUsedKeys();
+    }
+
+    public void setLockedHotkeys(Map<Hotkey, String> lockedHotkeys)
+    {
+        this.lockedHotkeys.clear();
+        this.lockedHotkeys.putAll(lockedHotkeys);
+        this.updateUsedKeys();
+    }
+
+    protected void addHotkeyToMap(Hotkey hotkey, Int2ObjectOpenHashMap<ArrayList<KeyBind>> hotkeyMap)
+    {
+        if (this.lockedHotkeys.containsKey(hotkey))
+        {
+            hotkey.setLocked(true);
+            hotkey.setLockMessage(this.lockedHotkeys.get(hotkey));
+            MaLiLib.debugLog("HotkeyManagerImpl#addHotkeyToMap(): Ignoring locked hotkey '{}'", hotkey.getName());
+            return;
+        }
+
+        if (hotkey.isLocked())
+        {
+            hotkey.setLocked(false);
+        }
+
+        KeyBind keybind = hotkey.getKeyBind();
         IntArrayList keys = new IntArrayList();
+
         keybind.getKeysToList(keys);
+
         final int size = keys.size();
 
         for (int i = 0; i < size; ++i)

@@ -16,5 +16,12 @@ public class CustomHotkeyEntryWidget extends BaseKeyBindConfigWidget
                                    ConfigWidgetContext ctx)
     {
         super(config, constructData, ctx, config.getKeyBind());
+
+        this.keybindButton.setEnabled(config.isLocked() == false);
+
+        if (config.isLocked())
+        {
+            this.keybindButton.setHoverInfoRequiresShift(false);
+        }
     }
 }

@@ -29,6 +29,11 @@ public class SimpleNamedAction extends NamedAction
     @Override
     public ActionResult execute(ActionContext ctx)
     {
+        if (this.checkIsAllowedOrPrintMessage() == false)
+        {
+            return ActionResult.FAIL;
+        }
+
         return this.action.execute(ctx);
     }
 

@@ -35,18 +35,27 @@ public class ParameterizableNamedAction extends NamedAction
     @Override
     public ActionResult execute(ActionContext ctx)
     {
+        if (this.checkIsAllowedOrPrintMessage() == false)
+        {
+            return ActionResult.FAIL;
+        }
+
         TextInputScreen screen = new TextInputScreen("malilib.title.screen.provide_arguments_for_action",
-                                                     this::executeWithArgument);
+                                                     str -> this.executeWithArgument(ctx, str));
         BaseScreen.openPopupScreen(screen);
 
         return ActionResult.SUCCESS;
     }
 
-    public boolean executeWithArgument(String argument)
+    public boolean executeWithArgument(ActionContext ctx, String argument)
     {
         if (StringUtils.isBlank(argument) == false)
         {
-            this.action.executeWithArgument(ActionContext.COMMON, argument);
+            if (this.checkIsAllowedOrPrintMessage())
+            {
+                this.action.executeWithArgument(ctx, argument);
+            }
+
             return true;
         }
 

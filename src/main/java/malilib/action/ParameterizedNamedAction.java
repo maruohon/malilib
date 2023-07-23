@@ -37,7 +37,13 @@ public class ParameterizedNamedAction extends NamedAction
     @Override
     public ActionResult execute(ActionContext ctx)
     {
-        return this.baseAction.action.executeWithArgument(ctx, this.argument);
+        if (this.checkIsAllowedOrPrintMessage(this.baseAction) &&
+            this.baseAction.executeWithArgument(ctx, this.argument))
+        {
+            return ActionResult.SUCCESS;
+        }
+
+        return ActionResult.FAIL;
     }
 
     public String getArgument()

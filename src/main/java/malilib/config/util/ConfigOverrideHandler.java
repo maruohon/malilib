@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -21,12 +22,15 @@ import net.minecraft.client.multiplayer.ServerData;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibReference;
+import malilib.action.NamedAction;
 import malilib.config.ConfigManagerImpl;
 import malilib.config.ModConfig;
 import malilib.config.category.ConfigOptionCategory;
 import malilib.config.option.BaseGenericConfig;
 import malilib.config.option.ConfigOption;
 import malilib.config.serialization.JsonConfigSerializerRegistry.ConfigFromJsonOverrider;
+import malilib.input.Hotkey;
+import malilib.input.HotkeyManagerImpl;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.util.FileNameUtils;
@@ -38,8 +42,12 @@ import malilib.util.game.wrap.GameUtils;
 
 public class ConfigOverrideHandler
 {
-    protected final Map<Pair<ConfigOptionCategory, BaseGenericConfig<?>>, Pair<JsonElement, String>> overrides = new HashMap<>();
+    protected final Map<Pair<ConfigOptionCategory, BaseGenericConfig<?>>, Pair<JsonElement, String>> configOverrides = new HashMap<>();
     protected final Map<ModInfo, Map<ConfigOptionCategory, List<BaseGenericConfig<?>>>> overridableConfigs = new HashMap<>();
+    protected final Map<ModInfo, List<NamedAction>> allBaseActions = new HashMap<>();
+    protected final Map<ModInfo, List<Hotkey>> allHotkeys = new HashMap<>();
+    protected final Map<NamedAction, String> lockedActions = new HashMap<>();
+    protected final Map<Hotkey, String> lockedHotkeys = new HashMap<>();
 
     public void readAndApplyConfigOverrides()
     {
@@ -72,7 +80,7 @@ public class ConfigOverrideHandler
     public void applyOverridesFromServer(JsonObject obj)
     {
         this.initOverride();
-        this.readConfigOverridesFromJson(obj);
+        this.readOverridesFromJson(obj);
         this.applyOverridesAndPrintMessage();
     }
 
@@ -80,29 +88,113 @@ public class ConfigOverrideHandler
     {
         this.fetchAllOverridableConfigs();
         this.overridableConfigs.values().forEach(map -> map.values().forEach(list -> list.forEach(BaseGenericConfig::disableOverride)));
+
+        Registry.ACTION_REGISTRY.clearActionLocks();
+        ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).clearHotkeyLocks();
     }
 
     protected void initOverride()
     {
-        this.overrides.clear();
+        this.configOverrides.clear();
+        this.lockedActions.clear();
+        this.lockedHotkeys.clear();
+
         this.fetchAllOverridableConfigs();
+        this.fetchAllActions();
+        this.fetchAllHotkeys();
 
         int configCount = this.overridableConfigs.values().stream().mapToInt(m -> m.values().stream().mapToInt(List::size).sum()).sum();
         MaLiLib.debugLog("  > There are {} overridable configs in the game", configCount);
+    }
+
+    protected void fetchAllOverridableConfigs()
+    {
+        this.overridableConfigs.clear();
+
+        for (ModConfig modConfig : ((ConfigManagerImpl) Registry.CONFIG_MANAGER).getAllModConfigs())
+        {
+            Map<ConfigOptionCategory, List<BaseGenericConfig<?>>> map = new HashMap<>();
+
+            for (ConfigOptionCategory category : modConfig.getConfigOptionCategories())
+            {
+                List<BaseGenericConfig<?>> list = new ArrayList<>();
+
+                for (ConfigOption<?> config : category.getConfigOptions())
+                {
+                    ConfigFromJsonOverrider<?> overrider = Registry.JSON_CONFIG_SERIALIZER.getOverrider(config);
+
+                    if (overrider != null && config instanceof BaseGenericConfig)
+                    {
+                        list.add((BaseGenericConfig<?>) config);
+                    }
+                }
+
+                if (list.isEmpty() == false)
+                {
+                    map.put(category, list);
+                }
+            }
+
+            if (map.isEmpty() == false)
+            {
+                this.overridableConfigs.put(modConfig.getModInfo(), map);
+            }
+        }
+    }
+
+    protected void fetchAllActions()
+    {
+        this.allBaseActions.clear();
+
+        for (NamedAction action : Registry.ACTION_REGISTRY.getBaseActions())
+        {
+            this.allBaseActions.computeIfAbsent(action.getModInfo(), k -> new ArrayList<>()).add(action);
+        }
+    }
+
+    protected void fetchAllHotkeys()
+    {
+        this.allHotkeys.clear();
+
+        List<Hotkey> list = new ArrayList<>();
+        Registry.HOTKEY_MANAGER.getHotkeyCategories().forEach(c -> list.addAll(c.getHotkeys()));
+
+        for (Hotkey hotkey : list)
+        {
+            this.allHotkeys.computeIfAbsent(hotkey.getKeyBind().getModInfo(), k -> new ArrayList<>()).add(hotkey);
+        }
     }
 
     protected void applyOverridesAndPrintMessage()
     {
         try
         {
-            MaLiLib.debugLog("  > Applying {} config overrides...", this.overrides.size());
-            int overrideCount = this.applyConfigOverrides();
+            MaLiLib.debugLog("  > Applying {} config overrides...", this.configOverrides.size());
+            int count = this.applyConfigOverrides();
 
-            MaLiLib.debugLog("  > Applied {} config overrides", overrideCount);
+            MaLiLib.debugLog("  > Applied {} config overrides", count);
 
-            if (overrideCount > 0)
+            if (count > 0)
             {
-                MessageDispatcher.warning(8000).translate("malilib.message.info.config_overrides_applied", overrideCount);
+                MessageDispatcher.warning(8000).translate("malilib.message.info.config_overrides.config_overrides_applied", count);
+            }
+
+            count = this.applyActionLocks();
+
+            MaLiLib.debugLog("  > Applied {} action locks", count);
+
+            if (count > 0)
+            {
+                MessageDispatcher.warning(8000).translate("malilib.message.info.config_overrides.action_locks_applied", count);
+            }
+
+            count = this.applyHotkeyLocks();
+
+            MaLiLib.debugLog("  > Applied {} hotkey locks", count);
+
+            if (count > 0)
+            {
+                MessageDispatcher.warning(8000).translate("malilib.message.info.config_overrides.hotkey_locks_applied", count);
             }
         }
         catch (Exception e)
@@ -225,128 +317,76 @@ public class ConfigOverrideHandler
 
         JsonElement el = JsonUtils.parseJsonFromString(str);
 
-        MaLiLib.debugLog("Cleaned up config override JSON string: '{}'", str);
+        MaLiLib.debugLog("Cleaned up overrides JSON string: '{}'", str);
         MaLiLib.debugLog("Parsed override JSON: '{}'", el);
 
         if (el != null && el.isJsonObject())
         {
-            return this.readConfigOverridesFromJson(el.getAsJsonObject());
+            return this.readOverridesFromJson(el.getAsJsonObject());
         }
 
         return false;
     }
 
-    protected void fetchAllOverridableConfigs()
+    protected boolean readOverridesFromJson(JsonObject root)
     {
-        this.overridableConfigs.clear();
+        boolean foundOverrides = false;
 
-        for (ModConfig modConfig : ((ConfigManagerImpl) Registry.CONFIG_MANAGER).getAllModConfigs())
+        foundOverrides |= this.overrideReader(root, "malilib_config_overrides", this::readConfigOverridesFrom);
+        foundOverrides |= this.overrideReader(root, "malilib_action_locks", this::readActionLocksFrom);
+        foundOverrides |= this.overrideReader(root, "malilib_hotkey_locks", this::readHotkeyLocksFrom);
+
+        return foundOverrides;
+    }
+
+    protected boolean overrideReader(JsonObject root, String arrayName, BiFunction<JsonObject, OverrideTestsAndMessage, OverrideTestsAndMessage> overrideHandler)
+    {
+        if (JsonUtils.hasArray(root, arrayName))
         {
-            Map<ConfigOptionCategory, List<BaseGenericConfig<?>>> map = new HashMap<>();
+            JsonArray overridesArray = root.get(arrayName).getAsJsonArray();
+            MaLiLib.debugLog("  > Found {} top level override definitions", overridesArray.size());
+            OverrideTestsAndMessage data = new OverrideTestsAndMessage(s -> true, s -> true, s -> true, null);
+            JsonUtils.getArrayElementsAsObjects(overridesArray, o -> this.readOverridesFromArrayElement(o, data, overrideHandler));
 
-            for (ConfigOptionCategory category : modConfig.getConfigOptionCategories())
-            {
-                List<BaseGenericConfig<?>> list = new ArrayList<>();
+            return true;
+        }
 
-                for (ConfigOption<?> config : category.getConfigOptions())
-                {
-                    ConfigFromJsonOverrider<?> overrider = Registry.JSON_CONFIG_SERIALIZER.getOverrider(config);
+        return false;
+    }
 
-                    if (overrider != null && config instanceof BaseGenericConfig)
-                    {
-                        list.add((BaseGenericConfig<?>) config);
-                    }
-                }
+    protected void readOverridesFromArrayElement(JsonObject obj,
+                                                 OverrideTestsAndMessage data,
+                                                 BiFunction<JsonObject, OverrideTestsAndMessage, OverrideTestsAndMessage> overrideHandler)
+    {
+        OverrideTestsAndMessage data2 = overrideHandler.apply(obj, data);
 
-                if (list.isEmpty() == false)
-                {
-                    map.put(category, list);
-                }
-            }
-
-            if (map.isEmpty() == false)
-            {
-                this.overridableConfigs.put(modConfig.getModInfo(), map);
-            }
+        if (JsonUtils.hasArray(obj, "overrides"))
+        {
+            JsonArray overrideArr = obj.get("overrides").getAsJsonArray();
+            MaLiLib.debugLog("    > Found {} policy overrides", overrideArr.size());
+            JsonUtils.getArrayElementsAsObjects(overrideArr, o -> this.readOverridesFromArrayElement(o, data2, overrideHandler));
         }
     }
 
-    protected boolean readConfigOverridesFromJson(JsonObject root)
+    protected OverrideTestsAndMessage readConfigOverridesFrom(JsonObject obj, OverrideTestsAndMessage data)
     {
-        if (JsonUtils.hasArray(root, "malilib_config_overrides") == false)
-        {
-            return false;
-        }
+        Predicate<String> modTest = this.getModTestOrDefault(obj, data.modTest);
+        Predicate<String> categoryTest = this.getCategoryTestOrDefault(obj, data.categoryTest);
+        Predicate<String> nameTest = this.getNameTestOrDefault(obj, data.nameTest);
+        String message = JsonUtils.getStringOrDefault(obj, "message", data.message);
 
-        JsonArray overridesArray = root.get("malilib_config_overrides").getAsJsonArray();
-        final int size = overridesArray.size();
+        data = new OverrideTestsAndMessage(modTest, categoryTest, nameTest, message);
 
-        MaLiLib.debugLog("  > Found {} top level config override definitions", size);
-
-        for (int i = 0; i < size; ++i)
-        {
-            JsonElement el = overridesArray.get(i);
-
-            if (el.isJsonObject() == false)
-            {
-                continue;
-            }
-
-            JsonObject obj = el.getAsJsonObject();
-            String message = JsonUtils.getStringOrDefault(obj, "message", null);
-            Predicate<String> modFilter = this.getModTestOrDefault(obj, name -> true);
-            Predicate<String> categoryFilter = this.getCategoryTestOrDefault(obj, name -> true);
-            Predicate<String> configFilter = this.getConfigNameTestOrDefault(obj, name -> true);
-
-            this.readConfigOverridesFrom(obj, modFilter, categoryFilter, configFilter, message);
-
-            if (JsonUtils.hasArray(obj, "overrides"))
-            {
-                JsonArray overrideArr = obj.get("overrides").getAsJsonArray();
-                final int overridesSize = overrideArr.size();
-
-                MaLiLib.debugLog("  > Found {} policy overrides", overridesSize);
-
-                for (int overrideIndex = 0; overrideIndex < overridesSize; ++overrideIndex)
-                {
-                    JsonElement overrideEl = overrideArr.get(overrideIndex);
-
-                    if (overrideEl.isJsonObject() == false)
-                    {
-                        continue;
-                    }
-
-                    JsonObject overrideObj = overrideEl.getAsJsonObject();
-                    String overrideMessage = JsonUtils.getStringOrDefault(overrideObj, "message", message);
-                    Predicate<String> overrideModFilter = this.getModTestOrDefault(overrideObj, modFilter);
-                    Predicate<String> overrideCategoryFilter = this.getCategoryTestOrDefault(overrideObj, categoryFilter);
-                    Predicate<String> overrideConfigFilter = this.getConfigNameTestOrDefault(overrideObj, configFilter);
-
-                    this.readConfigOverridesFrom(overrideObj, overrideModFilter, overrideCategoryFilter,
-                                                 overrideConfigFilter, overrideMessage);
-                }
-            }
-        }
-
-        return true;
-    }
-
-    protected void readConfigOverridesFrom(JsonObject obj,
-                                           Predicate<String> modFilter,
-                                           Predicate<String> categoryFilter,
-                                           Predicate<String> configFilter,
-                                           @Nullable String message)
-    {
         JsonElement overrideValue = obj.get("override_value");
-        String policy = JsonUtils.getStringOrDefault(obj, "policy", "");
         Pair<JsonElement, String> overrideData = Pair.of(overrideValue, message);
+        String policy = JsonUtils.getStringOrDefault(obj, "policy", "");
         boolean enableOverride = "override".equalsIgnoreCase(policy);
         int overrideCount = 0;
 
         if (overrideValue == null && enableOverride)
         {
             MaLiLib.debugLog("      > Error: no 'override_value' found in override definition {}", obj);
-            return;
+            return data;
         }
 
         MaLiLib.debugLog("      > Reading override rule, policy = {}", policy);
@@ -355,7 +395,7 @@ public class ConfigOverrideHandler
         {
             String modId = modInfo.getModId();
 
-            if (modFilter.test(modId) == false)
+            if (modTest.test(modId) == false)
             {
                 continue;
             }
@@ -364,14 +404,14 @@ public class ConfigOverrideHandler
             {
                 for (Map.Entry<ConfigOptionCategory, List<BaseGenericConfig<?>>> entry : map.entrySet())
                 {
-                    if (categoryFilter.test(entry.getKey().getName()) == false)
+                    if (categoryTest.test(entry.getKey().getName()) == false)
                     {
                         continue;
                     }
 
                     for (BaseGenericConfig<?> cfg : entry.getValue())
                     {
-                        if (configFilter.test(cfg.getName()) == false)
+                        if (nameTest.test(cfg.getName()) == false)
                         {
                             continue;
                         }
@@ -380,11 +420,11 @@ public class ConfigOverrideHandler
 
                         if (enableOverride)
                         {
-                            this.overrides.put(cac, overrideData);
+                            this.configOverrides.put(cac, overrideData);
                         }
                         else
                         {
-                            this.overrides.remove(cac);
+                            this.configOverrides.remove(cac);
                         }
 
                         ++overrideCount;
@@ -401,6 +441,118 @@ public class ConfigOverrideHandler
         {
             MaLiLib.debugLog("      > Found {} override removal rules", overrideCount);
         }
+
+        return data;
+    }
+
+    protected OverrideTestsAndMessage readActionLocksFrom(JsonObject obj, OverrideTestsAndMessage data)
+    {
+        Predicate<String> modTest = this.getModTestOrDefault(obj, data.modTest);
+        Predicate<String> nameTest = this.getNameTestOrDefault(obj, data.nameTest);
+        String message = JsonUtils.getStringOrDefault(obj, "message", data.message);
+
+        data = new OverrideTestsAndMessage(modTest, null, nameTest, message);
+
+        String policy = JsonUtils.getStringOrDefault(obj, "policy", "");
+        boolean shouldDisable = "disable".equalsIgnoreCase(policy);
+        int ruleCount = 0;
+
+        MaLiLib.debugLog("      > Reading action lock rule, policy = {}", policy);
+
+        for (ModInfo modInfo : this.allBaseActions.keySet())
+        {
+            String modId = modInfo.getModId();
+
+            if (modTest.test(modId) == false)
+            {
+                continue;
+            }
+
+            for (NamedAction action : this.allBaseActions.get(modInfo))
+            {
+                if (nameTest.test(action.getName()) == false)
+                {
+                    continue;
+                }
+
+                if (shouldDisable)
+                {
+                    this.lockedActions.put(action, message);
+                }
+                else
+                {
+                    this.lockedActions.remove(action);
+                }
+
+                ++ruleCount;
+            }
+        }
+
+        if (shouldDisable)
+        {
+            MaLiLib.debugLog("      > Found {} action lock rules", ruleCount);
+        }
+        else
+        {
+            MaLiLib.debugLog("      > Found {} action lock removal rules", ruleCount);
+        }
+
+        return data;
+    }
+
+    protected OverrideTestsAndMessage readHotkeyLocksFrom(JsonObject obj, OverrideTestsAndMessage data)
+    {
+        Predicate<String> modTest = this.getModTestOrDefault(obj, data.modTest);
+        Predicate<String> nameTest = this.getNameTestOrDefault(obj, data.nameTest);
+        String message = JsonUtils.getStringOrDefault(obj, "message", data.message);
+
+        data = new OverrideTestsAndMessage(modTest, null, nameTest, message);
+
+        String policy = JsonUtils.getStringOrDefault(obj, "policy", "");
+        boolean shouldDisable = "disable".equalsIgnoreCase(policy);
+        int ruleCount = 0;
+
+        MaLiLib.debugLog("      > Reading hotkey lock rule, policy = {}", policy);
+
+        for (ModInfo modInfo : this.allHotkeys.keySet())
+        {
+            String modId = modInfo.getModId();
+
+            if (modTest.test(modId) == false)
+            {
+                continue;
+            }
+
+            for (Hotkey hotkey : this.allHotkeys.get(modInfo))
+            {
+                if (nameTest.test(hotkey.getName()) == false)
+                {
+                    continue;
+                }
+
+                if (shouldDisable)
+                {
+                    this.lockedHotkeys.put(hotkey, message);
+                }
+                else
+                {
+                    this.lockedHotkeys.remove(hotkey);
+                }
+
+                ++ruleCount;
+            }
+        }
+
+        if (shouldDisable)
+        {
+            MaLiLib.debugLog("      > Found {} hotkey lock rules", ruleCount);
+        }
+        else
+        {
+            MaLiLib.debugLog("      > Found {} hotkey lock removal rules", ruleCount);
+        }
+
+        return data;
     }
 
     @SuppressWarnings("unchecked")
@@ -408,7 +560,7 @@ public class ConfigOverrideHandler
     {
         int count = 0;
 
-        for (Map.Entry<Pair<ConfigOptionCategory, BaseGenericConfig<?>>, Pair<JsonElement, String>> entry : this.overrides.entrySet())
+        for (Map.Entry<Pair<ConfigOptionCategory, BaseGenericConfig<?>>, Pair<JsonElement, String>> entry : this.configOverrides.entrySet())
         {
             Pair<ConfigOptionCategory, BaseGenericConfig<?>> pair = entry.getKey();
             Pair<JsonElement, String> overrideData = entry.getValue();
@@ -461,6 +613,18 @@ public class ConfigOverrideHandler
         }
 
         return count;
+    }
+
+    protected int applyActionLocks()
+    {
+        Registry.ACTION_REGISTRY.setLockedActions(this.lockedActions);
+        return this.lockedActions.size();
+    }
+
+    protected int applyHotkeyLocks()
+    {
+        ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).setLockedHotkeys(this.lockedHotkeys);
+        return this.lockedHotkeys.size();
     }
 
     @Nullable
@@ -523,9 +687,28 @@ public class ConfigOverrideHandler
         return filter != null ? filter : defaultFilter;
     }
 
-    protected Predicate<String> getConfigNameTestOrDefault(JsonObject obj, Predicate<String> defaultFilter)
+    protected Predicate<String> getNameTestOrDefault(JsonObject obj, Predicate<String> defaultFilter)
     {
         Predicate<String> filter = this.getNameTest(obj);
         return filter != null ? filter : defaultFilter;
+    }
+
+    protected static class OverrideTestsAndMessage
+    {
+        @Nullable public final Predicate<String> modTest;
+        @Nullable public final Predicate<String> categoryTest;
+        @Nullable public final Predicate<String> nameTest;
+        @Nullable public final String message;
+
+        public OverrideTestsAndMessage(@Nullable Predicate<String> modTest,
+                                       @Nullable Predicate<String> categoryTest,
+                                       @Nullable Predicate<String> nameTest,
+                                       @Nullable String message)
+        {
+            this.modTest = modTest;
+            this.categoryTest = categoryTest;
+            this.nameTest = nameTest;
+            this.message = message;
+        }
     }
 }

@@ -1,5 +1,8 @@
 package malilib.input;
 
+import java.util.List;
+import javax.annotation.Nullable;
+
 public interface Hotkey
 {
     /**
@@ -21,6 +24,28 @@ public interface Hotkey
      * @return
      */
     KeyBind getKeyBind();
+
+    /**
+     * @return true if the hotkey has been locked and isn't currently functional
+     */
+    boolean isLocked();
+
+    /**
+     * Sets the locked state of the hotkey.
+     * Note that this state is only used for the config menu widgets, and doesn't affect
+     * the actual functionality of the hotkey! The actual locking happens in the HotkeyManagerImpl class.
+     */
+    void setLocked(boolean isLocked);
+
+    /**
+     * @return the message that appears on the config screens if this hotkey has been locked
+     */
+    List<String> getLockAndOverrideMessages();
+
+    /**
+     * Sets the message that appears on the config screens if this hotkey has been locked
+     */
+    void setLockMessage(@Nullable String translationKey);
 
     /**
      * Convenience method for checking if the keybind is currently held/active

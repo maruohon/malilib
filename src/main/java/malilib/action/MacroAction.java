@@ -46,12 +46,33 @@ public class MacroAction extends NamedAction
     @Override
     public ActionResult execute(ActionContext ctx)
     {
-        for (NamedAction action : this.actionList)
+        if (this.checkIsAllowedOrPrintMessage())
         {
-            action.execute(ctx);
+            for (NamedAction action : this.actionList)
+            {
+                action.execute(ctx);
+            }
+
+            return ActionResult.SUCCESS;
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResult.FAIL;
+    }
+
+    @Override
+    protected boolean checkIsAllowedOrPrintMessage()
+    {
+        boolean allowed = true;
+
+        for (NamedAction action : this.actionList)
+        {
+            if (action.checkIsAllowedOrPrintMessage() == false)
+            {
+                allowed = false;
+            }
+        }
+
+        return allowed;
     }
 
     @Override
