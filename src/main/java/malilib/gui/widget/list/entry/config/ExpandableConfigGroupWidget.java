@@ -44,12 +44,14 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
 
     protected Icon getArrowIcon()
     {
-        return this.config.isExpanded() ? DefaultIcons.ARROW_DOWN : DefaultIcons.ARROW_RIGHT;
+        boolean expanded = this.config.isExpanded() || this.ctx.getListWidget().hasFilter();
+        return expanded ? DefaultIcons.ARROW_DOWN : DefaultIcons.ARROW_RIGHT;
     }
 
     protected Icon getPlusMinusIcon()
     {
-        return this.config.isExpanded() ? DefaultIcons.GROUP_COLLAPSE_MINUS : DefaultIcons.GROUP_EXPAND_PLUS;
+        boolean expanded = this.config.isExpanded() || this.ctx.getListWidget().hasFilter();
+        return expanded ? DefaultIcons.GROUP_COLLAPSE_MINUS : DefaultIcons.GROUP_EXPAND_PLUS;
     }
 
     @Override

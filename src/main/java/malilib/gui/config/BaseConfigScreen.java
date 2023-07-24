@@ -160,11 +160,9 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget> imp
     @Override
     protected ConfigOptionListWidget createListWidget()
     {
-        ConfigOptionListWidget listWidget = ConfigOptionListWidget.createWithExpandedGroups(
-                this::getDefaultConfigElementWidth, this.modInfo, this::getConfigs, this);
-
+        ConfigOptionListWidget listWidget = new ConfigOptionListWidget(this::getDefaultConfigElementWidth,
+                                                                       this.modInfo, this::getConfigs, this);
         listWidget.addConfigSearchBarWidget(this);
-
         return listWidget;
     }
 

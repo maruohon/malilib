@@ -257,7 +257,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         return this.getSearchBarWidget() != null && this.getSearchBarWidget().isSearchOpen();
     }
 
-    protected boolean hasFilter()
+    public boolean hasFilter()
     {
         return this.getSearchBarWidget() != null && this.getSearchBarWidget().hasFilter();
     }

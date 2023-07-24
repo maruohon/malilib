@@ -72,8 +72,7 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     @Override
     protected ConfigOptionListWidget createListWidget()
     {
-        return ConfigOptionListWidget.createWithExpandedGroups(this::getElementsWidth,
-                                                               this.modInfo, this::getConfigs,
-                                                               this.getKeybindEditingScreen());
+        return new ConfigOptionListWidget(this::getElementsWidth, this.modInfo,
+                                          this::getConfigs, this.getKeybindEditingScreen());
     }
 }
