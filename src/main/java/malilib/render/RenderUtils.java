@@ -299,51 +299,47 @@ public class RenderUtils
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        float quadAlpha = 0.18f;
-        float ha = color.a;
-        float hr = color.r;
-        float hg = color.g;
-        float hb = color.b;
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
         // White full block background
-        buffer.pos(x - 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
-        buffer.pos(x + 0.5, y - 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
-        buffer.pos(x + 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
-        buffer.pos(x - 0.5, y + 0.5, z).color(1f, 1f, 1f, quadAlpha).endVertex();
+        int quadAlpha = 46;
+        buffer.pos(x - 0.5, y - 0.5, z).color(255, 255, 255, quadAlpha).endVertex();
+        buffer.pos(x + 0.5, y - 0.5, z).color(255, 255, 255, quadAlpha).endVertex();
+        buffer.pos(x + 0.5, y + 0.5, z).color(255, 255, 255, quadAlpha).endVertex();
+        buffer.pos(x - 0.5, y + 0.5, z).color(255, 255, 255, quadAlpha).endVertex();
 
         switch (part)
         {
             case CENTER:
-                buffer.pos(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
+                buffer.pos(x - 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x + 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x + 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x - 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
                 break;
             case LEFT:
-                buffer.pos(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.pos(x - 0.50, y - 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x - 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x - 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x - 0.50, y + 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
                 break;
             case RIGHT:
-                buffer.pos(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.pos(x + 0.50, y - 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x + 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x + 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x + 0.50, y + 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
                 break;
             case TOP:
-                buffer.pos(x - 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y + 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.50, y + 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.pos(x - 0.50, y + 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x - 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x + 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x + 0.50, y + 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
                 break;
             case BOTTOM:
-                buffer.pos(x - 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x - 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.25, y - 0.25, z).color(hr, hg, hb, ha).endVertex();
-                buffer.pos(x + 0.50, y - 0.50, z).color(hr, hg, hb, ha).endVertex();
+                buffer.pos(x - 0.50, y - 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x - 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x + 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                buffer.pos(x + 0.50, y - 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
                 break;
             default:
         }
@@ -355,28 +351,28 @@ public class RenderUtils
         buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
 
         // Middle small rectangle
-        buffer.pos(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x + 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x + 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.pos(x - 0.25, y - 0.25, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x + 0.25, y - 0.25, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x + 0.25, y + 0.25, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x - 0.25, y + 0.25, z).color(255, 255, 255, 255).endVertex();
         tessellator.draw();
 
         buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
         // Bottom left
-        buffer.pos(x - 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x - 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.pos(x - 0.50, y - 0.50, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x - 0.25, y - 0.25, z).color(255, 255, 255, 255).endVertex();
 
         // Top left
-        buffer.pos(x - 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x - 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.pos(x - 0.50, y + 0.50, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x - 0.25, y + 0.25, z).color(255, 255, 255, 255).endVertex();
 
         // Bottom right
-        buffer.pos(x + 0.50, y - 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x + 0.25, y - 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.pos(x + 0.50, y - 0.50, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x + 0.25, y - 0.25, z).color(255, 255, 255, 255).endVertex();
 
         // Top right
-        buffer.pos(x + 0.50, y + 0.50, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x + 0.25, y + 0.25, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.pos(x + 0.50, y + 0.50, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x + 0.25, y + 0.25, z).color(255, 255, 255, 255).endVertex();
         tessellator.draw();
 
         GlStateManager.popMatrix();
@@ -402,18 +398,13 @@ public class RenderUtils
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        float a = color.a;
-        float r = color.r;
-        float g = color.g;
-        float b = color.b;
-
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
         // Simple colored quad
-        buffer.pos(x - 0.5, y - 0.5, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + 0.5, y - 0.5, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + 0.5, y + 0.5, z).color(r, g, b, a).endVertex();
-        buffer.pos(x - 0.5, y + 0.5, z).color(r, g, b, a).endVertex();
+        buffer.pos(x - 0.5, y - 0.5, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+        buffer.pos(x + 0.5, y - 0.5, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+        buffer.pos(x + 0.5, y + 0.5, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+        buffer.pos(x - 0.5, y + 0.5, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
 
         tessellator.draw();
 
@@ -422,10 +413,10 @@ public class RenderUtils
         buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
 
         // Middle rectangle
-        buffer.pos(x - 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x + 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x + 0.375, y + 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(x - 0.375, y + 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.pos(x - 0.375, y - 0.375, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x + 0.375, y - 0.375, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x + 0.375, y + 0.375, z).color(255, 255, 255, 255).endVertex();
+        buffer.pos(x - 0.375, y + 0.375, z).color(255, 255, 255, 255).endVertex();
 
         tessellator.draw();
 

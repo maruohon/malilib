@@ -17,6 +17,10 @@ public class Color4f
     public final float g;
     public final float b;
     public final float a;
+    public final int ri;
+    public final int gi;
+    public final int bi;
+    public final int ai;
     public final int intValue;
 
     public Color4f(float r, float g, float b)
@@ -41,7 +45,12 @@ public class Color4f
         this.b = b;
         this.a = a;
 
-        this.intValue = (((int) (a * 0xFF)) << 24) | (((int) (r * 0xFF)) << 16) | (((int) (g * 0xFF)) << 8) | (((int) (b * 0xFF)));
+        this.ai = (int) (a * 255);
+        this.ri = (int) (r * 255);
+        this.gi = (int) (g * 255);
+        this.bi = (int) (b * 255);
+
+        this.intValue = (this.ai << 24) | (this.ri << 16) | (this.gi << 8) | this.bi;
     }
 
     /**

@@ -217,10 +217,10 @@ public class TextRenderUtils
 
         int strLenHalf = maxLineLen / 2;
         int textHeight = textRenderer.FONT_HEIGHT * text.size() - 1;
-        float bga = ((bgColor >>> 24) & 0xFF) * 255f;
-        float bgr = ((bgColor >>> 16) & 0xFF) * 255f;
-        float bgg = ((bgColor >>>  8) & 0xFF) * 255f;
-        float bgb = (bgColor          & 0xFF) * 255f;
+        int bga = (bgColor >> 24) & 0xFF;
+        int bgr = (bgColor >> 16) & 0xFF;
+        int bgg = (bgColor >>  8) & 0xFF;
+        int bgb =  bgColor        & 0xFF;
 
         if (disableDepth)
         {

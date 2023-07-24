@@ -505,19 +505,19 @@ public class TextRenderer implements IResourceManagerReloadListener
             v2 -= 0.00102F;
         }
 
-        buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x + w - slant, y + h, z).tex(u2, v2).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x + w + slant, y    , z).tex(u2, v1).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+        buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+        buffer.pos(x + w - slant, y + h, z).tex(u2, v2).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+        buffer.pos(x + w + slant, y    , z).tex(u2, v1).color(color.ri, color.gi, color.bi, color.ai).endVertex();
 
         if (style.bold)
         {
             x += this.unicode ? 0.5F : 1.0F;
 
-            buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
-            buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();
-            buffer.pos(x + w - slant, y + h, z).tex(u2, v2).color(color.r, color.g, color.b, color.a).endVertex();
-            buffer.pos(x + w + slant, y    , z).tex(u2, v1).color(color.r, color.g, color.b, color.a).endVertex();
+            buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+            buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+            buffer.pos(x + w - slant, y + h, z).tex(u2, v2).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+            buffer.pos(x + w + slant, y    , z).tex(u2, v1).color(color.ri, color.gi, color.bi, color.ai).endVertex();
         }
 
         return renderWidth;
