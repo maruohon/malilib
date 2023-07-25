@@ -573,6 +573,7 @@ malilib.message.error.text_field.invalid_value_float=§e'%s'§r is not a floatin
 malilib.message.error.text_field.invalid_value_int=§e'%s'§r is not an integer number
 malilib.message.error.text_field.value_above_max=§b%s§r is above the maximum allowed value §b%s§r
 malilib.message.error.text_field.value_below_min=§b%s§r is below the minimum allowed value §b%s§r
+malilib.message.error.utility_actions.failed_to_copy_screenshot_to_clipboard=Failed to copy a screenshot to the clipboard
 
 malilib.message.info.action_screen_created_by_name=Action screen created by the name §e%s§r
 malilib.message.info.action_screen_settings_copied_to_clipboard=Action Screen settings copied to clipboard
@@ -603,6 +604,8 @@ malilib.message.info.successfully_imported_n_entries=Successfully imported §6%s
 malilib.message.info.switched_config_profile=Switched to config profile §e%s§r
 malilib.message.info.toggled_config_off=Toggled %s §cOFF§r
 malilib.message.info.toggled_config_on=Toggled %s §aON§r
+malilib.message.info.utility_actions.output_printed_to_console=Output printed to the game console/log
+malilib.message.info.utility_actions.screenshot_copied_to_clipboard=Screenshot copied to the clipboard
 
 malilib.message.warn.import_entries.didnt_import_any_entries=Didn't import anything
 
