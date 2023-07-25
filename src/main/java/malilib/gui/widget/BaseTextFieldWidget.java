@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
 
+import malilib.MaLiLibConfigs;
 import malilib.config.value.HorizontalAlignment;
 import malilib.gui.BaseScreen;
 import malilib.gui.util.BorderSettings;
@@ -28,7 +29,7 @@ import malilib.render.text.TextRenderer;
 import malilib.util.StringUtils;
 import malilib.util.data.LeftRight;
 
-public class BaseTextFieldWidget extends InteractableWidget
+public class BaseTextFieldWidget extends ContainerWidget
 {
     public static final Pattern PATTERN_HEX_COLOR_8_6_4_3 = Pattern.compile("^(#|0x)([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})$");
     public static final Pattern PATTERN_HEX_COLOR_6_8 = Pattern.compile("^(#|0x)([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$");
@@ -60,6 +61,7 @@ public class BaseTextFieldWidget extends InteractableWidget
     protected int selectionStartPosition = -1;
     protected boolean isFocused;
     protected boolean isValidInput = true;
+    protected boolean rightClickContextMenu;
     protected boolean showCursorPosition;
     protected boolean updateListenerAlways;
     protected boolean updateListenerFromTextSet;
@@ -79,6 +81,7 @@ public class BaseTextFieldWidget extends InteractableWidget
         this.canReceiveMouseClicks = true;
         this.canReceiveMouseScrolls = true;
         this.blockHoverContentFromBelow = true;
+        this.rightClickContextMenu = MaLiLibConfigs.Generic.TEXT_FIELD_RIGHT_CLICK_CONTEXT_MENU.getBooleanValue();
 
         this.setShouldReceiveOutsideClicks(true);
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xFF000000);
@@ -120,6 +123,11 @@ public class BaseTextFieldWidget extends InteractableWidget
     {
         this.messageRenderer.setZ(z + 100f);
         super.setZ(z);
+    }
+
+    public void setRightClickContextMenu(boolean rightClickContextMenu)
+    {
+        this.rightClickContextMenu = rightClickContextMenu;
     }
 
     public String getText()
@@ -729,11 +737,8 @@ public class BaseTextFieldWidget extends InteractableWidget
 
     protected boolean cutSelectedText()
     {
-        String selectedText = this.getSelectedText();
-
-        if (selectedText != null)
+        if (this.copySelectedText())
         {
-            BaseScreen.setStringToClipboard(selectedText);
             this.deleteSelectedText();
             return true;
         }
@@ -786,8 +791,14 @@ public class BaseTextFieldWidget extends InteractableWidget
         // Clear the text field on right click
         if (mouseButton == 1)
         {
-            this.setTextInternal("");
-            this.setCursorToEnd();
+            if (this.rightClickContextMenu)
+            {
+                this.openRightClickContextMenu(mouseX, mouseY);
+            }
+            else
+            {
+                this.clearTextField();
+            }
         }
         else
         {
@@ -932,6 +943,60 @@ public class BaseTextFieldWidget extends InteractableWidget
         }
 
         return super.onCharTyped(charIn, modifiers);
+    }
+
+    protected void clearTextField()
+    {
+        this.setTextInternal("", true);
+        this.setCursorToEnd();
+    }
+
+    protected void copyTextToClipboard()
+    {
+        BaseScreen.setStringToClipboard(this.getText());
+    }
+
+    protected void pasteTextFromClipboardReplace()
+    {
+        this.setTextNoNotify("");
+        this.pasteText();
+    }
+
+    protected void pasteTextFromClipboardInsert()
+    {
+        this.selectionStartPosition = -1;
+        this.pasteText();
+    }
+
+    protected void selectAllText()
+    {
+        this.selectionStartPosition = 0;
+        this.setCursorToEnd(true);
+    }
+
+    protected void openRightClickContextMenu(int mouseX, int mouseY)
+    {
+        this.createAndOpenContextMenu(mouseX, mouseY, this.getContextMenuEntries());
+    }
+
+    protected List<MenuEntryWidget> getContextMenuEntries()
+    {
+        StyledTextLine textClear        = StyledTextLine.translateFirstLine("malilib.label.text_field.context_menu.clear");
+        StyledTextLine textCopy         = StyledTextLine.translateFirstLine("malilib.label.text_field.context_menu.copy");
+        StyledTextLine textPasteReplace = StyledTextLine.translateFirstLine("malilib.label.text_field.context_menu.paste_replace");
+        StyledTextLine textPasteInsert  = StyledTextLine.translateFirstLine("malilib.label.text_field.context_menu.paste_insert");
+        StyledTextLine textSelectAll    = StyledTextLine.translateFirstLine("malilib.label.text_field.context_menu.select_all");
+        boolean hasText = this.getText().isEmpty() == false;
+
+        MenuEntryWidget clearEntry = new MenuEntryWidget(textClear, this::clearTextField, hasText);
+        clearEntry.translateAndAddHoverString("malilib.hover.text_field.menu_entry.clear",
+                                              MaLiLibConfigs.Hotkeys.OPEN_CONFIG_SCREEN.getKeyBind().getKeysDisplayString());
+
+        return ImmutableList.of(clearEntry,
+                                new MenuEntryWidget(textCopy,         this::copyTextToClipboard, hasText),
+                                new MenuEntryWidget(textPasteReplace, this::pasteTextFromClipboardReplace),
+                                new MenuEntryWidget(textPasteInsert,  this::pasteTextFromClipboardInsert),
+                                new MenuEntryWidget(textSelectAll,    this::selectAllText, hasText));
     }
 
     protected void renderCursor(int x, int y, float z, int color, ScreenContext ctx)

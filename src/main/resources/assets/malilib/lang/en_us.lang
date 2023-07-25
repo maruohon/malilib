@@ -181,6 +181,7 @@ malilib.hover.macro_action_export_import_screen.append_overwrite=- Append = add 
 malilib.hover.macro_edit_screen.add_actions=Add the selected actions to the macro
 malilib.hover.misc.close_screen=Close the screen
 malilib.hover.misc.hold_shift_for_info=§oHold <c=ff0>Shift</c> for information§r
+malilib.hover.text_field.menu_entry.clear=If you want the old simple behavior back, where you can just right click the text field to clear and focus it, you can disable the §fGeneric -> §eText Field Context Menu§r option in malilib configs ['§6%s§r']
 malilib.hover.toast_renderer.entry_name=%s (§b%s§r)
 
 malilib.info.action.create_action_widget_screen.name_is_final=§eNote:§r The name can't be changed later!\n§8(Except by renaming the corresponding save file manually.)§r\n\nThe name is only visible/used as the argument to the action to open the action screen. (And usually it would be set as the argument to the action in a parameterized action to be able to quickly/easily open the screen without typing in the name.)\n\nThe name should also be safe for a file name (it will also be automatically adjusted to be all lower case with underscores), as it will be the name of the file where the screen settings/configuration is saved.
@@ -387,6 +388,11 @@ malilib.label.render_layers_screen.layer=Layer
 malilib.label.render_layers_screen.layer_max=Max layer
 malilib.label.render_layers_screen.layer_min=Min layer
 malilib.label.render_layers_screen.player_follow_offset=Offset
+malilib.label.text_field.context_menu.clear=Clear
+malilib.label.text_field.context_menu.copy=Copy Text
+malilib.label.text_field.context_menu.paste_replace=Paste (replace all)
+malilib.label.text_field.context_menu.paste_insert=Paste (insert)
+malilib.label.text_field.context_menu.select_all=Select All
 malilib.label.text_field.empty_value=<c=777><i>%s
 malilib.label.toast.pressed_keys=§6Keys: §b%s
 
@@ -606,6 +612,7 @@ malilib.toast.keybind_display.action=§fAction: §b%s => %s
 malilib.config_group.comment.appearance=Various configs related to appearance/visuals and some config screen and other "appearance behavior"
 malilib.config_group.name.appearance=Appearance & Behavior
 
+malilib.config.comment.actionpromptcloseonexecute=The Action Prompt screen will automatically close when an action is executed
 malilib.config.comment.actionpromptfuzzysearch=Makes the Action Prompt search use a more lenient "fuzzy search".\n\nThat mode works such that all the characters from the search text must appear in the target string in that order, but there can be an arbitrary number or characters between them. So the search text can be kind of like an abbreviation of the target text.
 malilib.config.comment.actionpromptremembersearch=Makes the search bar in the Action Prompt screen remember the search text from the last time the prompt was open
 malilib.config.comment.actionpromptsearchdisplayname=The search bar in the Action Prompt screen will also search against the display names of the actions, and not just against the action's "internal name"
@@ -638,6 +645,7 @@ malilib.config.comment.servermessages=Allows server-side mods to send messages t
 malilib.config.comment.showinternalconfigname=Show the internal config name below the localized display name of configs on the config screens
 malilib.config.comment.sortconfigsbyname=Force sorting all the config options in each config category by the display name.\n\nSome mods may choose to use custom orders to group configs by their type, or otherwise use non-alphabetical order of configs in the category by default.\n\nAlso localized config names will likely be entirely different from the original English config names as for the proper alphabetical sorting order. This option makes the config category return the list of options sorted alphabetically based on the config display name. (I have no idea how the Java string sort handles non-latin/non-ascii characters though.)
 malilib.config.comment.sortextensionmodoptions=Sorts the configs shown on the config screens by the config display name.\n\nThis happens after any possible extension mod configs have been added to the end of the list of configs in the base mod. Note that this would also cause the base mod's configs to be sorted alphabetically, in case they weren't by default.\n\nThis option only takes effect if there actually are some options added by an extension mod. Also see the §eSort Configs By Name§r option which forces sorting the base mod configs in any case.
+malilib.config.comment.textfieldrightclickcontextmenu=When §aON§r, right clicking a text field will open a context menu.\nWhen §cOFF§r, right clicking will clear (and focus) the text field.\n\n§eNote:§r This is only the default behavior, and it can be overridden for each text field if a mod chooses to do so.
 
 malilib.config.comment.debugmessages=Enables some debug messages to the game console
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines, and when hovered, also their position and dimension info and the widget class name.\n\nIf a key is set for Debug -> §eGUI Debug Key§r, then that key must be held for any of the debug rendering to happen.
@@ -667,6 +675,7 @@ malilib.config.comment.keybind_settings.priority=The priority of this keybind in
 malilib.config.comment.keybind_settings.show_toast=Should the toast message be shown for this hotkey.\n\nThis allows turning off the toast message for this hotkey entirely. This is useful for hotkeys that trigger often and would spam the toast renderer, such as the malilib scroll adjustment keys.\n\nThe toast message display in general must be enabled in malilib's configs, at Generic -> §eKeyBind Display§r. This is just a per-hotkey override to disable the message.
 malilib.config.comment.keybind_settings.toggle=Makes this hotkey behave as a toggle, that changes it's state ON/OFF on each trigger event.\n\nNote that this is only meaningful for keys that are being checked to be held, i.e. so called "activation keys". Most hotkeys are "edge triggered" and have an associated callback that fires once when the key combination is completed. This will do nothing for such hotkeys.
 
+malilib.config.name.actionpromptcloseonexecute=Action Prompt Close On Execute
 malilib.config.name.actionpromptfuzzysearch=Action Prompt Fuzzy Search
 malilib.config.name.actionpromptremembersearch=Action Prompt Remember Search
 malilib.config.name.actionpromptsearchdisplayname=Action Prompt Search Display Name
@@ -699,6 +708,7 @@ malilib.config.name.servermessages=Server Messages (Receive)
 malilib.config.name.showinternalconfigname=Show Internal Config Name
 malilib.config.name.sortconfigsbyname=Sort Configs By Name
 malilib.config.name.sortextensionmodoptions=Sort Extension Mod Options
+malilib.config.name.textfieldrightclickcontextmenu=Text Field Context Menu
 
 malilib.config.name.debugmessages=Debug Messages
 malilib.config.name.guidebug=GUI Debug
