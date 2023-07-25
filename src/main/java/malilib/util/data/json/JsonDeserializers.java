@@ -100,6 +100,74 @@ public class JsonDeserializers
         return Optional.empty();
     }
 
+    public static Optional<BooleanAndInt> readBooleanAndIntValue(JsonElement element)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+
+                if (JsonUtils.hasBoolean(obj, "b") &&
+                    JsonUtils.hasInteger(obj, "i"))
+                {
+                    boolean booleanValue = JsonUtils.getBoolean(obj, "b");
+                    int intValue = JsonUtils.getInteger(obj, "i");
+
+                    return Optional.of(new BooleanAndInt(booleanValue, intValue));
+                }
+            }
+            else if (element.isJsonPrimitive())
+            {
+                return Optional.of(new BooleanAndInt(element.getAsBoolean(), 0));
+            }
+            else
+            {
+                MaLiLib.LOGGER.warn("Failed to read BooleanAndInt value from the JSON element '{}'", element);
+            }
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Failed to read BooleanAndInt value from the JSON element '{}'", element, e);
+        }
+
+        return Optional.empty();
+    }
+
+    public static Optional<BooleanAndDouble> readBooleanAndDoubleValue(JsonElement element)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+
+                if (JsonUtils.hasBoolean(obj, "b") &&
+                    JsonUtils.hasDouble(obj, "d"))
+                {
+                    boolean booleanValue = JsonUtils.getBoolean(obj, "b");
+                    double doubleValue = JsonUtils.getDouble(obj, "d");
+
+                    return Optional.of(new BooleanAndDouble(booleanValue, doubleValue));
+                }
+            }
+            else if (element.isJsonPrimitive())
+            {
+                return Optional.of(new BooleanAndDouble(element.getAsBoolean(), 0.0));
+            }
+            else
+            {
+                MaLiLib.LOGGER.warn("Failed to read BooleanAndDouble value from the JSON element '{}'", element);
+            }
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Failed to read BooleanAndDouble value from the JSON element '{}'", element, e);
+        }
+
+        return Optional.empty();
+    }
+
     public static Optional<BooleanAndFile> readBooleanAndFileValue(JsonElement element)
     {
         try
@@ -116,6 +184,10 @@ public class JsonDeserializers
 
                     return Optional.of(new BooleanAndFile(booleanValue, fileValue));
                 }
+            }
+            else if (element.isJsonPrimitive())
+            {
+                return Optional.of(new BooleanAndFile(element.getAsBoolean(), Paths.get("")));
             }
             else
             {
@@ -225,66 +297,6 @@ public class JsonDeserializers
         catch (Exception e)
         {
             MaLiLib.LOGGER.warn("Failed to read Vec2i value from the JSON element '{}'", element, e);
-        }
-
-        return Optional.empty();
-    }
-
-    public static Optional<BooleanAndInt> readBooleanAndIntValue(JsonElement element)
-    {
-        try
-        {
-            if (element.isJsonObject())
-            {
-                JsonObject obj = element.getAsJsonObject();
-
-                if (JsonUtils.hasBoolean(obj, "b") &&
-                    JsonUtils.hasInteger(obj, "i"))
-                {
-                    boolean booleanValue = JsonUtils.getBoolean(obj, "b");
-                    int intValue = JsonUtils.getInteger(obj, "i");
-
-                    return Optional.of(new BooleanAndInt(booleanValue, intValue));
-                }
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to read BooleanAndInt value from the JSON element '{}'", element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to read BooleanAndInt value from the JSON element '{}'", element, e);
-        }
-
-        return Optional.empty();
-    }
-
-    public static Optional<BooleanAndDouble> readBooleanAndDoubleValue(JsonElement element)
-    {
-        try
-        {
-            if (element.isJsonObject())
-            {
-                JsonObject obj = element.getAsJsonObject();
-
-                if (JsonUtils.hasBoolean(obj, "b") &&
-                    JsonUtils.hasDouble(obj, "d"))
-                {
-                    boolean booleanValue = JsonUtils.getBoolean(obj, "b");
-                    double doubleValue = JsonUtils.getDouble(obj, "d");
-
-                    return Optional.of(new BooleanAndDouble(booleanValue, doubleValue));
-                }
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to read BooleanAndDouble value from the JSON element '{}'", element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to read BooleanAndDouble value from the JSON element '{}'", element, e);
         }
 
         return Optional.empty();
