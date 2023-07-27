@@ -1,9 +1,13 @@
 package malilib.gui.widget;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.util.math.MathHelper;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.callback.FloatSliderCallback;
+import malilib.util.StringUtils;
 import malilib.util.data.FloatConsumer;
 import malilib.util.data.RangedFloatStorage;
 
@@ -23,9 +27,6 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
 
         this.setValidRange(minValue, maxValue);
         this.setFloatValue(originalValue);
-
-        this.textFieldWidget.setText(String.valueOf(originalValue));
-        this.textFieldWidget.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(minValue, maxValue));
     }
 
     @Override
@@ -100,5 +101,12 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
     public float getMaxFloatValue()
     {
         return this.maxValue;
+    }
+
+    @Override
+    protected List<String> getRangeHoverTooltip()
+    {
+        return Collections.singletonList(StringUtils.translate("malilib.hover.config.numeric.range",
+                                                               this.minValue, this.maxValue));
     }
 }

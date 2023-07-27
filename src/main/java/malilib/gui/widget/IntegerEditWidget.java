@@ -13,7 +13,7 @@ import malilib.util.data.RangedIntegerStorage;
 
 public class IntegerEditWidget extends BaseNumberEditWidget implements RangedIntegerStorage
 {
-    protected final IntConsumer consumer;
+    protected IntConsumer consumer;
     protected int minValue;
     protected int maxValue;
     protected int value;
@@ -43,11 +43,6 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
 
         this.setValidRange(minValue, maxValue);
         this.setIntegerValue(originalValue);
-
-        this.textFieldWidget.setText(String.valueOf(originalValue));
-
-        this.textFieldWidget.getHoverInfoFactory().setStringListProvider("range", this::getRangeHoverTooltip);
-        this.sliderWidget.getHoverInfoFactory().setStringListProvider("range", this::getRangeHoverTooltip);
     }
 
     @Override
@@ -68,6 +63,11 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         this.sliderWidget.updateWidgetState();
 
         return true;
+    }
+
+    public void setConsumer(IntConsumer consumer)
+    {
+        this.consumer = consumer;
     }
 
     protected void updateTextField()
@@ -124,6 +124,7 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         return this.maxValue;
     }
 
+    @Override
     protected List<String> getRangeHoverTooltip()
     {
         return Collections.singletonList(StringUtils.translate("malilib.hover.config.numeric.range",

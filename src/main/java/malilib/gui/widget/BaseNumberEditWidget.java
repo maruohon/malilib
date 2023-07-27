@@ -1,5 +1,6 @@
 package malilib.gui.widget;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -18,7 +19,10 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
     protected boolean addSlider;
     protected boolean addValueAdjustButton = true;
     protected boolean forceSlider;
+    protected boolean showRangeTooltip = true;
     protected boolean sliderActive;
+    protected int labelFixedWidth = -1;
+    protected int textFieldFixedWidth = -1;
 
     public BaseNumberEditWidget(int width, int height)
     {
@@ -33,7 +37,7 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         this.valueAdjustButton.translateAndAddHoverString("malilib.hover.button.plus_minus_tip");
         this.valueAdjustButton.setCanScrollToClick(true);
 
-        this.textFieldWidget = new BaseTextFieldWidget(width, height);
+        this.textFieldWidget = new BaseTextFieldWidget(60, height);
         this.textFieldWidget.setListener(this::setValueFromTextField);
 
         this.sliderWidget = this.createSliderWidget();
@@ -58,6 +62,17 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         {
             this.addWidget(this.sliderToggleButton);
         }
+
+        if (this.showRangeTooltip)
+        {
+            this.textFieldWidget.getHoverInfoFactory().setStringListProvider("range", this::getRangeHoverTooltip);
+            this.sliderWidget.getHoverInfoFactory().setStringListProvider("range", this::getRangeHoverTooltip);
+        }
+        else
+        {
+            this.textFieldWidget.getHoverInfoFactory().removeTextLineProvider("range");
+            this.sliderWidget.getHoverInfoFactory().removeTextLineProvider("range");
+        }
     }
 
     @Override
@@ -67,14 +82,21 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
 
         int x = this.getX();
         int y = this.getY();
-        int width = this.getWidth();
-        int tw = width;
+        int tw = this.getWidth();
 
         if (this.addLabel)
         {
             int ly = y + this.getHeight() / 2 - 3;
             this.labelWidget.setPosition(x, ly);
+
+            if (this.labelFixedWidth >= 0)
+            {
+                this.labelWidget.setAutomaticWidth(false);
+                this.labelWidget.setWidth(this.labelFixedWidth);
+            }
+
             int w = this.labelWidget.getWidth() + 2;
+
             tw -= w;
             x += w;
         }
@@ -89,25 +111,16 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
             tw -= this.sliderToggleButton.getWidth() + 1;
         }
 
-        if (this.sliderActive)
+        if (this.textFieldFixedWidth >= 0)
         {
-            this.sliderWidget.setWidth(tw);
-        }
-        else
-        {
-            this.textFieldWidget.setWidth(tw);
+            tw = this.textFieldFixedWidth;
         }
 
-        if (this.sliderActive == false)
-        {
-            this.textFieldWidget.setPosition(x, y);
-            x = this.textFieldWidget.getRight() + 1;
-        }
-        else
-        {
-            this.sliderWidget.setPosition(x, y);
-            x = this.sliderWidget.getRight() + 1;
-        }
+        this.sliderWidget.setWidth(tw);
+        this.textFieldWidget.setWidth(tw);
+        this.sliderWidget.setPosition(x, y);
+        this.textFieldWidget.setPosition(x, y);
+        x = this.textFieldWidget.getRight() + 1;
 
         if (this.addValueAdjustButton)
         {
@@ -120,6 +133,24 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         {
             this.sliderToggleButton.setPosition(x, y);
         }
+
+        this.updateWidth();
+    }
+
+    @Override
+    protected int getRequestedContentWidth()
+    {
+        if (this.addSlider && this.forceSlider == false)
+        {
+            return this.sliderToggleButton.getRight() - this.getX();
+        }
+
+        if (this.addValueAdjustButton)
+        {
+            return this.valueAdjustButton.getRight() - this.getX();
+        }
+
+        return this.textFieldWidget.getRight() - this.getX();
     }
 
     public BaseNumberEditWidget setAddLabel(boolean addLabel)
@@ -162,6 +193,11 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         return this.sliderActive ? this.sliderWidget.getX() : this.textFieldWidget.getX();
     }
 
+    public int getLabelWidth()
+    {
+        return this.labelWidget.getWidth();
+    }
+
     protected void toggleSliderActive()
     {
         this.sliderActive = ! this.sliderActive;
@@ -169,10 +205,44 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         this.reAddSubWidgets();
     }
 
+    /**
+     * Set a fixed width for the label widget. Use -1 for automatic width.
+     */
+    public void setLabelFixedWidth(int width)
+    {
+        this.labelFixedWidth = width;
+    }
+
+    /**
+     * Set a fixed width for the text field or slider widget. Use -1 for automatic width.
+     */
+    public void setTextFieldFixedWidth(int width)
+    {
+        this.textFieldFixedWidth = width;
+    }
+
+    public void setShowRangeTooltip(boolean showRangeTooltip)
+    {
+        this.showRangeTooltip = showRangeTooltip;
+    }
+
+    public LabelWidget getLabelWidget()
+    {
+        return this.labelWidget;
+    }
+
     public BaseNumberEditWidget setLabelText(String translationKey, Object... args)
     {
+        boolean oldAdd = this.addLabel;
         this.labelWidget.translateSetLines(translationKey, args);
         this.addLabel = true;
+
+        if (oldAdd == false)
+        {
+            this.reAddSubWidgets();
+            this.updateSubWidgetPositions();
+        }
+
         return this;
     }
 
@@ -181,4 +251,6 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
     protected abstract SliderWidget createSliderWidget();
 
     protected abstract boolean onValueAdjustButtonClick(int mouseButton);
+
+    protected abstract List<String> getRangeHoverTooltip();
 }

@@ -590,8 +590,7 @@ public class BaseTextFieldWidget extends ContainerWidget
     }
 
     /**
-     * Returns the maximum render width for text
-     * @return
+     * @return the maximum render width for text. Note: always at least 10 pixels.
      */
     protected int getMaxTextWidth()
     {
@@ -602,6 +601,8 @@ public class BaseTextFieldWidget extends ContainerWidget
         {
             maxWidth -= settings.getActiveBorderWidth() * 2;
         }
+
+        maxWidth = Math.max(10, maxWidth);
 
         return maxWidth;
     }
