@@ -3,7 +3,7 @@ package malilib.gui.widget.list.entry.config;
 import malilib.config.option.IntegerConfig;
 import malilib.gui.BaseScreen;
 import malilib.gui.config.ConfigWidgetContext;
-import malilib.gui.widget.IntegerTextFieldWidget;
+import malilib.gui.widget.IntegerTextFieldWidget.IntRangeValidator;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
 public class IntegerConfigWidget extends NumericConfigWidget<Integer, IntegerConfig>
@@ -15,8 +15,8 @@ public class IntegerConfigWidget extends NumericConfigWidget<Integer, IntegerCon
         super(config, constructData, ctx,
               IntegerConfig::setValueFromString, IntegerConfig::getStringValue);
 
-        this.textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(config.getMinIntegerValue(),
-                                                                                config.getMaxIntegerValue()));
+        this.textField.setTextValidator(new IntRangeValidator(config.getMinIntegerValue(),
+                                                              config.getMaxIntegerValue()));
         this.textField.translateAndAddHoverString("malilib.hover.config.numeric.range_and_default",
                                                   config.getMinIntegerValue(),
                                                   config.getMaxIntegerValue(),

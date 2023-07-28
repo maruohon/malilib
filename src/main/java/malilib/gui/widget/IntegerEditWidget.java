@@ -79,7 +79,7 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     {
         this.minValue = minValue;
         this.maxValue = maxValue;
-        this.textFieldWidget.setTextValidator(new IntegerTextFieldWidget.IntValidator(minValue, maxValue));
+        this.textFieldWidget.setTextValidator(new IntegerTextFieldWidget.IntRangeValidator(minValue, maxValue));
     }
 
     @Override

@@ -40,8 +40,8 @@ public class BaseTextFieldWidget extends ContainerWidget
     public static final TextFieldValidator VALIDATOR_HEX_COLOR_8       = (str) -> PATTERN_HEX_COLOR_8.matcher(str).matches();
     public static final TextFieldValidator VALIDATOR_DOUBLE            = new DoubleTextFieldWidget.DoubleValidator(Double.MIN_VALUE, Double.MAX_VALUE);
     public static final TextFieldValidator VALIDATOR_DOUBLE_POSITIVE   = new DoubleTextFieldWidget.DoubleValidator(+0.0, Double.MAX_VALUE);
-    public static final TextFieldValidator VALIDATOR_INTEGER           = new IntegerTextFieldWidget.IntValidator(Integer.MIN_VALUE, Integer.MAX_VALUE);
-    public static final TextFieldValidator VALIDATOR_INTEGER_POSITIVE  = new IntegerTextFieldWidget.IntValidator(1, Integer.MAX_VALUE);
+    public static final TextFieldValidator VALIDATOR_INTEGER           = new IntegerTextFieldWidget.IntRangeValidator(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    public static final TextFieldValidator VALIDATOR_INTEGER_POSITIVE  = new IntegerTextFieldWidget.IntRangeValidator(1, Integer.MAX_VALUE);
 
     protected final TextRegion visibleText = new TextRegion();
     protected final MessageRendererWidget messageRenderer = new MessageRendererWidget();

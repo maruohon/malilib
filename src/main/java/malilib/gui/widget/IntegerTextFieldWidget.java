@@ -26,15 +26,15 @@ public class IntegerTextFieldWidget extends BaseTextFieldWidget
     {
         super(width, height, initialValue);
 
-        this.setTextValidator(new IntValidator(minValue, maxValue));
+        this.setTextValidator(new IntRangeValidator(minValue, maxValue));
     }
 
-    public static class IntValidator implements TextFieldValidator
+    public static class IntRangeValidator implements TextFieldValidator
     {
         protected final int maxValue;
         protected final int minValue;
 
-        public IntValidator(int minValue, int maxValue)
+        public IntRangeValidator(int minValue, int maxValue)
         {
             this.minValue = minValue;
             this.maxValue = maxValue;

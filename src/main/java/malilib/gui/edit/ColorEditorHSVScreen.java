@@ -16,7 +16,7 @@ import net.minecraft.util.math.MathHelper;
 import malilib.gui.BaseScreen;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
-import malilib.gui.widget.IntegerTextFieldWidget;
+import malilib.gui.widget.IntegerTextFieldWidget.IntRangeValidator;
 import malilib.gui.widget.LabelWidget;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
@@ -138,31 +138,31 @@ public class ColorEditorHSVScreen extends BaseScreen
         {
             case H:
                 this.textFieldH = textField;
-                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 360));
+                textField.setTextValidator(new IntRangeValidator(0, 360));
                 break;
             case S:
                 this.textFieldS = textField;
-                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 100));
+                textField.setTextValidator(new IntRangeValidator(0, 100));
                 break;
             case V:
                 this.textFieldV = textField;
-                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 100));
+                textField.setTextValidator(new IntRangeValidator(0, 100));
                 break;
             case R:
                 this.textFieldR = textField;
-                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 255));
+                textField.setTextValidator(new IntRangeValidator(0, 255));
                 break;
             case G:
                 this.textFieldG = textField;
-                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 255));
+                textField.setTextValidator(new IntRangeValidator(0, 255));
                 break;
             case B:
                 this.textFieldB = textField;
-                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 255));
+                textField.setTextValidator(new IntRangeValidator(0, 255));
                 break;
             case A:
                 this.textFieldA = textField;
-                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 255));
+                textField.setTextValidator(new IntRangeValidator(0, 255));
                 break;
             default:
         }

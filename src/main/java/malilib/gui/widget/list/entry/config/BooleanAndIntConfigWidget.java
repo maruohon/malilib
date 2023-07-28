@@ -4,7 +4,7 @@ import malilib.config.option.BooleanAndIntConfig;
 import malilib.config.option.BooleanAndIntConfig.BooleanAndInt;
 import malilib.gui.BaseScreen;
 import malilib.gui.config.ConfigWidgetContext;
-import malilib.gui.widget.IntegerTextFieldWidget;
+import malilib.gui.widget.IntegerTextFieldWidget.IntRangeValidator;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
 public class BooleanAndIntConfigWidget extends BaseBooleanAndNumberConfigWidget<BooleanAndInt, BooleanAndIntConfig>
@@ -16,8 +16,8 @@ public class BooleanAndIntConfigWidget extends BaseBooleanAndNumberConfigWidget<
         super(config, constructData, ctx,
               BooleanAndIntConfig::setValueFromString, BooleanAndIntConfig::getStringValue);
 
-        this.textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(config.getMinIntegerValue(),
-                                                                                config.getMaxIntegerValue()));
+        this.textField.setTextValidator(new IntRangeValidator(config.getMinIntegerValue(),
+                                                              config.getMaxIntegerValue()));
         this.textField.translateAndAddHoverString("malilib.hover.config.numeric.range_and_default",
                                                   config.getMinIntegerValue(),
                                                   config.getMaxIntegerValue(),
