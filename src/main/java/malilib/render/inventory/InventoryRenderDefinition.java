@@ -128,82 +128,82 @@ public class InventoryRenderDefinition
         protected IntUnaryOperator renderHeightFunction = (slots) -> 68;
         protected IntUnaryOperator slotsPerRowFunction = (slots) -> 9;
 
-        public Builder withSlotsPerRow(int slotsPerRow)
+        public Builder slotsPerRow(int slotsPerRow)
         {
             this.slotsPerRowFunction = (slots) -> slotsPerRow;
             return this;
         }
 
-        public Builder withSlotsPerRowFunction(IntUnaryOperator slotsPerRowFunction)
+        public Builder slotsPerRowFunction(IntUnaryOperator slotsPerRowFunction)
         {
             this.slotsPerRowFunction = slotsPerRowFunction;
             return this;
         }
 
-        public Builder withRenderSize(int renderWidth, int renderHeight)
+        public Builder renderSize(int renderWidth, int renderHeight)
         {
             this.renderWidthFunction = (slots) -> renderWidth;
             this.renderHeightFunction = (slots) -> renderHeight;
             return this;
         }
 
-        public Builder withRenderSizeFunctions(IntUnaryOperator renderWidthFunction,
-                                               IntUnaryOperator renderHeightFunction)
+        public Builder renderSizeFunctions(IntUnaryOperator renderWidthFunction,
+                                           IntUnaryOperator renderHeightFunction)
         {
             this.renderWidthFunction = renderWidthFunction;
             this.renderHeightFunction = renderHeightFunction;
             return this;
         }
 
-        public Builder withSlotOffset(int slotOffsetX, int slotOffsetY)
+        public Builder slotOffset(int slotOffsetX, int slotOffsetY)
         {
             this.slotOffset = new Vec2i(slotOffsetX, slotOffsetY);
             return this;
         }
 
-        public Builder withSlotPosition(int slotNumber, int slotX, int slotY)
+        public Builder slotPosition(int slotNumber, int slotX, int slotY)
         {
             this.customSlotPositions.put(slotNumber, new Vec2i(slotX, slotY));
             return this;
         }
 
-        public Builder withBackgroundTexturePiece(int x, int y, Icon icon)
+        public Builder backgroundTexturePiece(int x, int y, Icon icon)
         {
             this.backgroundTextures.add(PositionedIcon.of(new Vec2i(x, y), icon));
             return this;
         }
 
-        public Builder withInventoryRange(int startSlot, int slotCount,
-                                          int slotsPerRow, int offsetX, int offsetY)
+        public Builder inventoryRange(int startSlot, int slotCount,
+                                      int slotsPerRow, int offsetX, int offsetY)
         {
-            return this.withInventoryRange(startSlot, slotCount, slotsPerRow, offsetX, offsetY, false);
+            return this.inventoryRange(startSlot, slotCount, slotsPerRow, offsetX, offsetY, false);
         }
 
-        public Builder withInventoryRange(int startSlot, int slotCount,
-                                          int slotsPerRow, int offsetX, int offsetY, boolean renderSlots)
+        public Builder inventoryRange(int startSlot, int slotCount,
+                                      int slotsPerRow, int offsetX, int offsetY, boolean renderSlots)
         {
             this.inventoryRanges.add(InventoryRange.of(startSlot, slotCount, renderSlots,
                                                        new Vec2i(offsetX, offsetY), (slots) -> slotsPerRow));
             return this;
         }
 
-        public Builder withInventoryRange(int startSlot, int slotCount,
-                                          IntUnaryOperator slotsPerRowFunction,
-                                          int offsetX, int offsetY)
+        public Builder inventoryRange(int startSlot, int slotCount,
+                                      IntUnaryOperator slotsPerRowFunction,
+                                      int offsetX, int offsetY)
         {
-            return this.withInventoryRange(startSlot, slotCount, slotsPerRowFunction, offsetX, offsetY, false);
+            return this.inventoryRange(startSlot, slotCount, slotsPerRowFunction, offsetX, offsetY, false);
         }
 
-        public Builder withInventoryRange(int startSlot, int slotCount,
-                                          IntUnaryOperator slotsPerRowFunction,
-                                          int offsetX, int offsetY, boolean renderSlots)
+        public Builder inventoryRange(int startSlot, int slotCount,
+                                      IntUnaryOperator slotsPerRowFunction,
+                                      int offsetX, int offsetY, boolean renderSlots)
         {
             this.inventoryRanges.add(InventoryRange.of(startSlot, slotCount, renderSlots,
                                                        new Vec2i(offsetX, offsetY), slotsPerRowFunction));
             return this;
         }
 
-        public Builder withEmptySlotBackgroundTexture(int slotNum, int x, int y, Icon icon)
+        public Builder emptySlotBackgroundTexture(int slotNum, int x, int y, Icon icon)
         {
             this.emptySlotTextures.put(slotNum, PositionedIcon.of(new Vec2i(x, y), icon));
             return this;
