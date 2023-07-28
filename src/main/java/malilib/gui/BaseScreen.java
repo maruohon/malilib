@@ -826,6 +826,7 @@ public abstract class BaseScreen extends GuiScreen
             this.widgets.add(widget);
             widget.setTaskQueue(this::addTask);
             widget.onWidgetAdded(this.z);
+            widget.updateWidgetState();
         }
 
         return widget;
