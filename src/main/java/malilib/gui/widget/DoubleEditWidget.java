@@ -47,13 +47,11 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     {
         double amount = this.baseScrollAdjustAmount;
         if (mouseButton == 1) amount = -amount;
-        if (BaseScreen.isShiftDown()) { amount *= 4.0; }
-        if (BaseScreen.isAltDown()) { amount *= 8.0; }
+        if (BaseScreen.isShiftDown()) { amount *= this.shiftModifier; }
+        if (BaseScreen.isAltDown()) { amount *= this.altModifier; }
 
         double v = (double) ((int) ((this.value + amount) * 100000)) / 100000.0;
         this.setDoubleValue(v);
-        this.consumer.accept(this.value);
-        this.sliderWidget.updateWidgetState();
 
         return true;
     }
@@ -91,7 +89,6 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
         try
         {
             this.clampAndSetValue(Double.parseDouble(str));
-            this.consumer.accept(this.value);
         }
         catch (NumberFormatException ignore) {}
     }
@@ -99,6 +96,8 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     protected void clampAndSetValue(double newValue)
     {
         this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+        this.consumer.accept(this.value);
+        this.sliderWidget.updateWidgetState();
     }
 
     @Override

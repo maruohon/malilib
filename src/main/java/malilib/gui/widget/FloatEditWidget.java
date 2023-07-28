@@ -39,12 +39,10 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
     protected boolean onValueAdjustButtonClick(int mouseButton)
     {
         float amount = mouseButton == 1 ? -0.25F : 0.25F;
-        if (BaseScreen.isShiftDown()) { amount *= 4.0F; }
-        if (BaseScreen.isAltDown()) { amount *= 8.0F; }
+        if (BaseScreen.isShiftDown()) { amount *= this.shiftModifier; }
+        if (BaseScreen.isAltDown()) { amount *= this.altModifier; }
 
         this.setFloatValue(this.value + amount);
-        this.consumer.accept(this.value);
-        this.sliderWidget.updateWidgetState();
 
         return true;
     }
@@ -67,7 +65,6 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
         try
         {
             this.clampAndSetValue(Float.parseFloat(str));
-            this.consumer.accept(this.value);
         }
         catch (NumberFormatException ignore) {}
     }
@@ -75,6 +72,8 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
     protected void clampAndSetValue(float newValue)
     {
         this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+        this.consumer.accept(this.value);
+        this.sliderWidget.updateWidgetState();
     }
 
     @Override

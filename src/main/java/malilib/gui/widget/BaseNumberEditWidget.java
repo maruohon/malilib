@@ -21,6 +21,8 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
     protected boolean forceSlider;
     protected boolean showRangeTooltip = true;
     protected boolean sliderActive;
+    protected int altModifier = 4;
+    protected int shiftModifier = 8;
     protected int labelFixedWidth = -1;
     protected int textFieldFixedWidth = -1;
 
@@ -180,6 +182,18 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
             this.sliderActive = true;
         }
 
+        return this;
+    }
+
+    public BaseNumberEditWidget setAltModifier(int altModifier)
+    {
+        this.altModifier = altModifier;
+        return this;
+    }
+
+    public BaseNumberEditWidget setShiftModifier(int shiftModifier)
+    {
+        this.shiftModifier = shiftModifier;
         return this;
     }
 

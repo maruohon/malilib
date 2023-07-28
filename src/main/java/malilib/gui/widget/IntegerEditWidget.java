@@ -55,12 +55,10 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     protected boolean onValueAdjustButtonClick(int mouseButton)
     {
         int amount = mouseButton == 1 ? -1 : 1;
-        if (BaseScreen.isShiftDown()) { amount *= 8; }
-        if (BaseScreen.isAltDown()) { amount *= 4; }
+        if (BaseScreen.isShiftDown()) { amount *= this.shiftModifier; }
+        if (BaseScreen.isAltDown()) { amount *= this.altModifier; }
 
         this.setIntegerValue(this.value + amount);
-        this.consumer.accept(this.value);
-        this.sliderWidget.updateWidgetState();
 
         return true;
     }
@@ -88,7 +86,6 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         try
         {
             this.clampAndSetValue(Integer.parseInt(str));
-            this.consumer.accept(this.value);
         }
         catch (NumberFormatException ignore) {}
     }
@@ -96,6 +93,8 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     protected void clampAndSetValue(int newValue)
     {
         this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+        this.consumer.accept(this.value);
+        this.sliderWidget.updateWidgetState();
     }
 
     @Override
