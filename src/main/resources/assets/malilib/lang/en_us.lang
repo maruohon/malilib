@@ -42,6 +42,10 @@ malilib.button.export_entries.select_output_file=Select Output File
 malilib.button.import_entries.import_selected_entries=Import Selected
 malilib.button.import_entries.paste_from_clipboard=Paste from Clipboard
 malilib.button.import_entries.read_from_file=Read from File
+malilib.button.layer_range.axis=Axis: %s
+malilib.button.layer_range.follow_player=Follow Player: %s
+malilib.button.layer_range.layers=Layers: %s
+malilib.button.layer_range.set_to_player=Set to Player
 malilib.button.macro_edit_screen.add_actions=Add Actions
 malilib.button.message_redirect.add_redirect=Add New Redirect
 malilib.button.misc.add=Add
@@ -68,10 +72,6 @@ malilib.button.on_off.text_true_false.off=§cfalse
 malilib.button.on_off.text_true_false.on=§atrue
 malilib.button.on_off.slider_on_off.off=OFF
 malilib.button.on_off.slider_on_off.on=ON
-malilib.button.render_layers.axis=Axis: %s
-malilib.button.render_layers.follow_player=Follow Player: %s
-malilib.button.render_layers.layers=Layers: %s
-malilib.button.render_layers.set_to_player=Set to player
 
 malilib.checkbox.action_prompt_screen.close_on_execute=Close on execute
 malilib.checkbox.action_prompt_screen.fuzzy_search=Fuzzy search
@@ -80,7 +80,7 @@ malilib.checkbox.action_prompt_screen.search_display_name=Display Name
 malilib.checkbox.action_widget_screen.close_on_execute=Close On Execute
 malilib.checkbox.action_widget_screen.close_on_key_release=Close On Key Release
 malilib.checkbox.center=Center
-malilib.checkbox.render_layers.hotkey=Hotkey
+malilib.checkbox.layer_range.hotkey=Hotkey
 
 malilib.hover.button.action_list_screen.create_macro=Create a Macro Action (or a "favorite actions list").\n- Select one or more actions from the list on the left.\n- You can hold Ctrl and/or Shift to select multiple entries.\n- Macros are basically just action lists.\n- Executing a macro runs all the actions on the list, in order.\n- The action lists/macros can also be used in the Action Prompt screen to "pre-filter" the list of shown actions.
 malilib.hover.button.action_list_screen.execute_action=Execute the selected action
@@ -117,6 +117,7 @@ malilib.hover.button.keybind.overlap.category= + %s
 malilib.hover.button.keybind.overlap.category.vanilla=Minecraft (and non-malilib mods)
 malilib.hover.button.keybind.overlap.keybind=    - %s [ §6%s§r ]
 malilib.hover.button.keybind.possible_overlaps=Possible overlaps [<c=eee>most are fine though!!</c>]:
+malilib.hover.button.layer_range.follow_player=If enabled, then the layer (or range) follows the player
 malilib.hover.button.list.add_after=Add an entry after
 malilib.hover.button.list.add_first=Add an entry
 malilib.hover.button.list.move_down=Move Down
@@ -127,10 +128,9 @@ malilib.hover.button.parameterize_action_for_hotkey=Create a new copy of the act
 malilib.hover.button.parameterize_action_for_macro=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.\n<c=da0>Note: This button only adds the parameterized action to this macro, it does not get added to the registry and won't be available in the global list.
 malilib.hover.button.plus_minus_tip=- Left click to increase\n- Right click to decrease\n- Or scroll with the mouse over the button\n- Shift and/or Alt to increase the step size
 malilib.hover.button.re_parameterize_action_for_macro=Create a new parameterized copy of the action with the string argument bound to a new given value. This old version of the action will be removed and replaced with the newly created action with the given name and argument.
-malilib.hover.button.render_layers.follow_player=If enabled, then the render layer follows the player
 malilib.hover.button.value_list_edit.entry=§7%s
 
-malilib.hover.checkbox.render_layers.hotkey=The next/previous layer hotkeys will affect this boundary. If both are unselected, then the hotkeys will affect the boundary that is closest to the player.
+malilib.hover.checkbox.layer_range.hotkey=The next/previous layer hotkeys will affect this boundary.\n\nIf both are unselected, then the hotkeys will affect the boundary that is closest to the player.
 
 malilib.hover.action.action_type=§8Type: <c=aaa>%s
 malilib.hover.action.action_types_explanation=- All: All actions currently in the registry\n- Alias: User-added aliases (= renamed copies)\n- Base: All mod-added "base" actions (= no user-added\n  actions ie. aliases, macros or the bound paramaterized actions)\n- Macro: User-created macros (= lists of actions)\n- Parameterizable: Base actions that need a string argument\n- Parameterized: User-added copies of parameterizable\n  actions, where the argument is set already\n- Simple: Non-parameterizable base actions\n- User-added: All user-added actions\n  (= aliases, macros and parameterized actions)
@@ -310,6 +310,10 @@ malilib.label.keybind_settings.toggle=Toggle Held
 malilib.label.keybind_settings.tips=- Left click to configure\n- Right click to reset to defaults
 malilib.label.keybind_settings.value.integer=§b%s
 malilib.label.keybind_settings.value.option_list=§9%s
+malilib.label.layer_range.layer=Layer
+malilib.label.layer_range.layer_max=Max Layer
+malilib.label.layer_range.layer_min=Min Layer
+malilib.label.layer_range.player_follow_offset=Offset
 malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
@@ -384,10 +388,6 @@ malilib.label.nbt_tooltip.key_color=§b
 malilib.label.nbt_tooltip.number_color=§6
 malilib.label.nbt_tooltip.number_type_color=§c
 malilib.label.nbt_tooltip.string_color=§a
-malilib.label.render_layers_screen.layer=Layer
-malilib.label.render_layers_screen.layer_max=Max layer
-malilib.label.render_layers_screen.layer_min=Min layer
-malilib.label.render_layers_screen.player_follow_offset=Offset
 malilib.label.text_field.context_menu.clear=Clear
 malilib.label.text_field.context_menu.copy=Copy Text
 malilib.label.text_field.context_menu.paste_replace=Paste (replace all)
@@ -563,6 +563,8 @@ malilib.message.error.illegal_characters_in_file_name=Invalid characters in the 
 malilib.message.error.invalid_config_lock_packet=Received an invalid config lock packet from the server
 malilib.message.error.invalid_directory=Invalid directory name §e'%s'§r
 malilib.message.error.keybind.attempt_to_bind_ignored_key=The key §e'%s'§r is currently set to be ignored by malilib. See malilib configs Generic -> Ignored Keys
+malilib.message.error.layer_range.max_smaller_than_min=The max layer value §b%s§r is smaller than the min layer
+malilib.message.error.layer_range.min_larger_than_max=The min layer value §b%s§r is larger than the max layer
 malilib.message.error.no_action_screen_found_by_name=Error: No action screen found by the name §e'%s'§r
 malilib.message.error.no_entries_selected=Error: No entries selected
 malilib.message.error.no_file_name_given=Error: No file name given

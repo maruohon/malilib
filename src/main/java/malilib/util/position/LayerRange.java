@@ -14,6 +14,7 @@ import malilib.config.value.BaseOptionListConfigValue;
 import malilib.config.value.LayerMode;
 import malilib.listener.LayerRangeChangeListener;
 import malilib.overlay.message.MessageDispatcher;
+import malilib.util.ListUtils;
 import malilib.util.data.json.JsonUtils;
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.game.wrap.GameUtils;
@@ -161,6 +162,11 @@ public class LayerRange
         }
     }
 
+    public void cycleLayerMode(boolean reverse)
+    {
+        this.setLayerMode(ListUtils.getNextEntry(LayerMode.VALUES, this.layerMode, reverse));
+    }
+
     public void setLayerMode(LayerMode mode)
     {
         this.setLayerMode(mode, true);
@@ -169,7 +175,6 @@ public class LayerRange
     public void setLayerMode(LayerMode mode, boolean printMessage)
     {
         this.layerMode = mode;
-
         this.listener.updateAll();
 
         if (printMessage)
@@ -178,10 +183,18 @@ public class LayerRange
         }
     }
 
+    public void cycleAxis(boolean reverse)
+    {
+        EnumFacing.Axis axis = this.axis;
+        int index = axis.ordinal();
+        int next = reverse ? (index == 0 ? 2 : index - 1) : ((index + 1) % 3);
+        axis = EnumFacing.Axis.values()[next % 3];
+        this.setAxis(axis);
+    }
+
     public void setAxis(EnumFacing.Axis axis)
     {
         this.axis = axis;
-
         this.listener.updateAll();
         this.sendMessage("malilib.message.info.set_layer_axis_to", axis.getName());
     }
@@ -288,13 +301,25 @@ public class LayerRange
         return 0;
     }
 
+    public void setToPosition(Entity entity)
+    {
+        if (this.layerMode == LayerMode.LAYER_RANGE)
+        {
+            this.setLayerRangeToPosition(entity);
+        }
+        else
+        {
+            this.setSingleBoundaryToPosition(entity);
+        }
+    }
+
     public void setSingleBoundaryToPosition(Entity entity)
     {
         int pos = this.getPositionFromEntity(entity);
         this.setSingleBoundaryToPosition(pos);
     }
 
-    protected void setSingleBoundaryToPosition(int pos)
+    public void setSingleBoundaryToPosition(int pos)
     {
         switch (this.layerMode)
         {
@@ -309,6 +334,24 @@ public class LayerRange
                 break;
             default:
         }
+    }
+
+    public void setLayerRangeToPosition(Entity entity)
+    {
+        int pos = this.getPositionFromEntity(entity);
+        this.setLayerRangeToPosition(pos);
+    }
+
+    public void setLayerRangeToPosition(int pos)
+    {
+        int oldMin = this.layerRangeMin;
+        int oldMax = this.layerRangeMax;
+
+        this.layerRangeMin = pos;
+        this.layerRangeMax = pos;
+
+        this.updateLayersBetween(oldMin, oldMax);
+        this.updateLayersBetween(pos, pos);
     }
 
     public void followPlayerIfEnabled(Entity entity)

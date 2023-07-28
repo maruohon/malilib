@@ -30,7 +30,7 @@ public abstract class BaseTripleNumberEditWidget<T, W extends BaseNumberEditWidg
         this.addMoveToPlayerButton = addMoveToPlayerButton;
 
         int h = addMoveToPlayerButton ? (height - gap * 3 - 18) / 3 : (height - gap * 2) / 3;
-        this.moveToPlayerButton = GenericButton.create(18, "malilib.button.render_layers.set_to_player");
+        this.moveToPlayerButton = GenericButton.create(18, "malilib.button.layer_range.set_to_player");
         this.moveToPlayerButton.setActionListener(this::moveToPlayer);
 
         this.xCoordinateWidget = this.createNumberEditWidget(width, h, initialPos, Coordinate.X);
