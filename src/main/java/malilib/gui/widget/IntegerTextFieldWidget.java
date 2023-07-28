@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import malilib.gui.widget.util.TextFieldValidator;
 import malilib.util.StringUtils;
+import malilib.util.data.Int2BooleanFunction;
 
 public class IntegerTextFieldWidget extends BaseTextFieldWidget
 {
@@ -73,6 +74,43 @@ public class IntegerTextFieldWidget extends BaseTextFieldWidget
             catch (Exception e)
             {
                 return StringUtils.translate("malilib.message.error.text_field.invalid_value_int", text);
+            }
+
+            return null;
+        }
+    }
+
+    public static class IntValueValidator implements TextFieldValidator
+    {
+        protected final Int2BooleanFunction validator;
+        protected final String errorMessageKey;
+
+        public IntValueValidator(Int2BooleanFunction validator, String errorMessageKey)
+        {
+            this.validator = validator;
+            this.errorMessageKey = errorMessageKey;
+        }
+
+        @Override
+        public boolean isValidInput(String text)
+        {
+            try
+            {
+                int value = Integer.parseInt(text);
+                return this.validator.apply(value);
+            }
+            catch (Exception ignore) {}
+
+            return false;
+        }
+
+        @Override
+        @Nullable
+        public String getErrorMessage(String text)
+        {
+            if (this.isValidInput(text) == false)
+            {
+                return StringUtils.translate(this.errorMessageKey, text);
             }
 
             return null;

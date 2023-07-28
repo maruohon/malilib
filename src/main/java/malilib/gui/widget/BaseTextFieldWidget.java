@@ -339,6 +339,19 @@ public class BaseTextFieldWidget extends ContainerWidget
         return this;
     }
 
+    public BaseTextFieldWidget addChainedTextValidator(TextFieldValidator validator)
+    {
+        if (this.textValidator != null && validator != null)
+        {
+            this.textValidator = new ChainedValidator(this.textValidator, validator);
+        }
+        else if (this.textValidator == null)
+        {
+            this.textValidator = validator;
+        }
+        return this;
+    }
+
     /**
      * Set the text change listener to use, if any.
      * <br><br>
@@ -1183,5 +1196,49 @@ public class BaseTextFieldWidget extends ContainerWidget
     public interface IInputCharacterValidator
     {
         boolean canWriteCharacter(int index, String currentText, char typedChar, int modifiers);
+    }
+
+    public static class ChainedValidator implements TextFieldValidator
+    {
+        protected final TextFieldValidator validator1;
+        protected final TextFieldValidator validator2;
+
+        public ChainedValidator(TextFieldValidator validator1, TextFieldValidator validator2)
+        {
+            this.validator1 = validator1;
+            this.validator2 = validator2;
+        }
+
+        @Override
+        public boolean isValidInput(String text)
+        {
+            return this.validator1.isValidInput(text) && this.validator2.isValidInput(text);
+        }
+
+        @Override
+        @Nullable
+        public String getErrorMessage(String text)
+        {
+            String error = null;
+
+            if (this.validator1.isValidInput(text) == false)
+            {
+                error = this.validator1.getErrorMessage(text);
+            }
+
+            if (this.validator2.isValidInput(text) == false)
+            {
+                if (error != null)
+                {
+                    error += "\n" + this.validator2.getErrorMessage(text);
+                }
+                else
+                {
+                    error = this.validator2.getErrorMessage(text);
+                }
+            }
+
+            return error;
+        }
     }
 }
