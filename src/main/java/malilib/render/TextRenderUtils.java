@@ -5,14 +5,13 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 
 import malilib.gui.util.GuiUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.TextRenderer;
@@ -125,15 +124,6 @@ public class TextRenderUtils
                                                  int fillColor, int borderColor1, int borderColor2,
                                                  RenderContext ctx)
     {
-        GlStateManager.disableTexture2D();
-        GlStateManager.disableAlpha();
-        RenderUtils.setupBlend();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-
         int xl1 = x;
         int xl2 = xl1 + 1;
         int xl3 = xl2 + 1;
@@ -147,23 +137,26 @@ public class TextRenderUtils
         int yb2 = yb1 + 1;
         int yb3 = yb2 + 1;
 
-        ShapeRenderUtils.renderGradientRectangle(xl2, yt1, xr2, yt2, z, fillColor, fillColor, buffer);
-        ShapeRenderUtils.renderGradientRectangle(xl2, yb2, xr2, yb3, z, fillColor, fillColor, buffer);
-        ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yb2, z, fillColor, fillColor, buffer);
-        ShapeRenderUtils.renderGradientRectangle(xl1, yt2, xl2, yb2, z, fillColor, fillColor, buffer);
-        ShapeRenderUtils.renderGradientRectangle(xr2, yt2, xr3, yb2, z, fillColor, fillColor, buffer);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
 
-        ShapeRenderUtils.renderGradientRectangle(xl2, yt3, xl3, yb1, z, borderColor1, borderColor2, buffer);
-        ShapeRenderUtils.renderGradientRectangle(xr1, yt3, xr2, yb1, z, borderColor1, borderColor2, buffer);
-        ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yt3, z, borderColor1, borderColor1, buffer);
-        ShapeRenderUtils.renderGradientRectangle(xl2, yb1, xr2, yb2, z, borderColor2, borderColor2, buffer);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yt1, xr2, yt2, z, fillColor, fillColor, builder);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yb2, xr2, yb3, z, fillColor, fillColor, builder);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yb2, z, fillColor, fillColor, builder);
+        ShapeRenderUtils.renderGradientRectangle(xl1, yt2, xl2, yb2, z, fillColor, fillColor, builder);
+        ShapeRenderUtils.renderGradientRectangle(xr2, yt2, xr3, yb2, z, fillColor, fillColor, builder);
 
-        tessellator.draw();
+        ShapeRenderUtils.renderGradientRectangle(xl2, yt3, xl3, yb1, z, borderColor1, borderColor2, builder);
+        ShapeRenderUtils.renderGradientRectangle(xr1, yt3, xr2, yb1, z, borderColor1, borderColor2, builder);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yt3, z, borderColor1, borderColor1, builder);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yb1, xr2, yb2, z, borderColor2, borderColor2, builder);
+
+        GlStateManager.disableAlpha();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+
+        builder.draw();
 
         GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
     }
 
     /**
@@ -203,11 +196,7 @@ public class TextRenderUtils
         GlStateManager.disableCull();
 
         RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.setupBlend();
-        GlStateManager.disableTexture2D();
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
         int maxLineLen = 0;
 
         for (String line : text)
@@ -228,12 +217,12 @@ public class TextRenderUtils
             GlStateManager.disableDepth();
         }
 
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        tessellator.draw();
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
+        builder.posColor(-strLenHalf - 1,          -1, 0.0, bgr, bgg, bgb, bga);
+        builder.posColor(-strLenHalf - 1,  textHeight, 0.0, bgr, bgg, bgb, bga);
+        builder.posColor( strLenHalf    ,  textHeight, 0.0, bgr, bgg, bgb, bga);
+        builder.posColor( strLenHalf    ,          -1, 0.0, bgr, bgg, bgb, bga);
+        builder.draw();
 
         GlStateManager.enableTexture2D();
         int textY = 0;

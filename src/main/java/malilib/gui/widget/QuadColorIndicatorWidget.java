@@ -1,15 +1,11 @@
 package malilib.gui.widget;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.EdgeIntEditScreen;
 import malilib.gui.util.ScreenContext;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 import malilib.util.data.EdgeInt;
 
@@ -51,18 +47,18 @@ public class QuadColorIndicatorWidget extends InteractableWidget
         ShapeRenderUtils.renderRectangle(x    , y    , z, width    , height    , 0xFFFFFFFF);
         ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, width - 2, height - 2, 0xFF000000);
 
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR, false);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredTriangles();
 
         int x1 = x + 2;
         int y1 = y + 2;
         int x2 = x + width - 2;
         int y2 = y + height - 2;
         z += 0.125f;
-        ShapeRenderUtils.renderTriangle(x2, y1, z, x1, y1, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getTop(), buffer);
-        ShapeRenderUtils.renderTriangle(x2, y2, z, x2, y1, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getRight(), buffer);
-        ShapeRenderUtils.renderTriangle(x1, y2, z, x2, y2, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getBottom(), buffer);
-        ShapeRenderUtils.renderTriangle(x1, y1, z, x1, y2, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getLeft(), buffer);
+        ShapeRenderUtils.renderTriangle(x2, y1, z, x1, y1, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getTop(), builder);
+        ShapeRenderUtils.renderTriangle(x2, y2, z, x2, y1, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getRight(), builder);
+        ShapeRenderUtils.renderTriangle(x1, y2, z, x2, y2, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getBottom(), builder);
+        ShapeRenderUtils.renderTriangle(x1, y1, z, x1, y2, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getLeft(), builder);
 
-        RenderUtils.drawBuffer();
+        builder.draw();
     }
 }

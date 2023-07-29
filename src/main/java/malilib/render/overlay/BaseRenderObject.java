@@ -1,8 +1,9 @@
 package malilib.render.overlay;
 
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+
+import malilib.render.buffer.VertexBuilder;
 
 public abstract class BaseRenderObject
 {
@@ -35,10 +36,10 @@ public abstract class BaseRenderObject
     }
 
     /**
-     * Uploads the given BufferBuilder to the VBO or Render List
-     * @param buffer the BufferBuilder to upload
+     * Uploads the given VertexBuilder to the VBO or Render List
+     * @param builder the VertexBuilder to upload
      */
-    public abstract void uploadData(BufferBuilder buffer);
+    public abstract void uploadData(VertexBuilder builder);
 
     /**
      * Draws the VBO or Render List to the screen

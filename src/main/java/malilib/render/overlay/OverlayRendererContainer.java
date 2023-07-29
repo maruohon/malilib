@@ -39,6 +39,7 @@ public class OverlayRendererContainer
     {
         if (this.resourcesAllocated)
         {
+            renderer.deleteGlResources();
             renderer.allocateGlResources();
         }
 
@@ -246,6 +247,7 @@ public class OverlayRendererContainer
         {
             for (BaseOverlayRenderer renderer : this.renderers)
             {
+                renderer.deleteGlResources();
                 renderer.allocateGlResources();
             }
 

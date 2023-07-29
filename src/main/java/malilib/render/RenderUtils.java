@@ -5,17 +5,14 @@ import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -31,6 +28,8 @@ import net.minecraft.world.storage.MapData;
 import malilib.gui.icon.Icon;
 import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.game.wrap.GameUtils;
@@ -81,45 +80,6 @@ public class RenderUtils
         RenderHelper.enableGUIStandardItemLighting();
     }
 
-    /**
-     * Gets the BufferBuilder from the vanilla Tessellator and initializes
-     * it in the given mode/format.<br>
-     * <b>Note:</b> This method also enables blending
-     * @param glMode
-     * @param format
-     * @param useTexture determines if texture2D mode is enabled or disabled
-     * @return the initialized BufferBuilder
-     */
-    public static BufferBuilder startBuffer(int glMode, VertexFormat format, boolean useTexture)
-    {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        if (useTexture)
-        {
-            GlStateManager.enableTexture2D();
-        }
-        else
-        {
-            GlStateManager.disableTexture2D();
-        }
-
-        RenderUtils.setupBlend();
-
-        buffer.begin(glMode, format);
-
-        return buffer;
-    }
-
-    /**
-     * Draws the buffer in the vanilla Tessellator, and then enables Texture2D mode
-     */
-    public static void drawBuffer()
-    {
-        Tessellator.getInstance().draw();
-        GlStateManager.enableTexture2D();
-    }
-
     public static void setupScaledScreenRendering(double scaleFactor)
     {
         double width = GuiUtils.getDisplayWidth() / scaleFactor;
@@ -144,19 +104,19 @@ public class RenderUtils
         if (texture != null)
         {
             TextureAtlasSprite sprite = GameUtils.getClient().getTextureMapBlocks().getAtlasSprite(texture);
-            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
+            VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
 
             float u1 = sprite.getMinU();
             float u2 = sprite.getMaxU();
             float v1 = sprite.getMinV();
             float v2 = sprite.getMaxV();
 
-            buffer.pos(x        , y + height, z).tex(u1, v2).endVertex();
-            buffer.pos(x + width, y + height, z).tex(u2, v2).endVertex();
-            buffer.pos(x + width, y         , z).tex(u2, v1).endVertex();
-            buffer.pos(x        , y         , z).tex(u1, v1).endVertex();
+            builder.posUv(x        , y + height, z, u1, v2);
+            builder.posUv(x + width, y + height, z, u2, v2);
+            builder.posUv(x + width, y         , z, u2, v1);
+            builder.posUv(x        , y         , z, u1, v1);
 
-            drawBuffer();
+            builder.draw();
         }
     }
 
@@ -187,15 +147,15 @@ public class RenderUtils
     public static void renderNineSplicedTexture(int x, int y, float z, int u, int v, int width, int height,
                                                 int texWidth, int texHeight, int edgeThickness)
     {
-        BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
 
         int e = edgeThickness;
         
-        ShapeRenderUtils.renderTexturedRectangle256(x, y             , z, u, v                , e, e, buffer); // top left
-        ShapeRenderUtils.renderTexturedRectangle256(x, y + height - e, z, u, v + texHeight - e, e, e, buffer); // bottom left
+        ShapeRenderUtils.renderTexturedRectangle256(x, y             , z, u, v                , e, e, builder); // top left
+        ShapeRenderUtils.renderTexturedRectangle256(x, y + height - e, z, u, v + texHeight - e, e, e, builder); // bottom left
 
-        ShapeRenderUtils.renderTexturedRectangle256(x + width - e, y             , z, u + texWidth - e, v                , e, e, buffer); // top right
-        ShapeRenderUtils.renderTexturedRectangle256(x + width - e, y + height - e, z, u + texWidth - e, v + texHeight - e, e, e, buffer); // bottom right
+        ShapeRenderUtils.renderTexturedRectangle256(x + width - e, y             , z, u + texWidth - e, v                , e, e, builder); // top right
+        ShapeRenderUtils.renderTexturedRectangle256(x + width - e, y + height - e, z, u + texWidth - e, v + texHeight - e, e, e, builder); // bottom right
 
         // Texture is smaller than the requested width, repeat stuff horizontally
         if (texWidth < width)
@@ -207,8 +167,8 @@ public class RenderUtils
             {
                 tmpW = Math.min(repeatableWidth, requiredWidth - doneWidth);
 
-                ShapeRenderUtils.renderTexturedRectangle256(tmpX, y             , z, u + e, v                , tmpW, e, buffer); // top center
-                ShapeRenderUtils.renderTexturedRectangle256(tmpX, y + height - e, z, u + e, v + texHeight - e, tmpW, e, buffer); // bottom center
+                ShapeRenderUtils.renderTexturedRectangle256(tmpX, y             , z, u + e, v                , tmpW, e, builder); // top center
+                ShapeRenderUtils.renderTexturedRectangle256(tmpX, y + height - e, z, u + e, v + texHeight - e, tmpW, e, builder); // bottom center
 
                 tmpX += tmpW;
                 doneWidth += tmpW;
@@ -217,8 +177,8 @@ public class RenderUtils
         // Texture is wide enough, no need to repeat horizontally
         else
         {
-            ShapeRenderUtils.renderTexturedRectangle256(x + e, y             , z, u + e, v                , width - 2 * e, e, buffer); // top center
-            ShapeRenderUtils.renderTexturedRectangle256(x + e, y + height - e, z, u + e, v + texHeight - e, width - 2 * e, e, buffer); // bottom center
+            ShapeRenderUtils.renderTexturedRectangle256(x + e, y             , z, u + e, v                , width - 2 * e, e, builder); // top center
+            ShapeRenderUtils.renderTexturedRectangle256(x + e, y + height - e, z, u + e, v + texHeight - e, width - 2 * e, e, builder); // bottom center
         }
 
         // Texture is smaller than the requested height, repeat stuff vertically
@@ -231,8 +191,8 @@ public class RenderUtils
             {
                 tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
-                ShapeRenderUtils.renderTexturedRectangle256(x            , tmpY, z, u               , v + e, e, tmpH, buffer); // left center
-                ShapeRenderUtils.renderTexturedRectangle256(x + width - e, tmpY, z, u + texWidth - e, v + e, e, tmpH, buffer); // right center
+                ShapeRenderUtils.renderTexturedRectangle256(x            , tmpY, z, u               , v + e, e, tmpH, builder); // left center
+                ShapeRenderUtils.renderTexturedRectangle256(x + width - e, tmpY, z, u + texWidth - e, v + e, e, tmpH, builder); // right center
 
                 tmpY += tmpH;
                 doneHeight += tmpH;
@@ -241,8 +201,8 @@ public class RenderUtils
         // Texture is tall enough, no need to repeat vertically
         else
         {
-            ShapeRenderUtils.renderTexturedRectangle256(x            , y + e, z, u               , v + e, e, height - 2 * e, buffer); // left center
-            ShapeRenderUtils.renderTexturedRectangle256(x + width - e, y + e, z, u + texWidth - e, v + e, e, height - 2 * e, buffer); // right center
+            ShapeRenderUtils.renderTexturedRectangle256(x            , y + e, z, u               , v + e, e, height - 2 * e, builder); // left center
+            ShapeRenderUtils.renderTexturedRectangle256(x + width - e, y + e, z, u + texWidth - e, v + e, e, height - 2 * e, builder); // right center
         }
 
         // The center part needs to be repeated
@@ -261,7 +221,7 @@ public class RenderUtils
                 {
                     tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
-                    ShapeRenderUtils.renderTexturedRectangle256(tmpX, tmpY, z, u + e, v + e, tmpW, tmpH, buffer); // center
+                    ShapeRenderUtils.renderTexturedRectangle256(tmpX, tmpY, z, u + e, v + e, tmpW, tmpH, builder); // center
 
                     tmpY += tmpH;
                     doneHeight += tmpH;
@@ -273,10 +233,10 @@ public class RenderUtils
         }
         else
         {
-            ShapeRenderUtils.renderTexturedRectangle256(x + e, y + e, z, u + e, v + e, width - 2 * e, height - 2 * e, buffer); // center
+            ShapeRenderUtils.renderTexturedRectangle256(x + e, y + e, z, u + e, v + e, width - 2 * e, height - 2 * e, builder); // center
         }
 
-        drawBuffer();
+        builder.draw();
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
@@ -297,83 +257,86 @@ public class RenderUtils
 
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
 
         // White full block background
         int quadAlpha = 46;
-        buffer.pos(x - 0.5, y - 0.5, z).color(255, 255, 255, quadAlpha).endVertex();
-        buffer.pos(x + 0.5, y - 0.5, z).color(255, 255, 255, quadAlpha).endVertex();
-        buffer.pos(x + 0.5, y + 0.5, z).color(255, 255, 255, quadAlpha).endVertex();
-        buffer.pos(x - 0.5, y + 0.5, z).color(255, 255, 255, quadAlpha).endVertex();
+        builder.posColor(x - 0.5, y - 0.5, z, 255, 255, 255, quadAlpha);
+        builder.posColor(x + 0.5, y - 0.5, z, 255, 255, 255, quadAlpha);
+        builder.posColor(x + 0.5, y + 0.5, z, 255, 255, 255, quadAlpha);
+        builder.posColor(x - 0.5, y + 0.5, z, 255, 255, 255, quadAlpha);
 
         switch (part)
         {
             case CENTER:
-                buffer.pos(x - 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x + 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x + 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x - 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                builder.posColor(x - 0.25, y - 0.25, z, color);
+                builder.posColor(x + 0.25, y - 0.25, z, color);
+                builder.posColor(x + 0.25, y + 0.25, z, color);
+                builder.posColor(x - 0.25, y + 0.25, z, color);
                 break;
             case LEFT:
-                buffer.pos(x - 0.50, y - 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x - 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x - 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x - 0.50, y + 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                builder.posColor(x - 0.50, y - 0.50, z, color);
+                builder.posColor(x - 0.25, y - 0.25, z, color);
+                builder.posColor(x - 0.25, y + 0.25, z, color);
+                builder.posColor(x - 0.50, y + 0.50, z, color);
                 break;
             case RIGHT:
-                buffer.pos(x + 0.50, y - 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x + 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x + 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x + 0.50, y + 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                builder.posColor(x + 0.50, y - 0.50, z, color);
+                builder.posColor(x + 0.25, y - 0.25, z, color);
+                builder.posColor(x + 0.25, y + 0.25, z, color);
+                builder.posColor(x + 0.50, y + 0.50, z, color);
                 break;
             case TOP:
-                buffer.pos(x - 0.50, y + 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x - 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x + 0.25, y + 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x + 0.50, y + 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                builder.posColor(x - 0.50, y + 0.50, z, color);
+                builder.posColor(x - 0.25, y + 0.25, z, color);
+                builder.posColor(x + 0.25, y + 0.25, z, color);
+                builder.posColor(x + 0.50, y + 0.50, z, color);
                 break;
             case BOTTOM:
-                buffer.pos(x - 0.50, y - 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x - 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x + 0.25, y - 0.25, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-                buffer.pos(x + 0.50, y - 0.50, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+                builder.posColor(x - 0.50, y - 0.50, z, color);
+                builder.posColor(x - 0.25, y - 0.25, z, color);
+                builder.posColor(x + 0.25, y - 0.25, z, color);
+                builder.posColor(x + 0.50, y - 0.50, z, color);
                 break;
             default:
         }
 
-        tessellator.draw();
+        builder.draw();
 
         GlStateManager.glLineWidth(1.6f);
 
-        buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+        builder = VanillaWrappingVertexBuilder.coloredLines();
 
         // Middle small rectangle
-        buffer.pos(x - 0.25, y - 0.25, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x + 0.25, y - 0.25, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x + 0.25, y + 0.25, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x - 0.25, y + 0.25, z).color(255, 255, 255, 255).endVertex();
-        tessellator.draw();
+        builder.posColor(x - 0.25, y - 0.25, z, Color4f.WHITE);
+        builder.posColor(x + 0.25, y - 0.25, z, Color4f.WHITE);
 
-        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+        builder.posColor(x + 0.25, y - 0.25, z, Color4f.WHITE);
+        builder.posColor(x + 0.25, y + 0.25, z, Color4f.WHITE);
+
+        builder.posColor(x + 0.25, y + 0.25, z, Color4f.WHITE);
+        builder.posColor(x - 0.25, y + 0.25, z, Color4f.WHITE);
+
+        builder.posColor(x - 0.25, y + 0.25, z, Color4f.WHITE);
+        builder.posColor(x - 0.25, y - 0.25, z, Color4f.WHITE);
+
         // Bottom left
-        buffer.pos(x - 0.50, y - 0.50, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x - 0.25, y - 0.25, z).color(255, 255, 255, 255).endVertex();
+        builder.posColor(x - 0.50, y - 0.50, z, Color4f.WHITE);
+        builder.posColor(x - 0.25, y - 0.25, z, Color4f.WHITE);
 
         // Top left
-        buffer.pos(x - 0.50, y + 0.50, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x - 0.25, y + 0.25, z).color(255, 255, 255, 255).endVertex();
+        builder.posColor(x - 0.50, y + 0.50, z, Color4f.WHITE);
+        builder.posColor(x - 0.25, y + 0.25, z, Color4f.WHITE);
 
         // Bottom right
-        buffer.pos(x + 0.50, y - 0.50, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x + 0.25, y - 0.25, z).color(255, 255, 255, 255).endVertex();
+        builder.posColor(x + 0.50, y - 0.50, z, Color4f.WHITE);
+        builder.posColor(x + 0.25, y - 0.25, z, Color4f.WHITE);
 
         // Top right
-        buffer.pos(x + 0.50, y + 0.50, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x + 0.25, y + 0.25, z).color(255, 255, 255, 255).endVertex();
-        tessellator.draw();
+        builder.posColor(x + 0.50, y + 0.50, z, Color4f.WHITE);
+        builder.posColor(x + 0.25, y + 0.25, z, Color4f.WHITE);
+
+        builder.draw();
 
         GlStateManager.popMatrix();
     }
@@ -395,30 +358,27 @@ public class RenderUtils
 
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
 
         // Simple colored quad
-        buffer.pos(x - 0.5, y - 0.5, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-        buffer.pos(x + 0.5, y - 0.5, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-        buffer.pos(x + 0.5, y + 0.5, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-        buffer.pos(x - 0.5, y + 0.5, z).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+        builder.posColor(x - 0.5, y - 0.5, z, color);
+        builder.posColor(x + 0.5, y - 0.5, z, color);
+        builder.posColor(x + 0.5, y + 0.5, z, color);
+        builder.posColor(x - 0.5, y + 0.5, z, color);
 
-        tessellator.draw();
+        builder.draw();
 
         GlStateManager.glLineWidth(1.6f);
 
-        buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+        builder = VanillaWrappingVertexBuilder.coloredLineLoop();
 
         // Middle rectangle
-        buffer.pos(x - 0.375, y - 0.375, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x + 0.375, y - 0.375, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x + 0.375, y + 0.375, z).color(255, 255, 255, 255).endVertex();
-        buffer.pos(x - 0.375, y + 0.375, z).color(255, 255, 255, 255).endVertex();
+        builder.posColor(x - 0.375, y - 0.375, z, Color4f.WHITE);
+        builder.posColor(x + 0.375, y - 0.375, z, Color4f.WHITE);
+        builder.posColor(x + 0.375, y + 0.375, z, Color4f.WHITE);
+        builder.posColor(x - 0.375, y + 0.375, z, Color4f.WHITE);
 
-        tessellator.draw();
+        builder.draw();
 
         GlStateManager.popMatrix();
     }
@@ -483,14 +443,14 @@ public class RenderUtils
 
             bindTexture(RenderUtils.TEXTURE_MAP_BACKGROUND);
 
-            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
+            VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
 
-            buffer.pos(x1, y2, z).tex(0.0, 1.0).endVertex();
-            buffer.pos(x2, y2, z).tex(1.0, 1.0).endVertex();
-            buffer.pos(x2, y1, z).tex(1.0, 0.0).endVertex();
-            buffer.pos(x1, y1, z).tex(0.0, 0.0).endVertex();
+            builder.posUv(x1, y2, z, 0.0f, 1.0f);
+            builder.posUv(x2, y2, z, 1.0f, 1.0f);
+            builder.posUv(x2, y1, z, 1.0f, 0.0f);
+            builder.posUv(x1, y1, z, 0.0f, 0.0f);
 
-            drawBuffer();
+            builder.draw();
 
             MapData mapdata = Items.FILLED_MAP.getMapData(stack, GameUtils.getClientWorld());
 
@@ -565,38 +525,38 @@ public class RenderUtils
     private static void renderModel(IBakedModel model, IBlockState state, float zLevel)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+        GlStateManager.translate(-0.5F, -0.5F, zLevel);
         int color = 0xFFFFFFFF;
 
         if (model.isBuiltInRenderer() == false)
         {
-            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.ITEM, true);
+            VertexBuilder builder = VanillaWrappingVertexBuilder.create(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 
             for (EnumFacing enumfacing : PositionUtils.ALL_DIRECTIONS)
             {
-                renderQuads(buffer, model.getQuads(state, enumfacing, 0L), state, color);
+                renderQuads(model.getQuads(state, enumfacing, 0L), state, color, builder);
             }
 
-            renderQuads(buffer, model.getQuads(state, null, 0L), state, color);
+            renderQuads(model.getQuads(state, null, 0L), state, color, builder);
 
-            drawBuffer();
+            builder.draw();
         }
 
         GlStateManager.popMatrix();
     }
 
-    public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, IBlockState state, int color)
+    public static void renderQuads(List<BakedQuad> quads, IBlockState state, int color, VertexBuilder builder)
     {
         for (BakedQuad quad : quads)
         {
-            renderQuad(renderer, quad, state, color);
+            renderQuad(quad, state, color, builder);
         }
     }
 
-    public static void renderQuad(BufferBuilder buffer, BakedQuad quad, IBlockState state, int color)
+    public static void renderQuad(BakedQuad quad, IBlockState state, int color, VertexBuilder builder)
     {
-        buffer.addVertexData(quad.getVertexData());
-        buffer.putColor4(color);
+        builder.addVertexData(quad.getVertexData());
+        builder.putQuadColor(color);
 
         if (quad.hasTintIndex())
         {
@@ -606,28 +566,28 @@ public class RenderUtils
             float r = (float) (m >>> 16 & 0xFF) / 255F;
             float g = (float) (m >>>  8 & 0xFF) / 255F;
             float b = (float) (m        & 0xFF) / 255F;
-            buffer.putColorMultiplier(r, g, b, 4);
-            buffer.putColorMultiplier(r, g, b, 3);
-            buffer.putColorMultiplier(r, g, b, 2);
-            buffer.putColorMultiplier(r, g, b, 1);
+            builder.putColorMultiplier(r, g, b, 4);
+            builder.putColorMultiplier(r, g, b, 3);
+            builder.putColorMultiplier(r, g, b, 2);
+            builder.putColorMultiplier(r, g, b, 1);
         }
 
-        putQuadNormal(buffer, quad);
+        putQuadNormal(quad, builder);
     }
 
-    public static void putQuadNormal(BufferBuilder buffer, BakedQuad quad)
+    public static void putQuadNormal(BakedQuad quad, VertexBuilder builder)
     {
         Vec3i direction = quad.getFace().getDirectionVec();
-        buffer.putNormal(direction.getX(), direction.getY(), direction.getZ());
+        builder.putNormal(direction.getX(), direction.getY(), direction.getZ());
     }
 
     /**
      * Renders the given model to the given vertex consumer.
      * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
      */
-    public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, BufferBuilder buffer)
+    public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, VertexBuilder builder)
     {
-        renderModelBrightnessColor(model, pos, null, 1f, 1f, 1f, 1f, buffer);
+        renderModelBrightnessColor(model, pos, null, 1f, 1f, 1f, 1f, builder);
     }
 
     /**
@@ -635,14 +595,14 @@ public class RenderUtils
      * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
      */
     public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, @Nullable IBlockState state,
-                                                  float brightness, float r, float g, float b, BufferBuilder buffer)
+                                                  float brightness, float r, float g, float b, VertexBuilder builder)
     {
         for (EnumFacing side : PositionUtils.ALL_DIRECTIONS)
         {
-            renderQuads(model.getQuads(state, side, 0L), pos, brightness, r, g, b, buffer);
+            renderQuads(model.getQuads(state, side, 0L), pos, brightness, r, g, b, builder);
         }
 
-        renderQuads(model.getQuads(state, null, 0L), pos, brightness, r, g, b, buffer);
+        renderQuads(model.getQuads(state, null, 0L), pos, brightness, r, g, b, builder);
     }
 
     /**
@@ -650,23 +610,23 @@ public class RenderUtils
      * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
      */
     public static void renderQuads(List<BakedQuad> quads, Vec3d pos, float brightness,
-                                   float red, float green, float blue, BufferBuilder buffer)
+                                   float red, float green, float blue, VertexBuilder builder)
     {
         for (BakedQuad quad : quads)
         {
-            buffer.addVertexData(quad.getVertexData());
+            builder.addVertexData(quad.getVertexData());
 
             if (quad.hasTintIndex())
             {
-                buffer.putColorRGB_F4(red * brightness, green * brightness, blue * brightness);
+                builder.putQuadColor(red * brightness, green * brightness, blue * brightness);
             }
             else
             {
-                buffer.putColorRGB_F4(brightness, brightness, brightness);
+                builder.putQuadColor(brightness, brightness, brightness);
             }
 
-            buffer.putPosition(pos.x, pos.y, pos.z);
-            putQuadNormal(buffer, quad);
+            builder.putPosition(pos.x, pos.y, pos.z);
+            putQuadNormal(quad, builder);
         }
     }
 

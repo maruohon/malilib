@@ -9,10 +9,6 @@ import java.util.Set;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import malilib.MaLiLibReference;
 import malilib.config.option.ConfigInfo;
@@ -32,8 +28,9 @@ import malilib.input.KeyBind;
 import malilib.input.SimpleHotkeyProvider;
 import malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import malilib.registry.Registry;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.render.text.MultiLineTextRenderSettings;
 import malilib.util.data.ConfigOnTab;
 import malilib.util.data.EdgeInt;
@@ -255,14 +252,14 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     @Override
     protected void renderOddEvenTextLineBackgrounds(int x, int y, float z, ScreenContext ctx)
     {
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
-
         MultiLineTextRenderSettings settings = this.getTextSettings();
         int bgColor = settings.getBackgroundColor();
         int bgColorOdd = settings.getOddRowBackgroundColor();
         int width = this.getWidth();
         int size = this.enabledWidgets.size();
         int i = 0;
+
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
 
         if (this.renderName && this.styledName != null)
         {
@@ -278,7 +275,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
                 height += this.padding.getBottom();
             }
 
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, bgColor, buffer);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, bgColor, builder);
             y += height;
             i = 1;
         }
@@ -299,11 +296,11 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
             }
 
             int color = (i & 0x1) != 0 ? bgColorOdd : bgColor;
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, color, buffer);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, color, builder);
             y += height;
         }
 
-        RenderUtils.drawBuffer();
+        builder.draw();
     }
 
     @Override

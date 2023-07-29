@@ -13,9 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -25,6 +23,8 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import malilib.gui.util.ScreenContext;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 import malilib.util.data.FloatUnaryOperator;
 import malilib.util.data.Identifier;
@@ -44,9 +44,8 @@ public class TextRenderer implements IResourceManagerReloadListener
                                                                  ASCII_TEXTURE, false, false);
 
     protected final Random rand = new Random();
-    protected final WorldVertexBufferUploader vboUploader = new WorldVertexBufferUploader();
-    protected final BufferBuilder textBuffer = new BufferBuilder(1048576);
-    protected final BufferBuilder styleBuffer = new BufferBuilder(8192);
+    protected final VertexBuilder textBuffer = VanillaWrappingVertexBuilder.create(32768, GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+    protected final VertexBuilder styleBuffer = VanillaWrappingVertexBuilder.create(8192, GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
     protected final TextureManager textureManager;
     protected final Identifier asciiTexture;
 
@@ -59,8 +58,6 @@ public class TextRenderer implements IResourceManagerReloadListener
     @Nullable protected Identifier currentFontTexture;
     protected boolean anaglyph;
     protected boolean unicode;
-    protected boolean buildingStyleBuffer;
-    protected boolean buildingTextBuffer;
     protected int fontHeight = 8;
     protected int lineHeight = 10;
     protected int asciiGlyphWidth = 8;
@@ -289,50 +286,32 @@ public class TextRenderer implements IResourceManagerReloadListener
             this.onResourceManagerReload(mc.getResourceManager());
         }
 
-        if (this.buildingTextBuffer == false)
-        {
-            this.textBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            this.buildingTextBuffer = true;
-        }
-
-        if (this.buildingStyleBuffer == false)
-        {
-            this.styleBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-            this.buildingStyleBuffer = true;
-        }
+        this.textBuffer.start();
+        this.styleBuffer.start();
     }
 
     public void renderBuffers()
     {
         this.renderTextBuffer();
+        this.renderStyleBuffer();
 
-        if (this.buildingStyleBuffer)
-        {
-            GlStateManager.disableTexture2D();
-            this.styleBuffer.finishDrawing();
-            this.vboUploader.draw(this.styleBuffer);
-            this.buildingStyleBuffer = false;
-            GlStateManager.enableTexture2D();
-        }
+        GlStateManager.enableTexture2D();
     }
 
     protected void renderTextBuffer()
     {
-        if (this.buildingTextBuffer)
+        if (this.currentFontTexture != null)
         {
-            this.textBuffer.finishDrawing();
-
-            if (this.currentFontTexture != null)
-            {
-                GlStateManager.enableTexture2D();
-                this.textureManager.bindTexture(this.currentFontTexture);
-                this.vboUploader.draw(this.textBuffer);
-                GlStateManager.disableTexture2D();
-            }
-
-            this.currentFontTexture = null;
-            this.buildingTextBuffer = false;
+            this.textureManager.bindTexture(this.currentFontTexture);
+            this.textBuffer.draw();
         }
+
+        this.currentFontTexture = null;
+    }
+
+    protected void renderStyleBuffer()
+    {
+        this.styleBuffer.draw();
     }
 
     public void renderText(int x, int y, float z, int defaultColor, boolean shadow, StyledText text)
@@ -383,7 +362,7 @@ public class TextRenderer implements IResourceManagerReloadListener
                                    boolean shadow, StyledTextLine line,
                                    @Nullable FloatUnaryOperator alphaModifier)
     {
-        if (this.textBuffer != null)
+        if (this.textBuffer.isStarted())
         {
             int segmentX = x;
             Color4f defaultColor4f = Color4f.fromColor(defaultColor);
@@ -465,7 +444,7 @@ public class TextRenderer implements IResourceManagerReloadListener
     }
 
     protected int renderTextSegmentWithColor(float x, float y, float z, StyledTextSegment segment,
-                                             Color4f color, BufferBuilder buffer)
+                                             Color4f color, VertexBuilder builder)
     {
         TextStyle style = segment.style;
         List<Glyph> glyphs = segment.getGlyphsForRender();
@@ -473,14 +452,14 @@ public class TextRenderer implements IResourceManagerReloadListener
 
         for (Glyph glyph : glyphs)
         {
-            renderWidth += this.renderGlyph(x + renderWidth, y, z, glyph, color, style, buffer);
+            renderWidth += this.renderGlyph(x + renderWidth, y, z, glyph, color, style, builder);
         }
 
         return renderWidth;
     }
 
     protected int renderGlyph(float x, float y, float z, Glyph glyph, Color4f color,
-                              TextStyle style, BufferBuilder buffer)
+                              TextStyle style, VertexBuilder builder)
     {
         int renderWidth = glyph.getRenderWidthWithStyle(style);
 
@@ -505,19 +484,19 @@ public class TextRenderer implements IResourceManagerReloadListener
             v2 -= 0.00102F;
         }
 
-        buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-        buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-        buffer.pos(x + w - slant, y + h, z).tex(u2, v2).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-        buffer.pos(x + w + slant, y    , z).tex(u2, v1).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+        builder.posUvColor(x     + slant, y    , z, u1, v1, color);
+        builder.posUvColor(x     - slant, y + h, z, u1, v2, color);
+        builder.posUvColor(x + w - slant, y + h, z, u2, v2, color);
+        builder.posUvColor(x + w + slant, y    , z, u2, v1, color);
 
         if (style.bold)
         {
             x += this.unicode ? 0.5F : 1.0F;
 
-            buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-            buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-            buffer.pos(x + w - slant, y + h, z).tex(u2, v2).color(color.ri, color.gi, color.bi, color.ai).endVertex();
-            buffer.pos(x + w + slant, y    , z).tex(u2, v1).color(color.ri, color.gi, color.bi, color.ai).endVertex();
+            builder.posUvColor(x     + slant, y    , z, u1, v1, color);
+            builder.posUvColor(x     - slant, y + h, z, u1, v2, color);
+            builder.posUvColor(x + w - slant, y + h, z, u2, v2, color);
+            builder.posUvColor(x + w + slant, y    , z, u2, v1, color);
         }
 
         return renderWidth;

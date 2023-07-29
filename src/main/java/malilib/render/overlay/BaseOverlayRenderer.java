@@ -1,15 +1,10 @@
 package malilib.render.overlay;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
-import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
@@ -22,14 +17,10 @@ import malilib.util.data.json.JsonUtils;
 
 public abstract class BaseOverlayRenderer
 {
-    protected static final BufferBuilder BUFFER_1 = new BufferBuilder(2097152);
-    protected static final BufferBuilder BUFFER_2 = new BufferBuilder(2097152);
-
-    protected final List<BaseRenderObject> renderObjects = new ArrayList<>();
     protected BlockPos lastUpdatePos = BlockPos.ORIGIN;
     private Vec3d updateCameraPos = Vec3d.ZERO;
     protected boolean needsUpdate;
-    protected boolean renderThrough;
+    protected boolean disableDepthTest;
     protected float lineWidth = 1f;
 
     public void setNeedsUpdate()
@@ -45,7 +36,7 @@ public abstract class BaseOverlayRenderer
     /**
      * @return the camera position where the renderer was last updated
      */
-    public final Vec3d getUpdatePosition()
+    public Vec3d getUpdatePosition()
     {
         return this.updateCameraPos;
     }
@@ -53,14 +44,14 @@ public abstract class BaseOverlayRenderer
     /**
      * Sets the camera position where the renderer was last updated
      */
-    public final void setUpdatePosition(Vec3d cameraPosition)
+    public void setUpdatePosition(Vec3d cameraPosition)
     {
         this.updateCameraPos = cameraPosition;
     }
 
-    public void setRenderThrough(boolean renderThrough)
+    public void setDisableDepthTest(boolean renderThrough)
     {
-        this.renderThrough = renderThrough;
+        this.disableDepthTest = renderThrough;
     }
 
     /**
@@ -105,11 +96,15 @@ public abstract class BaseOverlayRenderer
      */
     public abstract void update(Vec3d cameraPos, Entity entity);
 
+    protected abstract void startBuffers();
+
+    protected abstract void uploadBuffers();
+
     protected void preRender()
     {
         GlStateManager.glLineWidth(this.lineWidth);
 
-        if (this.renderThrough)
+        if (this.disableDepthTest)
         {
             GlStateManager.disableDepth();
             //GlStateManager.depthMask(false);
@@ -118,7 +113,7 @@ public abstract class BaseOverlayRenderer
 
     protected void postRender()
     {
-        if (this.renderThrough)
+        if (this.disableDepthTest)
         {
             GlStateManager.enableDepth();
             //GlStateManager.depthMask(true);
@@ -128,42 +123,21 @@ public abstract class BaseOverlayRenderer
     /**
      * Draws all the buffers to screen
      */
-    public void draw()
-    {
-        this.preRender();
-
-        for (BaseRenderObject obj : this.renderObjects)
-        {
-            obj.draw();
-        }
-
-        this.postRender();
-    }
+    public abstract void draw();
 
     /**
      * Allocates the OpenGL resources according to the current Video settings
      */
-    public void allocateGlResources()
-    {
-        this.allocateBuffer(GL11.GL_QUADS);
-        this.allocateBuffer(GL11.GL_LINES);
-    }
+    public abstract void allocateGlResources();
 
     /**
      * Frees the allocated OpenGL buffers etc.
      */
-    public void deleteGlResources()
-    {
-        for (BaseRenderObject obj : this.renderObjects)
-        {
-            obj.deleteGlResources();
-        }
-
-        this.renderObjects.clear();
-    }
+    public abstract void deleteGlResources();
 
     /**
-     * Allocates a new VBO or display list, adds it to the list, and returns it
+     * Allocates a new VBO or display list and returns it.
+     * This is a convenience method to allocate using the POSITION_COLOR vertex format.
      */
     protected BaseRenderObject allocateBuffer(int glMode)
     {
@@ -171,25 +145,12 @@ public abstract class BaseOverlayRenderer
     }
 
     /**
-     * Allocates a new VBO or display list, adds it to the list, and returns it
+     * Allocates a new VBO or display list and returns it
      * @param func the function to set up the array pointers according to the used vertex format
      */
     protected BaseRenderObject allocateBuffer(int glMode, VertexFormat vertexFormat, EventListener func)
     {
-        BaseRenderObject obj;
-
-        if (OpenGlHelper.useVbo())
-        {
-            obj = new VboRenderObject(glMode, vertexFormat, func);
-        }
-        else
-        {
-            obj = new DisplayListRenderObject(glMode, vertexFormat);
-        }
-
-        this.renderObjects.add(obj);
-
-        return obj;
+        return new VboRenderObject(glMode, vertexFormat, func);
     }
 
     public String getSaveId()
@@ -202,13 +163,13 @@ public abstract class BaseOverlayRenderer
     {
         JsonObject obj = new JsonObject();
         obj.addProperty("line_width", this.lineWidth);
-        obj.addProperty("render_through", this.renderThrough);
+        obj.addProperty("render_through", this.disableDepthTest);
         return obj;
     }
 
     public void fromJson(JsonObject obj)
     {
         this.lineWidth = JsonUtils.getFloatOrDefault(obj, "line_width", 1f);
-        this.renderThrough = JsonUtils.getBooleanOrDefault(obj, "render_through", false);
+        this.disableDepthTest = JsonUtils.getBooleanOrDefault(obj, "render_through", false);
     }
 }

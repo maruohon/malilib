@@ -2,17 +2,13 @@ package malilib.render.text;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import malilib.config.value.HorizontalAlignment;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseWidget;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.StringUtils;
 import malilib.util.data.LeftRight;
 
@@ -295,11 +291,11 @@ public class StringListRenderer extends BaseWidget
         int fontHeight = this.getFontHeight();
         int lineHeight = this.getLineHeight();
         int size = lines.size();
-        BufferBuilder buffer = null;
+        VertexBuilder builder = null;
 
         if (renderBackground)
         {
-            buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
+            builder = VanillaWrappingVertexBuilder.coloredQuads();
         }
 
         TextRenderer.INSTANCE.startBuffers();
@@ -341,7 +337,7 @@ public class StringListRenderer extends BaseWidget
 
                 int bgColor = (i & 0x1) != 0 ? bgColorOdd : bgColorNormal;
                 int bgHeight = fontHeight + topPadding + bottomPadding;
-                ShapeRenderUtils.renderRectangle(backgroundX, backgroundY, z, backgroundWidth, bgHeight, bgColor, buffer);
+                ShapeRenderUtils.renderRectangle(backgroundX, backgroundY, z, backgroundWidth, bgHeight, bgColor, builder);
                 backgroundY += lineHeight;
             }
 
@@ -352,8 +348,7 @@ public class StringListRenderer extends BaseWidget
 
         if (renderBackground)
         {
-            RenderUtils.drawBuffer();
-            GlStateManager.enableTexture2D();
+            builder.draw();
         }
 
         TextRenderer.INSTANCE.renderBuffers();

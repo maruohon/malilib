@@ -2,10 +2,6 @@ package malilib.gui.widget.button;
 
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
@@ -14,6 +10,8 @@ import malilib.gui.widget.IconWidget;
 import malilib.listener.EventListener;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.StringUtils;
 
 public class OnOffButton extends GenericButton
@@ -165,10 +163,10 @@ public class OnOffButton extends GenericButton
         int v2 = v1 + icon.getHeight() - iconHeight2;
 
         RenderUtils.bindTexture(icon.getTexture());
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
-        ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1, buffer);
-        ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2, buffer);
-        RenderUtils.drawBuffer();
+        VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
+        ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1, builder);
+        ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2, builder);
+        builder.draw();
     }
 
     public static OnOffButton onOff(int height, String translationKey, BooleanSupplier statusSupplier, EventListener actionListener)

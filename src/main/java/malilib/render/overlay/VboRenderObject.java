@@ -2,19 +2,16 @@ package malilib.render.overlay;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.VertexBufferUploader;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 
 import malilib.listener.EventListener;
+import malilib.render.buffer.VertexBuilder;
 
 public class VboRenderObject extends BaseRenderObject
 {
-    public static final VertexBufferUploader VERTEX_UPLOADER = new VertexBufferUploader();
-
     protected final VertexBuffer vertexBuffer;
     protected final EventListener arrayPointerSetter;
 
@@ -27,10 +24,11 @@ public class VboRenderObject extends BaseRenderObject
     }
 
     @Override
-    public void uploadData(BufferBuilder buffer)
+    public void uploadData(VertexBuilder builder)
     {
-        VERTEX_UPLOADER.setVertexBuffer(this.vertexBuffer);
-        VERTEX_UPLOADER.draw(buffer);
+        builder.finishDrawing();
+        builder.reset();
+        this.vertexBuffer.bufferData(builder.getByteBuffer());
     }
 
     @Override
