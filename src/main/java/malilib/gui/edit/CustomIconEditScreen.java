@@ -286,7 +286,7 @@ public class CustomIconEditScreen extends BaseScreen
                                                            this.u, this.v,
                                                            width, height,
                                                            this.iconWidth, this.iconHeight,
-                                                           pw, ph);
+                                                           pw, ph, ctx);
         }
     }
 }

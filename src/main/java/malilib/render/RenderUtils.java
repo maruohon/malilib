@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -40,8 +39,6 @@ import malilib.util.position.Vec2i;
 public class RenderUtils
 {
     public static final ResourceLocation TEXTURE_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
-    //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
-    //private static final Vec3d LIGHT1_POS = (new Vec3d(-0.2D, 1.0D,  0.7D)).normalize();
 
     public static void setupBlend()
     {
@@ -99,32 +96,12 @@ public class RenderUtils
         GlStateManager.translate(0.0F, 0.0F, -2000.0F);
     }
 
-    public static void renderAtlasSprite(float x, float y, float z, int width, int height, String texture)
-    {
-        if (texture != null)
-        {
-            TextureAtlasSprite sprite = GameUtils.getClient().getTextureMapBlocks().getAtlasSprite(texture);
-            VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
-
-            float u1 = sprite.getMinU();
-            float u2 = sprite.getMaxU();
-            float v1 = sprite.getMinV();
-            float v2 = sprite.getMaxV();
-
-            builder.posUv(x        , y + height, z, u1, v2);
-            builder.posUv(x + width, y + height, z, u2, v2);
-            builder.posUv(x + width, y         , z, u2, v1);
-            builder.posUv(x        , y         , z, u1, v1);
-
-            builder.draw();
-        }
-    }
-
     /**
      * Renders the given list of icons at their relative positions.
      * If the tintColor is not 0xFFFFFFFF, then the icons will be tinted/colored.
      */
-    public static void renderPositionedIcons(int x, int y, float z, int tintColor, List<PositionedIcon> icons)
+    public static void renderPositionedIcons(int x, int y, float z, int tintColor,
+                                             List<PositionedIcon> icons, RenderContext ctx)
     {
         for (PositionedIcon posIcon : icons)
         {
@@ -135,17 +112,17 @@ public class RenderUtils
 
             if (tintColor == 0xFFFFFFFF)
             {
-                icon.renderAt(posX, posY, z);
+                icon.renderAt(posX, posY, z, ctx);
             }
             else
             {
-                icon.renderTintedAt(posX, posY, z, tintColor);
+                icon.renderTintedAt(posX, posY, z, tintColor, ctx);
             }
         }
     }
 
     public static void renderNineSplicedTexture(int x, int y, float z, int u, int v, int width, int height,
-                                                int texWidth, int texHeight, int edgeThickness)
+                                                int texWidth, int texHeight, int edgeThickness, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
 
@@ -240,7 +217,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
-                                                   Color4f color, float partialTicks)
+                                                   Color4f color, float partialTicks, RenderContext ctx)
     {
         EnumFacing playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
@@ -342,7 +319,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, EnumFacing side,
-                                                         Color4f color, float partialTicks)
+                                                         Color4f color, float partialTicks, RenderContext ctx)
     {
         EnumFacing playerFacing = entity.getHorizontalFacing();
 
@@ -383,7 +360,7 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
-    private static void blockTargetingOverlayTranslations(double x, double y, double z,
+    protected static void blockTargetingOverlayTranslations(double x, double y, double z,
                                                           EnumFacing side, EnumFacing playerFacing)
     {
         GlStateManager.translate(x, y, z);
@@ -415,7 +392,7 @@ public class RenderUtils
         GlStateManager.translate(-x, -y, -z + 0.501);
     }
 
-    public static void renderMapPreview(ItemStack stack, int x, int y, float z, int dimensions)
+    public static void renderMapPreview(ItemStack stack, int x, int y, float z, int dimensions, RenderContext ctx)
     {
         if (stack.getItem() instanceof ItemMap)
         {
@@ -495,7 +472,7 @@ public class RenderUtils
         GlStateManager.rotate(225, 0, 1, 0);
         GlStateManager.scale(0.625, 0.625, 0.625);
 
-        renderModel(model, state, zLevel);
+        renderModel(model, state, zLevel, ctx);
 
         GlStateManager.disableAlpha();
         GlStateManager.disableRescaleNormal();
@@ -505,7 +482,7 @@ public class RenderUtils
         color(1f, 1f, 1f, 1f);
     }
 
-    public static void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float zLevel)
+    protected static void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float zLevel)
     {
         GlStateManager.translate(xPosition, yPosition, 100.0F + zLevel);
         GlStateManager.translate(8.0F, 8.0F, 0.0F);
@@ -522,7 +499,7 @@ public class RenderUtils
         }
     }
 
-    private static void renderModel(IBakedModel model, IBlockState state, float zLevel)
+    protected static void renderModel(IBakedModel model, IBlockState state, float zLevel, RenderContext ctx)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.5F, -0.5F, zLevel);
@@ -629,41 +606,4 @@ public class RenderUtils
             putQuadNormal(quad, builder);
         }
     }
-
-    /*
-    public static void enableGUIStandardItemLighting(float scale)
-    {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotate(-30.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(165.0F, 1.0F, 0.0F, 0.0F);
-
-        enableStandardItemLighting(scale);
-
-        GlStateManager.popMatrix();
-    }
-
-    public static void enableStandardItemLighting(float scale)
-    {
-        GlStateManager.enableLighting();
-        GlStateManager.enableLight(0);
-        GlStateManager.enableLight(1);
-        GlStateManager.enableColorMaterial();
-        RenderUtils.colorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
-        GlStateManager.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, RenderHelper.setColorBuffer((float) LIGHT0_POS.x, (float) LIGHT0_POS.y, (float) LIGHT0_POS.z, 0.0f));
-
-        float lightStrength = 0.3F * scale;
-        GlStateManager.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(lightStrength, lightStrength, lightStrength, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, RenderHelper.setColorBuffer((float) LIGHT1_POS.x, (float) LIGHT1_POS.y, (float) LIGHT1_POS.z, 0.0f));
-        GlStateManager.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(lightStrength, lightStrength, lightStrength, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-
-        float ambientLightStrength = 0.4F;
-        GlStateManager.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, RenderHelper.setColorBuffer(ambientLightStrength, ambientLightStrength, ambientLightStrength, 1.0F));
-    }
-    */
 }

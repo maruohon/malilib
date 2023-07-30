@@ -176,7 +176,7 @@ public class StringListRendererWidget extends InfoRendererWidget
         {
             int width = this.getWidth();
             int height = this.getLineHeight() + this.padding.getTop();
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor());
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor(), ctx);
         }
     }
 
@@ -188,7 +188,7 @@ public class StringListRendererWidget extends InfoRendererWidget
         {
             int width = this.getWidth();
             int height = this.getLineHeight() + this.padding.getTop();
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor());
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor(), ctx);
         }
     }
 

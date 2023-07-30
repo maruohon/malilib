@@ -54,6 +54,8 @@ import malilib.render.ItemRenderUtils;
 import malilib.render.RenderContext;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.game.RayTraceUtils;
 import malilib.util.game.WorldUtils;
 import malilib.util.game.wrap.GameUtils;
@@ -164,21 +166,24 @@ public class InventoryRenderUtils
         RenderUtils.bindTexture(icon.getTexture());
         RenderUtils.setupBlend();
 
+        VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
         // Main part (top left) with all the slots
         ShapeRenderUtils.renderScaledTintedTexturedRectangle(x, y, z, u, v, w1, h1,
-                                                             w1, h1, pw, ph, backgroundTintColor);
+                                                             w1, h1, pw, ph, backgroundTintColor, builder);
 
         // The right edge strip
         ShapeRenderUtils.renderScaledTintedTexturedRectangle(x + w1, y, z, u + width - w2, v,
-                                                             w2, h1, w2, h1, pw, ph, backgroundTintColor);
+                                                             w2, h1, w2, h1, pw, ph, backgroundTintColor, builder);
 
         // The bottom edge strip
         ShapeRenderUtils.renderScaledTintedTexturedRectangle(x, y + h1, z, u, v + height - h2,
-                                                             w1, h2, w1, h2, pw, ph, backgroundTintColor);
+                                                             w1, h2, w1, h2, pw, ph, backgroundTintColor, builder);
 
         // The bottom right corner piece
         ShapeRenderUtils.renderScaledTintedTexturedRectangle(x + w1, y + h1, z, u + width - w2, v + height - h2,
-                                                             w2, h2, w2, h2, pw, ph, backgroundTintColor);
+                                                             w2, h2, w2, h2, pw, ph, backgroundTintColor, builder);
+
+        builder.draw();
 
         renderDynamicInventoryEmptySlotBackgrounds(x + 7, y + 7, z, backgroundTintColor, slotsPerRow, slotCount, ctx);
     }
@@ -232,12 +237,16 @@ public class InventoryRenderUtils
         RenderUtils.setupBlend();
         RenderUtils.bindTexture(icon.getTexture());
 
+        VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
+
         for (int i = 0; i < loopCount; ++i)
         {
-            ShapeRenderUtils.renderScaledTintedTexturedRectangle(tx, ty, z, u, v, w, h, w, h, pw, ph, color);
+            ShapeRenderUtils.renderScaledTintedTexturedRectangle(tx, ty, z, u, v, w, h, w, h, pw, ph, color, builder);
             tx += xInc;
             ty += yInc;
         }
+
+        builder.draw();
 
         // There is one partial row at the bottom
         if (lastRowSlots > 0)
@@ -252,7 +261,7 @@ public class InventoryRenderUtils
             ph = icon.getTexturePixelHeight();
 
             RenderUtils.bindTexture(icon.getTexture());
-            ShapeRenderUtils.renderScaledTintedTexturedRectangle(x, ty, z, u, v, w, h, w, h, pw, ph, color);
+            ShapeRenderUtils.renderScaledTintedTexturedRectangle(x, ty, z, u, v, w, h, w, h, pw, ph, color, ctx);
         }
     }
 
@@ -281,11 +290,11 @@ public class InventoryRenderUtils
 
                 if (backgroundTintColor == 0xFFFFFFFF)
                 {
-                    icon.renderAt(posX, posY, z);
+                    icon.renderAt(posX, posY, z, ctx);
                 }
                 else
                 {
-                    icon.renderTintedAt(posX, posY, z, backgroundTintColor);
+                    icon.renderTintedAt(posX, posY, z, backgroundTintColor, ctx);
                 }
             }
         }

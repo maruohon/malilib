@@ -375,7 +375,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         {
             int rx = this.pathStartX;
             int width = this.getMaxPathBarWidth();
-            ShapeRenderUtils.renderRectangle(rx, y, z, width, this.getHeight(), 0xFF202020);
+            ShapeRenderUtils.renderRectangle(rx, y, z, width, this.getHeight(), 0xFF202020, ctx);
         }
 
         super.renderAt(x, y, z, ctx);

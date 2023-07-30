@@ -114,8 +114,8 @@ public class BaseListEntryWidget extends ContainerWidget
     {
         if (this.isKeyboardNavigationSelected())
         {
-            ShapeRenderUtils.renderRectangle(x            , y, z, 2, height, this.keyboardNavigationHighlightColor);
-            ShapeRenderUtils.renderRectangle(x + width - 2, y, z, 2, height, this.keyboardNavigationHighlightColor);
+            ShapeRenderUtils.renderRectangle(x            , y, z, 2, height, this.keyboardNavigationHighlightColor, ctx);
+            ShapeRenderUtils.renderRectangle(x + width - 2, y, z, 2, height, this.keyboardNavigationHighlightColor, ctx);
         }
     }
 

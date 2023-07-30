@@ -31,7 +31,7 @@ import malilib.util.game.wrap.GameUtils;
 public class BaseWidget
 {
     public static final ImmutableList<String> EMPTY_STRING_LIST = ImmutableList.of();
-    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, z, w, h, c) -> ShapeRenderUtils.renderOutlinedRectangle(x - 3, y - 3, z, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0);
+    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, z, w, h, ctx) -> ShapeRenderUtils.renderOutlinedRectangle(x - 3, y - 3, z, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, ctx);
 
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
     private static int lastDebugOutlineColorHue;
@@ -721,7 +721,7 @@ public class BaseWidget
             x = this.getIconPositionX(x, usableWidth, icon.getWidth());
             y = this.getIconPositionY(y, usableHeight, icon.getHeight());
 
-            icon.renderAt(x, y, z + 0.0125f, 0);
+            icon.renderAt(x, y, z + 0.0125f, 0, ctx);
         }
     }
 
@@ -837,7 +837,7 @@ public class BaseWidget
         double x1 = x -     lineWidth / 4;
         double y1 = y -     lineWidth / 4;
 
-        ShapeRenderUtils.renderOutline(x1, y1, z, w + lineWidth / 2, h + lineWidth / 2, lineWidth, color);
+        ShapeRenderUtils.renderOutline(x1, y1, z, w + lineWidth / 2, h + lineWidth / 2, lineWidth, color, ctx);
     }
 
     public static void addDebugText(int mouseX, int mouseY, int x, int y, double z, int w, int h, String text)

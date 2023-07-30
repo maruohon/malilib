@@ -92,7 +92,7 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
                             tx += icon.getWidth() + 4;
                         }
 
-                        icon.renderAt(ix, iy, z + 0.0125f);
+                        icon.renderAt(ix, iy, z + 0.0125f, ctx);
                     }
 
                     if (hovered == false)
@@ -102,7 +102,7 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
                 }
             }
 
-            ShapeRenderUtils.renderOutline(cx, y, z, column.getWidth(), height, 1, borderColor);
+            ShapeRenderUtils.renderOutline(cx, y, z, column.getWidth(), height, 1, borderColor, ctx);
 
             Optional<StyledTextLine> nameOptional = column.getName();
 

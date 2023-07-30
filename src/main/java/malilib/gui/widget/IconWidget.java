@@ -101,7 +101,7 @@ public class IconWidget extends InteractableWidget
             x = this.getIconPositionX(x, usableWidth, iconWidth);
             y = this.getIconPositionY(y, usableHeight, iconHeight);
 
-            icon.renderScaledAt(x, y, z + 0.025f, iconWidth, iconHeight);
+            icon.renderScaledAt(x, y, z + 0.025f, iconWidth, iconHeight, ctx);
         }
     }
 

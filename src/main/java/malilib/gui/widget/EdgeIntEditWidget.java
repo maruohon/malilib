@@ -94,7 +94,7 @@ public class EdgeIntEditWidget extends ContainerWidget
         int w = width - this.widgetWidth * 2 - 10;
         int h = height - this.widgetHeight * 2 - 6;
 
-        ShapeRenderUtils.renderOutline(x + this.widgetWidth + 5, y + this.widgetHeight + 3, z, w, h, 1, 0xFFFFFFFF);
+        ShapeRenderUtils.renderOutline(x + this.widgetWidth + 5, y + this.widgetHeight + 3, z, w, h, 1, 0xFFFFFFFF, ctx);
 
         if (this.centerText != null)
         {

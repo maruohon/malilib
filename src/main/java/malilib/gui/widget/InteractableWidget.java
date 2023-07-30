@@ -451,7 +451,7 @@ public abstract class InteractableWidget extends BackgroundWidget
             x = this.getIconPositionX(x, usableWidth, icon.getWidth());
             y = this.getIconPositionY(y, usableHeight, icon.getHeight());
 
-            icon.renderAt(x, y, z + 0.0125f, IconWidget.getVariantIndex(enabled, hovered));
+            icon.renderAt(x, y, z + 0.0125f, IconWidget.getVariantIndex(enabled, hovered), ctx);
         }
     }
 
@@ -477,7 +477,7 @@ public abstract class InteractableWidget extends BackgroundWidget
             x = this.getIconPositionX(x, usableWidth, width);
             y = this.getIconPositionY(y, usableHeight, height);
 
-            icon.renderScaledAt(x, y, z + 0.025f, width, height, IconWidget.getVariantIndex(enabled, hovered));
+            icon.renderScaledAt(x, y, z + 0.025f, width, height, IconWidget.getVariantIndex(enabled, hovered), ctx);
         }
     }
 

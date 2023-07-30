@@ -16,6 +16,8 @@ import malilib.gui.widget.IconWidget;
 import malilib.gui.widget.InteractableWidget;
 import malilib.listener.EventListener;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.StyledTextUtils;
 import malilib.util.StringUtils;
@@ -436,7 +438,7 @@ public class GenericButton extends InteractableWidget
                                               boolean hovered, ScreenContext ctx)
     {
         this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height,
-                                                IconWidget.getVariantIndex(this.isEnabled(), hovered));
+                                                IconWidget.getVariantIndex(this.isEnabled(), hovered), ctx);
     }
 
     protected void renderIcon(int x, int y, float z, int width, int height, boolean hovered, ScreenContext ctx)
@@ -452,7 +454,7 @@ public class GenericButton extends InteractableWidget
             int offY = iconYOffset > 0 ? iconYOffset : (height - icon.getHeight()) / 2;
             int ix = leftAligned ? x + offX : x + width - iconWidth - offX;
 
-            icon.renderAt(ix, y + offY, z + 0.125f, IconWidget.getVariantIndex(this.isEnabled(), hovered));
+            icon.renderAt(ix, y + offY, z + 0.125f, IconWidget.getVariantIndex(this.isEnabled(), hovered), ctx);
         }
     }
 
@@ -512,8 +514,10 @@ public class GenericButton extends InteractableWidget
 
     protected void renderFullTextBackground(int x, int y, float z, int width, int height, ScreenContext ctx)
     {
-        ShapeRenderUtils.renderRectangle(x, y, z + 1, width, height, 0xF0000000);
-        ShapeRenderUtils.renderOutline(x, y, z + 1, width, height, 1, 0xFF30E0E0);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
+        ShapeRenderUtils.renderRectangle(x, y, z + 1, width, height, 0xF0000000, builder);
+        ShapeRenderUtils.renderOutline(x, y, z + 1, width, height, 1, 0xFF30E0E0, builder);
+        builder.draw();
     }
 
     public static GenericButton create(int width, int height, String translationKey)

@@ -626,7 +626,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                 int color = 0x30FFFFFF;
 
                 ShapeRenderUtils.renderGrid(this.x, this.y, this.z + 0.1f,
-                                            this.screenWidth, this.screenHeight, this.gridSize, 1, color);
+                                            this.screenWidth, this.screenHeight, this.gridSize, 1, color, ctx);
             }
 
             if (this.dragSelecting)
@@ -637,7 +637,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                 int maxY = Math.max(ctx.mouseY, this.selectionStart.y);
 
                 ShapeRenderUtils.renderOutlinedRectangle(minX, minY, this.z + 50f,
-                                                         maxX - minX, maxY - minY, 0x30FFFFFF, 0xFFFFFFFF);
+                                                         maxX - minX, maxY - minY, 0x30FFFFFF, 0xFFFFFFFF, ctx);
             }
         }
     }

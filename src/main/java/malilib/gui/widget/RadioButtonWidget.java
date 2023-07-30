@@ -158,7 +158,7 @@ public class RadioButtonWidget<T> extends InteractableWidget
                 int iconHeight = icon.getHeight();
                 int iconY = y + (this.entryHeight - iconHeight) / 2;
                 boolean entryHovered = hovered && GuiUtils.isMouseInRegion(mouseX, mouseY, wx, y, width, this.entryHeight);
-                icon.renderAt(x, iconY, z, IconWidget.getVariantIndex(true, entryHovered));
+                icon.renderAt(x, iconY, z, IconWidget.getVariantIndex(true, entryHovered), ctx);
             }
 
             final int textY = y + 1 + (this.entryHeight - this.getLineHeight()) / 2;

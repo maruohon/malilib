@@ -899,13 +899,13 @@ public abstract class BaseScreen extends GuiScreen
         {
             ShapeRenderUtils.renderOutlinedRectangle(this.x, this.y, this.z,
                                                      this.screenWidth, this.screenHeight,
-                                                     this.backgroundColor, this.borderColor);
+                                                     this.backgroundColor, this.borderColor, ctx);
         }
         else
         {
             ShapeRenderUtils.renderRectangle(this.x, this.y, this.z,
                                              this.screenWidth, this.screenHeight,
-                                             this.backgroundColor);
+                                             this.backgroundColor, ctx);
         }
     }
 
@@ -1062,7 +1062,7 @@ public abstract class BaseScreen extends GuiScreen
                 y = this.y + this.screenHeight - 15;
             }
 
-            ShapeRenderUtils.renderOutlinedRectangle(x, y, z, w, 14, 0xFF000000, 0xFFA0A0A0);
+            ShapeRenderUtils.renderOutlinedRectangle(x, y, z, w, 14, 0xFF000000, 0xFFA0A0A0, ctx);
             this.textRenderer.renderLine(x + 2, y + 3, z + 0.00125f, 0xFF00FFFF, true, line, ctx);
 
             renderWidgetDebug(this.widgets, ctx);

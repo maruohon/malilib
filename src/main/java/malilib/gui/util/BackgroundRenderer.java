@@ -34,6 +34,6 @@ public class BackgroundRenderer
     public void renderBackground(int x, int y, float z, int width, int height,
                                  BackgroundSettings settings, ScreenContext ctx)
     {
-        ShapeRenderUtils.renderRectangle(x, y, z, width, height, settings.getColor());
+        ShapeRenderUtils.renderRectangle(x, y, z, width, height, settings.getColor(), ctx);
     }
 }

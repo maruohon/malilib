@@ -382,7 +382,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
     {
         int width = this.getWidth();
         int height = this.getHeight();
-        ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor());
+        ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor(), ctx);
     }
 
     protected void renderOddEvenTextLineBackgrounds(int x, int y, float z, ScreenContext ctx)

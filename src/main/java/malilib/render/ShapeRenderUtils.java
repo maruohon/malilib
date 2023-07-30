@@ -15,20 +15,20 @@ import malilib.util.position.IntBoundingBox;
 
 public class ShapeRenderUtils
 {
-    public static void renderHorizontalLine(double x, double y, double z, double width, int color)
+    public static void renderHorizontalLine(double x, double y, double z, double width, int color, RenderContext ctx)
     {
-        renderRectangle(x, y, z, width, 1, color);
+        renderRectangle(x, y, z, width, 1, color, ctx);
     }
 
-    public static void renderVerticalLine(double x, double y, double z, double height, int color)
+    public static void renderVerticalLine(double x, double y, double z, double height, int color, RenderContext ctx)
     {
-        renderRectangle(x, y, z, 1, height, color);
+        renderRectangle(x, y, z, 1, height, color, ctx);
     }
 
     public static void renderGrid(double x, double y, double z,
                                   double width, double height,
                                   double gridInterval, double lineWidth,
-                                  int color)
+                                  int color, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
         renderGrid(x, y, z, width, height, gridInterval, lineWidth, color, builder);
@@ -56,37 +56,47 @@ public class ShapeRenderUtils
 
     public static void renderOutlinedRectangle(double x, double y, double z,
                                                double width, double height,
-                                               int colorBg, int colorBorder)
+                                               int colorBg, int colorBorder, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
-
-        // Draw the background
-        renderRectangle(x + 1, y + 1, z, width - 2, height - 2, colorBg, builder);
-
-        // Draw the border
-        renderOutline(x, y, z, width, height, 1, colorBorder, builder);
-
+        renderOutlinedRectangle(x, y, z, width, height, colorBg, colorBorder, builder);
         builder.draw();
     }
 
     public static void renderOutlinedRectangle(double x, double y, double z,
                                                double width, double height,
-                                               int bgColor, EdgeInt borderColor)
+                                               int colorBg, int colorBorder, VertexBuilder builder)
+    {
+        // Draw the background
+        renderRectangle(x + 1, y + 1, z, width - 2, height - 2, colorBg, builder);
+
+        // Draw the border
+        renderOutline(x, y, z, width, height, 1, colorBorder, builder);
+    }
+
+    public static void renderOutlinedRectangle(double x, double y, double z,
+                                               double width, double height,
+                                               int bgColor, EdgeInt borderColor, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
+        renderOutlinedRectangle(x, y, z, width, height, bgColor, borderColor, builder);
+        builder.draw();
+    }
 
+    public static void renderOutlinedRectangle(double x, double y, double z,
+                                               double width, double height,
+                                               int bgColor, EdgeInt borderColor, VertexBuilder builder)
+    {
         // Draw the background
         renderRectangle(x + 1, y + 1, z, width - 2, height - 2, bgColor, builder);
 
         // Draw the border
         renderOutline(x, y, z, width, height, 1, borderColor, builder);
-
-        builder.draw();
     }
 
     public static void renderOutline(double x, double y, double z,
                                      double width, double height,
-                                     double borderWidth, int color)
+                                     double borderWidth, int color, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
         renderOutline(x, y, z, width, height, borderWidth, color, builder);
@@ -95,7 +105,7 @@ public class ShapeRenderUtils
 
     public static void renderOutline(double x, double y, double z,
                                      double width, double height,
-                                     double borderWidth, EdgeInt color)
+                                     double borderWidth, EdgeInt color, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
         renderOutline(x, y, z, width, height, borderWidth, color, builder);
@@ -145,7 +155,8 @@ public class ShapeRenderUtils
         builder.posColor(x3, y3, z3, r, g, b, a);
     }
 
-    public static void renderRectangle(double x, double y, double z, double width, double height, int color)
+    public static void renderRectangle(double x, double y, double z,
+                                       double width, double height, int color, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
         renderRectangle(x, y, z, width, height, color, builder);
@@ -187,7 +198,7 @@ public class ShapeRenderUtils
      */
     public static void renderTexturedRectangle256(double x, double y, double z,
                                                   int u, int v,
-                                                  int width, int height)
+                                                  int width, int height, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
         renderTexturedRectangle256(x, y, z, u, v, width, height, builder);
@@ -216,12 +227,12 @@ public class ShapeRenderUtils
     public static void renderTexturedRectangle(double x, double y, double z,
                                                int u, int v,
                                                int renderWidth, int renderHeight,
-                                               float pixelWidth, float pixelHeight)
+                                               float pixelWidth, float pixelHeight, RenderContext ctx)
     {
         renderScaledTexturedRectangle(x, y, z, u, v,
                                       renderWidth, renderHeight,
                                       renderWidth, renderHeight,
-                                      pixelWidth, pixelHeight);
+                                      pixelWidth, pixelHeight, ctx);
     }
 
     /**
@@ -253,7 +264,7 @@ public class ShapeRenderUtils
                                                      int u, int v,
                                                      int renderWidth, int renderHeight,
                                                      int textureWidth, int textureHeight,
-                                                     float pixelWidth, float pixelHeight)
+                                                     float pixelWidth, float pixelHeight, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
 
@@ -303,7 +314,7 @@ public class ShapeRenderUtils
                                                            int renderWidth, int renderHeight,
                                                            int textureWidth, int textureHeight,
                                                            float pixelWidth, float pixelHeight,
-                                                           int backgroundTintColor)
+                                                           int backgroundTintColor, RenderContext ctx)
     {
         VertexBuilder builder = VanillaWrappingVertexBuilder.tintedTexturedQuad();
 
@@ -346,7 +357,7 @@ public class ShapeRenderUtils
     }
 
     public static void renderGradientRectangle(float left, float top, float right, float bottom, float z,
-                                               int startColor, int endColor)
+                                               int startColor, int endColor, RenderContext ctx)
     {
         GlStateManager.disableAlpha();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
@@ -382,7 +393,7 @@ public class ShapeRenderUtils
     }
 
     public static void renderArc(double centerX, double centerY, double z, double radius,
-                                 double startAngle, double endAngle, float lineWidth, int color)
+                                 double startAngle, double endAngle, float lineWidth, int color, RenderContext ctx)
     {
         if (radius < 1)
         {
@@ -428,7 +439,8 @@ public class ShapeRenderUtils
      */
     public static void renderSectorOutline(double centerX, double centerY, double z,
                                            double innerRadius, double outerRadius,
-                                           double startAngle, double endAngle, float lineWidth, int color)
+                                           double startAngle, double endAngle,
+                                           float lineWidth, int color, RenderContext ctx)
     {
         if (innerRadius < 1 || outerRadius < 1)
         {
@@ -490,7 +502,7 @@ public class ShapeRenderUtils
 
     public static void renderSectorFill(double centerX, double centerY, double z,
                                         double innerRadius, double outerRadius,
-                                        double startAngle, double endAngle, int color)
+                                        double startAngle, double endAngle, int color, RenderContext ctx)
     {
         if (innerRadius < 1 || outerRadius < 1)
         {

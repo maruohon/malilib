@@ -39,6 +39,6 @@ public class BorderRenderer
     {
         EdgeInt color = settings.getColor();
         int borderWidth = settings.getActiveBorderWidth();
-        ShapeRenderUtils.renderOutline(x, y, z, width, height, borderWidth, color);
+        ShapeRenderUtils.renderOutline(x, y, z, width, height, borderWidth, color, ctx);
     }
 }

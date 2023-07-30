@@ -44,21 +44,23 @@ public class QuadColorIndicatorWidget extends InteractableWidget
         int middleX = x + width / 2;
         int middleY = y + height / 2;
 
-        ShapeRenderUtils.renderRectangle(x    , y    , z, width    , height    , 0xFFFFFFFF);
-        ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, width - 2, height - 2, 0xFF000000);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
+        ShapeRenderUtils.renderRectangle(x    , y    , z, width    , height    , 0xFFFFFFFF, builder);
+        ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, width - 2, height - 2, 0xFF000000, builder);
+        builder.draw();
 
-        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredTriangles();
 
         int x1 = x + 2;
         int y1 = y + 2;
         int x2 = x + width - 2;
         int y2 = y + height - 2;
         z += 0.125f;
+
+        builder = VanillaWrappingVertexBuilder.coloredTriangles();
         ShapeRenderUtils.renderTriangle(x2, y1, z, x1, y1, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getTop(), builder);
         ShapeRenderUtils.renderTriangle(x2, y2, z, x2, y1, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getRight(), builder);
         ShapeRenderUtils.renderTriangle(x1, y2, z, x2, y2, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getBottom(), builder);
         ShapeRenderUtils.renderTriangle(x1, y1, z, x1, y2, z, middleX, middleY, z, 0xFF000000 | this.colorStorage.getLeft(), builder);
-
         builder.draw();
     }
 }

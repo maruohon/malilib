@@ -752,7 +752,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             int height = this.dropdownHeight;
 
             RenderUtils.color(1f, 1f, 1f, 1f);
-            ShapeRenderUtils.renderOutlinedRectangle(x, ddY, z, this.getWidth(), height, bgColor, this.borderColorOpen);
+            ShapeRenderUtils.renderOutlinedRectangle(x, ddY, z, this.getWidth(), height, bgColor, this.borderColorOpen, ctx);
 
             this.renderSearchTip(diffX, diffY, z, ctx);
         }
@@ -782,7 +782,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 ty = Math.max(ty, this.searchTextField.getBottom());
             }
 
-            ShapeRenderUtils.renderOutlinedRectangle(tx, ty, z, sw, 16, 0xFF000000, 0xFFFFFF20);
+            ShapeRenderUtils.renderOutlinedRectangle(tx, ty, z, sw, 16, 0xFF000000, 0xFFFFFF20, ctx);
             this.renderTextLine(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, false, this.searchTipText, ctx);
         }
     }

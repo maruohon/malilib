@@ -178,7 +178,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         int height = this.getHeight();
         int sx = x + this.getWidth() - this.sliderWidth;
 
-        ShapeRenderUtils.renderRectangle(sx, y, z, this.sliderWidth, height, 0x70000000);
+        ShapeRenderUtils.renderRectangle(sx, y, z, this.sliderWidth, height, 0x70000000, ctx);
         OnOffButton.renderOnOffSlider(sx, y, z, this.sliderWidth, height, this.lastValue, true, false,
                                       DefaultIcons.SLIDER_GREEN, DefaultIcons.SLIDER_RED, ctx);
 

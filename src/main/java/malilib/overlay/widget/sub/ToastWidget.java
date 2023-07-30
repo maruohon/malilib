@@ -193,7 +193,7 @@ public class ToastWidget extends BaseWidget
 
     protected void renderToastBackground(int x, int y, float z, ScreenContext ctx)
     {
-        this.backgroundTexture.renderFourSplicedAt(x, y, z, this.getWidth(), this.getHeight());
+        this.backgroundTexture.renderFourSplicedAt(x, y, z, this.getWidth(), this.getHeight(), ctx);
     }
 
     protected void renderToastText(int x, int y, float z, ScreenContext ctx)
@@ -208,7 +208,7 @@ public class ToastWidget extends BaseWidget
 
             for (StyledText text : this.text)
             {
-                TextRenderer.INSTANCE.renderText(x, y, z, color, true, text, lineHeight);
+                TextRenderer.INSTANCE.renderText(x, y, z, color, true, lineHeight, text, ctx);
                 y += text.lines.size() * lineHeight + this.messageGap;
             }
         }

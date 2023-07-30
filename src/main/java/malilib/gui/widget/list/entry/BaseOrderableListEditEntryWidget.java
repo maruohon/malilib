@@ -16,6 +16,8 @@ import malilib.input.Keys;
 import malilib.listener.EventListener;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 
 public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDataListEntryWidget<DATATYPE>
 {
@@ -386,16 +388,18 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
                 off += height;
             }
 
-            ShapeRenderUtils.renderRectangle(x - 2, y + off, z + 50, width + 4, 2, 0xFF00FFFF);
+            VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
+            ShapeRenderUtils.renderRectangle(x - 2, y + off, z + 50, width + 4, 2, 0xFF00FFFF, builder);
 
             x += (ctx.mouseX - this.dragStartX);
             y += (ctx.mouseY - this.dragStartY);
             z += 60;
 
-            ShapeRenderUtils.renderOutline(x - 1, y - 1, z, width + 2, height + 2, 1, 0xFFFFFFFF);
+            ShapeRenderUtils.renderOutline(x - 1, y - 1, z, width + 2, height + 2, 1, 0xFFFFFFFF, builder);
 
             int bgColor = 0xFF303030;
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, bgColor);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, bgColor, builder);
+            builder.draw();
         }
 
         super.renderAt(x, y, z, ctx);

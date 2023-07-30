@@ -101,7 +101,7 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         int x = ctx.mouseX + 10;
         int y = ctx.mouseY - 5;
 
-        ShapeRenderUtils.renderRectangle(x - 2, y - 2, z + 10f, width + 4, height + 4, 0xC0000000);
+        ShapeRenderUtils.renderRectangle(x - 2, y - 2, z + 10f, width + 4, height + 4, 0xC0000000, ctx);
         widget.renderAt(x, y, z + 15f, ctx);
     }
 }

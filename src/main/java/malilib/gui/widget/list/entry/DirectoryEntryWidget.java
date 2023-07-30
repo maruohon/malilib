@@ -132,7 +132,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
             // Render a black background for the full name text
             int bgWidth = this.fullNameText.renderWidth + 10;
             int bgX = x + this.textOffset.getXOffset() - 3;
-            ShapeRenderUtils.renderOutlinedRectangle(bgX, y, z + 1.0f, bgWidth, height, 0xFF000000, 0xFFC0C0C0);
+            ShapeRenderUtils.renderOutlinedRectangle(bgX, y, z + 1.0f, bgWidth, height, 0xFF000000, 0xFFC0C0C0, ctx);
             nameText = this.fullNameText;
             nameColor = 0xFF40FFFF;
         }

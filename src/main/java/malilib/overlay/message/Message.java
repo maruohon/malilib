@@ -67,6 +67,7 @@ public class Message
             alphaModifier = (old) -> old * alpha;
         }
 
-        TextRenderer.INSTANCE.renderText(x, y, z, this.defaultTextColor, true, this.message, lineHeight, alphaModifier);
+        TextRenderer.INSTANCE.renderText(x, y, z, this.defaultTextColor, true, lineHeight,
+                                         this.message, alphaModifier, ctx);
     }
 }

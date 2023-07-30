@@ -183,7 +183,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
             int x = this.x + 10;
             int y = this.y + 28;
 
-            TextRenderer.INSTANCE.renderText(x, y, this.z + 0.025f, 0xFFC0C0C0, true, this.infoText);
+            TextRenderer.INSTANCE.renderText(x, y, this.z + 0.025f, 0xFFC0C0C0, true, this.infoText, ctx);
         }
 
         if (this.labelText != null)
@@ -191,7 +191,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
             int x = this.x + 10;
             int y = this.textField.getY() - 12;
 
-            TextRenderer.INSTANCE.renderText(x, y, this.z + 0.025f, 0xFFFFFFFF, true, this.labelText);
+            TextRenderer.INSTANCE.renderText(x, y, this.z + 0.025f, 0xFFFFFFFF, true, this.labelText, ctx);
         }
     }
 

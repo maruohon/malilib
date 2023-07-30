@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import malilib.config.value.HorizontalAlignment;
-import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseWidget;
+import malilib.render.RenderContext;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
@@ -264,7 +264,7 @@ public class StringListRenderer extends BaseWidget
         }
     }
 
-    public void renderAt(int x, int y, float z, boolean hovered, ScreenContext ctx)
+    public void renderAt(int x, int y, float z, boolean hovered, RenderContext ctx)
     {
         MultiLineTextRenderSettings settings = hovered ? this.textSettingsHover : this.textSettings;
         List<StyledTextLine> lines = hovered ? this.originalTextLines : this.processedLinesClamped;
@@ -341,7 +341,7 @@ public class StringListRenderer extends BaseWidget
                 backgroundY += lineHeight;
             }
 
-            TextRenderer.INSTANCE.renderLineToBuffer(textLineX, textLineY, z + 0.0125f, color, shadow, line);
+            TextRenderer.INSTANCE.renderLineToBuffer(textLineX, textLineY, z + 0.0125f, color, shadow, line, ctx);
             textLineY += lineHeight;
             usedHeight += lineHeight;
         }

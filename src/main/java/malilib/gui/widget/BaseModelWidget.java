@@ -84,7 +84,7 @@ public abstract class BaseModelWidget extends InteractableWidget
 
         if (this.doHighlight && this.isHoveredForRender(ctx))
         {
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.highlightColor);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.highlightColor, ctx);
         }
 
         this.renderModel(x, y, z + 0.5f, this.scale, ctx);

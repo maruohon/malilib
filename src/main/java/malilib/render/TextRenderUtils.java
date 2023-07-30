@@ -99,7 +99,7 @@ public class TextRenderUtils
 
             for (StyledTextLine line : textLines)
             {
-                textRenderer.renderLineToBuffer(textStartX, textStartY, z, textColor, true, line);
+                textRenderer.renderLineToBuffer(textStartX, textStartY, z, textColor, true, line, ctx);
                 textStartY += lineHeight;
             }
 

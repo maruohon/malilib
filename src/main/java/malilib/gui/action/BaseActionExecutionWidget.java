@@ -372,7 +372,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
             int xSize = (int) (icon.getWidth() * this.iconScaleX);
             int ySize = (int) (icon.getHeight() * this.iconScaleY);
 
-            icon.renderScaledAt(x, y, z + 0.025f, xSize, ySize, 1);
+            icon.renderScaledAt(x, y, z + 0.025f, xSize, ySize, 1, ctx);
         }
     }
 

@@ -14,6 +14,8 @@ import malilib.input.KeyBind;
 import malilib.input.KeyBindSettings;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.StringUtils;
 import malilib.util.data.Identifier;
 
@@ -63,8 +65,10 @@ public class KeybindSettingsWidget extends InteractableWidget
         KeyBindSettings settings = this.keyBind.getSettings();
         int edgeColor = this.keyBind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
 
-        ShapeRenderUtils.renderRectangle(x    , y    , z, 20, 20, edgeColor);
-        ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, 18, 18, 0xFF000000);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
+        ShapeRenderUtils.renderRectangle(x    , y    , z, 20, 20, edgeColor, builder);
+        ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, 18, 18, 0xFF000000, builder);
+        builder.draw();
 
         x += 1;
         y += 1;
@@ -80,13 +84,15 @@ public class KeybindSettingsWidget extends InteractableWidget
         int u6 = 1 + (settings.getAllowEmpty() ? uDiff : 0);
         int u7 = 61 + (settings.getContext().getIconIndex() * uDiff);
 
-        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u1, 137, w, w); // activate on
-        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u2, 157, w, w); // allow extra
-        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u3, 177, w, w); // order sensitive
-        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u4, 197, w, w); // exclusive
-        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u5, 217, w, w); // cancel
-        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u6, 237, w, w); // allow empty
-        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u7, 137, w, w); // context
+        builder = VanillaWrappingVertexBuilder.texturedQuad();
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u1, 137, w, w, builder); // activate on
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u2, 157, w, w, builder); // allow extra
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u3, 177, w, w, builder); // order sensitive
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u4, 197, w, w, builder); // exclusive
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u5, 217, w, w, builder); // cancel
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u6, 237, w, w, builder); // allow empty
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u7, 137, w, w, builder); // context
+        builder.draw();
     }
 
     protected List<String> rebuildHoverStrings()

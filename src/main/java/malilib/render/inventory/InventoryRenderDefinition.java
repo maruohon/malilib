@@ -102,7 +102,7 @@ public class InventoryRenderDefinition
     {
         if (this.backgroundTextures.isEmpty() == false)
         {
-            RenderUtils.renderPositionedIcons(x, y, z, backgroundTintColor, this.backgroundTextures);
+            RenderUtils.renderPositionedIcons(x, y, z, backgroundTintColor, this.backgroundTextures, ctx);
         }
         else
         {

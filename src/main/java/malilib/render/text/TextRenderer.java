@@ -20,7 +20,7 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 
-import malilib.gui.util.ScreenContext;
+import malilib.render.RenderContext;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
@@ -314,45 +314,52 @@ public class TextRenderer implements IResourceManagerReloadListener
         this.styleBuffer.draw();
     }
 
-    public void renderText(int x, int y, float z, int defaultColor, boolean shadow, StyledText text)
+    public void renderText(int x, int y, float z,
+                           int defaultColor, boolean shadow,
+                           StyledText text, RenderContext ctx)
     {
-        this.renderText(x, y, z, defaultColor, shadow, text, this.lineHeight);
+        this.renderText(x, y, z, defaultColor, shadow, this.lineHeight, text, null, ctx);
     }
 
-    public void renderText(int x, int y, float z, int defaultColor, boolean shadow, StyledText text, int lineHeight)
+    public void renderText(int x, int y, float z,
+                           int defaultColor, boolean shadow, int lineHeight,
+                           StyledText text, RenderContext ctx)
     {
-        this.renderText(x, y, z, defaultColor, shadow, text, lineHeight, null);
+        this.renderText(x, y, z, defaultColor, shadow, lineHeight, text, null, ctx);
     }
 
     /**
      * @param alphaModifier allows modifying the alpha value of the color per text segment
      */
-    public void renderText(int x, int y, float z, int defaultColor,
-                           boolean shadow, StyledText text, int lineHeight,
-                           @Nullable FloatUnaryOperator alphaModifier)
+    public void renderText(int x, int y, float z,
+                           int defaultColor, boolean shadow, int lineHeight,
+                           StyledText text, @Nullable FloatUnaryOperator alphaModifier, RenderContext ctx)
     {
         this.startBuffers();
 
         for (StyledTextLine line : text.lines)
         {
-            this.renderLineToBuffer(x, y, z, defaultColor, shadow, line, alphaModifier);
+            this.renderLineToBuffer(x, y, z, defaultColor, shadow, line, alphaModifier, ctx);
             y += lineHeight;
         }
 
         this.renderBuffers();
     }
 
-    public void renderLine(int x, int y, float z, int defaultColor, boolean shadow,
-                           StyledTextLine line, ScreenContext ctx)
+    public void renderLine(int x, int y, float z,
+                           int defaultColor, boolean shadow,
+                           StyledTextLine line, RenderContext ctx)
     {
         this.startBuffers();
-        this.renderLineToBuffer(x, y, z, defaultColor, shadow, line);
+        this.renderLineToBuffer(x, y, z, defaultColor, shadow, line, ctx);
         this.renderBuffers();
     }
 
-    public void renderLineToBuffer(int x, int y, float z, int defaultColor, boolean shadow, StyledTextLine line)
+    public void renderLineToBuffer(int x, int y, float z,
+                                   int defaultColor, boolean shadow,
+                                   StyledTextLine line, RenderContext ctx)
     {
-        this.renderLineToBuffer(x, y, z, defaultColor, shadow, line, null);
+        this.renderLineToBuffer(x, y, z, defaultColor, shadow, line, null, ctx);
     }
 
     /**
@@ -360,7 +367,7 @@ public class TextRenderer implements IResourceManagerReloadListener
      */
     public void renderLineToBuffer(int x, int y, float z, int defaultColor,
                                    boolean shadow, StyledTextLine line,
-                                   @Nullable FloatUnaryOperator alphaModifier)
+                                   @Nullable FloatUnaryOperator alphaModifier, RenderContext ctx)
     {
         if (this.textBuffer.isStarted())
         {
@@ -371,14 +378,14 @@ public class TextRenderer implements IResourceManagerReloadListener
 
             for (StyledTextSegment segment : line.segments)
             {
-                segmentX += this.renderTextSegment(segmentX, y, z, defaultColor4f, shadow, segment, alphaModifier);
+                segmentX += this.renderTextSegment(segmentX, y, z, defaultColor4f, shadow, segment, alphaModifier, ctx);
             }
         }
     }
 
     protected int renderTextSegment(int x, int y, float z, Color4f defaultColor,
                                     boolean shadow, StyledTextSegment segment,
-                                    @Nullable FloatUnaryOperator alphaModifier)
+                                    @Nullable FloatUnaryOperator alphaModifier, RenderContext ctx)
     {
         TextStyle style = segment.style;
         Color4f color = style.color != null ? style.color : defaultColor;

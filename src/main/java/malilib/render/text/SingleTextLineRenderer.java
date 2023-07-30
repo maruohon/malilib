@@ -132,15 +132,15 @@ public class SingleTextLineRenderer
 
         if (bgSettings.isEnabled() && borderSettings.isEnabled())
         {
-            ShapeRenderUtils.renderOutlinedRectangle(x, y, z, bgWidth, fullHeight, bgSettings.getColor(), borderSettings.getColor());
+            ShapeRenderUtils.renderOutlinedRectangle(x, y, z, bgWidth, fullHeight, bgSettings.getColor(), borderSettings.getColor(), ctx);
         }
         else if (bgSettings.isEnabled())
         {
-            ShapeRenderUtils.renderRectangle(x, y, z, bgWidth, fullHeight, bgSettings.getColor());
+            ShapeRenderUtils.renderRectangle(x, y, z, bgWidth, fullHeight, bgSettings.getColor(), ctx);
         }
         else if (borderSettings.isEnabled())
         {
-            ShapeRenderUtils.renderOutline(x, y, z, bgWidth, fullHeight, bw, borderSettings.getColor());
+            ShapeRenderUtils.renderOutline(x, y, z, bgWidth, fullHeight, bw, borderSettings.getColor(), ctx);
         }
 
         int tx = x + this.padding.getLeft() + bw;

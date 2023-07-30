@@ -277,10 +277,10 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
         }
 
         ShapeRenderUtils.renderSectorFill(centerX, centerY, z, this.innerRadius, this.outerRadius,
-                                          this.startAngle, this.endAngle, bgColor);
+                                          this.startAngle, this.endAngle, bgColor, ctx);
 
         ShapeRenderUtils.renderSectorOutline(centerX, centerY, z, this.innerRadius, this.outerRadius,
-                                             this.startAngle, this.endAngle, borderWidth, borderColor);
+                                             this.startAngle, this.endAngle, borderWidth, borderColor, ctx);
     }
 
     @Override
@@ -302,7 +302,7 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
                 tx -= 120;
             }
 
-            this.textRenderer.renderText(tx, ty, z + 0.25f, 0xFFFFFFFF, true, text);
+            this.textRenderer.renderText(tx, ty, z + 0.25f, 0xFFFFFFFF, true, text, ctx);
         }
 
         super.renderAt(x, y, z, ctx);

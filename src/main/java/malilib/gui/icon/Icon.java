@@ -2,8 +2,11 @@ package malilib.gui.icon;
 
 import com.google.gson.JsonObject;
 
+import malilib.render.RenderContext;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
 
 public interface Icon
@@ -71,9 +74,9 @@ public interface Icon
     /**
      * Renders this icon at the given position
      */
-    default void renderAt(int x, int y, float z)
+    default void renderAt(int x, int y, float z, RenderContext ctx)
     {
-        this.renderScaledAt(x, y, z, this.getWidth(), this.getHeight(), 0);
+        this.renderScaledAt(x, y, z, this.getWidth(), this.getHeight(), 0, ctx);
     }
 
     /**
@@ -82,17 +85,17 @@ public interface Icon
      * The implementation can define where and how the position is offset
      * from the base location.
      */
-    default void renderAt(int x, int y, float z, int variantIndex)
+    default void renderAt(int x, int y, float z, int variantIndex, RenderContext ctx)
     {
-        this.renderScaledAt(x, y, z, this.getWidth(), this.getHeight(), variantIndex);
+        this.renderScaledAt(x, y, z, this.getWidth(), this.getHeight(), variantIndex, ctx);
     }
 
      /**
      * Renders a possibly scaled/stretched version of this icon, with the given rendered width and height
      */
-    default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight)
+    default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight, RenderContext ctx)
     {
-        this.renderScaledAt(x, y, z, renderWidth, renderHeight, 0);
+        this.renderScaledAt(x, y, z, renderWidth, renderHeight, 0, ctx);
     }
 
     /**
@@ -102,7 +105,9 @@ public interface Icon
      * The implementation can define where and how the position is offset
      * from the base location.
      */
-    default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight, int variantIndex)
+    default void renderScaledAt(int x, int y, float z,
+                                int renderWidth, int renderHeight,
+                                int variantIndex, RenderContext ctx)
     {
         int width = this.getWidth();
         int height = this.getHeight();
@@ -122,13 +127,13 @@ public interface Icon
         RenderUtils.setupBlend();
 
         ShapeRenderUtils.renderScaledTexturedRectangle(x, y, z, u, v, renderWidth, renderHeight,
-                                                       width, height, pw, ph);
+                                                       width, height, pw, ph, ctx);
     }
 
     /**
      * Renders this icon at the given position, with a tint color
      */
-    default void renderTintedAt(int x, int y, float z, int backgroundTintColor)
+    default void renderTintedAt(int x, int y, float z, int backgroundTintColor, RenderContext ctx)
     {
         int width = this.getWidth();
         int height = this.getHeight();
@@ -148,7 +153,7 @@ public interface Icon
         RenderUtils.setupBlend();
 
         ShapeRenderUtils.renderScaledTintedTexturedRectangle(x, y, z, u, v, width, height,
-                                                             width, height, pw, ph, backgroundTintColor);
+                                                             width, height, pw, ph, backgroundTintColor, ctx);
     }
 
     /** 
@@ -158,12 +163,12 @@ public interface Icon
      * @param width the width of the icon to render
      * @param height the height of the icon to render
      */
-    default void renderFourSplicedAt(int x, int y, float z, int width, int height)
+    default void renderFourSplicedAt(int x, int y, float z, int width, int height, RenderContext ctx)
     {
-        this.renderFourSplicedAt(x, y, z, width, height, 0);
+        this.renderFourSplicedAt(x, y, z, width, height, 0, ctx);
     }
 
-    default void renderFourSplicedAt(int x, int y, float z, int width, int height, int variantIndex)
+    default void renderFourSplicedAt(int x, int y, float z, int width, int height, int variantIndex, RenderContext ctx)
     {
         int textureWidth = this.getWidth();
         int textureHeight = this.getHeight();
@@ -187,10 +192,12 @@ public interface Icon
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(this.getTexture());
 
-        ShapeRenderUtils.renderTexturedRectangle(x, y     , z, u, v      , w1, h1, pw, ph); // top left
-        ShapeRenderUtils.renderTexturedRectangle(x, y + h1, z, u, vBottom, w1, h2, pw, ph); // bottom left
+        VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
+        ShapeRenderUtils.renderTexturedRectangle(x, y     , z, u, v      , w1, h1, pw, ph, builder); // top left
+        ShapeRenderUtils.renderTexturedRectangle(x, y + h1, z, u, vBottom, w1, h2, pw, ph, builder); // bottom left
 
-        ShapeRenderUtils.renderTexturedRectangle(x + w1, y     , z, uRight, v      , w2, h1, pw, ph); // top right
-        ShapeRenderUtils.renderTexturedRectangle(x + w1, y + h1, z, uRight, vBottom, w2, h2, pw, ph); // bottom right
+        ShapeRenderUtils.renderTexturedRectangle(x + w1, y     , z, uRight, v      , w2, h1, pw, ph, builder); // top right
+        ShapeRenderUtils.renderTexturedRectangle(x + w1, y + h1, z, uRight, vBottom, w2, h2, pw, ph, builder); // bottom right
+        builder.draw();
     }
 }

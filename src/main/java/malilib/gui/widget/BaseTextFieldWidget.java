@@ -1027,7 +1027,7 @@ public class BaseTextFieldWidget extends ContainerWidget
             if (this.cursorPosition == this.getTextLength() && this.selectionStartPosition == -1)
             {
                 int offX = this.visibleText.getStyledText().renderWidth;
-                ShapeRenderUtils.renderHorizontalLine(x + offX, y + fontHeight, z + 0.1f, 5, color);
+                ShapeRenderUtils.renderHorizontalLine(x + offX, y + fontHeight, z + 0.1f, 5, color, ctx);
             }
             else
             {
@@ -1041,9 +1041,9 @@ public class BaseTextFieldWidget extends ContainerWidget
                 int y2 = y;
                 int y3 = y2 + fontHeight;
 
-                ShapeRenderUtils.renderVerticalLine(x + offX, y1, z + 0.1f, cursorExtraHeight    , color);
-                ShapeRenderUtils.renderVerticalLine(x + offX, y2, z + 0.1f, fontHeight           , colorTr);
-                ShapeRenderUtils.renderVerticalLine(x + offX, y3, z + 0.1f, cursorExtraHeight + 1, color);
+                ShapeRenderUtils.renderVerticalLine(x + offX, y1, z + 0.1f, cursorExtraHeight    , color, ctx);
+                ShapeRenderUtils.renderVerticalLine(x + offX, y2, z + 0.1f, fontHeight           , colorTr, ctx);
+                ShapeRenderUtils.renderVerticalLine(x + offX, y3, z + 0.1f, cursorExtraHeight + 1, color, ctx);
             }
         }
     }
@@ -1077,7 +1077,7 @@ public class BaseTextFieldWidget extends ContainerWidget
                 int selWidth = this.getRawStyledTextWidth(str);
                 int fontHeight = this.getFontHeight();
 
-                ShapeRenderUtils.renderRectangle(x, y - 2, z, selWidth, fontHeight + 3, textColor);
+                ShapeRenderUtils.renderRectangle(x, y - 2, z, selWidth, fontHeight + 3, textColor, ctx);
                 this.renderPlainString(x, y, z, 0xFF000000, false, str, ctx);
                 x += selWidth;
 
@@ -1129,7 +1129,7 @@ public class BaseTextFieldWidget extends ContainerWidget
         int bgColor = this.getBackgroundRenderer().getNormalSettings().getColor();
         int borderColor = this.getBorderRenderer().getNormalSettings().getColor().getTop();
 
-        ShapeRenderUtils.renderOutlinedRectangle(bx, by, z, bw, bh, bgColor, borderColor);
+        ShapeRenderUtils.renderOutlinedRectangle(bx, by, z, bw, bh, bgColor, borderColor, ctx);
         this.renderTextLine(bx + 5, by + 2, z + 0.0125f, 0xFFA0A0A0, true, text, ctx);
     }
 

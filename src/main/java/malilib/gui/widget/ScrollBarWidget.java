@@ -11,6 +11,8 @@ import malilib.gui.util.ScreenContext;
 import malilib.listener.EventListener;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 
 public class ScrollBarWidget extends InteractableWidget
 {
@@ -301,7 +303,7 @@ public class ScrollBarWidget extends InteractableWidget
 
         if (this.renderScrollbarBackgroundColor)
         {
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor, ctx);
         }
 
         if (totalHeight > 0)
@@ -325,8 +327,10 @@ public class ScrollBarWidget extends InteractableWidget
 
             if (useArrows)
             {
-                this.arrowTextureUp.renderAt(x, y, z, IconWidget.getVariantIndex(true, this.isMouseOverUpArrow(mouseX, mouseY)));
-                this.arrowTextureDown.renderAt(x, y + this.getHeight() - downArH, z, IconWidget.getVariantIndex(true, this.isMouseOverDownArrow(mouseX, mouseY)));
+                int upVariant = IconWidget.getVariantIndex(true, this.isMouseOverUpArrow(mouseX, mouseY));
+                int downVariant = IconWidget.getVariantIndex(true, this.isMouseOverDownArrow(mouseX, mouseY));
+                this.arrowTextureUp.renderAt(x, y, z, upVariant, ctx);
+                this.arrowTextureDown.renderAt(x, y + this.getHeight() - downArH, z, downVariant, ctx);
             }
 
             if (this.barTexture != null && barHeight >= 4)
@@ -337,12 +341,14 @@ public class ScrollBarWidget extends InteractableWidget
                 int w = this.barTexture.getWidth();
                 int h = this.barTexture.getHeight();
 
-                ShapeRenderUtils.renderTexturedRectangle256(x + 1, barPosition                , z, u, v        , w, barHeight - 2);
-                ShapeRenderUtils.renderTexturedRectangle256(x + 1, barPosition + barHeight - 2, z, u, v + h - 2, w, 2);
+                VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
+                ShapeRenderUtils.renderTexturedRectangle256(x + 1, barPosition                , z, u, v        , w, barHeight - 2, builder);
+                ShapeRenderUtils.renderTexturedRectangle256(x + 1, barPosition + barHeight - 2, z, u, v + h - 2, w, 2, builder);
+                builder.draw();
             }
             else
             {
-                ShapeRenderUtils.renderRectangle(x + 1, barPosition, z, width - 2, barHeight, this.scrollBarColor);
+                ShapeRenderUtils.renderRectangle(x + 1, barPosition, z, width - 2, barHeight, this.scrollBarColor, ctx);
             }
 
             // FIXME?

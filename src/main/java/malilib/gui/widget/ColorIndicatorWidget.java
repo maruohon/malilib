@@ -10,6 +10,8 @@ import malilib.gui.BaseScreen;
 import malilib.gui.edit.ColorEditorHSVScreen;
 import malilib.gui.util.ScreenContext;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.buffer.VanillaWrappingVertexBuilder;
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 
 public class ColorIndicatorWidget extends InteractableWidget
@@ -62,8 +64,10 @@ public class ColorIndicatorWidget extends InteractableWidget
         int width = this.getWidth();
         int height = this.getHeight();
 
-        ShapeRenderUtils.renderRectangle(x    , y    , z, width    , height    , 0xFFFFFFFF);
-        ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, width - 2, height - 2, 0xFF000000);
-        ShapeRenderUtils.renderRectangle(x + 2, y + 2, z, width - 4, height - 4, 0xFF000000 | this.valueSupplier.getAsInt());
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
+        ShapeRenderUtils.renderRectangle(x    , y    , z, width    , height    , 0xFFFFFFFF, builder);
+        ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, width - 2, height - 2, 0xFF000000, builder);
+        ShapeRenderUtils.renderRectangle(x + 2, y + 2, z, width - 4, height - 4, 0xFF000000 | this.valueSupplier.getAsInt(), builder);
+        builder.draw();
     }
 }
