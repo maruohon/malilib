@@ -7,7 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 
 import malilib.gui.util.ScreenContext;
-import malilib.render.RenderUtils;
+import malilib.render.ModelRenderUtils;
 
 public class BlockModelWidget extends BaseModelWidget
 {
@@ -59,7 +59,7 @@ public class BlockModelWidget extends BaseModelWidget
     {
         if (this.model != null)
         {
-            RenderUtils.renderModelInGui(x, y, z, this.model, this.state, ctx);
+            ModelRenderUtils.renderModelInGui(x, y, z, this.model, this.state, ctx);
         }
     }
 }
