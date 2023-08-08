@@ -65,7 +65,7 @@ public abstract class BaseConfigGroup extends CommonDescription implements Confi
         if (MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME.getBooleanValue())
         {
             ArrayList<ConfigInfo> list = new ArrayList<>(this.configs);
-            ConfigUtils.sortConfigsByDisplayName(list);
+            ConfigUtils.sortConfigsInPlaceByDisplayName(list);
             return ImmutableList.copyOf(list);
         }
 

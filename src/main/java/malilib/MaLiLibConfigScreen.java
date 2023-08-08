@@ -97,7 +97,7 @@ public class MaLiLibConfigScreen
                                                              MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME,
                                                              MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME,
                                                              MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS));
-        ConfigUtils.sortConfigsByDisplayName(list);
+        ConfigUtils.sortConfigsInPlaceByDisplayName(list);
 
         return ImmutableList.copyOf(list);
     }

@@ -92,11 +92,13 @@ public class ConfigUtils
 
     /**
      * Sort the given list of configs by the config's display name,
-     * stripping away any vanilla text formatting codes first
+     * stripping away any vanilla text formatting codes first.
+     * Note: The input list must be modifiable!
      */
-    public static void sortConfigsByDisplayName(List<ConfigInfo> configs)
+    public static List<ConfigInfo> sortConfigsInPlaceByDisplayName(List<ConfigInfo> configs)
     {
         configs.sort(Comparator.comparing((c) -> TextFormatting.getTextWithoutFormattingCodes(c.getDisplayName())));
+        return configs;
     }
 
     /**
@@ -124,7 +126,7 @@ public class ConfigUtils
         List<ConfigInfo> extractedList = Arrays.asList(toExtract);
 
         originalList.removeAll(extractedList);
-        ConfigUtils.sortConfigsByDisplayName(extractedList);
+        ConfigUtils.sortConfigsInPlaceByDisplayName(extractedList);
 
         return factory.create(mod, groupName, extractedList);
     }
@@ -155,7 +157,7 @@ public class ConfigUtils
 
         ListUtils.extractEntriesToSecondList(originalList, extractedList, extractTest, true);
         originalList.removeAll(extractedList);
-        ConfigUtils.sortConfigsByDisplayName(extractedList);
+        ConfigUtils.sortConfigsInPlaceByDisplayName(extractedList);
 
         return factory.create(mod, groupName, extractedList);
     }

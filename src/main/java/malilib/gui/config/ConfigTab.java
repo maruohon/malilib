@@ -46,14 +46,14 @@ public interface ConfigTab extends ScreenTab
 
         if (MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS.getBooleanValue())
         {
-            ConfigUtils.sortConfigsByDisplayName(extensionConfigs);
+            ConfigUtils.sortConfigsInPlaceByDisplayName(extensionConfigs);
         }
 
         list.addAll(extensionConfigs);
 
         if (MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME.getBooleanValue())
         {
-            ConfigUtils.sortConfigsByDisplayName(list);
+            ConfigUtils.sortConfigsInPlaceByDisplayName(list);
         }
 
         return list;
