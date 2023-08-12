@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.MapData;
 
+import malilib.gui.icon.Icon;
 import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
@@ -100,6 +101,26 @@ public class RenderUtils
                 posIcon.icon.renderTintedAt(posX, posY, z, tintColor, ctx);
             }
         }
+    }
+
+    public static void renderNineSplicedTexture(int x, int y, float z, int width, int height,
+                                                int edgeThickness, Icon icon, int variantIndex, RenderContext ctx)
+    {
+        int textureWidth = icon.getWidth();
+        int textureHeight = icon.getHeight();
+
+        if (textureWidth == 0 || textureHeight == 0)
+        {
+            return;
+        }
+
+        int u = icon.getVariantU(variantIndex);
+        int v = icon.getVariantV(variantIndex);
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderUtils.bindTexture(icon.getTexture());
+
+        renderNineSplicedTexture(x, y, z, u, v, width, height, textureWidth, textureHeight, edgeThickness, ctx);
     }
 
     public static void renderNineSplicedTexture(int x, int y, float z, int u, int v, int width, int height,

@@ -15,6 +15,7 @@ import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.IconWidget;
 import malilib.gui.widget.InteractableWidget;
 import malilib.listener.EventListener;
+import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
@@ -40,6 +41,7 @@ public class GenericButton extends InteractableWidget
     protected boolean renderButtonBackgroundTexture = true;
     protected boolean renderFullTextOnHover = true;
     protected boolean rightAligned;
+    protected int backgroundIconSplicingEdgeThickness = 4;
     protected int disabledTextColor = 0xFF606060;
     protected int iconVsLabelPadding = 5;
 
@@ -145,6 +147,16 @@ public class GenericButton extends InteractableWidget
     {
         this.disabledTextColor = color;
         return this;
+    }
+
+    /**
+     * Set the "edge ring" thickness for spliced background texture.
+     * Basically this means that this many pixels from the opposite edge will be avoided
+     * in the four spliced mode, and in the nine spliced mode the 8 edge parts will be this thick.
+     */
+    public void setBackgroundIconSplicingEdgeThickness(int backgroundIconSplicingEdgeThickness)
+    {
+        this.backgroundIconSplicingEdgeThickness = backgroundIconSplicingEdgeThickness;
     }
 
     public GenericButton setBackgroundIcon(Icon icon)
@@ -437,8 +449,19 @@ public class GenericButton extends InteractableWidget
     protected void renderButtonBackgroundIcon(int x, int y, float z, int width, int height,
                                               boolean hovered, ScreenContext ctx)
     {
-        this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height,
-                                                IconWidget.getVariantIndex(this.isEnabled(), hovered), ctx);
+        int variantIndex = IconWidget.getVariantIndex(this.isEnabled(), hovered);
+        int iconWidth = this.backgroundIcon.getWidth();
+        int iconHeight = this.backgroundIcon.getHeight();
+        int edge = this.backgroundIconSplicingEdgeThickness;
+
+        if (width > (iconWidth - edge) * 2 || height > (iconHeight - edge) * 2)
+        {
+            RenderUtils.renderNineSplicedTexture(x, y, z, width, height, edge, this.backgroundIcon, variantIndex, ctx);
+        }
+        else
+        {
+            this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height, variantIndex, ctx);
+        }
     }
 
     protected void renderIcon(int x, int y, float z, int width, int height, boolean hovered, ScreenContext ctx)
