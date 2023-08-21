@@ -152,6 +152,11 @@ public abstract class ButtonBase extends WidgetBase
         this.hoverStrings.clear();
     }
 
+    protected int getTextureOffset(boolean isMouseOver)
+    {
+        return (this.enabled == false) ? 0 : (isMouseOver ? 2 : 1);
+    }
+
     protected Identifier getTexture(boolean isMouseOver)
     {
         return (this.enabled == false) ? BUTTON_DISABLE_TEXTURE : (isMouseOver ? BUTTON_HOVER_TEXTURE : BUTTON_TEXTURE);

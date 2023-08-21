@@ -108,7 +108,7 @@ public class ButtonGeneric extends ButtonBase
                 int offset = this.renderDefaultBackground ? 4 : 0;
                 int x = this.alignment == LeftRight.LEFT ? this.x + offset : this.x + this.width - this.icon.getWidth() - offset;
                 int y = this.y + (this.height - this.icon.getHeight()) / 2;
-                int u = this.icon.getU() + 0 * this.icon.getWidth(); // FIXME: What happened here.
+                int u = this.icon.getU() + this.getTextureOffset(this.hovered) * this.icon.getWidth(); // FIXME: What happened here.
 
                 this.bindTexture(this.icon.getTexture());
                 RenderUtils.drawTexturedRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());

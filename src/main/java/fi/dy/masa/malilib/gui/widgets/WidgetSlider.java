@@ -9,7 +9,8 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public class WidgetSlider extends WidgetBase
 {
-    public static final Identifier VANILLA_WIDGETS = new Identifier("textures/gui/widgets.png");
+    public static final Identifier BUTTON_TEXTURE = new Identifier("widget/button");
+    public static final Identifier BUTTON_DISABLE_TEXTURE = new Identifier("widget/button_disabled");
 
     protected final ISliderCallback callback;
     protected int sliderWidth;
@@ -50,19 +51,17 @@ public class WidgetSlider extends WidgetBase
             this.lastMouseX = mouseX;
         }
 
-        this.bindTexture(VANILLA_WIDGETS);
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        RenderUtils.drawTexturedRect(this.x + 1             , this.y,   0, 46, this.width - 6, 20);
-        RenderUtils.drawTexturedRect(this.x + this.width - 5, this.y, 196, 46,              4, 20);
+        drawContext.drawGuiTexture(WidgetSlider.BUTTON_DISABLE_TEXTURE, this.x + 1, this.y, this.width - 3, 20);
 
         double relPos = this.callback.getValueRelative();
         int sw = this.sliderWidth;
         int usableWidth = this.width - 4 - sw;
         int s = sw / 2;
 
-        RenderUtils.drawTexturedRect(this.x + 2 + (int) (relPos * usableWidth)    , this.y,       0, 66, s, 20);
-        RenderUtils.drawTexturedRect(this.x + 2 + (int) (relPos * usableWidth) + s, this.y, 200 - s, 66, s, 20);
+
+        drawContext.drawGuiTexture(WidgetSlider.BUTTON_TEXTURE, this.x + 2 + (int) (relPos * usableWidth), this.y, sw, 20);
 
         String str = this.callback.getFormattedDisplayValue();
         int w = this.getStringWidth(str);
