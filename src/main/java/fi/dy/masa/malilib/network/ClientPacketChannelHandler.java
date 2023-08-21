@@ -12,8 +12,8 @@ import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+//import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+//import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.PacketUtils;
@@ -82,45 +82,45 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean processPacketFromServer(CustomPayloadS2CPacket packet, ClientPlayNetworkHandler netHandler)
-    {
-        Identifier channel = packet.getChannel();
-        List<IPluginChannelHandler> handlers = this.handlers.get(channel);
-
-        if (handlers.isEmpty() == false)
-        {
-            for (IPluginChannelHandler handler : handlers)
-            {
-                PacketByteBuf buf = handler.usePacketSplitter() ? PacketSplitter.receive(netHandler, packet) : PacketUtils.retainedSlice(packet.getData());
-
-                // Finished the complete packet
-                if (buf != null)
-                {
-                    handler.onPacketReceived(buf);
-                }
-            }
-
-            return true;
-        }
-
-        return false;
-    }
+//    public boolean processPacketFromServer(CustomPayloadS2CPacket packet, ClientPlayNetworkHandler netHandler)
+//    {
+//        Identifier channel = packet.getChannel();
+//        List<IPluginChannelHandler> handlers = this.handlers.get(channel);
+//
+//        if (handlers.isEmpty() == false)
+//        {
+//            for (IPluginChannelHandler handler : handlers)
+//            {
+//                PacketByteBuf buf = handler.usePacketSplitter() ? PacketSplitter.receive(netHandler, packet) : PacketUtils.retainedSlice(packet.getData());
+//
+//                // Finished the complete packet
+//                if (buf != null)
+//                {
+//                    handler.onPacketReceived(buf);
+//                }
+//            }
+//
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
     private void sendRegisterPacket(Identifier type, Collection<Identifier> channels)
     {
-        String joinedChannels = channels.stream().map(Identifier::toString).collect(Collectors.joining("\0"));
-        ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
-        CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(type, new PacketByteBuf(payload));
-
-        ClientPlayNetworkHandler netHandler = MinecraftClient.getInstance().getNetworkHandler();
-
-        if (netHandler != null)
-        {
-            netHandler.sendPacket(packet);
-        }
-        else
-        {
-            MaLiLib.logger.warn("Failed to send register channel packet - network handler was null");
-        }
+//        String joinedChannels = channels.stream().map(Identifier::toString).collect(Collectors.joining("\0"));
+//        ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
+//        CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(type, new PacketByteBuf(payload));
+//
+//        ClientPlayNetworkHandler netHandler = MinecraftClient.getInstance().getNetworkHandler();
+//
+//        if (netHandler != null)
+//        {
+//            netHandler.sendPacket(packet);
+//        }
+//        else
+//        {
+//            MaLiLib.logger.warn("Failed to send register channel packet - network handler was null");
+//        }
     }
 }

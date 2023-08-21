@@ -174,11 +174,11 @@ public class WidgetDropDownList<T> extends WidgetBase
     }
 
     @Override
-    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
+    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double horizontalAmount, double verticalAmount)
     {
         if (this.isOpen)
         {
-            int amount = mouseWheelDelta < 0 ? 1 : -1;
+            int amount = verticalAmount < 0 ? 1 : -1;
             this.scrollBar.offsetValue(amount);
         }
 
