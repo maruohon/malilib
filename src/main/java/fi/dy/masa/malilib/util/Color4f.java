@@ -65,6 +65,27 @@ public class Color4f
         return new Color4f(r, g, b, alpha);
     }
 
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+
+        Color4f other = (Color4f) obj;
+
+        return intValue == other.intValue;
+    }
+
+    @Override
+    public int hashCode() 
+    {
+        return Objects.hash(intValue);
+    }
+
     public String toHexString()
     {
         return String.format("#%08X", intValue);
