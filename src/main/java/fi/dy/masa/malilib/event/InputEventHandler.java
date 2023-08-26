@@ -138,7 +138,7 @@ public class InputEventHandler implements IKeybindManager, IInputManager
     public boolean onKeyInput(int keyCode, int scanCode, int modifiers, boolean eventKeyState)
     {
         // Update the cached pressed keys status
-        KeybindMulti.onKeyInputPre(keyCode, scanCode, eventKeyState);
+        KeybindMulti.onKeyInputPre(keyCode, scanCode, modifiers, eventKeyState);
 
         boolean cancel = this.checkKeyBindsForChanges(keyCode);
 
@@ -167,7 +167,7 @@ public class InputEventHandler implements IKeybindManager, IInputManager
         if (eventButton != -1)
         {
             // Update the cached pressed keys status
-            KeybindMulti.onKeyInputPre(eventButton - 100, 0, eventButtonState);
+            KeybindMulti.onKeyInputPre(eventButton - 100, 0, 0, eventButtonState);
 
             cancel = this.checkKeyBindsForChanges(eventButton - 100);
 

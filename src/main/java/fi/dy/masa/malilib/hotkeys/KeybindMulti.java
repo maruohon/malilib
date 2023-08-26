@@ -438,7 +438,7 @@ public class KeybindMulti implements IKeybind
     /**
      * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
      */
-    public static void onKeyInputPre(int keyCode, int scanCode, boolean state)
+    public static void onKeyInputPre(int keyCode, int scanCode, int modifiers, boolean state)
     {
         if (keyCode != -1)
         {
@@ -464,7 +464,7 @@ public class KeybindMulti implements IKeybind
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
         {
-            printKeybindDebugMessage(keyCode, scanCode, state);
+            printKeybindDebugMessage(keyCode, scanCode, modifiers, state);
         }
     }
 
@@ -492,13 +492,14 @@ public class KeybindMulti implements IKeybind
         }
     }
 
-    private static void printKeybindDebugMessage(int keyCode, int scanCode, boolean keyState)
+    private static void printKeybindDebugMessage(int keyCode, int scanCode, int modifiers, boolean keyState)
     {
         String keyName = keyCode != KeyCodes.KEY_NONE ? KeyCodes.getNameForKey(keyCode) : "<unknown>";
         String type = keyState ? "PRESS" : "RELEASE";
         String held = getActiveKeysString();
-        String msg = String.format("%s %s (%d), held: %s", type, keyName, keyCode, held);
-        String msgConsole = String.format("%s %s (keyCode: %d, scanCode: %d), held keys: %s", type, keyName, keyCode, scanCode, held);
+        String msg = String.format("%s %s (%d, m: %d), held: %s", type, keyName, keyCode, modifiers, held);
+        String msgConsole = String.format("%s %s (keyCode: %d, scanCode: %d, modifiers: %d), held keys: %s",
+                                          type, keyName, keyCode, scanCode, modifiers, held);
 
         MaLiLib.logger.info(msgConsole);
 
