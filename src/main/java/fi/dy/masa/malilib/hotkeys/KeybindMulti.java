@@ -440,33 +440,31 @@ public class KeybindMulti implements IKeybind
      */
     public static void onKeyInputPre(int keyCode, int scanCode, boolean state)
     {
+        if (keyCode != -1)
+        {
+            Integer valObj = keyCode;
+
+            if (state)
+            {
+                if (PRESSED_KEYS.contains(valObj) == false)
+                {
+                    Collection<Integer> ignored = MaLiLibConfigs.Generic.IGNORED_KEYS.getKeybind().getKeys();
+
+                    if (ignored.size() == 0 || ignored.contains(valObj) == false)
+                    {
+                        PRESSED_KEYS.add(valObj);
+                    }
+                }
+            }
+            else
+            {
+                PRESSED_KEYS.remove(valObj);
+            }
+        }
+
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
         {
             printKeybindDebugMessage(keyCode, scanCode, state);
-        }
-
-        if (keyCode == -1)
-        {
-            return;
-        }
-
-        Integer valObj = keyCode;
-
-        if (state)
-        {
-            if (PRESSED_KEYS.contains(valObj) == false)
-            {
-                Collection<Integer> ignored = MaLiLibConfigs.Generic.IGNORED_KEYS.getKeybind().getKeys();
-
-                if (ignored.size() == 0 || ignored.contains(valObj) == false)
-                {
-                    PRESSED_KEYS.add(valObj);
-                }
-            }
-        }
-        else
-        {
-            PRESSED_KEYS.remove(valObj);
         }
     }
 
