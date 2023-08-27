@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.MinecraftClient;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -135,10 +137,12 @@ public class InputEventHandler implements IKeybindManager, IInputManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean onKeyInput(int keyCode, int scanCode, int modifiers, boolean eventKeyState)
+    public boolean onKeyInput(int keyCode, int scanCode, int modifiers, int action)
     {
+        boolean eventKeyState = action != GLFW.GLFW_RELEASE;
+
         // Update the cached pressed keys status
-        KeybindMulti.onKeyInputPre(keyCode, scanCode, eventKeyState);
+        KeybindMulti.onKeyInputPre(keyCode, scanCode, modifiers, action);
 
         boolean cancel = this.checkKeyBindsForChanges(keyCode);
 
@@ -160,14 +164,16 @@ public class InputEventHandler implements IKeybindManager, IInputManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean onMouseClick(int mouseX, int mouseY, int eventButton, boolean eventButtonState)
+    public boolean onMouseClick(int mouseX, int mouseY, int eventButton, int action)
     {
         boolean cancel = false;
 
         if (eventButton != -1)
         {
+            boolean eventButtonState = action == GLFW.GLFW_PRESS;
+
             // Update the cached pressed keys status
-            KeybindMulti.onKeyInputPre(eventButton - 100, 0, eventButtonState);
+            KeybindMulti.onKeyInputPre(eventButton - 100, 0, 0, action);
 
             cancel = this.checkKeyBindsForChanges(eventButton - 100);
 

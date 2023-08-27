@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.util;
 
+import java.util.Objects;
+
 public class Color4f
 {
     public static final Color4f ZERO = new Color4f(0F, 0F, 0F, 0F);
@@ -65,15 +67,36 @@ public class Color4f
         return new Color4f(r, g, b, alpha);
     }
 
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+
+        Color4f other = (Color4f) obj;
+
+        return this.intValue == other.intValue;
+    }
+
+    @Override
+    public int hashCode() 
+    {
+        return Objects.hash(this.intValue);
+    }
+
     public String toHexString()
     {
-        return String.format("#%08X", intValue);
+        return String.format("#%08X", this.intValue);
     }
 
     @Override
     public String toString()
     {
-        return toHexString();
+        return this.toHexString();
     }
 
     public static Color4f fromColor(Color4f color, float alpha)
