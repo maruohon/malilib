@@ -32,7 +32,7 @@
 	],
 
 	"depends": {
-		"minecraft": ">=1.20.2-alpha.23.33.a",
+		"minecraft": ">=1.20.2-alpha.23.35.a",
 		"fabric-networking-api-v1": "*",
 		"fabric-resource-loader-v0": "*"
 	}
