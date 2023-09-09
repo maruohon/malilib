@@ -30,9 +30,9 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
     }
 
     @Override
-    protected SliderWidget createSliderWidget()
+    protected HorizontalSliderWidget createSliderWidget()
     {
-        return new SliderWidget(-1, this.getHeight(), new FloatSliderCallback(this, this::updateTextField));
+        return new HorizontalSliderWidget(-1, this.getHeight(), new FloatSliderCallback(this, this::updateTextField));
     }
 
     @Override

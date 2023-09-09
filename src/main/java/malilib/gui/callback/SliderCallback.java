@@ -1,7 +1,5 @@
 package malilib.gui.callback;
 
-import malilib.render.text.StyledTextLine;
-
 public interface SliderCallback
 {
     /**
@@ -20,14 +18,4 @@ public interface SliderCallback
      * Sets the value from the provided relative value (0.0 ... 1.0)
      */
     void setRelativeValue(double relativeValue);
-
-    /**
-     * @return the formatted display text for the current value. This is used in the slider widget in the GUI.
-     */
-    StyledTextLine getDisplayText();
-
-    /**
-     * Updates the display text, if the value changes externally
-     */
-    void updateDisplayText();
 }

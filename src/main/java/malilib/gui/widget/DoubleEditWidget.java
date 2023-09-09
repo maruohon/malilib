@@ -37,9 +37,9 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     }
 
     @Override
-    protected SliderWidget createSliderWidget()
+    protected HorizontalSliderWidget createSliderWidget()
     {
-        return new SliderWidget(-1, this.getHeight(), new DoubleSliderCallback(this, this::updateTextField));
+        return new HorizontalSliderWidget(-1, this.getHeight(), new DoubleSliderCallback(this, this::updateTextField));
     }
 
     @Override

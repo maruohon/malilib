@@ -48,7 +48,7 @@ public class BooleanAndIntConfig extends BaseBooleanAndNumberConfig<BooleanAndIn
 
         this.updateEffectiveValue();
         this.cacheSavedValue();
-        this.sliderCallbackFactory = (listener) -> new IntegerSliderCallback(this, listener);
+        this.setSliderCallbackFactory(listener -> new IntegerSliderCallback(this, listener));
     }
 
     @Override

@@ -47,7 +47,7 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.updateEffectiveValue();
-        this.sliderCallbackFactory = (listener) -> new DoubleSliderCallback(this, listener);
+        this.setSliderCallbackFactory(listener -> new DoubleSliderCallback(this, listener));
     }
 
     @Override

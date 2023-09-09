@@ -46,9 +46,9 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     }
 
     @Override
-    protected SliderWidget createSliderWidget()
+    protected HorizontalSliderWidget createSliderWidget()
     {
-        return new SliderWidget(-1, this.getHeight(), new IntegerSliderCallback(this, this::updateTextField));
+        return new HorizontalSliderWidget(-1, this.getHeight(), new IntegerSliderCallback(this, this::updateTextField));
     }
 
     @Override

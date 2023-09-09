@@ -11,7 +11,7 @@ import malilib.gui.widget.button.GenericButton;
 public abstract class BaseNumberEditWidget extends ContainerWidget
 {
     protected final BaseTextFieldWidget textFieldWidget;
-    protected final SliderWidget sliderWidget;
+    protected final HorizontalSliderWidget sliderWidget;
     protected final GenericButton sliderToggleButton;
     protected final GenericButton valueAdjustButton;
     protected final LabelWidget labelWidget;
@@ -262,7 +262,7 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
 
     protected abstract void setValueFromTextField(String str);
 
-    protected abstract SliderWidget createSliderWidget();
+    protected abstract HorizontalSliderWidget createSliderWidget();
 
     protected abstract boolean onValueAdjustButtonClick(int mouseButton);
 

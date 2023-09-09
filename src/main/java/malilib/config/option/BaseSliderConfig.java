@@ -3,12 +3,12 @@ package malilib.config.option;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 
-import malilib.gui.callback.SliderCallback;
+import malilib.gui.callback.SliderCallbackWithText;
 import malilib.listener.EventListener;
 
 public abstract class BaseSliderConfig<T> extends BaseGenericConfig<T> implements SliderConfig
 {
-    protected Function<EventListener, SliderCallback> sliderCallbackFactory;
+    protected Function<EventListener, SliderCallbackWithText> sliderCallbackFactory;
     protected boolean sliderActive;
     protected boolean allowSlider = true;
 
@@ -55,13 +55,13 @@ public abstract class BaseSliderConfig<T> extends BaseGenericConfig<T> implement
     }
 
     @Override
-    public SliderCallback getSliderCallback(@Nullable EventListener changeListener)
+    public SliderCallbackWithText getSliderCallback(@Nullable EventListener changeListener)
     {
         return this.sliderCallbackFactory.apply(changeListener);
     }
 
     @Override
-    public void setSliderCallbackFactory(Function<EventListener, SliderCallback> sliderCallbackFactory)
+    public void setSliderCallbackFactory(Function<EventListener, SliderCallbackWithText> sliderCallbackFactory)
     {
         this.sliderCallbackFactory = sliderCallbackFactory;
     }

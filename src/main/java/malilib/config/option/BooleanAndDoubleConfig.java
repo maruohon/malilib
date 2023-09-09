@@ -49,7 +49,7 @@ public class BooleanAndDoubleConfig extends BaseBooleanAndNumberConfig<BooleanAn
 
         this.updateEffectiveValue();
         this.cacheSavedValue();
-        this.sliderCallbackFactory = (listener) -> new DoubleSliderCallback(this, listener);
+        this.setSliderCallbackFactory(listener -> new DoubleSliderCallback(this, listener));
     }
 
     public float getFloatValue()

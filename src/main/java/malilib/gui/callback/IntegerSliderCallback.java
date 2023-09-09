@@ -8,7 +8,7 @@ import malilib.listener.EventListener;
 import malilib.render.text.StyledTextLine;
 import malilib.util.data.RangedIntegerStorage;
 
-public class IntegerSliderCallback implements SliderCallback
+public class IntegerSliderCallback implements SliderCallbackWithText
 {
     protected final RangedIntegerStorage storage;
     @Nullable protected final EventListener changeListener;

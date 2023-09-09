@@ -2,7 +2,7 @@ package malilib.config.option;
 
 import java.util.function.Function;
 
-import malilib.gui.callback.SliderCallback;
+import malilib.gui.callback.SliderCallbackWithText;
 import malilib.listener.EventListener;
 
 public interface SliderConfig
@@ -39,12 +39,12 @@ public interface SliderConfig
      * @param changeListener
      * @return
      */
-    SliderCallback getSliderCallback(EventListener changeListener);
+    SliderCallbackWithText getSliderCallback(EventListener changeListener);
 
     /**
      * Sets the slider callback factory. If a mod wants to use a non-default callback implementation,
      * it can change the factory using this method.
      * @param callbackFactory
      */
-    void setSliderCallbackFactory(Function<EventListener, SliderCallback> callbackFactory);
+    void setSliderCallbackFactory(Function<EventListener, SliderCallbackWithText> callbackFactory);
 }

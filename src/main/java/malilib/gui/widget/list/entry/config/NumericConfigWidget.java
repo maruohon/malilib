@@ -11,7 +11,7 @@ import malilib.gui.config.ConfigWidgetContext;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
 import malilib.gui.widget.BaseTextFieldWidget;
-import malilib.gui.widget.SliderWidget;
+import malilib.gui.widget.HorizontalSliderWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.util.StringUtils;
@@ -24,7 +24,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseGenericConfig<TY
     protected final String initialStringValue;
     protected final BiConsumer<CFG, String> fromStringSetter;
     protected final Function<CFG, String> toStringConverter;
-    protected SliderWidget sliderWidget;
+    protected HorizontalSliderWidget sliderWidget;
 
     protected NumericConfigWidget(CFG config,
                                   DataListEntryWidgetData constructData,
@@ -46,7 +46,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseGenericConfig<TY
             this.updateWidgetState();
         });
 
-        this.sliderWidget = new SliderWidget(60, 20, config.getSliderCallback(this::updateWidgetState));
+        this.sliderWidget = new HorizontalSliderWidget(60, 20, config.getSliderCallback(this::updateWidgetState));
         this.sliderWidget.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
 
         this.valueAdjustButton = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);

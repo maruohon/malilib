@@ -6,7 +6,7 @@ import malilib.listener.EventListener;
 import malilib.render.text.StyledTextLine;
 import malilib.util.data.RangedFloatStorage;
 
-public class FloatSliderCallback implements SteppedSliderCallback
+public class FloatSliderCallback implements SteppedSliderCallback, SliderCallbackWithText
 {
     protected final RangedFloatStorage storage;
     @Nullable protected final EventListener changeListener;
