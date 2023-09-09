@@ -163,6 +163,28 @@ public class ShapeRenderUtils
         builder.draw();
     }
 
+    public static void renderHorizontalGradientRectangle(double x, double y, double z,
+                                                         double width, double height,
+                                                         int color1, int color2, RenderContext ctx)
+    {
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
+        renderHorizontalGradientRectangle(x, y, z, width, height, color1, color2, builder);
+        builder.draw();
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+    }
+
+    public static void renderVerticalGradientRectangle(double x, double y, double z,
+                                                       double width, double height,
+                                                       int color1, int color2, RenderContext ctx)
+    {
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
+        renderVerticalGradientRectangle(x, y, z, width, height, color1, color2, builder);
+        builder.draw();
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+    }
+
     /**
      * Takes in a VertexBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
@@ -178,6 +200,50 @@ public class ShapeRenderUtils
         builder.posColor(x        , y + height, z, r, g, b, a);
         builder.posColor(x + width, y + height, z, r, g, b, a);
         builder.posColor(x + width, y         , z, r, g, b, a);
+    }
+
+    /**
+     * Takes in a VertexBuilder initialized in GL_QUADS, POSITION_COLOR mode
+     */
+    public static void renderHorizontalGradientRectangle(double x, double y, double z,
+                                                         double width, double height,
+                                                         int color1, int color2, VertexBuilder builder)
+    {
+        int a1 = (color1 >> 24) & 0xFF;
+        int r1 = (color1 >> 16) & 0xFF;
+        int g1 = (color1 >>  8) & 0xFF;
+        int b1 = color1 & 0xFF;
+        int a2 = (color2 >> 24) & 0xFF;
+        int r2 = (color2 >> 16) & 0xFF;
+        int g2 = (color2 >>  8) & 0xFF;
+        int b2 = color2 & 0xFF;
+
+        builder.posColor(x        , y         , z, r1, g1, b1, a1);
+        builder.posColor(x        , y + height, z, r1, g1, b1, a1);
+        builder.posColor(x + width, y + height, z, r2, g2, b2, a2);
+        builder.posColor(x + width, y         , z, r2, g2, b2, a2);
+    }
+
+    /**
+     * Takes in a VertexBuilder initialized in GL_QUADS, POSITION_COLOR mode
+     */
+    public static void renderVerticalGradientRectangle(double x, double y, double z,
+                                                       double width, double height,
+                                                       int color1, int color2, VertexBuilder builder)
+    {
+        int a1 = (color1 >> 24) & 0xFF;
+        int r1 = (color1 >> 16) & 0xFF;
+        int g1 = (color1 >>  8) & 0xFF;
+        int b1 = color1 & 0xFF;
+        int a2 = (color2 >> 24) & 0xFF;
+        int r2 = (color2 >> 16) & 0xFF;
+        int g2 = (color2 >>  8) & 0xFF;
+        int b2 = color2 & 0xFF;
+
+        builder.posColor(x + width, y         , z, r1, g1, b1, a1);
+        builder.posColor(x        , y         , z, r1, g1, b1, a1);
+        builder.posColor(x        , y + height, z, r2, g2, b2, a2);
+        builder.posColor(x + width, y + height, z, r2, g2, b2, a2);
     }
 
     /**
