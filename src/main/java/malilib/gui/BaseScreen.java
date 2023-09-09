@@ -25,6 +25,7 @@ import malilib.input.ActionResult;
 import malilib.input.Keys;
 import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
+import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.TextRenderer;
 import malilib.util.StringUtils;
@@ -1034,36 +1035,37 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (ctx.isActiveScreen)
         {
-            String str = String.format("%s @ x: %d, y: %d, w: %d, h: %d",
+            String str = String.format("%s @ x: %d, y: %d, w: %d, h: %d\nmouseX: %d, mouseY: %d",
                                        this.getClass().getName(),
-                                       this.x, this.y, this.screenWidth, this.screenHeight);
-            StyledTextLine line = StyledTextLine.parseJoin(str);
+                                       this.x, this.y, this.screenWidth, this.screenHeight, ctx.mouseX, ctx.mouseY);
+            StyledText text = StyledText.parse(str);
 
             int x = this.x + 1;
             int y = this.y + 1;
             float z = this.z + 20;
-            int w = line.renderWidth + 4;
+            int w = text.getRenderWidth() + 4;
+            int h = 24;
 
             // if this is a popup-screen or other screen that does not extend
             // to the bottom of the display, then render the info bar below the
             // screen area, to not obstruct other widgets.
-            if (this.y + this.screenHeight + 14 < this.getTotalHeight())
+            if (this.y + this.screenHeight + h < this.getTotalHeight())
             {
                 x = this.x;
                 y = this.y + this.screenHeight + 1;
             }
-            else if (this.y >= 15)
+            else if (this.y >= h)
             {
                 x = this.x;
-                y = this.y - 15;
+                y = this.y - h;
             }
             else if (ctx.mouseY < this.getTotalHeight() / 2)
             {
-                y = this.y + this.screenHeight - 15;
+                y = this.y + this.screenHeight - h;
             }
 
-            ShapeRenderUtils.renderOutlinedRectangle(x, y, z, w, 14, 0xFF000000, 0xFFA0A0A0, ctx);
-            this.textRenderer.renderLine(x + 2, y + 3, z + 0.00125f, 0xFF00FFFF, true, line, ctx);
+            ShapeRenderUtils.renderOutlinedRectangle(x, y, z, w, h, 0xFF000000, 0xFFA0A0A0, ctx);
+            this.textRenderer.renderText(x + 2, y + 3, z + 0.00125f, 0xFF00FFFF, true, text, ctx);
 
             renderWidgetDebug(this.widgets, ctx);
         }
