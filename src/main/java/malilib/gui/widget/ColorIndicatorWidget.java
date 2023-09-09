@@ -1,8 +1,10 @@
 package malilib.gui.widget;
 
+import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 
 import malilib.config.option.ColorConfig;
 import malilib.config.option.ConfigOption;
@@ -12,6 +14,7 @@ import malilib.gui.util.ScreenContext;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.util.StringUtils;
 import malilib.util.data.Color4f;
 
 public class ColorIndicatorWidget extends InteractableWidget
@@ -19,6 +22,7 @@ public class ColorIndicatorWidget extends InteractableWidget
     protected final IntSupplier valueSupplier;
     protected final IntConsumer valueConsumer;
     @Nullable protected ConfigOption<?> config;
+    protected boolean canEdit = true;
 
     public ColorIndicatorWidget(int width, int height, int color, IntConsumer consumer)
     {
@@ -38,15 +42,38 @@ public class ColorIndicatorWidget extends InteractableWidget
 
         this.valueSupplier = valueSupplier;
         this.valueConsumer = consumer;
-        String color = Color4f.getHexColorString(valueSupplier.getAsInt());
-        this.translateAndAddHoverString("malilib.hover.config.open_color_editor", color);
+        this.getHoverInfoFactory().setStringListProvider("hover", this::getHoverTextStrings);
 
         this.setClickListener(this::openColorEditorScreenIfConfigNotLocked);
     }
 
+    public List<String> getHoverTextStrings()
+    {
+        if (this.canEdit)
+        {
+            return ImmutableList.of(StringUtils.translate("malilib.hover.color_indicator.open_color_editor"),
+                                    StringUtils.translate("malilib.hover.color_indicator.current_color",
+                                                          Color4f.getHexColorString(this.valueSupplier.getAsInt())));
+        }
+
+        return ImmutableList.of(StringUtils.translate("malilib.hover.color_indicator.current_color",
+                                                      Color4f.getHexColorString(this.valueSupplier.getAsInt())));
+    }
+
+    @Override
+    public void updateWidgetState()
+    {
+        this.getHoverInfoFactory().markDirty();
+    }
+
+    public void setCanEdit(boolean canEdit)
+    {
+        this.canEdit = canEdit;
+    }
+
     protected void openColorEditorScreenIfConfigNotLocked()
     {
-        if (this.config == null || this.config.isLocked() == false)
+        if (this.canEdit && (this.config == null || this.config.isLocked() == false))
         {
             BaseScreen.openPopupScreenWithCurrentScreenAsParent(this.createColorEditorScreen());
         }
