@@ -3,6 +3,10 @@ package malilib.gui.widget;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
+import java.util.function.IntSupplier;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.util.math.MathHelper;
 
@@ -14,6 +18,8 @@ import malilib.util.data.RangedIntegerStorage;
 public class IntegerEditWidget extends BaseNumberEditWidget implements RangedIntegerStorage
 {
     protected IntConsumer consumer;
+    protected IntFunction<String> toStringFunction = String::valueOf;
+    @Nullable IntSupplier supplier;
     protected int minValue;
     protected int maxValue;
     protected int value;
@@ -29,6 +35,13 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         this(width, height, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, consumer);
     }
 
+    public IntegerEditWidget(int width, int height, IntConsumer consumer, IntSupplier supplier)
+    {
+        this(width, height, supplier.getAsInt(), Integer.MIN_VALUE, Integer.MAX_VALUE, consumer);
+
+        this.supplier = supplier;
+    }
+
     public IntegerEditWidget(int width, int height, int originalValue, IntConsumer consumer)
     {
         this(width, height, originalValue, Integer.MIN_VALUE, Integer.MAX_VALUE, consumer);
@@ -42,7 +55,8 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         this.consumer = consumer;
 
         this.setValidRange(minValue, maxValue);
-        this.setIntegerValue(originalValue);
+        this.clampAndSetValue(originalValue);
+        this.updateTextField();
     }
 
     @Override
@@ -68,9 +82,19 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         this.consumer = consumer;
     }
 
+    public void setSupplier(@Nullable IntSupplier supplier)
+    {
+        this.supplier = supplier;
+    }
+
+    public void setToStringFunction(IntFunction<String> toStringFunction)
+    {
+        this.toStringFunction = toStringFunction;
+    }
+
     protected void updateTextField()
     {
-        this.textFieldWidget.setText(String.valueOf(this.value));
+        this.textFieldWidget.setText(this.toStringFunction.apply(this.value));
     }
 
     public void setValidRange(int minValue, int maxValue)
@@ -93,8 +117,21 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     protected void clampAndSetValue(int newValue)
     {
         this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
-        this.consumer.accept(this.value);
         this.sliderWidget.updateWidgetState();
+    }
+
+    public void setValueFromSupplier()
+    {
+        if (this.supplier != null)
+        {
+            this.clampAndSetValue(this.supplier.getAsInt());
+            this.updateTextField();
+        }
+    }
+
+    protected void updateConsumer()
+    {
+        this.consumer.accept(this.value);
     }
 
     @Override
@@ -102,6 +139,7 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     {
         this.clampAndSetValue(newValue);
         this.updateTextField();
+        this.updateConsumer();
         return true;
     }
 
