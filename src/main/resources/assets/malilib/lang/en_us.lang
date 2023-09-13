@@ -225,6 +225,7 @@ malilib.label.boolean_config_status.style.on_off_text=ON/OFF Text
 malilib.label.boolean_config_status.style.true_false_text=true/false Text
 malilib.label.boolean_config_status.style.on_off_slider=ON/OFF Slider
 malilib.label.boolean_config_status.style.on_off_light=ON/OFF "Light"
+malilib.label.color_editor.hsv.component_labels=<c=BBB>H:\nS:\nV:\nR:\nG:\nB:\nA:
 malilib.label.config.black_white_list_edit.type=List Type
 malilib.label.config.config_display_name=<c=f0f0f0>%s
 malilib.label.config.config_internal_name=<c=808080>%s

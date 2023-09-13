@@ -640,7 +640,7 @@ public abstract class BaseScreen extends GuiScreen
         this.updateMouseHandlersForClickOrRelease(mouseX, mouseY);
         this.dragging = false;
 
-        // Call this for all widgets, not only for the hovered or "receives outside clicks" widgets
+        // Call this for all widgets, not only for the hovered or "receives outside clicks" widgets - outdated comment?
         for (InteractableWidget widget : this.mouseActionHandlers)
         {
             widget.onMouseReleased(mouseX, mouseY, mouseButton);

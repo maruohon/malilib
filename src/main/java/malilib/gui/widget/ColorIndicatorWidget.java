@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableList;
 import malilib.config.option.ColorConfig;
 import malilib.config.option.ConfigOption;
 import malilib.gui.BaseScreen;
-import malilib.gui.edit.ColorEditorHSVScreen;
+import malilib.gui.edit.ColorEditorScreenHsv;
 import malilib.gui.util.ScreenContext;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
@@ -82,7 +82,7 @@ public class ColorIndicatorWidget extends InteractableWidget
     protected BaseScreen createColorEditorScreen()
     {
         int originalColor = this.valueSupplier.getAsInt();
-        return new ColorEditorHSVScreen(originalColor, this.valueConsumer);
+        return new ColorEditorScreenHsv(originalColor, this.valueConsumer);
     }
 
     @Override
