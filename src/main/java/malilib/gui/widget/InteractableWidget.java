@@ -310,7 +310,7 @@ public abstract class InteractableWidget extends BackgroundWidget
         return false;
     }
 
-    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    public boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
     {
         return false;
     }

@@ -287,7 +287,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    public boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
     {
         // Close the dropdown when clicking outside the widget
         if (this.isOpen())

@@ -616,6 +616,7 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+        this.checkForFocusedWidgetUnFocus(mouseX, mouseY, mouseButton);
         this.updateMouseHandlersForClickOrRelease(mouseX, mouseY);
 
         for (InteractableWidget widget : this.mouseActionHandlers)
@@ -625,9 +626,6 @@ public abstract class BaseScreen extends GuiScreen
                 return true;
             }
         }
-
-        // If no widget handled the click, clear the focused widget
-        this.setFocusedWidget(null);
 
         if (this.canDragMove && this.isMouseOver(mouseX, mouseY))
         {
@@ -791,6 +789,14 @@ public abstract class BaseScreen extends GuiScreen
         }
 
         return false;
+    }
+
+    protected void checkForFocusedWidgetUnFocus(int mouseX, int mouseY, int mouseButton)
+    {
+        if (this.focusedWidget != null && this.focusedWidget.isMouseOver(mouseX, mouseY) == false)
+        {
+            this.focusedWidget.onMouseClickedOutside(mouseX, mouseY, mouseButton);
+        }
     }
 
     protected void setFocusedWidget(@Nullable InteractableWidget widget)

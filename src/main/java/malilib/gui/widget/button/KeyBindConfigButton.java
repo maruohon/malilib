@@ -122,7 +122,7 @@ public class KeyBindConfigButton extends GenericButton
     }
 
     @Override
-    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    public boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
     {
         if (this.isEnabled() && this.isFocused())
         {

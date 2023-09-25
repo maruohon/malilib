@@ -786,7 +786,7 @@ public class BaseTextFieldWidget extends ContainerWidget
     @Override
     public boolean getShouldReceiveOutsideClicks()
     {
-        return this.isFocused && super.getShouldReceiveOutsideClicks();
+        return this.isFocused() && super.getShouldReceiveOutsideClicks();
     }
 
     @Override
@@ -825,7 +825,7 @@ public class BaseTextFieldWidget extends ContainerWidget
     }
 
     @Override
-    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    public boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
     {
         if (this.isEnabled() && this.isFocused())
         {

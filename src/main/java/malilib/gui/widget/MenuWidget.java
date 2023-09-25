@@ -151,7 +151,7 @@ public class MenuWidget extends ContainerWidget
     }
 
     @Override
-    protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
+    public boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
     {
         if (mouseButton == 0)
         {
