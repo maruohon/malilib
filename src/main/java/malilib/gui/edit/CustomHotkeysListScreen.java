@@ -32,7 +32,7 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
 
     public CustomHotkeysListScreen()
     {
-        super(10, 74, 20, 80, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
+        super(10, 68, 20, 74, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
         this.setTitle("malilib.title.screen.configs.custom_hotkeys", MaLiLibReference.MOD_VERSION);
 
@@ -61,7 +61,7 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
     {
         super.updateWidgetPositions();
 
-        int y = this.y + 57;
+        int y = this.getListWidget().getY() - 18;
         this.addHotkeyButton.setPosition(this.x + 10, y);
         this.exportButton.setRight(this.getListWidget().getRight());
         this.exportButton.setY(y);

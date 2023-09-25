@@ -27,7 +27,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget>
                             @Nullable ConfigTab defaultTab,
                             String titleKey, Object... args)
     {
-        super(10, 46, 20, 62, modInfo.getModId(), configTabs, defaultTab);
+        super(10, 46, 20, 54, modInfo.getModId(), configTabs, defaultTab);
 
         this.modInfo = modInfo;
         this.shouldRestoreScrollbarPosition = MaLiLibConfigs.Generic.REMEMBER_CONFIG_TAB_SCROLL_POSITIONS.getBooleanValue();
