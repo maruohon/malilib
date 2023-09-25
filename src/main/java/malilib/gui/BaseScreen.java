@@ -46,6 +46,7 @@ public abstract class BaseScreen extends GuiScreen
     private String titleString = "";
     @Nullable protected StyledTextLine titleText;
     @Nullable private GuiScreen parent;
+    @Nullable protected InteractableWidget focusedWidget;
     @Nullable protected InteractableWidget hoveredWidgetForContext;
     @Nullable protected InteractableWidget hoveredWidgetForHoverInfo;
     @Nullable protected ScreenContext context;
@@ -625,6 +626,9 @@ public abstract class BaseScreen extends GuiScreen
             }
         }
 
+        // If no widget handled the click, clear the focused widget
+        this.setFocusedWidget(null);
+
         if (this.canDragMove && this.isMouseOver(mouseX, mouseY))
         {
             this.dragStartOffset = new Vec2i(mouseX - this.getX(),  mouseY - this.getY());
@@ -735,6 +739,12 @@ public abstract class BaseScreen extends GuiScreen
             return true;
         }
 
+        // The focused widget has priority
+        if (this.focusedWidget != null && this.focusedWidget.onKeyTyped(keyCode, scanCode, modifiers))
+        {
+            return true;
+        }
+
         for (InteractableWidget widget : this.widgets)
         {
             if (widget.onKeyTyped(keyCode, scanCode, modifiers))
@@ -766,6 +776,12 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onCharTyped(char charIn, int modifiers)
     {
+        // The focused widget has priority
+        if (this.focusedWidget != null && this.focusedWidget.onCharTyped(charIn, modifiers))
+        {
+            return true;
+        }
+
         for (InteractableWidget widget : this.widgets)
         {
             if (widget.onCharTyped(charIn, modifiers))
@@ -775,6 +791,41 @@ public abstract class BaseScreen extends GuiScreen
         }
 
         return false;
+    }
+
+    protected void setFocusedWidget(@Nullable InteractableWidget widget)
+    {
+        if (this.focusedWidget != null && this.focusedWidget != widget)
+        {
+            if (this.focusedWidget.isFocused())
+            {
+                this.focusedWidget.setFocused(false);
+            }
+
+            this.focusedWidget = null;
+        }
+
+        if (widget != null && widget.canBeFocused())
+        {
+            this.focusedWidget = widget;
+
+            if (widget.isFocused() == false)
+            {
+                widget.setFocused(true);
+            }
+        }
+    }
+
+    protected void onWidgetFocusChanged(InteractableWidget widget, boolean isFocused)
+    {
+        if (this.focusedWidget == widget && isFocused == false)
+        {
+            this.setFocusedWidget(null);
+        }
+        else if (this.focusedWidget != widget && isFocused)
+        {
+            this.setFocusedWidget(widget);
+        }
     }
 
     protected List<BaseTextFieldWidget> getAllTextFields()
@@ -826,6 +877,7 @@ public abstract class BaseScreen extends GuiScreen
         {
             this.widgets.add(widget);
             widget.setTaskQueue(this::addTask);
+            widget.setFocusChangeListener(this::onWidgetFocusChanged);
             widget.onWidgetAdded(this.z);
             widget.updateWidgetState();
         }
@@ -860,6 +912,7 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void clearElements()
     {
+        this.setFocusedWidget(null);
         this.clearWidgets();
     }
 

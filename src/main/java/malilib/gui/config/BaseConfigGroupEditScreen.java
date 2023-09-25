@@ -16,7 +16,6 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
 {
     protected final ArrayList<ConfigInfo> configs = new ArrayList<>();
     protected final ModInfo modInfo;
-    @Nullable protected KeybindEditScreen keyBindEditScreen;
     protected int elementsWidth = 200;
 
     public BaseConfigGroupEditScreen(ModInfo modInfo, @Nullable Runnable saveListener)
@@ -63,16 +62,9 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
         return this.elementsWidth;
     }
 
-    @Nullable
-    protected KeybindEditScreen getKeybindEditingScreen()
-    {
-        return this.keyBindEditScreen;
-    }
-
     @Override
     protected ConfigOptionListWidget createListWidget()
     {
-        return new ConfigOptionListWidget(this::getElementsWidth, this.modInfo,
-                                          this::getConfigs, this.getKeybindEditingScreen());
+        return new ConfigOptionListWidget(this::getElementsWidth, this.modInfo, this::getConfigs);
     }
 }

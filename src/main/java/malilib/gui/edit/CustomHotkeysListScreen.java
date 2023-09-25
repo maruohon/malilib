@@ -3,7 +3,6 @@ package malilib.gui.edit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import malilib.MaLiLibConfigScreen;
@@ -14,9 +13,7 @@ import malilib.gui.BaseScreen;
 import malilib.gui.ExportEntriesListScreen;
 import malilib.gui.ImportEntriesListScreen;
 import malilib.gui.TextInputScreen;
-import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.widget.button.GenericButton;
-import malilib.gui.widget.button.KeyBindConfigButton;
 import malilib.gui.widget.list.DataListWidget;
 import malilib.gui.widget.list.entry.CustomHotkeyDefinitionEntryWidget;
 import malilib.input.CustomHotkeyDefinition;
@@ -27,12 +24,11 @@ import malilib.input.KeyBindSettings;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.util.data.AppendOverwrite;
 
-public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditScreen
+public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>>
 {
     protected final GenericButton addHotkeyButton;
     protected final GenericButton exportButton;
     protected final GenericButton importButton;
-    @Nullable protected KeyBindConfigButton activeKeyBindButton;
 
     public CustomHotkeysListScreen()
     {
@@ -71,36 +67,6 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
         this.exportButton.setY(y);
         this.importButton.setRight(this.exportButton.getX() - 2);
         this.importButton.setY(y);
-    }
-
-    @Override
-    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
-    {
-        if (this.activeKeyBindButton != null)
-        {
-            this.activeKeyBindButton.onKeyTyped(keyCode, scanCode, modifiers);
-            return true;
-        }
-
-        return super.onKeyTyped(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
-        {
-            return true;
-        }
-
-        // When clicking on not-a-button, clear the selection
-        if (this.activeKeyBindButton != null && mouseButton == 0)
-        {
-            this.setActiveKeyBindButton(null);
-            return true;
-        }
-
-        return false;
     }
 
     protected void openAddHotkeyScreen()
@@ -143,7 +109,7 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
         DataListWidget<CustomHotkeyDefinition> listWidget = new DataListWidget<>(this::getCustomHotkeyDefinitions, true);
 
         listWidget.setListEntryWidgetFixedHeight(22);
-        listWidget.setDataListEntryWidgetFactory((d, cd) -> new CustomHotkeyDefinitionEntryWidget(d, cd, this));
+        listWidget.setDataListEntryWidgetFactory(CustomHotkeyDefinitionEntryWidget::new);
         listWidget.setEntryFilterStringFunction(CustomHotkeyDefinition::getSearchStrings);
         listWidget.addDefaultSearchBar();
 
@@ -166,7 +132,7 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
     {
         screen.setEntryFilterStringFunction(CustomHotkeyDefinition::getSearchStrings);
         screen.setWidgetFactory((d, cd) -> {
-            CustomHotkeyDefinitionEntryWidget widget = new CustomHotkeyDefinitionEntryWidget(d, cd, null);
+            CustomHotkeyDefinitionEntryWidget widget = new CustomHotkeyDefinitionEntryWidget(d, cd);
             widget.setAddEditElements(false);
             return widget;
         });
@@ -187,21 +153,5 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
         }
 
         MessageDispatcher.success("malilib.message.info.successfully_imported_n_entries", list.size());
-    }
-
-    @Override
-    public void setActiveKeyBindButton(@Nullable KeyBindConfigButton button)
-    {
-        if (this.activeKeyBindButton != null)
-        {
-            this.activeKeyBindButton.onClearSelection();
-        }
-
-        this.activeKeyBindButton = button;
-
-        if (this.activeKeyBindButton != null)
-        {
-            this.activeKeyBindButton.onSelected();
-        }
     }
 }

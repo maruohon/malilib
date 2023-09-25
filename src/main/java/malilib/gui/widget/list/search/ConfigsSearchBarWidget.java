@@ -12,7 +12,6 @@ import malilib.config.value.OptionListConfigValue;
 import malilib.gui.BaseScreen;
 import malilib.gui.ConfirmActionScreen;
 import malilib.gui.config.ConfigSearchInfo;
-import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.icon.Icon;
 import malilib.gui.widget.DropDownListWidget;
 import malilib.gui.widget.button.GenericButton;
@@ -21,7 +20,6 @@ import malilib.input.Context;
 import malilib.input.KeyBind;
 import malilib.input.KeyBindImpl;
 import malilib.input.KeyBindSettings;
-import malilib.input.Keys;
 import malilib.listener.EventListener;
 import malilib.registry.Registry;
 import malilib.util.StringUtils;
@@ -44,8 +42,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
                                   EventListener openCloseListener,
                                   EventListener configScopeChangeListener,
                                   Icon iconSearch,
-                                  EventListener configResetter,
-                                  KeybindEditScreen screen)
+                                  EventListener configResetter)
     {
         super(width - 160, 14, searchInputChangeListener, openCloseListener, iconSearch);
 
@@ -55,7 +52,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
         this.searchKey = KeyBindImpl.fromStorageString("", SETTINGS);
 
-        this.hotkeySearchButton = new KeyBindConfigButton(160, 16, this.searchKey, screen);
+        this.hotkeySearchButton = new KeyBindConfigButton(160, 16, this.searchKey);
         this.hotkeySearchButton.setUpdateKeyBindImmediately();
         this.hotkeySearchButton.translateAndAddHoverString("malilib.hover.button.config.hotkey_search_button");
         this.hotkeySearchButton.setHoverInfoRequiresShift(false);
@@ -175,6 +172,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         return true;
     }
 
+    /*
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
@@ -182,7 +180,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         {
             if (this.hotkeySearchButton.isMouseOver(mouseX, mouseY))
             {
-                boolean selectedPre = this.hotkeySearchButton.isSelected();
+                boolean selectedPre = this.hotkeySearchButton.isFocused();
                 this.hotkeySearchButton.tryMouseClick(mouseX, mouseY, mouseButton);
 
                 if (selectedPre == false)
@@ -192,7 +190,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
                 return true;
             }
-            else if (this.hotkeySearchButton.isSelected())
+            else if (this.hotkeySearchButton.isFocused())
             {
                 this.hotkeySearchButton.onClearSelection();
                 return true;
@@ -205,7 +203,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (this.isSearchOpen() && this.hotkeySearchButton.isSelected())
+        if (this.isSearchOpen() && this.hotkeySearchButton.isFocused())
         {
             this.hotkeySearchButton.onKeyTyped(keyCode, scanCode, modifiers);
 
@@ -219,6 +217,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
         return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
+    */
 
     protected void openResetConfigsConfirmationScreen()
     {

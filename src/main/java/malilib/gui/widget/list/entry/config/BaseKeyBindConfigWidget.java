@@ -26,7 +26,7 @@ public abstract class BaseKeyBindConfigWidget extends BaseConfigWidget<ConfigInf
         this.keyBind = keyBind;
         keyBind.getKeysToList(this.initialValue);
 
-        this.keybindButton = new KeyBindConfigButton(120, 20, keyBind, ctx.getKeybindEditingScreen());
+        this.keybindButton = new KeyBindConfigButton(120, 20, keyBind);
         this.keybindButton.setValueChangeListener(this::onKeybindModified);
         this.keybindButton.setHoverInfoRequiresShift(true);
 

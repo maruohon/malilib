@@ -41,7 +41,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget<CFG extends ConfigInfo> ex
             this.updateWidgetState();
         });
 
-        this.hotkeyButton = new KeyBindConfigButton(120, 20, keyBind, ctx.getKeybindEditingScreen());
+        this.hotkeyButton = new KeyBindConfigButton(120, 20, keyBind);
         this.hotkeyButton.setHoverStringProvider("locked", this.booleanConfig::getLockAndOverrideMessages);
         this.hotkeyButton.setValueChangeListener(this::onKeybindModified);
         this.hotkeyButton.setHoverInfoRequiresShift(true);

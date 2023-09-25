@@ -93,7 +93,6 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.searchTextField.setUpdateListenerAlways(true);
         this.searchTextField.setUpdateListenerFromTextSet(true);
         this.searchTextField.setListener(this::onSearchTextChange);
-        this.searchTextField.setFocused(true);
         this.searchTextField.setColorFocused(0xFFFFFF20);
 
         this.openCloseButton = GenericButton.create((Supplier<Icon>) null, this::toggleOpen);
@@ -525,6 +524,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
         else
         {
+            this.searchTextField.setFocused(false);
             this.searchTextField.setText("");
         }
     }

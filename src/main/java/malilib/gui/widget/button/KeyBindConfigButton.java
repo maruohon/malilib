@@ -12,7 +12,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 
 import malilib.MaLiLibConfigs;
-import malilib.gui.config.KeybindEditScreen;
 import malilib.input.Hotkey;
 import malilib.input.HotkeyCategory;
 import malilib.input.KeyBind;
@@ -25,22 +24,20 @@ import malilib.util.game.wrap.GameUtils;
 
 public class KeyBindConfigButton extends GenericButton
 {
-    @Nullable protected final KeybindEditScreen host;
     @Nullable protected EventListener valueChangeListener;
     protected final KeyBind keyBind;
     protected final IntArrayList newKeys = new IntArrayList();
     protected final List<String> hoverStrings = new ArrayList<>();
     protected int overlapInfoSize;
     protected boolean firstKey;
-    protected boolean selected;
     protected boolean updateImmediately;
 
-    public KeyBindConfigButton(int width, int height, KeyBind keyBind, @Nullable KeybindEditScreen host)
+    public KeyBindConfigButton(int width, int height, KeyBind keyBind)
     {
         super(width, height);
 
+        this.canBeFocused = true;
         this.canReceiveMouseScrolls = true;
-        this.host = host;
         this.keyBind = keyBind;
 
         this.setHoverStringProvider("overlap_info", this::getKeyBindHoverStrings);
@@ -67,7 +64,7 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     public boolean getShouldReceiveOutsideClicks()
     {
-        return this.selected && super.getShouldReceiveOutsideClicks();
+        return this.isFocused() && super.getShouldReceiveOutsideClicks();
     }
 
     @Override
@@ -75,7 +72,7 @@ public class KeyBindConfigButton extends GenericButton
     {
         int priority = super.getMouseClickHandlingPriority(mouseX, mouseY);
 
-        if (this.isEnabled() && this.selected && this.isMouseOver(mouseX, mouseY) == false)
+        if (this.isEnabled() && this.isFocused() && this.isMouseOver(mouseX, mouseY) == false)
         {
             priority += 100;
         }
@@ -93,7 +90,7 @@ public class KeyBindConfigButton extends GenericButton
 
         boolean handled = false;
 
-        if (this.isSelected())
+        if (this.isFocused())
         {
             if (this.isMouseOver(mouseX, mouseY))
             {
@@ -105,11 +102,7 @@ public class KeyBindConfigButton extends GenericButton
         }
         else if (mouseButton == 0)
         {
-            if (this.host != null)
-            {
-                this.host.setActiveKeyBindButton(this);
-            }
-
+            this.setFocused(true);
             handled = true;
         }
         else if (mouseButton == 2)
@@ -122,8 +115,7 @@ public class KeyBindConfigButton extends GenericButton
 
         if (handled)
         {
-            // Play the click sound
-            super.onMouseClicked(mouseX, mouseY, mouseButton);
+            this.playClickSound();
         }
 
         return handled;
@@ -132,16 +124,9 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     protected boolean onMouseClickedOutside(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.isEnabled() && this.isSelected())
+        if (this.isEnabled() && this.isFocused())
         {
-            if (this.host != null)
-            {
-                this.host.setActiveKeyBindButton(null);
-            }
-
-            // Play the click sound
-            super.onMouseClicked(mouseX, mouseY, mouseButton);
-
+            this.playClickSound();
             return true;
         }
 
@@ -151,7 +136,7 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.isEnabled() && this.isSelected())
+        if (this.isEnabled() && this.isFocused())
         {
             int keyCode = mouseWheelDelta < 0 ? -201 : -199;
             this.addKey(keyCode);
@@ -165,7 +150,7 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (this.isSelected())
+        if (this.isFocused())
         {
             if (keyCode == Keys.KEY_ESCAPE)
             {
@@ -174,10 +159,7 @@ public class KeyBindConfigButton extends GenericButton
                     this.keyBind.clearKeys();
                 }
 
-                if (this.host != null)
-                {
-                    this.host.setActiveKeyBindButton(null);
-                }
+                this.setFocused(false);
             }
             else
             {
@@ -197,7 +179,7 @@ public class KeyBindConfigButton extends GenericButton
     {
         // Eat all the characters when the button is active,
         // otherwise they can leak into search bars etc.
-        return this.isSelected();
+        return this.isFocused();
     }
 
     protected void addKey(int keyCode)
@@ -227,9 +209,23 @@ public class KeyBindConfigButton extends GenericButton
         }
     }
 
+    @Override
+    public void setFocused(boolean isFocused)
+    {
+        super.setFocused(isFocused);
+
+        if (isFocused)
+        {
+            this.onSelected();
+        }
+        else
+        {
+            this.onClearSelection();
+        }
+    }
+
     public void onSelected()
     {
-        this.selected = true;
         this.firstKey = true;
         this.newKeys.clear();
         this.keyBind.getKeysToList(this.newKeys);
@@ -244,7 +240,6 @@ public class KeyBindConfigButton extends GenericButton
             this.keyBind.setKeys(this.newKeys);
         }
 
-        this.selected = false;
         this.newKeys.clear();
         this.setHoverInfoRequiresShift(true);
         this.updateButtonState();
@@ -266,17 +261,12 @@ public class KeyBindConfigButton extends GenericButton
         }
     }
 
-    public boolean isSelected()
-    {
-        return this.selected && this.isEnabled();
-    }
-
     protected String getCurrentDisplayString()
     {
         String valueStr;
         boolean isEmpty;
 
-        if (this.isSelected())
+        if (this.isFocused())
         {
             valueStr = Keys.writeKeysToString(this.newKeys, " + ", Keys::charAsCharacter);
             isEmpty = this.newKeys.isEmpty();
@@ -292,7 +282,7 @@ public class KeyBindConfigButton extends GenericButton
             valueStr = StringUtils.translate("malilib.button.misc.none.caps");
         }
 
-        if (this.isSelected())
+        if (this.isFocused())
         {
             return StringUtils.translate("malilib.button.config.keybind_button.selected", valueStr);
         }
@@ -311,12 +301,12 @@ public class KeyBindConfigButton extends GenericButton
 
     protected List<String> getKeyBindHoverStrings()
     {
-        return this.isSelected() || this.isEnabled() == false ? EMPTY_STRING_LIST : this.hoverStrings;
+        return this.isFocused() || this.isEnabled() == false ? EMPTY_STRING_LIST : this.hoverStrings;
     }
 
     protected void updateConflicts()
     {
-        if (this.isSelected())
+        if (this.isFocused())
         {
             return;
         }

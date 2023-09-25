@@ -41,14 +41,14 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.renderBorder = true;
         this.setTitle(titleKey);
 
+        this.textField = new BaseTextFieldWidget(240, 20, this.originalText);
+
         this.okButton = createButton("malilib.button.misc.ok.caps_colored", this::closeScreenIfValueApplied);
         this.resetButton = createButton("malilib.button.misc.reset", this::resetTextFieldToOriginalText);
         this.cancelButton = createButton("malilib.button.misc.cancel", this::cancel);
 
-        this.textField = new BaseTextFieldWidget(240, 20, this.originalText);
-        this.textField.setFocused(true);
-
         this.addPreInitListener(this::updateHeight);
+        this.setFocusedWidget(this.textField);
     }
 
     @Override
@@ -217,7 +217,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
     {
         this.textField.setText(this.originalText);
         this.textField.setCursorToStart();
-        this.textField.setFocused(true);
+        this.setFocusedWidget(this.textField);
     }
 
     protected void cancel()

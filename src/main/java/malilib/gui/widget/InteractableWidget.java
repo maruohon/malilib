@@ -32,11 +32,12 @@ public abstract class InteractableWidget extends BackgroundWidget
     @Nullable protected ImmutableList<StyledTextLine> hoverHelp;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
+    @Nullable protected FocusChangeListener focusChangeListener;
     protected boolean blockHoverContentFromBelow;
+    protected boolean canBeFocused;
     protected boolean canReceiveMouseClicks;
     protected boolean canReceiveMouseMoves;
     protected boolean canReceiveMouseScrolls;
-    protected boolean canInteract = true;
     protected boolean downScaleIcon;
     protected boolean enabled = true;
     protected boolean enabledLast = true;
@@ -44,6 +45,7 @@ public abstract class InteractableWidget extends BackgroundWidget
      * Alternatively override {@link InteractableWidget#hasHoverContent()} to return true. */
     protected boolean hasHoverContent;
     protected boolean hoverInfoRequiresShift;
+    protected boolean isFocused;
     protected boolean shouldReceiveOutsideClicks;
     protected boolean shouldReceiveOutsideScrolls;
 
@@ -60,10 +62,18 @@ public abstract class InteractableWidget extends BackgroundWidget
         this.hoverInfoFactory = new OrderedStringListFactory(maxHoverTextWidth);
     }
 
-    @Override
-    public boolean canInteract()
+    /**
+     * @return true if this widget can be "focused".
+     *         Focusing is mainly meant for handling keyboard input priority.
+     */
+    public boolean canBeFocused()
     {
-        return this.canInteract;
+        return this.canBeFocused;
+    }
+
+    public boolean isFocused()
+    {
+        return this.isFocused && this.isEnabled();
     }
 
     public List<BaseTextFieldWidget> getAllTextFields()
@@ -76,14 +86,30 @@ public abstract class InteractableWidget extends BackgroundWidget
         this.taskQueue = taskQueue;
     }
 
+    public void setFocusChangeListener(@Nullable FocusChangeListener focusChangeListener)
+    {
+        this.focusChangeListener = focusChangeListener;
+    }
+
     public void setRenderHoverChecker(@Nullable HoverChecker checker)
     {
         this.renderHoverChecker = checker;
     }
 
-    public void setCanInteract(boolean canInteract)
+    public void setCanBeFocused(boolean canBeFocused)
     {
-        this.canInteract = canInteract;
+        this.canBeFocused = canBeFocused;
+    }
+
+    public void setFocused(boolean isFocused)
+    {
+        boolean wasFocused = this.isFocused;
+        this.isFocused = isFocused && this.isEnabled();
+
+        if (wasFocused != this.isFocused && this.focusChangeListener != null)
+        {
+            this.focusChangeListener.onFocusChanged(this, this.isFocused);
+        }
     }
 
     public void setClickListener(@Nullable EventListener listener)
@@ -552,5 +578,10 @@ public abstract class InteractableWidget extends BackgroundWidget
     public interface MouseInputPriorityFunction
     {
         int getPriority(InteractableWidget widget, int mouseX, int mouseY);
+    }
+
+    public interface FocusChangeListener
+    {
+        void onFocusChanged(InteractableWidget widget, boolean isFocused);
     }
 }

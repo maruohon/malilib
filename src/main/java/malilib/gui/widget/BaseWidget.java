@@ -541,11 +541,6 @@ public class BaseWidget
         return this.zLevelIncrement;
     }
 
-    public boolean canInteract()
-    {
-        return false;
-    }
-
     public EdgeInt getMargin()
     {
         return this.margin;

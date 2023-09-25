@@ -1,14 +1,12 @@
 package malilib.gui.config.indicator;
 
 import java.util.Collection;
-import javax.annotation.Nullable;
 
 import malilib.MaLiLibReference;
 import malilib.config.value.OptionListConfigValue;
 import malilib.config.value.ScreenLocation;
 import malilib.gui.BaseListScreen;
 import malilib.gui.BaseScreen;
-import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.edit.EdgeIntEditScreen;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.ColorIndicatorWidget;
@@ -29,7 +27,7 @@ import malilib.registry.Registry;
 import malilib.render.text.MultiLineTextRenderSettings;
 import malilib.util.data.ConfigOnTab;
 
-public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>> implements KeybindEditScreen
+public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>>
 {
     protected final ConfigStatusIndicatorContainerWidget widget;
     protected final DropDownListWidget<ScreenLocation> locationDropdownWidget;
@@ -55,7 +53,6 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     protected final BaseTextFieldWidget nameTextField;
     protected final KeyBindConfigButton keybindButton;
     protected final KeybindSettingsWidget settingsWidget;
-    @Nullable protected KeyBindConfigButton activeKeyBindButton;
 
     public ConfigStatusIndicatorGroupEditScreen(ConfigStatusIndicatorContainerWidget widget)
     {
@@ -107,7 +104,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.oddBackgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getOddRowBackgroundColor, textSettings::setOddRowBackgroundColor);
 
         KeyBind keyBind = widget.getHotkey().getKeyBind();
-        this.keybindButton = new KeyBindConfigButton(120, 20, keyBind, this);
+        this.keybindButton = new KeyBindConfigButton(120, 20, keyBind);
         this.settingsWidget = new KeybindSettingsWidget(keyBind, widget.getHotkey().getDisplayName());
 
         this.addPostInitListener(this::updateHoverStrings);
@@ -203,36 +200,6 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.addConfigsButton.setPosition(tmpX, y + 38);
     }
 
-    @Override
-    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
-    {
-        if (this.activeKeyBindButton != null)
-        {
-            this.activeKeyBindButton.onKeyTyped(keyCode, scanCode, modifiers);
-            return true;
-        }
-
-        return super.onKeyTyped(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
-        {
-            return true;
-        }
-
-        // When clicking on not-a-button, clear the selection
-        if (this.activeKeyBindButton != null && mouseButton == 0)
-        {
-            this.setActiveKeyBindButton(null);
-            return true;
-        }
-
-        return false;
-    }
-
     protected void applyChanges()
     {
         this.widget.setStatusIndicatorWidgets(this.getListWidget().getNonFilteredDataList());
@@ -269,14 +236,16 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     protected void openMarginEditScreen()
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getMargin(), false,
-                                                         "malilib.title.screen.edit_margin", "malilib.label.misc.margin");
+                                                         "malilib.title.screen.edit_margin",
+                                                         "malilib.label.misc.margin");
         BaseScreen.openScreenWithParent(screen);
     }
 
     protected void openPaddingEditScreen()
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getPadding(), false,
-                                                         "malilib.title.screen.edit_padding", "malilib.label.misc.padding");
+                                                         "malilib.title.screen.edit_padding",
+                                                         "malilib.label.misc.padding");
         BaseScreen.openScreenWithParent(screen);
     }
 
@@ -291,21 +260,5 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
                                          new ConfigStatusIndicatorEntryWidget(data, constructData, this.widget));
 
         return listWidget;
-    }
-
-    @Override
-    public void setActiveKeyBindButton(@Nullable KeyBindConfigButton button)
-    {
-        if (this.activeKeyBindButton != null)
-        {
-            this.activeKeyBindButton.onClearSelection();
-        }
-
-        this.activeKeyBindButton = button;
-
-        if (this.activeKeyBindButton != null)
-        {
-            this.activeKeyBindButton.onSelected();
-        }
     }
 }

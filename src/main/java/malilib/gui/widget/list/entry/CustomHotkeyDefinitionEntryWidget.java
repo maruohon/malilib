@@ -1,14 +1,12 @@
 package malilib.gui.widget.list.entry;
 
 import java.util.ArrayList;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import malilib.action.MacroAction;
 import malilib.action.NamedAction;
 import malilib.gui.BaseScreen;
 import malilib.gui.edit.CustomHotkeyEditScreen;
-import malilib.gui.edit.CustomHotkeysListScreen;
 import malilib.gui.widget.KeybindSettingsWidget;
 import malilib.gui.widget.LabelWidget;
 import malilib.gui.widget.button.GenericButton;
@@ -28,8 +26,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
     protected boolean addEditElements = true;
 
     public CustomHotkeyDefinitionEntryWidget(CustomHotkeyDefinition data,
-                                             DataListEntryWidgetData constructData,
-                                             @Nullable CustomHotkeysListScreen screen)
+                                             DataListEntryWidgetData constructData)
     {
         super(data, constructData);
 
@@ -41,7 +38,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.nameLabelWidget.getPadding().setTop(2).setLeft(4);
         this.nameLabelWidget.setLines(name, actionName);
 
-        this.keybindButton = new KeyBindConfigButton(160, 20, data.getKeyBind(), screen);
+        this.keybindButton = new KeyBindConfigButton(160, 20, data.getKeyBind());
         this.settingsWidget = new KeybindSettingsWidget(data.getKeyBind(), data.getName());
         this.editButton = GenericButton.create("malilib.button.misc.edit", this::editHotkey);
         this.removeButton = GenericButton.create("malilib.button.misc.remove", this::removeHotkey);

@@ -14,7 +14,6 @@ import malilib.gui.config.BaseConfigTab;
 import malilib.gui.config.ConfigOptionWidgetFactory;
 import malilib.gui.config.ConfigTab;
 import malilib.gui.config.ConfigWidgetContext;
-import malilib.gui.config.KeybindEditScreen;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.widget.list.entry.BaseListEntryWidget;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
@@ -43,8 +42,7 @@ public class ConfigOptionListWidget extends DataListWidget<ConfigOnTab>
 
     public ConfigOptionListWidget(IntSupplier defaultElementWidthSupplier,
                                   ModInfo modInfo,
-                                  Supplier<List<ConfigOnTab>> entrySupplier,
-                                  @Nullable KeybindEditScreen keybindEditScreen)
+                                  Supplier<List<ConfigOnTab>> entrySupplier)
     {
         super(createUnNestingConfigSupplier(entrySupplier), true);
 
@@ -54,7 +52,7 @@ public class ConfigOptionListWidget extends DataListWidget<ConfigOnTab>
         this.allowKeyboardNavigation = true;
         this.showInternalConfigName = MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
 
-        this.setDataListEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory(this, keybindEditScreen));
+        this.setDataListEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory(this));
         this.setEntryFilterStringFunction(cot -> cot.getConfig().getSearchStrings());
         this.getBorderRenderer().getNormalSettings().setBorderWidth(0);
 
@@ -93,15 +91,14 @@ public class ConfigOptionListWidget extends DataListWidget<ConfigOnTab>
                this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY;
     }
 
-    public void addConfigSearchBarWidget(KeybindEditScreen screen)
+    public void addConfigSearchBarWidget()
     {
         this.configsSearchBarWidget = new ConfigsSearchBarWidget(this.getWidth(), 32,
                                                                  this::onSearchBarTextChanged,
                                                                  this::onSearchOpenOrClose,
                                                                  this::refreshEntries,
                                                                  DefaultIcons.SEARCH,
-                                                                 this::resetFilteredConfigsToDefaults,
-                                                                 screen);
+                                                                 this::resetFilteredConfigsToDefaults);
         this.configsSearchBarWidget.getMargin().setBottom(2);
         this.searchBarWidget = this.configsSearchBarWidget;
     }
@@ -294,13 +291,10 @@ public class ConfigOptionListWidget extends DataListWidget<ConfigOnTab>
     public static class ConfigOptionListEntryWidgetFactory implements DataListEntryWidgetFactory<ConfigOnTab>
     {
         protected final ConfigOptionListWidget listWidget;
-        @Nullable protected final KeybindEditScreen keybindScreen;
 
-        public ConfigOptionListEntryWidgetFactory(ConfigOptionListWidget listWidget,
-                                                  @Nullable KeybindEditScreen keybindScreen)
+        public ConfigOptionListEntryWidgetFactory(ConfigOptionListWidget listWidget)
         {
             this.listWidget = listWidget;
-            this.keybindScreen = keybindScreen;
         }
 
         @Override
@@ -309,7 +303,7 @@ public class ConfigOptionListWidget extends DataListWidget<ConfigOnTab>
         {
             ConfigInfo config = configWrapper.getConfig();
             ConfigOptionWidgetFactory<ConfigInfo> factory = Registry.CONFIG_WIDGET.getWidgetFactory(config);
-            ConfigWidgetContext ctx = new ConfigWidgetContext(configWrapper, this.listWidget, this.keybindScreen);
+            ConfigWidgetContext ctx = new ConfigWidgetContext(configWrapper, this.listWidget);
             return factory.create(config, constructData, ctx);
         }
     }

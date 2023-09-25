@@ -59,7 +59,7 @@ public class BaseTextFieldWidget extends ContainerWidget
     protected int colorWarning;
     protected int cursorPosition;
     protected int selectionStartPosition = -1;
-    protected boolean isFocused;
+    protected boolean canUnFocusWithEsc;
     protected boolean isValidInput = true;
     protected boolean rightClickContextMenu;
     protected boolean showCursorPosition;
@@ -78,6 +78,7 @@ public class BaseTextFieldWidget extends ContainerWidget
 
         this.lastNotifiedText = text;
 
+        this.canBeFocused = true;
         this.canReceiveMouseClicks = true;
         this.canReceiveMouseScrolls = true;
         this.blockHoverContentFromBelow = true;
@@ -138,6 +139,11 @@ public class BaseTextFieldWidget extends ContainerWidget
     public int getTextLength()
     {
         return this.getText().length();
+    }
+
+    public void setCanUnFocusWithEsc(boolean canUnFocusWithEsc)
+    {
+        this.canUnFocusWithEsc = canUnFocusWithEsc;
     }
 
     @Override
@@ -300,25 +306,19 @@ public class BaseTextFieldWidget extends ContainerWidget
         this.updateColors(isEnabled);
     }
 
-    public boolean isFocused()
-    {
-        return this.isFocused && this.isEnabled();
-    }
-
-    public BaseTextFieldWidget setFocused(boolean isFocused)
+    @Override
+    public void setFocused(boolean isFocused)
     {
         boolean enabled = this.isEnabled();
         boolean wasFocused = this.isFocused && enabled;
 
-        this.isFocused = isFocused && enabled;
+        super.setFocused(isFocused && enabled);
         this.updateColors(enabled);
 
         if (wasFocused && this.isFocused == false)
         {
             this.notifyListenerIfNeeded();
         }
-
-        return this;
     }
 
     public void updateColors(boolean isEnabled)
@@ -856,7 +856,7 @@ public class BaseTextFieldWidget extends ContainerWidget
         {
             boolean selectText = BaseScreen.isShiftDown();
 
-            if (keyCode == Keys.KEY_ESCAPE)
+            if (this.canUnFocusWithEsc && keyCode == Keys.KEY_ESCAPE)
             {
                 this.setFocused(false);
             }

@@ -103,7 +103,7 @@ public class ImportEntriesListScreen<T> extends BaseImportExportEntriesListScree
     {
         this.contentsTextField.setText(FileUtils.readFileAsString(file, 8 * 1024 * 1024));
         this.contentsTextField.setCursorToStart();
-        this.contentsTextField.setFocused(true);
+        this.setFocusedWidget(this.contentsTextField);
         return true;
     }
 
@@ -111,7 +111,7 @@ public class ImportEntriesListScreen<T> extends BaseImportExportEntriesListScree
     {
         this.contentsTextField.setText(getStringFromClipboard());
         this.contentsTextField.setCursorToStart();
-        this.contentsTextField.setFocused(true);
+        this.setFocusedWidget(this.contentsTextField);
     }
 
     protected void openImportFileSelectorScreen()

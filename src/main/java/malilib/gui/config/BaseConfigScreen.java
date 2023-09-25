@@ -9,7 +9,6 @@ import malilib.config.ConfigManagerImpl;
 import malilib.gui.BaseListScreen;
 import malilib.gui.tab.ScreenTab;
 import malilib.gui.widget.button.GenericButton;
-import malilib.gui.widget.button.KeyBindConfigButton;
 import malilib.gui.widget.list.ConfigOptionListWidget;
 import malilib.listener.EventListener;
 import malilib.registry.Registry;
@@ -17,11 +16,10 @@ import malilib.util.ListUtils;
 import malilib.util.data.ConfigOnTab;
 import malilib.util.data.ModInfo;
 
-public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget> implements KeybindEditScreen
+public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget>
 {
     protected final ModInfo modInfo;
     @Nullable protected EventListener configSaveListener;
-    @Nullable protected KeyBindConfigButton activeKeyBindButton;
     protected int configElementsWidth = 120;
 
     public BaseConfigScreen(ModInfo modInfo,
@@ -45,36 +43,6 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget> imp
         {
             this.onSettingsChanged();
         }
-    }
-
-    @Override
-    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
-    {
-        if (this.activeKeyBindButton != null)
-        {
-            this.activeKeyBindButton.onKeyTyped(keyCode, scanCode, modifiers);
-            return true;
-        }
-
-        return super.onKeyTyped(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
-        {
-            return true;
-        }
-
-        // When clicking on not-a-button, clear the selection
-        if (this.activeKeyBindButton != null && mouseButton == 0)
-        {
-            this.setActiveKeyBindButton(null);
-            return true;
-        }
-
-        return false;
     }
 
     public void setConfigSaveListener(@Nullable EventListener configSaveListener)
@@ -161,32 +129,9 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget> imp
     protected ConfigOptionListWidget createListWidget()
     {
         ConfigOptionListWidget listWidget = new ConfigOptionListWidget(this::getDefaultConfigElementWidth,
-                                                                       this.modInfo, this::getConfigs, this);
-        listWidget.addConfigSearchBarWidget(this);
+                                                                       this.modInfo, this::getConfigs);
+        listWidget.addConfigSearchBarWidget();
         return listWidget;
-    }
-
-    @Override
-    protected void clearElements()
-    {
-        super.clearElements();
-        this.setActiveKeyBindButton(null);
-    }
-
-    @Override
-    public void setActiveKeyBindButton(@Nullable KeyBindConfigButton button)
-    {
-        if (this.activeKeyBindButton != null)
-        {
-            this.activeKeyBindButton.onClearSelection();
-        }
-
-        this.activeKeyBindButton = button;
-
-        if (this.activeKeyBindButton != null)
-        {
-            this.activeKeyBindButton.onSelected();
-        }
     }
 
     public static BaseConfigScreen withExtensionModTabs(ModInfo modInfo,

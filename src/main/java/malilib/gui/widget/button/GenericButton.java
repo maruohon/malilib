@@ -245,12 +245,7 @@ public class GenericButton extends InteractableWidget
     {
         if (this.isEnabled() && this.tryExecuteAction(mouseButton))
         {
-            if (this.playClickSound)
-            {
-                ISound sound = PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F);
-                this.mc.getSoundHandler().playSound(sound);
-            }
-
+            this.playClickSound();
             super.onMouseClicked(mouseX, mouseY, mouseButton); // Call the possible click listener
 
             this.updateButtonState();
@@ -269,6 +264,15 @@ public class GenericButton extends InteractableWidget
         }
 
         return false;
+    }
+
+    protected void playClickSound()
+    {
+        if (this.playClickSound)
+        {
+            ISound sound = PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F);
+            this.mc.getSoundHandler().playSound(sound);
+        }
     }
 
     @Override

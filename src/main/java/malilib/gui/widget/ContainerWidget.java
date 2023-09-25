@@ -83,6 +83,7 @@ public class ContainerWidget extends InteractableWidget
     public void onSubWidgetAdded(InteractableWidget widget)
     {
         widget.setTaskQueue(this.taskQueue);
+        widget.setFocusChangeListener(this.focusChangeListener);
         widget.onWidgetAdded(this.getZ());
         widget.updateWidgetState();
     }
@@ -208,13 +209,23 @@ public class ContainerWidget extends InteractableWidget
     }
 
     @Override
+    public void setFocusChangeListener(@Nullable FocusChangeListener focusChangeListener)
+    {
+        super.setFocusChangeListener(focusChangeListener);
+
+        for (InteractableWidget widget : this.subWidgets)
+        {
+            widget.setFocusChangeListener(focusChangeListener);
+        }
+    }
+
+    @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         for (InteractableWidget widget : this.subWidgets)
         {
             if (widget.onKeyTyped(keyCode, scanCode, modifiers))
             {
-                // Don't call super if the key press got handled
                 return true;
             }
         }

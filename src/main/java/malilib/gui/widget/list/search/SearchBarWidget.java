@@ -34,6 +34,8 @@ public class SearchBarWidget extends ContainerWidget
         this.margin.setTop(1);
 
         this.textField = new BaseTextFieldWidget(width - 7, height);
+        // Don't allow the text field to eat the Esc key press, instead just close the search bar in this widget
+        this.textField.setCanUnFocusWithEsc(false);
         this.textField.setUpdateListenerAlways(true);
         this.textField.setUpdateListenerFromTextSet(true);
         this.textField.setListener((s) -> searchInputChangeListener.onEvent());
@@ -162,8 +164,12 @@ public class SearchBarWidget extends ContainerWidget
         boolean wasOpen = this.isSearchOpen;
 
         this.isSearchOpen = isOpen;
-        this.textField.setFocused(this.isSearchOpen);
+
+        // Add the widgets before focusing the text field, so that the focus change listener
+        // is set when the focus gets set and the listener is notified. 
         this.reAddSubWidgets();
+
+        this.textField.setFocused(this.isSearchOpen);
 
         if (this.openCloseListener != null && wasOpen != isOpen)
         {
@@ -182,7 +188,6 @@ public class SearchBarWidget extends ContainerWidget
             }
             else
             {
-                this.textField.setTextNoNotify("");
                 this.setSearchOpen(false);
             }
 
@@ -199,6 +204,7 @@ public class SearchBarWidget extends ContainerWidget
         if (this.isSearchOpen() == false && charIn != ' ' && charIn != 0x7F)
         {
             this.setSearchOpen(true);
+            this.textField.setTextNoNotify("");
             this.textField.onCharTyped(charIn, modifiers);
             return true;
         }
