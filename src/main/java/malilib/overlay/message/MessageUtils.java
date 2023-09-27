@@ -24,6 +24,7 @@ import malilib.util.StringUtils;
 public class MessageUtils
 {
     protected static final Pattern PATTERN_TIME_MSG = Pattern.compile("time=(?<time>[0-9]+);(?<msg>.*)");
+    protected static final Pattern PATTERN_OUTPUT_MSG = Pattern.compile("output=(?<output>[a-zA-Z0-9_.-]+);(?<msg>.*)");
 
     public static final String CUSTOM_ACTION_BAR_MARKER = "malilib_actionbar";
 
@@ -192,14 +193,21 @@ public class MessageUtils
     public static ActionResult addMessageAction(MessageOutput type, String msg)
     {
         int displayTimeMs = 5000;
-        Matcher matcher = PATTERN_TIME_MSG.matcher(msg);
+        Matcher matcherTime = PATTERN_TIME_MSG.matcher(msg);
+        Matcher matcherOutput = PATTERN_OUTPUT_MSG.matcher(msg);
 
         try
         {
-            if (matcher.matches())
+            if (matcherTime.matches())
             {
-                displayTimeMs = Integer.parseInt(matcher.group("time"));
-                msg = matcher.group("msg");
+                displayTimeMs = Integer.parseInt(matcherTime.group("time"));
+                msg = matcherTime.group("msg");
+            }
+
+            if (matcherOutput.matches())
+            {
+                type = MessageOutput.getByName(matcherOutput.group("output"));
+                msg = matcherOutput.group("msg");
             }
         }
         catch (Exception ignore) {}
