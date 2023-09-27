@@ -48,7 +48,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.cancelButton = createButton("malilib.button.misc.cancel", this::cancel);
 
         this.addPreInitListener(this::updateHeight);
-        this.setFocusedWidget(this.textField);
+        this.addPostInitListener(this::focusTextField);
     }
 
     @Override
@@ -89,6 +89,11 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.updateTextHeightOffset();
         this.setScreenHeight(this.baseHeight + this.elementsOffsetY);
         this.centerOnScreen();
+    }
+
+    protected void focusTextField()
+    {
+        this.setFocusedWidget(this.textField);
     }
 
     protected void updateTextHeightOffset()
