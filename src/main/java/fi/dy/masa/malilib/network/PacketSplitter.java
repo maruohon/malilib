@@ -10,8 +10,8 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.listener.PacketListener;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+//import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+//import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 import fi.dy.masa.malilib.util.PacketUtils;
@@ -36,13 +36,13 @@ public class PacketSplitter
 
     public static void send(ServerPlayNetworkHandler networkHandler, Identifier channel, PacketByteBuf packet)
     {
-        send(packet, MAX_PAYLOAD_PER_PACKET_S2C, buf -> networkHandler.sendPacket(new CustomPayloadS2CPacket(channel, buf)));
+//        send(packet, MAX_PAYLOAD_PER_PACKET_S2C, buf -> networkHandler.sendPacket(new CustomPayloadS2CPacket(channel, buf)));
     }
 
     @Environment(EnvType.CLIENT)
     public static void send(ClientPlayNetworkHandler networkHandler, Identifier channel, PacketByteBuf packet)
     {
-        send(packet, MAX_PAYLOAD_PER_PACKET_C2S, buf -> networkHandler.sendPacket(new CustomPayloadC2SPacket(channel, buf)));
+//        send(packet, MAX_PAYLOAD_PER_PACKET_C2S, buf -> networkHandler.sendPacket(new CustomPayloadC2SPacket(channel, buf)));
     }
 
     private static void send(PacketByteBuf packet, int payloadLimit, Consumer<PacketByteBuf> sender)
@@ -88,19 +88,19 @@ public class PacketSplitter
     }
     */
 
-    @Nullable
-    public static PacketByteBuf receive(ClientPlayPacketListener networkHandler, CustomPayloadS2CPacket message)
-    {
-        return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_S2C);
-    }
-
-    @Nullable
-    private static PacketByteBuf receive(ClientPlayPacketListener networkHandler, CustomPayloadS2CPacket message, int maxLength)
-    {
-        Pair<PacketListener, Identifier> key = Pair.of(networkHandler, message.getChannel());
-
-        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(PacketUtils.retainedSlice(message.getData()), maxLength);
-    }
+//    @Nullable
+//    public static PacketByteBuf receive(ClientPlayPacketListener networkHandler, CustomPayloadS2CPacket message)
+//    {
+//        return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_S2C);
+//    }
+//
+//    @Nullable
+//    private static PacketByteBuf receive(ClientPlayPacketListener networkHandler, CustomPayloadS2CPacket message, int maxLength)
+//    {
+//        Pair<PacketListener, Identifier> key = Pair.of(networkHandler, message.getChannel());
+//
+//        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(PacketUtils.retainedSlice(message.getData()), maxLength);
+//    }
 
     private static class ReadingSession
     {

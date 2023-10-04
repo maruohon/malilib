@@ -287,7 +287,7 @@ public class StringUtils
         }
         else
         {
-            if (mc.isConnectedToRealms())
+            if (mc.getCurrentServerEntry() != null && mc.getCurrentServerEntry().isRealm())
             {
                 if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
                 {

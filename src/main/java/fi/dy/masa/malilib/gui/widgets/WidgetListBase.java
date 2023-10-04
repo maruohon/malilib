@@ -132,9 +132,9 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     }
 
     @Override
-    public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    public boolean onMouseScrolled(int mouseX, int mouseY, double horizontalAmount, double verticalAmount)
     {
-        if (super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+        if (super.onMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount))
         {
             return true;
         }
@@ -145,7 +145,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         if (mouseX >= this.posX && mouseX <= this.posX + this.browserWidth &&
             mouseY >= this.posY && mouseY <= this.posY + this.browserHeight)
         {
-            this.offsetSelectionOrScrollbar(mouseWheelDelta < 0 ? 3 : -3, false);
+            this.offsetSelectionOrScrollbar(verticalAmount < 0 ? 3 : -3, false);
             return true;
         }
 

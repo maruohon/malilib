@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
@@ -90,17 +91,17 @@ public class GuiTextFieldGeneric extends TextFieldWidget
 
     public void setCursorPosition(int pos)
     {
-        this.setCursor(pos);
+        this.setCursor(pos, Screen.hasShiftDown());
     }
 
     public void setCursorPositionZero()
     {
-        this.setCursorToStart();
+        this.setCursorToStart(Screen.hasShiftDown());
     }
 
     public void setCursorPositionEnd()
     {
-        this.setCursorToEnd();
+        this.setCursorToEnd(Screen.hasShiftDown());
     }
 
     public GuiTextFieldGeneric setZLevel(int zLevel)

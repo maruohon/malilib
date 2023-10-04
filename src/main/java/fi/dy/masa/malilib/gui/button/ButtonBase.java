@@ -18,7 +18,9 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class ButtonBase extends WidgetBase
 {
-    protected static final Identifier BUTTON_TEXTURES = new Identifier("minecraft", "textures/gui/widgets.png");
+    protected static final Identifier BUTTON_TEXTURE = new Identifier("widget/button");
+    protected static final Identifier BUTTON_DISABLE_TEXTURE = new Identifier("widget/button_disabled");
+    protected static final Identifier BUTTON_HOVER_TEXTURE = new Identifier("widget/button_highlighted");
 
     protected final List<String> hoverStrings = new ArrayList<>();
     protected final ImmutableList<String> hoverHelp;
@@ -87,9 +89,9 @@ public abstract class ButtonBase extends WidgetBase
     }
 
     @Override
-    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
+    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double horizontalAmount, double verticalAmount)
     {
-        int mouseButton = mouseWheelDelta < 0 ? 1 : 0;
+        int mouseButton = verticalAmount < 0 ? 1 : 0;
         return this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
     }
 
@@ -153,6 +155,11 @@ public abstract class ButtonBase extends WidgetBase
     protected int getTextureOffset(boolean isMouseOver)
     {
         return (this.enabled == false) ? 0 : (isMouseOver ? 2 : 1);
+    }
+
+    protected Identifier getTexture(boolean isMouseOver)
+    {
+        return (this.enabled == false) ? BUTTON_DISABLE_TEXTURE : (isMouseOver ? BUTTON_HOVER_TEXTURE : BUTTON_TEXTURE);
     }
 
     @Override

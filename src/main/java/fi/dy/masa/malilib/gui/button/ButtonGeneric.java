@@ -96,15 +96,11 @@ public class ButtonGeneric extends ButtonBase
         {
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
-            int buttonStyle = this.getTextureOffset(this.hovered);
-
             RenderUtils.color(1f, 1f, 1f, 1f);
 
             if (this.renderDefaultBackground)
             {
-                this.bindTexture(BUTTON_TEXTURES);
-                RenderUtils.drawTexturedRect(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
-                RenderUtils.drawTexturedRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
+                drawContext.drawGuiTexture(this.getTexture(this.hovered), this.x, this.y, this.width, this. height);
             }
 
             if (this.icon != null)
@@ -112,7 +108,7 @@ public class ButtonGeneric extends ButtonBase
                 int offset = this.renderDefaultBackground ? 4 : 0;
                 int x = this.alignment == LeftRight.LEFT ? this.x + offset : this.x + this.width - this.icon.getWidth() - offset;
                 int y = this.y + (this.height - this.icon.getHeight()) / 2;
-                int u = this.icon.getU() + buttonStyle * this.icon.getWidth();
+                int u = this.icon.getU() + this.getTextureOffset(this.hovered) * this.icon.getWidth(); // FIXME: What happened here.
 
                 this.bindTexture(this.icon.getTexture());
                 RenderUtils.drawTexturedRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
