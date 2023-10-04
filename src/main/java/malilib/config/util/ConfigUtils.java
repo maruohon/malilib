@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import com.mumfrey.liteloader.core.LiteLoader;
 import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.util.text.TextFormatting;
@@ -38,7 +37,7 @@ public class ConfigUtils
 {
     public static Path getConfigDirectory()
     {
-        return LiteLoader.getCommonConfigFolder().toPath();
+        return FileUtils.getMinecraftDirectory().resolve("config");
     }
 
     /**

@@ -42,9 +42,9 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
     {
         List<Potion> effects = new ArrayList<>();
 
-        for (Potion effect : Potion.REGISTRY)
+        for (Object effect : Potion.REGISTRY)
         {
-            effects.add(effect);
+            effects.add((Potion) effect);
         }
 
         effects.sort(Comparator.comparing(StatusEffectListConfig::getRegistryName));

@@ -66,9 +66,9 @@ public class RegistryUtils
     {
         List<Block> blocks = new ArrayList<>();
 
-        for (Block block : Block.REGISTRY)
+        for (Object block : Block.REGISTRY)
         {
-            blocks.add(block);
+            blocks.add((Block) block);
         }
 
         blocks.sort(Comparator.comparing(RegistryUtils::getBlockIdStr));
@@ -115,9 +115,9 @@ public class RegistryUtils
     {
         List<Item> items = new ArrayList<>();
 
-        for (Item item : Item.REGISTRY)
+        for (Object item : Item.REGISTRY)
         {
-            items.add(item);
+            items.add((Item) item);
         }
 
         items.sort(Comparator.comparing(RegistryUtils::getItemIdStr));
