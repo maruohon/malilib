@@ -17,9 +17,7 @@ import fi.dy.masa.malilib.event.InputEventHandler;
 public abstract class MixinMouse
 {
     @Shadow @Final private MinecraftClient client;
-
     @Shadow private double eventDeltaHorizontalWheel;
-
     @Shadow private double eventDeltaVerticalWheel;
 
     @Inject(method = "onCursorPos",

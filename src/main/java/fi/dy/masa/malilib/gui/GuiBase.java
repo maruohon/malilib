@@ -180,22 +180,25 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         this.drawGuiMessages(drawContext);
     }
 
-    // TODO: Use de-obfuscated arg
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        if (this.mouseWheelHorizontalDeltaSum != 0.0 && Math.signum(horizontalAmount) != Math.signum(this.mouseWheelHorizontalDeltaSum))
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount)
+    {
+        if (this.mouseWheelHorizontalDeltaSum != 0.0 &&
+            Math.signum(horizontalAmount) != Math.signum(this.mouseWheelHorizontalDeltaSum))
         {
             this.mouseWheelHorizontalDeltaSum = 0.0;
         }
 
-        if (this.mouseWheelVerticalDeltaSum != 0.0 && Math.signum(verticalAmount) != Math.signum(this.mouseWheelVerticalDeltaSum))
+        if (this.mouseWheelVerticalDeltaSum != 0.0 &&
+            Math.signum(verticalAmount) != Math.signum(this.mouseWheelVerticalDeltaSum))
         {
             this.mouseWheelVerticalDeltaSum = 0.0;
         }
 
         this.mouseWheelHorizontalDeltaSum += horizontalAmount;
-        horizontalAmount = (int) this.mouseWheelHorizontalDeltaSum;
         this.mouseWheelVerticalDeltaSum += verticalAmount;
+
+        horizontalAmount = (int) this.mouseWheelHorizontalDeltaSum;
         verticalAmount = (int) this.mouseWheelVerticalDeltaSum;
 
         if (horizontalAmount != 0.0 || verticalAmount != 0.0)
