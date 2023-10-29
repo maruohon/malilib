@@ -305,6 +305,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         RenderUtils.setupBlend();
 
         boolean scaled = this.scale != 1.0;
+        int contentsY = y;
 
         if (scaled)
         {
@@ -320,17 +321,38 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         this.renderWidgetBackground(x, y, z, ctx);
         this.renderWidgetBorder(x, y, z, ctx);
         this.renderTextBackground(x, y, z, ctx);
-        y += this.renderName(x, y, z, ctx);
-        this.renderContents(x, y, z, ctx);
 
-        if (scaled)
-        {
-            GlStateManager.popMatrix();
-        }
+        contentsY += this.renderName(x, y, z, ctx);
+
+        this.renderContents(x, contentsY, z, ctx);
 
         if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
         {
             this.renderDebug(x, y, z, false, ctx);
+
+            StyledTextLine line = StyledTextLine.unParsed(this.getClass().getName());
+            int lineLen = line.renderWidth;
+            int screenWidth = GuiUtils.getScaledWindowWidth();
+            int screenHeight = GuiUtils.getScaledWindowHeight();
+
+            if (x + lineLen >= screenWidth)
+            {
+                x = screenWidth - lineLen - 16;
+            }
+
+            int textY = this.getBottom() + 1;
+
+            if (textY + 12 >= screenHeight)
+            {
+                textY = this.getY() - 12;
+            }
+
+            this.renderTextLine(x, textY, z, 0xFF33FFFF, true, line, ctx);
+        }
+
+        if (scaled)
+        {
+            GlStateManager.popMatrix();
         }
     }
 

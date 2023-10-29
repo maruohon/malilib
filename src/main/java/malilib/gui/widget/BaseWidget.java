@@ -773,6 +773,12 @@ public class BaseWidget
         {
             int posX = debugInfoAlways ? x      : ctx.mouseX;
             int posY = debugInfoAlways ? y - 12 : ctx.mouseY;
+
+            if (posY < 0)
+            {
+                posY = y + h + 2;
+            }
+
             addDebugText(posX, posY, x, y, z, w, h, this.getClass().getName());
         }
     }
@@ -829,8 +835,8 @@ public class BaseWidget
                                           boolean hovered, int color, ScreenContext ctx)
     {
         double lineWidth = hovered ? 3.0 : 1.0;
-        double x1 = x -     lineWidth / 4;
-        double y1 = y -     lineWidth / 4;
+        double x1 = x - lineWidth / 4;
+        double y1 = y - lineWidth / 4;
 
         ShapeRenderUtils.renderOutline(x1, y1, z, w + lineWidth / 2, h + lineWidth / 2, lineWidth, color, ctx);
     }
