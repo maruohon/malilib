@@ -383,28 +383,28 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     }
 
     @Override
-    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
         if (this.getSearchBarWidget() != null &&
-            this.getSearchBarWidget().tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
+            this.getSearchBarWidget().tryMouseScroll(mouseX, mouseY, verticalWheelDelta, horizontalWheelDelta))
         {
             return true;
         }
 
         if (this.headerWidget != null &&
-            this.headerWidget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
+            this.headerWidget.tryMouseScroll(mouseX, mouseY, verticalWheelDelta, horizontalWheelDelta))
         {
             return true;
         }
 
-        if (super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+        if (super.onMouseScrolled(mouseX, mouseY, verticalWheelDelta, horizontalWheelDelta))
         {
             return true;
         }
 
         for (InteractableWidget widget : this.getEntryWidgetList())
         {
-            if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
+            if (widget.tryMouseScroll(mouseX, mouseY, verticalWheelDelta, horizontalWheelDelta))
             {
                 return true;
             }
@@ -413,7 +413,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         if (GuiUtils.isMouseInRegion(mouseX, mouseY, this.getX(), this.entryWidgetStartY, this.getWidth(), this.listHeight))
         {
             int amount = MathHelper.clamp(3, 1, this.visibleListEntries);
-            this.offsetScrollBarPosition(mouseWheelDelta < 0 ? amount : -amount);
+            this.offsetScrollBarPosition(verticalWheelDelta < 0.0 ? amount : -amount);
             return true;
         }
 

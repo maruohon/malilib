@@ -190,9 +190,9 @@ public class ScrollBarWidget extends InteractableWidget
     }
 
     @Override
-    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
-        int amount = mouseWheelDelta < 0 ? 1 : -1;
+        int amount = verticalWheelDelta < 0.0 ? 1 : -1;
         this.offsetValue(amount);
         return true;
     }

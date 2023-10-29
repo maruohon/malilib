@@ -46,14 +46,14 @@ public abstract class BaseSliderWidget<CB extends SliderCallback> extends Intera
     }
 
     @Override
-    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
         if (this.isEnabled() && this.canScrollAdjust)
         {
             double relPos = this.callback.getRelativeValue();
             double delta = 1.0 / (double) this.getSliderTravelDistance();
 
-            if (mouseWheelDelta < 0)
+            if (verticalWheelDelta < 0)
             {
                 delta = -delta;
             }

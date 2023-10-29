@@ -319,17 +319,17 @@ public abstract class InteractableWidget extends BackgroundWidget
     {
     }
 
-    public boolean tryMouseScroll(int mouseX, int mouseY, double mouseWheelDelta)
+    public boolean tryMouseScroll(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
         if (this.canHandleMouseScrollAt(mouseX, mouseY))
         {
-            return this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
+            return this.onMouseScrolled(mouseX, mouseY, verticalWheelDelta, horizontalWheelDelta);
         }
 
         return false;
     }
 
-    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
         return false;
     }

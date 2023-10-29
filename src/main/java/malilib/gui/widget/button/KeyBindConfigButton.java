@@ -134,11 +134,11 @@ public class KeyBindConfigButton extends GenericButton
     }
 
     @Override
-    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
         if (this.isEnabled() && this.isFocused())
         {
-            int keyCode = mouseWheelDelta < 0 ? -201 : -199;
+            int keyCode = verticalWheelDelta < 0.0 ? -201 : -199;
             this.addKey(keyCode);
             this.updateButtonState();
             return true;

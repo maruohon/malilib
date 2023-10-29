@@ -306,16 +306,16 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
         if (this.isOpen())
         {
-            if (this.searchOpen && this.searchTextField.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
+            if (this.searchOpen && this.searchTextField.tryMouseScroll(mouseX, mouseY, verticalWheelDelta, horizontalWheelDelta))
             {
                 return true;
             }
 
-            int amount = mouseWheelDelta < 0 ? 1 : -1;
+            int amount = verticalWheelDelta < 0.0 ? 1 : -1;
             this.scrollBar.offsetValue(amount);
             return true;
         }

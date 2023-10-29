@@ -255,11 +255,11 @@ public class GenericButton extends InteractableWidget
     }
 
     @Override
-    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
         if (this.canScrollToClick)
         {
-            int mouseButton = mouseWheelDelta < 0 ? 1 : 0;
+            int mouseButton = verticalWheelDelta < 0.0 ? 1 : 0;
             return this.onMouseClicked(mouseX, mouseY, mouseButton);
         }
 

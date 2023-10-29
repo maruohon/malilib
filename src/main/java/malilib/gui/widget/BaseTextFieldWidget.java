@@ -836,13 +836,13 @@ public class BaseTextFieldWidget extends ContainerWidget
     }
 
     @Override
-    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
         // Allow selecting text or moving the cursor by scrolling
         if (this.isFocused() && this.getTextLength() > 0)
         {
             boolean selectText = BaseScreen.isShiftDown();
-            this.setCursorPosition(this.cursorPosition + (mouseWheelDelta < 0 ? 1 : -1), selectText);
+            this.setCursorPosition(this.cursorPosition + (verticalWheelDelta < 0.0 ? 1 : -1), selectText);
             return true;
         }
 

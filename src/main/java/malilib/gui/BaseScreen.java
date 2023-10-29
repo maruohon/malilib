@@ -606,7 +606,7 @@ public abstract class BaseScreen extends GuiScreen
 
         if (mouseWheelDelta != 0)
         {
-            this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
+            this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta, 0.0);
         }
 
         // Update after the input is handled
@@ -651,13 +651,13 @@ public abstract class BaseScreen extends GuiScreen
         return false;
     }
 
-    public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    public boolean onMouseScrolled(int mouseX, int mouseY, double verticalWheelDelta, double horizontalWheelDelta)
     {
         this.updateMouseHandlersForScroll(mouseX, mouseY);
 
         for (InteractableWidget widget : this.mouseActionHandlers)
         {
-            if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
+            if (widget.tryMouseScroll(mouseX, mouseY, verticalWheelDelta, horizontalWheelDelta))
             {
                 return true;
             }
