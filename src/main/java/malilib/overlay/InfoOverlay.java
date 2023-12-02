@@ -83,10 +83,11 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
 
             if (widgets.isEmpty() == false)
             {
+                this.allEnabledWidgets.addAll(widgets);
+                this.activeInfoAreas.add(infoArea);
+
                 for (InfoRendererWidget widget : widgets)
                 {
-                    this.allEnabledWidgets.add(widget);
-
                     if (widget.isVisibleInContext(OverlayRenderContext.GUI))
                     {
                         this.enabledGuiWidgets.add(widget);
@@ -97,8 +98,6 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
                         this.enabledInGameWidgets.add(widget);
                     }
                 }
-
-                this.activeInfoAreas.add(infoArea);
             }
         }
 
@@ -109,7 +108,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     /**
      * Calls the InfoRendererWidget#updateState() method on all the currently enabled widgets.
      * Don't call this unless you have your own instance of the InfoOverlay,
-     * ie. don't call this on {@code Registry.INFO_OVERLAY}
+     * i.e. don't call this on {@code Registry.INFO_OVERLAY}
      */
     public void tick()
     {
@@ -118,7 +117,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
             this.fetchEnabledWidgets();
         }
 
-        if (GuiUtils.getCurrentScreen() != null)
+        if (GuiUtils.isScreenOpen())
         {
             for (InfoRendererWidget widget : this.enabledGuiWidgets)
             {
@@ -151,7 +150,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     {
         if (GameUtils.Options.hideGui() == false)
         {
-            boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
+            boolean isScreenOpen = GuiUtils.isScreenOpen();
             boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
             ScreenContext screenContext = DUMMY_CONTEXT;
 
@@ -185,7 +184,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      */
     public void renderScreen(RenderContext ctx)
     {
-        boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
+        boolean isScreenOpen = GuiUtils.isScreenOpen();
         boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
         ScreenContext screenCtx = DUMMY_CONTEXT;
         RenderUtils.disableItemLighting();

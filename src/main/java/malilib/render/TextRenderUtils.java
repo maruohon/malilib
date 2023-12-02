@@ -77,7 +77,8 @@ public class TextRenderUtils
     public static void renderStyledHoverText(int x, int y, float z, List<StyledTextLine> textLines,
                                              int textColor, RectangleRenderer backgroundRenderer, RenderContext ctx)
     {
-        if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
+        // FIXME Why does this check for the screen?
+        if (textLines.isEmpty() == false && GuiUtils.isScreenOpen())
         {
             TextRenderer textRenderer = TextRenderer.INSTANCE;
             final int lineHeight = textRenderer.getLineHeight();

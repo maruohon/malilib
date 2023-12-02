@@ -251,7 +251,7 @@ public class KeyBindImpl implements KeyBind
     {
         if (this.keyCodes.isEmpty() ||
             (this.settings.getContext() != Context.ANY &&
-            ((this.settings.getContext() == Context.INGAME) != (GuiUtils.getCurrentScreen() == null))))
+            ((this.settings.getContext() == Context.INGAME) != GuiUtils.noScreenOpen())))
         {
             this.clearPressed();
             return NO_ACTION;

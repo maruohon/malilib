@@ -75,7 +75,7 @@ public class MessageDispatcher
 
     public MessageDispatcher screenOrActionbar()
     {
-        if (GuiUtils.getCurrentScreen() != null)
+        if (GuiUtils.isScreenOpen())
         {
             this.type = MessageOutput.MESSAGE_OVERLAY;
         }

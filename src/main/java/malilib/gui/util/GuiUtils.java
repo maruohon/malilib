@@ -68,7 +68,8 @@ public class GuiUtils
 
     public static int getMouseScreenX()
     {
-        return getMouseScreenX(getCurrentScreen().width);
+        GuiScreen screen = getCurrentScreen();
+        return screen != null ? getMouseScreenX(screen.width) : 0;
     }
 
     public static int getMouseScreenX(int screenWidth)
@@ -78,12 +79,23 @@ public class GuiUtils
 
     public static int getMouseScreenY()
     {
-        return getMouseScreenY(getCurrentScreen().height);
+        GuiScreen screen = getCurrentScreen();
+        return screen != null ? getMouseScreenY(screen.height) : 0;
     }
 
     public static int getMouseScreenY(int screenHeight)
     {
         return screenHeight - Mouse.getEventY() * screenHeight / getDisplayHeight() - 1;
+    }
+
+    public static boolean isScreenOpen()
+    {
+        return getCurrentScreen() != null;
+    }
+
+    public static boolean noScreenOpen()
+    {
+        return isScreenOpen() == false;
     }
 
     @Nullable
@@ -97,7 +109,7 @@ public class GuiUtils
     {
         GuiScreen screen = getCurrentScreen();
 
-        if (clazz.isAssignableFrom(screen.getClass()))
+        if (screen != null && clazz.isAssignableFrom(screen.getClass()))
         {
             return clazz.cast(screen);
         }
