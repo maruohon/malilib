@@ -128,7 +128,8 @@ public class WidgetSearchBar extends WidgetBase
 
         if (this.searchOpen)
         {
-            this.searchBox.render(drawContext, mouseX, mouseY, 0);
+            // FIXME: see the .render() call under GuiTextFieldGeneric.java
+            this.searchBox.renderZ(drawContext, mouseX, mouseY, 0);
         }
     }
 }

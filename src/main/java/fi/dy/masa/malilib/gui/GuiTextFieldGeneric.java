@@ -109,8 +109,9 @@ public class GuiTextFieldGeneric extends TextFieldWidget
         return this;
     }
 
-    @Override
-    public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
+    // FIXME:  Someone smarter than me can fix this final void .redner() change
+    //@Override
+    public void renderZ(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
     {
         if (this.zLevel != 0)
         {

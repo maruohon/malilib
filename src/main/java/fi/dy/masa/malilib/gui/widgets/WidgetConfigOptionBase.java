@@ -133,7 +133,8 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
     {
         if (this.textField != null)
         {
-            this.textField.getTextField().render(drawContext, mouseX, mouseY, 0f);
+            // FIXME: see the .render() call under GuiTextFieldGeneric.java
+            this.textField.getTextField().renderZ(drawContext, mouseX, mouseY, 0f);
         }
     }
 }
