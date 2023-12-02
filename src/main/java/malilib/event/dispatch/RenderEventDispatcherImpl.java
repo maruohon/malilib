@@ -9,6 +9,7 @@ import malilib.event.PostGameOverlayRenderer;
 import malilib.event.PostItemTooltipRenderer;
 import malilib.event.PostScreenRenderer;
 import malilib.event.PostWorldRenderer;
+import malilib.gui.util.ScreenContext;
 import malilib.render.RenderContext;
 import malilib.render.overlay.OverlayRendererContainer;
 import malilib.util.game.wrap.GameUtils;
@@ -88,7 +89,7 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             for (PostScreenRenderer renderer : this.screenPostRenderers)
             {
                 GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
-                renderer.onPostScreenRender(RenderContext.DUMMY, tickDelta);
+                renderer.onPostScreenRender(ScreenContext.DUMMY, tickDelta);
                 GameUtils.profilerPop();
             }
 

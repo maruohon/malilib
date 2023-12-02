@@ -5,6 +5,8 @@ import malilib.render.RenderContext;
 
 public class ScreenContext extends RenderContext
 {
+    public static final ScreenContext DUMMY = new ScreenContext(0, 0, -1, true);
+
     public final int mouseX;
     public final int mouseY;
     public final int hoveredWidgetId;

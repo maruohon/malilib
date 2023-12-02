@@ -1,6 +1,6 @@
 package malilib.event;
 
-import malilib.render.RenderContext;
+import malilib.gui.util.ScreenContext;
 import malilib.util.ProfilerSectionSupplierSupplier;
 
 public interface PostScreenRenderer extends ProfilerSectionSupplierSupplier
@@ -14,5 +14,5 @@ public interface PostScreenRenderer extends ProfilerSectionSupplierSupplier
      * Note: The client world and the client player are checked
      * to not be null before this method is called.
      */
-    void onPostScreenRender(RenderContext ctx, float tickDelta);
+    void onPostScreenRender(ScreenContext ctx, float tickDelta);
 }
