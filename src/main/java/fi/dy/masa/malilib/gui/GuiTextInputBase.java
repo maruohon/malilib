@@ -76,7 +76,8 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.drawStringWithShadow(drawContext, this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
 
         //super.drawScreen(mouseX, mouseY, partialTicks);
-        this.textField.render(drawContext, mouseX, mouseY, partialTicks);
+        // FIXME: see the .render() call under GuiTextFieldGeneric.java
+        this.textField.renderZ(drawContext, mouseX, mouseY, partialTicks);
 
         this.drawButtons(mouseX, mouseY, partialTicks, drawContext);
         matrixStack.pop();

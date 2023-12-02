@@ -47,7 +47,8 @@ public class TextFieldWrapper<T extends GuiTextFieldGeneric>
 
     public void draw(int mouseX, int mouseY, DrawContext drawContext)
     {
-        this.textField.render(drawContext, mouseX, mouseY, 0f);
+        // FIXME: see the .render() call under GuiTextFieldGeneric.java
+        this.textField.renderZ(drawContext, mouseX, mouseY, 0f);
     }
 
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
