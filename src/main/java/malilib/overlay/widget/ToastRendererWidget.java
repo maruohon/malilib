@@ -265,6 +265,8 @@ public class ToastRendererWidget extends InfoRendererWidget
     @Override
     public void updateSubWidgetPositions()
     {
+        super.updateSubWidgetPositions();
+
         ScreenLocation location = this.getScreenLocation();
         HorizontalAlignment align = location.horizontalLocation;
         int x;

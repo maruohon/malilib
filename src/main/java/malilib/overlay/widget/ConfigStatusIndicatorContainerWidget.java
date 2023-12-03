@@ -221,6 +221,8 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     @Override
     public void updateSubWidgetPositions()
     {
+        super.updateSubWidgetPositions();
+        
         int x = this.getX();
         int y = this.getY();
         int subWidgetX = x + this.padding.getLeft();

@@ -6,19 +6,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import malilib.gui.util.GeometryResizeNotifier;
-import malilib.gui.widget.BaseWidget;
+import malilib.gui.widget.ContainerWidget;
 import malilib.listener.EventListener;
 import malilib.util.data.MarkerManager;
 import malilib.util.data.json.JsonUtils;
 
-public abstract class BaseOverlayWidget extends BaseWidget
+public abstract class BaseOverlayWidget extends ContainerWidget
 {
     protected final MarkerManager<String> markerManager = new MarkerManager<>(JsonPrimitive::new, JsonElement::getAsString);
     protected final GeometryResizeNotifier geometryResizeNotifier;
     @Nullable protected EventListener enabledChangeListener;
     protected boolean forceNotifyGeometryChangeListener;
     protected boolean needsReLayout;
-    protected boolean enabled = true;
 
     public BaseOverlayWidget()
     {
@@ -59,22 +58,10 @@ public abstract class BaseOverlayWidget extends BaseWidget
         return this.markerManager;
     }
 
-    public boolean isEnabled()
+    @Override
+    protected void onEnabledStateChanged(boolean isEnabled)
     {
-        return this.enabled;
-    }
-
-    public void toggleEnabled()
-    {
-        this.setEnabled(! this.isEnabled());
-    }
-
-    public void setEnabled(boolean enabled)
-    {
-        boolean wasEnabled = this.enabled;
-        this.enabled = enabled;
-
-        if (enabled != wasEnabled && this.enabledChangeListener != null)
+        if (this.enabledChangeListener != null)
         {
             this.enabledChangeListener.onEvent();
         }
@@ -120,38 +107,22 @@ public abstract class BaseOverlayWidget extends BaseWidget
         this.updateSubWidgetPositions();
     }
 
-    public void updateSubWidgetPositions()
-    {
-    }
-
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
 
         obj.addProperty("type", this.getWidgetTypeId());
         obj.addProperty("enabled", this.isEnabled());
-
-        if (this.automaticWidth)
-        {
-            obj.addProperty("auto_width", true);
-        }
+        obj.addProperty("width", this.getWidth());
+        JsonUtils.addIfNotEqual(obj, "auto_width", this.automaticWidth, false);
 
         if (this.hasMaxWidth())
         {
             obj.addProperty("max_width", this.maxWidth);
         }
 
-        obj.addProperty("width", this.getWidth());
-
-        if (this.margin.isEmpty() == false)
-        {
-            obj.add("margin", this.margin.toJson());
-        }
-
-        if (this.padding.isEmpty() == false)
-        {
-            obj.add("padding", this.padding.toJson());
-        }
+        this.margin.writeToJsonIfModified(obj, "margin");
+        this.padding.writeToJsonIfModified(obj, "padding");
 
         return obj;
     }

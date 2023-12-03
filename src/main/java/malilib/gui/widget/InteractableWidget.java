@@ -191,6 +191,11 @@ public abstract class InteractableWidget extends BackgroundWidget
         }
     }
 
+    public void toggleEnabled()
+    {
+        this.setEnabled(! this.isEnabled());
+    }
+
     public boolean isEnabled()
     {
         boolean enabled = this.enabledStatusSupplier != null ? this.enabledStatusSupplier.getAsBoolean() : this.enabled;
