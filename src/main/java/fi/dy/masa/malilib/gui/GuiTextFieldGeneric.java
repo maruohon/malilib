@@ -110,21 +110,21 @@ public class GuiTextFieldGeneric extends TextFieldWidget
     }
 
     @Override
-    public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta)
     {
         if (this.zLevel != 0)
         {
-            MatrixStack matrixStack = drawContext.getMatrices();
+            MatrixStack matrixStack = context.getMatrices();
             matrixStack.push();
             matrixStack.translate(0, 0, this.zLevel);
 
-            super.render(drawContext, mouseX, mouseY, partialTicks);
+            super.renderWidget(context, mouseX, mouseY, delta);
 
             matrixStack.pop();
         }
         else
         {
-            super.render(drawContext, mouseX, mouseY, partialTicks);
+            super.renderWidget(context, mouseX, mouseY, delta);
         }
     }
 }
