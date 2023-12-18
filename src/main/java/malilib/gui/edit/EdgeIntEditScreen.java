@@ -13,6 +13,7 @@ public class EdgeIntEditScreen extends BaseScreen
     public EdgeIntEditScreen(EdgeInt value, boolean isColor, String titleKey, @Nullable String centerText)
     {
         this.useTitleHierarchy = false;
+        this.backgroundColor = 0xFF000000;
         this.renderBorder = true;
         this.setTitle(titleKey);
 
