@@ -203,6 +203,16 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         this.evenWidthBackgroundToggleButton.setPosition(tmpX, y + 60);
     }
 
+    public void setupAsPopup()
+    {
+        this.backgroundColor = 0xFF000000;
+        this.renderBorder = true;
+        int width = this.evenWidthBackgroundToggleButton.getRight() - this.x + 20;
+        int height = this.textShadowToggleButton.getBottom() - this.y + 20;
+        this.setScreenWidthAndHeight(width, height);
+        this.centerOnScreen();
+    }
+
     protected void changeWidgetLocation(ScreenLocation location)
     {
         Registry.INFO_OVERLAY.getOrCreateInfoArea(this.widget.getScreenLocation()).removeWidget(this.widget);
@@ -214,13 +224,13 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getMargin(), false,
                                                          "malilib.title.screen.edit_margin", "malilib.label.misc.margin");
-        BaseScreen.openScreenWithParent(screen);
+        BaseScreen.openPopupScreenWithParent(screen);
     }
 
     protected void openPaddingEditScreen()
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getPadding(), false,
                                                          "malilib.title.screen.edit_padding", "malilib.label.misc.padding");
-        BaseScreen.openScreenWithParent(screen);
+        BaseScreen.openPopupScreenWithParent(screen);
     }
 }
