@@ -28,6 +28,7 @@ import malilib.render.ShapeRenderUtils;
 import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.TextRenderer;
+import malilib.render.text.TextStyle;
 import malilib.util.StringUtils;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.position.Vec2i;
@@ -71,6 +72,7 @@ public abstract class BaseScreen extends GuiScreen
     protected boolean renderBorder;
     protected boolean shouldCenter;
     protected boolean shouldRenderParent;
+    protected boolean underlineTitle = true;
     protected boolean useCustomScreenScaling;
     protected boolean useTitleHierarchy = true;
     /** This indicates that the screen should be automatically resized to cover the entire window.
@@ -365,7 +367,20 @@ public abstract class BaseScreen extends GuiScreen
         else
         {
             this.titleString = StringUtils.translate(titleKey, args);
-            this.titleText = StyledTextLine.parseFirstLine(this.getTitleString());
+            this.titleText = this.buildTitle();
+        }
+    }
+
+    protected StyledTextLine buildTitle()
+    {
+        if (this.underlineTitle)
+        {
+            TextStyle style = TextStyle.builder().fromStyle(TextStyle.DEFAULT).withUnderline(true).build();
+            return StyledTextLine.parseFirstLine(this.getTitleString(), style);
+        }
+        else
+        {
+            return StyledTextLine.parseFirstLine(this.getTitleString());
         }
     }
 
