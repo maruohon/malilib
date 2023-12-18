@@ -117,7 +117,9 @@ public class StringListRendererWidget extends InfoRendererWidget
     @Override
     public void openEditScreen()
     {
-        BaseScreen.openScreenWithParent(new StringListRendererWidgetEditScreen(this));
+        StringListRendererWidgetEditScreen screen = new StringListRendererWidgetEditScreen(this);
+        BaseScreen.openPopupScreenWithCurrentScreenAsParent(screen, false);
+        screen.setupAsPopup();
     }
 
     /**
