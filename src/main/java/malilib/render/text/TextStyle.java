@@ -88,7 +88,7 @@ public class TextStyle
     {
         if (this.color == null || this.shadowColor == null)
         {
-            Builder builder = builder();
+            Builder builder = builder().fromStyle(this);
 
             if (this.color == null)
             {
