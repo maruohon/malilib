@@ -213,7 +213,7 @@ public abstract class BaseScreen extends GuiScreen
         this.useWindowDimensions = useWindowDimensions;
     }
 
-    protected void setScreenWidthAndHeight(int width, int height)
+    public void setScreenWidthAndHeight(int width, int height)
     {
         this.screenWidth = width;
         this.screenHeight = height;
@@ -1049,6 +1049,12 @@ public abstract class BaseScreen extends GuiScreen
         return openPopupScreen(screen, true);
     }
 
+    public static boolean openPopupScreenWithParent(BaseScreen screen)
+    {
+        screen.setParent(GuiUtils.getCurrentScreen());
+        return openPopupScreen(screen);
+    }
+
     /**
      * Opens a popup screen, which is meant to open on top of another screen.
      * This will set the Z level of that screen based on the current screen,
@@ -1067,6 +1073,12 @@ public abstract class BaseScreen extends GuiScreen
     {
         screen.setParent(GuiUtils.getCurrentScreen());
         return openPopupScreen(screen, true);
+    }
+
+    public static boolean openPopupScreenWithCurrentScreenAsParent(BaseScreen screen, boolean shouldRenderParent)
+    {
+        screen.setParent(GuiUtils.getCurrentScreen());
+        return openPopupScreen(screen, shouldRenderParent);
     }
 
     public static void applyCustomScreenScaleChange()
