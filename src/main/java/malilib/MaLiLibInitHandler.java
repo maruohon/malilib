@@ -1,16 +1,14 @@
 package malilib;
 
 import malilib.config.BaseModConfig;
-import malilib.event.InitializationHandler;
 import malilib.input.CustomHotkeyManager;
 import malilib.network.message.ConfigLockPacketHandler;
 import malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import malilib.registry.Registry;
 
-public class MaLiLibInitHandler implements InitializationHandler
+public class MaLiLibInitHandler
 {
-    @Override
-    public void registerModHandlers()
+    public static void registerMalilibHandlers()
     {
         Registry.CONFIG_MANAGER.registerConfigHandler(BaseModConfig.createDefaultModConfig(MaLiLibReference.MOD_INFO, MaLiLibConfigs.CONFIG_VERSION, MaLiLibConfigs.CATEGORIES));
         Registry.CONFIG_SCREEN.registerConfigScreenFactory(MaLiLibReference.MOD_INFO, MaLiLibConfigScreen::create);

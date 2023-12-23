@@ -31,8 +31,7 @@ public class InitializationDispatcherImpl implements InitializationDispatcher
      */
     public void onGameInitDone()
     {
-        InitializationHandler malilibHandler = new MaLiLibInitHandler();
-        malilibHandler.registerModHandlers();
+        MaLiLibInitHandler.registerMalilibHandlers();
 
         if (this.handlers.isEmpty() == false)
         {
