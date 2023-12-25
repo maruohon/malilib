@@ -3,6 +3,7 @@ package malilib.util.game;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.World;
@@ -53,5 +54,20 @@ public class WorldUtils
     {
         MinecraftServer server = GameUtils.getIntegratedServer();
         return server != null ? server.getWorld(getDimensionId(world)) : null;
+    }
+
+    public static boolean isClientChunkLoaded(int chunkX, int chunkZ, WorldClient world)
+    {
+        return world.getChunkProvider().isChunkGeneratedAt(chunkX, chunkZ);
+    }
+
+    public static void loadClientChunk(int chunkX, int chunkZ, WorldClient world)
+    {
+        world.getChunkProvider().loadChunk(chunkX, chunkZ);
+    }
+
+    public static void unloadClientChunk(int chunkX, int chunkZ, WorldClient world)
+    {
+        world.getChunkProvider().unloadChunk(chunkX, chunkZ);
     }
 }

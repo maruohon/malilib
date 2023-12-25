@@ -341,4 +341,14 @@ public class NbtWrap
     {
         return listTag.getCompoundTagAt(index);
     }
+
+    public static NBTTagCompound copy(NBTTagCompound tag)
+    {
+        return tag.copy();
+    }
+
+    public static NBTTagList copy(NBTTagList tag)
+    {
+        return tag.copy();
+    }
 }
