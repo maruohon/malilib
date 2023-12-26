@@ -1,6 +1,5 @@
 package malilib.gui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -713,7 +712,7 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Override
-    public void handleKeyboardInput() throws IOException
+    public void handleKeyboardInput()
     {
         if (Keyboard.getEventKeyState() == false &&
             this.onKeyReleased(Keyboard.getEventKey(), 0, 0))

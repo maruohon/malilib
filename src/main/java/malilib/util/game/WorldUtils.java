@@ -63,11 +63,11 @@ public class WorldUtils
 
     public static void loadClientChunk(int chunkX, int chunkZ, WorldClient world)
     {
-        world.getChunkProvider().loadChunk(chunkX, chunkZ);
+        world.m_5061960()/*getChunkProvider()*/.loadChunk(chunkX, chunkZ);
     }
 
     public static void unloadClientChunk(int chunkX, int chunkZ, WorldClient world)
     {
-        world.getChunkProvider().unloadChunk(chunkX, chunkZ);
+        world.m_5061960()/*getChunkProvider()*/.unloadChunk(chunkX, chunkZ);
     }
 }

@@ -1,11 +1,17 @@
 package malilib;
 
+import net.ornithemc.osl.entrypoints.api.client.ClientModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MaLiLib
+public class MaLiLib implements ClientModInitializer
 {
     public static final Logger LOGGER = LogManager.getLogger(MaLiLibReference.MOD_ID);
+
+    @Override
+    public void initClient()
+    {
+    }
 
     public static boolean canShowCoordinates()
     {
