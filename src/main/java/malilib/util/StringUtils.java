@@ -6,11 +6,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import com.mumfrey.liteloader.LiteMod;
-import com.mumfrey.liteloader.core.LiteLoader;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
@@ -63,11 +64,11 @@ public class StringUtils
     {
         try
         {
-            LiteMod mod = LiteLoader.getInstance().getMod(modId);
+            Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(modId);
 
-            if (mod != null)
+            if (container.isPresent())
             {
-                return mod.getVersion();
+                return container.get().getMetadata().getVersion().getFriendlyString();
             }
         }
         catch (Exception ignore) {}

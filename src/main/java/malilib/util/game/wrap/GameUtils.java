@@ -177,7 +177,7 @@ public class GameUtils
 
     public static void profilerPush(Supplier<String> nameSupplier)
     {
-        getClient().profiler.func_194340_a(nameSupplier);
+        getClient().profiler.m_4994039(nameSupplier);
     }
 
     public static void profilerSwap(String name)
@@ -187,7 +187,7 @@ public class GameUtils
 
     public static void profilerSwap(Supplier<String> nameSupplier)
     {
-        getClient().profiler.func_194339_b(nameSupplier);
+        getClient().profiler.m_3681950(nameSupplier);
     }
 
     public static void profilerPop()

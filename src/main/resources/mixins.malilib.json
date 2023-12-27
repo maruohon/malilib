@@ -2,8 +2,7 @@
 	"required": true,
 	"package": "malilib.mixin",
 	"compatibilityLevel": "JAVA_8",
-	"minVersion": "0.7",
-	"refmap": "mixins.malilib.refmap.json",
+	"minVersion": "0.8",
 	"client": [
 		"access.AbstractHorseMixin",
 		"access.GuiContainerMixin",

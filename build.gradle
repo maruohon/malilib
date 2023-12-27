@@ -1,139 +1,80 @@
-buildscript {
-	repositories {
-		maven {
-			name = "forge"
-			url = "https://files.minecraftforge.net/maven"
-		}
-		maven {
-			name = 'sponge'
-			url = 'https://repo.spongepowered.org/repository/maven-public'
-		}
-	}
-
-	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
-		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-	}
+plugins {
+	id 'maven-publish'
+	id 'fabric-loom' version '1.4-SNAPSHOT'
+	id 'ploceus' version '1.4-SNAPSHOT'
 }
 
-apply plugin: 'net.minecraftforge.gradle.liteloader'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'maven-publish'
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-minecraft {
-	version = project.minecraft_version
-	mappings = project.mappings_version
-	runDir = 'minecraft'
-	makeObfSourceJar = false
-
-	ext.mod_version = project.mod_version
-
-	if (mod_version.endsWith('-dev')) {
-		mod_version = mod_version + "." + new Date().format('yyyyMMdd.HHmmss')
-	}
-
-	replaceIn "MaLiLibReference.java"
-	replace "@MOD_VERSION@", mod_version
+repositories {
 }
 
-compileJava {
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
-	options.encoding = 'UTF-8'
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+	def prop = new Properties()
+	prop.load(it)
+	project.ext.config = new ConfigSlurper().parse prop
 }
 
-sourceSets {
-	main {
-		ext.refMap = 'mixins.' + project.mod_id + '.refmap.json'
-	}
+dependencies {
+	minecraft "com.mojang:minecraft:${config.minecraft_version}"
+	mappings loom.layered {
+        addLayer ploceus.mcpMappings('stable', '1.12', '39')
+    }
+	modImplementation "net.fabricmc:fabric-loader:${config.fabric_loader_version}"
+	implementation "com.google.code.findbugs:jsr305:3.0.2"
+	ploceus.dependOsl(config.osl_version)
+	modCompileOnly "com.terraformersmc:modmenu:${config.mod_menu_version}"
 }
 
-group = project.mod_id // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = project.mod_file_name + '-' + project.minecraft_version_out
-version = project.minecraft.mod_version
+group = config.group + "." + config.mod_id
+base {
+	archivesName = config.mod_file_name + '-' + config.minecraft_version_out
+}
+version = config.mod_version
 
-/**
- * This section allows you to customise the generated litemod.json file
- */
-litemod {
-	json {
-		name = project.mod_id
-		displayName = project.mod_name
-		mcversion = project.minecraft_version
-		version = project.minecraft.mod_version
-		author = project.author
-
-		// Uncomment any of the following lines and fill in your own details as required
-		//dependsOn = [ 'modid', 'othermod' ]
-		//requiredAPIs = [ 'someapi' ]
-		//tweakClass = 'name.of.tweaker.here'
-		mixinConfigs = [ 'mixins.' + project.mod_id + '.json' ]
-	}
+if (version.endsWith('-dev')) {
+	version += "." + new Date().format('yyyyMMdd.HHmmss')
 }
 
-/**
- * This section allows you to customise your generated jar (litemod) file. By
- * default it includes the generated litemod.json file, however if you prefer to
- * include your own file from resources, simply remove the line below.
- */
-jar {
-	// Remove the "-mc1.12" suffix from the file name
-	classifier = ""
-	// Don't append a 'mod-' filename prefix >_>
-	baseName = archivesBaseName
-
-	from litemod.outputs
-
-	/*
-	manifest.mainAttributes (
-		'Built-By': System.properties['user.name'],
-		'Created-By': System.properties['java.vm.version'] + " (" + System.properties['java.vm.vendor'] + ")",
-		'Implementation-Title': project.mod_id,
-		'Implementation-Version': project.version
-	)
-	*/
-}
-
-mixin {
-	defaultObfuscationEnv notch
-}
-
-//tasks.withType(Jar)*.baseName = archivesBaseName
-
-processResources
-{
+processResources {
 	// Exclude the GIMP image files
 	exclude '**/*.xcf'
 	exclude '**/xcf'
 
 	// this will ensure that this task is redone when the versions change.
-	inputs.property "mod_version", project.minecraft.mod_version
-	inputs.property "minecraft_version", project.minecraft_version
+	//inputs.property "minecraft_version", project.config.minecraft_version
 
-	// replace stuff in mcmod.info, nothing else
-	from(sourceSets.main.resources.srcDirs) {
-		include 'mcmod.info'
-				
-		// replace version and mcversion
-		expand 'mod_version': project.minecraft.mod_version, 'minecraft_version': project.minecraft_version
-	}
-	  
-	// copy everything else, thats not the mcmod.info
-	from(sourceSets.main.resources.srcDirs) {
-		exclude 'mcmod.info'
+	inputs.property "mod_version", config.mod_version
+
+	filesMatching("fabric.mod.json") {
+		expand "mod_version": config.mod_version
 	}
 }
 
-task deobfJar(type: Jar) {
-	from sourceSets.main.output
-	// This classifier is standard and should not be changed
-	classifier = 'deobf'
+tasks.withType(JavaCompile).configureEach {
+	// ensure that the encoding is set to UTF-8, no matter what the system default is
+	// this fixes some edge cases with special characters not displaying correctly
+	// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+	// If Javadoc is generated, this must be specified in that task too.
+	it.options.encoding = "UTF-8"
+
+	it.options.release = 8
 }
 
-// This section enables the last two tasks
-artifacts {
-	//archives sourcesJar
-	archives deobfJar
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}"}
+	}
 }
 
 tasks.publish.dependsOn build
@@ -141,10 +82,10 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			artifactId project.archivesBaseName
-			from components.java
 
-			artifact deobfJar
-			artifact sourceJar
+			// add all the jars that should be included when publishing to maven
+			//artifact(jar)             { builtBy remapJar }
+			from components.java
 		}
 	}
 
