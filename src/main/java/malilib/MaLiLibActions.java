@@ -10,6 +10,7 @@ import malilib.gui.action.ActionPromptScreen;
 import malilib.gui.action.ActionWidgetScreen;
 import malilib.gui.edit.CustomIconListScreen;
 import malilib.gui.edit.MessageRedirectListScreen;
+import malilib.gui.edit.TranslationOverridesListScreen;
 import malilib.input.callback.AdjustableValueHotkeyCallback;
 import malilib.listener.EventListener;
 import malilib.overlay.message.MessageUtils;
@@ -23,15 +24,16 @@ public class MaLiLibActions
 
     public static void init()
     {
-        register("addMessage",                      MessageUtils::addMessageAction);
-        register("addToast",                        MessageUtils::addToastAction);
-        register("createActionWidgetScreen",        ActionWidgetScreen::openCreateActionWidgetScreen);
-        register("loadAllConfigsFromFile",          ConfigUtils::loadAllConfigsFromFileAction);
-        register("openActionWidgetScreen",          ActionWidgetScreen::openActionWidgetScreen);
-        register("openCustomIconsListScreen",       CustomIconListScreen::openCustomIconListScreenAction);
-        register("openMessageRedirectsListScreen",  MessageRedirectListScreen::openMessageRedirectListScreenAction);
-        register("openPreviousActionWidgetScreen",  ActionWidgetScreen::openPreviousActionWidgetScreen);
-        register("switchConfigProfile",             ConfigUtils::switchConfigProfile);
+        register("addMessage",                          MessageUtils::addMessageAction);
+        register("addToast",                            MessageUtils::addToastAction);
+        register("createActionWidgetScreen",            ActionWidgetScreen::openCreateActionWidgetScreen);
+        register("loadAllConfigsFromFile",              ConfigUtils::loadAllConfigsFromFileAction);
+        register("openActionWidgetScreen",              ActionWidgetScreen::openActionWidgetScreen);
+        register("openCustomIconsListScreen",           CustomIconListScreen::openCustomIconListScreenAction);
+        register("openMessageRedirectsListScreen",      MessageRedirectListScreen::openMessageRedirectListScreenAction);
+        register("openPreviousActionWidgetScreen",      ActionWidgetScreen::openPreviousActionWidgetScreen);
+        register("openTranslationOverridesListScreen",  TranslationOverridesListScreen::openTranslationOverridesListScreenAction);
+        register("switchConfigProfile",                 ConfigUtils::switchConfigProfile);
 
         register("cycleGameMode",                   UtilityActions::cycleGameMode);
         register("copyScreenshotToClipboard",       UtilityActions::copyScreenshotToClipboard);

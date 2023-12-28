@@ -63,6 +63,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig SORT_CONFIGS_BY_NAME                      = new BooleanConfig("sortConfigsByName", false);
         public static final BooleanConfig SORT_EXTENSION_MOD_OPTIONS                = new BooleanConfig("sortExtensionModOptions", false);
         public static final BooleanConfig TEXT_FIELD_RIGHT_CLICK_CONTEXT_MENU       = new BooleanConfig("textFieldRightClickContextMenu", true);
+        public static final BooleanConfig TRANSLATION_OVERRIDES                     = new BooleanConfig("translationOverrides", false);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 ACTION_PROMPT_CLOSE_ON_EXECUTE,
@@ -98,7 +99,8 @@ public class MaLiLibConfigs
                 SHOW_INTERNAL_CONFIG_NAME,
                 SORT_CONFIGS_BY_NAME,
                 SORT_EXTENSION_MOD_OPTIONS,
-                TEXT_FIELD_RIGHT_CLICK_CONTEXT_MENU
+                TEXT_FIELD_RIGHT_CLICK_CONTEXT_MENU,
+                TRANSLATION_OVERRIDES
         );
     }
 

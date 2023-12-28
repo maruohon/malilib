@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
+import malilib.registry.Registry;
 import malilib.util.data.Identifier;
 import malilib.util.data.LeftRight;
 import malilib.util.game.WorldUtils;
@@ -617,14 +618,21 @@ public class StringUtils
 
     /**
      * Just a wrapper around I18n, to reduce the number of changed lines between MCP/Yarn versions of mods
-     * @param translationKey
-     * @param args
-     * @return
      */
     public static String translate(String translationKey, Object... args)
     {
         try
         {
+            if (MaLiLibConfigs.Generic.TRANSLATION_OVERRIDES.getBooleanValue())
+            {
+                String translation = Registry.TRANSLATION_OVERRIDE_MANAGER.getOverriddenTranslation(translationKey, args);
+
+                if (translation != null)
+                {
+                    return translation;
+                }
+            }
+
             return net.minecraft.client.resources.I18n.format(translationKey, args);
         }
         catch (Exception e)
@@ -635,7 +643,6 @@ public class StringUtils
 
     /**
      * Just a wrapper to get the font height from the Font/TextRenderer
-     * @return
      */
     public static int getFontHeight()
     {
@@ -644,8 +651,6 @@ public class StringUtils
 
     /**
      * Returns the render width of the given string
-     * @param text
-     * @return
      */
     public static int getStringWidth(String text)
     {

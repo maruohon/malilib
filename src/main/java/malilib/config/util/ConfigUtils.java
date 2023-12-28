@@ -201,6 +201,7 @@ public class ConfigUtils
         CustomHotkeyManager.INSTANCE.loadFromFile();
         Registry.INFO_WIDGET_MANAGER.loadFromFile();
         Registry.MESSAGE_REDIRECT_MANAGER.loadFromFile();
+        Registry.TRANSLATION_OVERRIDE_MANAGER.loadFromFile();
         Registry.HOTKEY_MANAGER.updateUsedKeys();
     }
 
@@ -214,6 +215,7 @@ public class ConfigUtils
         ((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveIfDirty();
         Registry.INFO_WIDGET_MANAGER.saveToFileIfDirty();
         Registry.MESSAGE_REDIRECT_MANAGER.saveToFileIfDirty();
+        Registry.TRANSLATION_OVERRIDE_MANAGER.saveToFileIfDirty();
         OverlayRendererContainer.INSTANCE.saveToFile(false);
         ActionExecutionWidgetManager.INSTANCE.clear();
 
@@ -234,10 +236,11 @@ public class ConfigUtils
                 Registry.ICON.saveToFile();
                 ((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveAllConfigs();
                 Registry.ACTION_REGISTRY.saveToFile();
-                ActionExecutionWidgetManager.INSTANCE.saveAllLoadedToFile();
                 CustomHotkeyManager.INSTANCE.saveToFile();
                 Registry.INFO_WIDGET_MANAGER.saveToFile();
                 Registry.MESSAGE_REDIRECT_MANAGER.saveToFile();
+                Registry.TRANSLATION_OVERRIDE_MANAGER.saveToFile();
+                ActionExecutionWidgetManager.INSTANCE.saveAllLoadedToFile();
             }
         }
     }

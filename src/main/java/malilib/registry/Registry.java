@@ -31,6 +31,7 @@ import malilib.overlay.InfoOverlay;
 import malilib.overlay.InfoWidgetManager;
 import malilib.overlay.InfoWidgetRegistry;
 import malilib.overlay.message.MessageRedirectManager;
+import malilib.util.text.TranslationOverrideManager;
 
 public class Registry
 {
@@ -52,6 +53,7 @@ public class Registry
     public static final InfoOverlay INFO_OVERLAY = new InfoOverlay();
     public static final InfoWidgetManager INFO_WIDGET_MANAGER = new InfoWidgetManager(INFO_OVERLAY);
     public static final MessageRedirectManager MESSAGE_REDIRECT_MANAGER = new MessageRedirectManager();
+    public static final TranslationOverrideManager TRANSLATION_OVERRIDE_MANAGER = new TranslationOverrideManager();
 
     // Event dispatchers and handlers
     public static final BlockPlacementPositionHandler BLOCK_PLACEMENT_POSITION_HANDLER = new BlockPlacementPositionHandler();

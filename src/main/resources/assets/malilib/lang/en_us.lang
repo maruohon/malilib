@@ -72,6 +72,7 @@ malilib.button.on_off.text_true_false.off=§cfalse
 malilib.button.on_off.text_true_false.on=§atrue
 malilib.button.on_off.slider_on_off.off=OFF
 malilib.button.on_off.slider_on_off.on=ON
+malilib.button.translation_overrides.add_override=Add override
 
 malilib.checkbox.action_prompt_screen.close_on_execute=Close on execute
 malilib.checkbox.action_prompt_screen.fuzzy_search=Fuzzy search
@@ -397,6 +398,9 @@ malilib.label.text_field.context_menu.paste_insert=Paste (insert)
 malilib.label.text_field.context_menu.select_all=Select All
 malilib.label.text_field.empty_value=<c=777><i>%s
 malilib.label.toast.pressed_keys=§6Keys: §b%s
+malilib.label.translation_overrides.add_override_for_key=Add a translation override for the given lang file key.
+malilib.label.translation_overrides.translation_key=Lang key:
+malilib.label.translation_overrides.translation_override=Translation override:
 
 malilib.name.action_group.alias=Alias Actions
 malilib.name.action_group.all=All Actions
@@ -533,6 +537,8 @@ malilib.title.screen.status_effect_list_edit=Edit Status Effect List §e%s§r
 malilib.title.screen.string_list_edit=Edit String List §e%s§r
 malilib.title.screen.string_list_renderer_configuration=String List Renderer Configuration
 malilib.title.screen.toast_renderer_configuration=MaLiLib - Toast Renderer Configuration
+malilib.title.screen.translation_overrides.add_new=Add a New Translation Override
+malilib.title.screen.translation_overrides.list_screen=Manage Translation Overrides
 
 malilib.message.debug.input_handling_cancel_by_handler=Input event handling cancellation requested by the handler §e%s§r
 malilib.message.debug.input_handling_cancel_by_hotkey_callback=Input event cancelled by hotkey §a%s§r -> §e%s§r [ §6%s§r ] (callback: §e%s§r)
@@ -577,6 +583,7 @@ malilib.message.error.text_field.invalid_value_float=§e'%s'§r is not a floatin
 malilib.message.error.text_field.invalid_value_int=§e'%s'§r is not an integer number
 malilib.message.error.text_field.value_above_max=§b%s§r is above the maximum allowed value §b%s§r
 malilib.message.error.text_field.value_below_min=§b%s§r is below the minimum allowed value §b%s§r
+malilib.message.error.translation_override.format_error=§cError while trying to format the override string
 malilib.message.error.utility_actions.failed_to_copy_screenshot_to_clipboard=Failed to copy a screenshot to the clipboard
 
 malilib.message.info.action_screen_created_by_name=Action screen created by the name §e%s§r
@@ -653,6 +660,7 @@ malilib.config.comment.showinternalconfigname=Show the internal config name belo
 malilib.config.comment.sortconfigsbyname=Force sorting all the config options in each config category by the display name.\n\nSome mods may choose to use custom orders to group configs by their type, or otherwise use non-alphabetical order of configs in the category by default.\n\nAlso localized config names will likely be entirely different from the original English config names as for the proper alphabetical sorting order. This option makes the config category return the list of options sorted alphabetically based on the config display name. (I have no idea how the Java string sort handles non-latin/non-ascii characters though.)
 malilib.config.comment.sortextensionmodoptions=Sorts the configs shown on the config screens by the config display name.\n\nThis happens after any possible extension mod configs have been added to the end of the list of configs in the base mod. Note that this would also cause the base mod's configs to be sorted alphabetically, in case they weren't by default.\n\nThis option only takes effect if there actually are some options added by an extension mod. Also see the §eSort Configs By Name§r option which forces sorting the base mod configs in any case.
 malilib.config.comment.textfieldrightclickcontextmenu=When §aON§r, right clicking a text field will open a context menu.\nWhen §cOFF§r, right clicking will clear (and focus) the text field.\n\n§eNote:§r This is only the default behavior, and it can be overridden for each text field if a mod chooses to do so.
+malilib.config.comment.translationoverrides=Enable the §e"Translation Overrides"§r system\n\nThat system allows you to define translation overrides in-game, without making or editing a resource pack. This basically allows you to easily tweak or change any display strings that come from the lang file, without having to edit them via a resource pack.
 
 malilib.config.comment.debugmessages=Enables some debug messages to the game console
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines, and when hovered, also their position and dimension info and the widget class name.\n\nIf a key is set for Debug -> §eGUI Debug Key§r, then that key must be held for any of the debug rendering to happen.
@@ -716,6 +724,7 @@ malilib.config.name.showinternalconfigname=Show Internal Config Name
 malilib.config.name.sortconfigsbyname=Sort Configs By Name
 malilib.config.name.sortextensionmodoptions=Sort Extension Mod Options
 malilib.config.name.textfieldrightclickcontextmenu=Text Field Context Menu
+malilib.config.name.translationoverrides=Translation Overrides
 
 malilib.config.name.debugmessages=Debug Messages
 malilib.config.name.guidebug=GUI Debug

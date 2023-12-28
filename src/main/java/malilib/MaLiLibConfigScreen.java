@@ -96,7 +96,9 @@ public class MaLiLibConfigScreen
                                                              MaLiLibConfigs.Generic.SELECTED_LIST_ENTRY_COLOR,
                                                              MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME,
                                                              MaLiLibConfigs.Generic.SORT_CONFIGS_BY_NAME,
-                                                             MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS));
+                                                             MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS,
+                                                             MaLiLibConfigs.Generic.TRANSLATION_OVERRIDES
+        ));
         ConfigUtils.sortConfigsInPlaceByDisplayName(list);
 
         return ImmutableList.copyOf(list);
