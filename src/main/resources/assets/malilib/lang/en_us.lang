@@ -661,6 +661,7 @@ malilib.config.comment.sortconfigsbyname=Force sorting all the config options in
 malilib.config.comment.sortextensionmodoptions=Sorts the configs shown on the config screens by the config display name.\n\nThis happens after any possible extension mod configs have been added to the end of the list of configs in the base mod. Note that this would also cause the base mod's configs to be sorted alphabetically, in case they weren't by default.\n\nThis option only takes effect if there actually are some options added by an extension mod. Also see the §eSort Configs By Name§r option which forces sorting the base mod configs in any case.
 malilib.config.comment.textfieldrightclickcontextmenu=When §aON§r, right clicking a text field will open a context menu.\nWhen §cOFF§r, right clicking will clear (and focus) the text field.\n\n§eNote:§r This is only the default behavior, and it can be overridden for each text field if a mod chooses to do so.
 malilib.config.comment.translationoverrides=Enable the §e"Translation Overrides"§r system\n\nThat system allows you to define translation overrides in-game, without making or editing a resource pack. This basically allows you to easily tweak or change any display strings that come from the lang file, without having to edit them via a resource pack.
+malilib.config.comment.printtranslationkeys=Print all translation keys to the logger that are translated via the §eStringUtils.translate()§r method.\n\nThis is intended for finding out certain translation keys, if you for example want to add a translation override in-game for a given display string via the translation overrides system, without having to make a resource pack for it.\n\n§dDon't forget this on!§r It will likely spam your log quite fast...
 
 malilib.config.comment.debugmessages=Enables some debug messages to the game console
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines, and when hovered, also their position and dimension info and the widget class name.\n\nIf a key is set for Debug -> §eGUI Debug Key§r, then that key must be held for any of the debug rendering to happen.
@@ -725,6 +726,7 @@ malilib.config.name.sortconfigsbyname=Sort Configs By Name
 malilib.config.name.sortextensionmodoptions=Sort Extension Mod Options
 malilib.config.name.textfieldrightclickcontextmenu=Text Field Context Menu
 malilib.config.name.translationoverrides=Translation Overrides
+malilib.config.name.printtranslationkeys=Print Translation Keys
 
 malilib.config.name.debugmessages=Debug Messages
 malilib.config.name.guidebug=GUI Debug

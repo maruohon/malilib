@@ -623,6 +623,12 @@ public class StringUtils
     {
         try
         {
+            if (MaLiLibConfigs.Debug.PRINT_TRANSLATION_KEYS.getBooleanValue() &&
+                hasTranslation(translationKey))
+            {
+                MaLiLib.LOGGER.info("Translation key: {}", translationKey);
+            }
+
             if (MaLiLibConfigs.Generic.TRANSLATION_OVERRIDES.getBooleanValue())
             {
                 String translation = Registry.TRANSLATION_OVERRIDE_MANAGER.getOverriddenTranslation(translationKey, args);
@@ -639,6 +645,11 @@ public class StringUtils
         {
             return translationKey;
         }
+    }
+
+    public static boolean hasTranslation(String translationKey)
+    {
+        return net.minecraft.client.resources.I18n.hasKey(translationKey);
     }
 
     /**

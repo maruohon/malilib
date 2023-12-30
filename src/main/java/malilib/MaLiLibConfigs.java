@@ -144,6 +144,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig MESSAGE_KEY_TO_CHAT       = new BooleanConfig("messageKeyToChat", false);
         public static final BooleanConfig PRESSED_KEYS_TOAST        = new BooleanConfig("pressedKeysToast", false);
         public static final BooleanConfig PRINT_STACK_TRACE         = new BooleanConfig("printStackTrace", false);
+        public static final BooleanConfig PRINT_TRANSLATION_KEYS    = new BooleanConfig("printTranslationKeys", false);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 DEBUG_MESSAGES,
@@ -159,7 +160,8 @@ public class MaLiLibConfigs
                 KEYBIND_DEBUG_TOAST,
                 MESSAGE_KEY_TO_CHAT,
                 PRESSED_KEYS_TOAST,
-                PRINT_STACK_TRACE
+                PRINT_STACK_TRACE,
+                PRINT_TRANSLATION_KEYS
         );
 
         public static final ImmutableList<HotkeyConfig> HOTKEYS = ImmutableList.of(GUI_DEBUG_KEY);
