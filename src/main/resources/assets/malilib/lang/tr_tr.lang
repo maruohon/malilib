@@ -1,0 +1,271 @@
+
+malilib.config.category.debug=Hata Ayıklama
+malilib.config.category.generic=Genel
+
+malilib.config.comment.configsearchdefaultscope=Bu bir ayar menüsünde bulunan arama\nkutucuklarındaki açılır menünün varsayılan değeri.
+malilib.config.comment.keybinddisplay=Basılmış tuşlar ve tetiklenen kısayollar/eylemler\n için görünecek veya görünmeyecek küçük bir gösterge/kutucuk
+malilib.config.comment.keybinddisplayalignment=Tuş atama ekranı mesaj kutucukları için hizalama
+malilib.config.comment.keybinddisplaycallbackonly=Eğer etkin ise, yalnızca geri çağırma eylemi tanımlı tuş atamaları,\ntuş atama ekran kutucuğunda gösterilecek.
+malilib.config.comment.keybinddisplaycancelonly=Eğer etkin ise, sadece fazladan iptal işlemine ayarlı\ntuş atamaları, tuş atama ekran kutucuğunda\n gösterilecek. Bu "değiştirici" olarak bilinen tuşların ekranda spamlanmasını engeller.
+malilib.config.comment.keybinddisplayduration=Tuş atama ekran kutucuğunun gözükeceği süre (milisaniye olarak)
+malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each tab
+
+malilib.config.comment.guidebug=Eğer etkin ise, tüm arayüz parçaları dış çizgilerini gösterecek\n ve üzerine gelindiğinde konum ve boyut bilgileri hatta parçanın sınıf adı da\n gösterilir. Eğer Arayüz Hata Ayıklama Tuşu ayarlıysa, yapılacak\n herhangi hata ayıklama o tuş basılı tutulmalı.
+malilib.config.comment.guidebugall=Eğer doğru ise, tüm parçalar hata ayıklama dış çizgisi gösterilecek,\nancak etkin değilken sadece üzerine gelinen kutucuk gösterilecek
+malilib.config.comment.guidebuginfoalways=Eğer etkin ise, hata ayıklama pozisyonu ve boyutları\n her zaman görüntülenecek, hatta parçaların üzerine imleçle gelmeden bile.
+malilib.config.comment.keybinddebugging=Eğer etkin ise, tuş basmaları ve basılı tuşlar\n (eğer etkinse eylem çubuğunu da) oyun konsoluna yazdırtır.
+malilib.config.comment.keybinddebuggingingame=Eğer etkin ise, 'Tuş Atama Hata Ayıklaması'ndaki\n mesajlar, oyun içi eylem çubuğuna da yazdırtır.
+
+malilib.config.comment.keybind_settings.activate_on=Tuş ataması, tuş kombinasyonunun basımında mı yoksa bırakımında mı aktif oluyor
+malilib.config.comment.keybind_settings.allow_empty_keybind=Boş tuş ataması geçerli mi\n(her zaman aktif olarak varsayılacak)
+malilib.config.comment.keybind_settings.allow_extra_keys=Tuş atamasını aktifleştirmek için ekstra tuşların basılı tutulması mı gerekiyor
+malilib.config.comment.keybind_settings.cancel_further=Tuş ataması aktif iken, en son basılan\n tuşun işlenmesini iptal et
+malilib.config.comment.keybind_settings.context=Tuş ataması, oyunda mı yoksa arayüz ekranında mı aktifleştirilebilir
+malilib.config.comment.keybind_settings.exclusive=Eğer doğruysa, söz konusu tuş atamasından önce\n diğer tüm tuş atamaları hiç aktifleştirilmeyecek\nTüm tuşlar bırakıldığında, bu check sıfırlanacak.
+malilib.config.comment.keybind_settings.order_sensitive=Tuş atamasındaki tuşlar tanımlanmış şekildeki sıraya göre mi basılmalı
+
+malilib.config.name.configsearchdefaultscope= Ayar Araması Varsayılan Kapsam
+malilib.config.name.keybinddisplay=Tuş Atama Ekranı
+malilib.config.name.keybinddisplayalignment=Tuş Atama Ekran Hizalaması
+malilib.config.name.keybinddisplaycallbackonly=Tuş Ataması Ekranı Sadece Geri Çağırma
+malilib.config.name.keybinddisplaycancelonly=Tuş Ataması Ekranı Sadece İptal
+malilib.config.name.keybinddisplayduration=Tus Ataması Ekran Süresi
+
+malilib.config.name.guidebug=Arayüz Hata Ayıklaması
+malilib.config.name.guidebugall=Arayüz Hata Ayıklaması Tümü
+malilib.config.name.guidebuginfoalways=Arayüz Hata Ayıklaması Her Zaman Bilgi
+malilib.config.name.keybinddebugging=Tuş Atama Hata Ayıklaması
+malilib.config.name.keybinddebuggingingame=Aksiyon Çubuğunda Tuş Atama Hata Ayıklaması
+
+malilib.hotkey.comment.guidebugkey=Eğer ayarlıysa, arayüz hata ayıklaması sadece\n bu tuş basılı iken görüntülenir.
+malilib.hotkey.comment.ignoredkeys=Burada ayarlanan her tuş kısayol sisteminden\n tamamen yoksayılacak. Bu, soruna yol açan veya sıklıkla\n bazı nedenlerden dolayı tıkanan tuşları karalisteye almak için yapılır.
+malilib.hotkey.comment.openguiconfigs=Oyun içinde malilib ayarlar menüsünü aç
+
+malilib.hotkey.name.guidebugkey=Arayüz Hata Ayıklama Tuşu
+malilib.hotkey.name.ignoredkeys=Yoksayılan Tuşlar
+malilib.hotkey.name.openguiconfigs=Ayarlar Menüsünü Aç
+
+malilib.error.failed_to_create_directory='%s' dizininin yaratımı başarısız
+malilib.error.file_delete_failed='%s' dosyasının silinmesi başarısız
+malilib.error.file_or_directory_already_exists='%s' dosyası veya dizini zaten var
+malilib.error.file_rename.file_already_exists=Dosyayı yeniden isimlendirme başarısız, '%s' dosyası
+malilib.error.file_rename.rename_failed=Dosya ismi '%s' iken '%s' ismine değişimi başarısız
+malilib.error.illegal_characters_in_file_name='%s' dosya isminde yazılmış karakterler geçersiz.\nÖrneğin, slash'lar uygun değil, ve Windows'ta da \n birçok özel karakterler dosya ismi için uygun değildir! 
+malilib.error.invalid_directory=Geçersiz dizin ismi: '%s'
+malilib.error.invalid_item_blacklist_entry=Kara veya beyaz listede gecersiz eşya ismi: '%s'
+malilib.error.invalid_registry_name=Kara veya beyaz listede gecersiz kayıt ismi: '%s'
+malilib.error.keybind.attempt_to_bind_ignored_key= '%s' tuşu şu an malilib tarafından yoksayılacak şekilde ayarlandı.\nmalilib ayarlarına bakın: Genel -> Yoksayılan Tuşlar
+
+malilib.error.textfield.invalid_value_floating_point_number='%s' is not a floating point number
+malilib.error.textfield.invalid_value_floating_point_number='%s' is not a floating point number
+malilib.error.textfield.invalid_value_int='%s' is not an integer number
+malilib.error.textfield.value_above_max='%s' değeri, şu maksimum değerin üstünde: '%s'
+malilib.error.textfield.value_below_min='%s' değeri, şu minimum değerin altında: '%s'
+
+malilib.gui.button.config.reset_all_filtered=Hepsini Sıfırla
+malilib.gui.button.config.select_directory=Dizin Seç
+malilib.gui.button.config.select_file=Dosya Seç
+malilib.gui.button.config.use_current_directory=Mevcut dizini kullan
+malilib.gui.button.config.use_selected_file=Dosya seç
+
+malilib.gui.button.config.hover.reset_all_filtered=Eşleşen mevcut arama/filtreleme ayarlarını,\n varsayılan değerlere sıfırla
+malilib.gui.button.config.hover.selected_directory=Mevcut dizin:\n§3%s§r
+malilib.gui.button.config.hover.selected_file=Mevcut dosya:\n§3%s§r
+
+malilib.gui.button.black_white_list_edit.entries=§e%s§r - §b%s§r girdileri
+malilib.gui.button.black_white_list_edit.none=Tür: YOK
+malilib.gui.button.cancel=İptal
+malilib.gui.button.default=Varsayılan
+malilib.gui.button.none.caps=YOK
+malilib.gui.button.ok=Tamam
+malilib.gui.button.reset=Sıfırla
+malilib.gui.button.reset.caps=SIFIRLA
+
+malilib.gui.button.render_layers_gui.axis=Eksen: %s
+malilib.gui.button.render_layers_gui.follow_player=Oyuncuyu Takip Et: %s
+malilib.gui.button.render_layers_gui.layers=Katmanlar: %s
+malilib.gui.button.render_layers_gui.set_to_player=Oyuncuya ayarla
+
+malilib.gui.button.hover.black_white_list_edit.type=Liste Türü: §3%s
+malilib.gui.button.hover.config.reset_all_filtered=Eşleşen mevcut arama/filtreleme ayarlarını,\n varsayılan değerlere sıfırla
+malilib.gui.button.hover.directory_widget.create_directory=Yeni bir dizin oluştur
+malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory=Sistem dosya yöneticisinde dizini açmak için\n dizin yol elementlerine Shift'e basılıyken tıklayabilirsin
+malilib.gui.button.hover.directory_widget.root=Kök/Temel dizine
+malilib.gui.button.hover.directory_widget.up=Bir üst ebeveyn dizine
+malilib.gui.button.hover.entries_more=... ve §b%s§r fazlası
+malilib.gui.button.hover.entries_total=Toplam girdiler: §b%s§r
+malilib.gui.button.hover.hold_shift_for_info=§oDaha fazla bilgi için Shift'e basılı tut§r
+malilib.gui.button.hover.hotkey_search_button=Verilen tuşlar için kısayol ara
+malilib.gui.button.hover.keybind.middle_click_to_clear=(Temizlemek için orta fare tuşu)
+malilib.gui.button.hover.keybind.possible_overlaps=Olabilecek üst üste tuş ataması [bir çoğunda sorun yok!!]:
+malilib.gui.button.hover.plus_minus_tip=Sol tık ile arttır\nSağ tık ile azalt\nShift ve/veya Alt ile adım boyutunu arttır
+malilib.gui.button.hover.render_layers_gui.follow_player=Eğer etkin ise, görüntüleme katmanı, oyuncuyu takip eder
+malilib.gui.button.hover.text_field_slider_toggle=Metin alanı veya kaydıraç seç
+
+malilib.gui.button.hover.list.add_after=Şundan sonra bir girdi gir
+malilib.gui.button.hover.list.add_first=Bir girdi gir
+malilib.gui.button.hover.cycle_widgets_left=Sola Döndür
+malilib.gui.button.hover.cycle_widgets_right=Sağa Döndür
+malilib.gui.button.hover.list.move_down=Aşağı Taşı
+malilib.gui.button.hover.list.move_up=Yukarı Taşı
+malilib.gui.button.hover.list.remove=Kaldır
+
+malilib.gui.hover.open_color_editor=Renk düzenleyicisini aç
+
+malilib.gui.label.black_white_list_edit.black_list=Karaliste
+malilib.gui.label.black_white_list_edit.type=Liste Türü
+malilib.gui.label.black_white_list_edit.white_list=Beyazliste
+
+malilib.gui.label.block_snap.center=Merkez
+malilib.gui.label.block_snap.corner=Köşe
+malilib.gui.label.block_snap.none=Yok
+
+malilib.gui.label.color_editor.current_color=Seçili Renk:
+
+malilib.gui.label.config.hover.click_for_more_information=§b§oDaha fazla bilgi için tıkla
+
+malilib.gui.label.config_scope.all_categories=Moddaki tüm kategorilerden
+malilib.gui.label.config_scope.all_mods=Tüm modlardan (MaLiLib kullanan)
+malilib.gui.label.config_scope.current_category=Mevcut kategoriden
+
+malilib.gui.label.config_type_filter.all=Her şey
+malilib.gui.label.config_type_filter.modified=Değiştirilmiş ayar seçenekleri
+malilib.gui.label.config_type_filter.enabled_toggle=Etkin aç/kapa seçenekleri
+malilib.gui.label.config_type_filter.disabled_toggle=Devre dışı aç/kapa seçenekleri
+malilib.gui.label.config_type_filter.modified_toggle=Değiştirilmiş aç/kapa seçenekleri
+malilib.gui.label.config_type_filter.any_hotkey=Her kısayol tuşu
+malilib.gui.label.config_type_filter.bound_hotkey=Atanmış kısayollar
+malilib.gui.label.config_type_filter.modified_hotkey=Değiştirilmiş kısayollar
+malilib.gui.label.config_type_filter.unbound_hotkey=Atanmamış kısayollar
+
+malilib.gui.label.confirm_config_reset=Mevcut arama filtreleriyle eşleşen ayarların hepsini sıfırlamak istediğinden emin misin?
+
+malilib.gui.label_error.no_widget_factory_for_config_type=§cBilinmeyen ayar türü '%s' (hiç kutucuk fabrikası kaydolmadı)§r
+
+malilib.gui.label.hover.config_search_default_scope=Açılır menü kutucuğu için ayarlanan MaLiLib'in ayarlarındaki\nvarsayılan kapsam değerini seçebilirsin: Genel > Ayar Araması Varsayılan Kapsam
+
+malilib.gui.label.keybind_display.actions=Eylemler
+malilib.gui.label.keybind_display.keys=Tuşlar
+malilib.gui.label.keybind_display.keys_and_actions=Tuşlar ve Eylemler
+malilib.gui.label.keybind_display.none=Yok
+
+malilib.gui.label.keybind_settings.activate_on=Etkin
+malilib.gui.label.keybind_settings.allow_empty_keybind=Boş tuş atamaya izin ver
+malilib.gui.label.keybind_settings.allow_extra_keys=Ekstra tuşlara izin ver
+malilib.gui.label.keybind_settings.cancel_further=Fazlasına iptal
+malilib.gui.label.keybind_settings.cancel_further_processing=Fazlasına iptal işlemi
+malilib.gui.label.keybind_settings.context=Bağlam
+malilib.gui.label.keybind_settings.default=varsayılan
+malilib.gui.label.keybind_settings.exclusive=Özel
+malilib.gui.label.keybind_settings.order_sensitive=Sıralama Hassasiyeti
+malilib.gui.label.keybind_settings.tips=- Sol tıklamayla ayarlama yap\n- Sağ tıklamayla varsayılana dön
+malilib.gui.label.keybind_settings.title_advanced_keybind_settings=Gelişmiş Tuş Atama Ayarları
+
+malilib.gui.label.layer_mode.all=Hepsi
+malilib.gui.label.layer_mode.all_above=Hepsinin üstü
+malilib.gui.label.layer_mode.all_below=Hepsinin altı
+malilib.gui.label.layer_mode.layer_range=Katman aralığı
+malilib.gui.label.layer_mode.single_layer=Tek Katman
+
+malilib.gui.label.render_layers.layer=Katman
+malilib.gui.label.render_layers.layer_max=En üst katman
+malilib.gui.label.render_layers.layer_min=En alt katman
+malilib.gui.label.render_layers.player_follow_offset=Ofset
+
+malilib.gui.tip.dropdown.type_to_search=Aramak için sadece yazmaya başla (herhangi bit açılabilir menü kutucuğunda)
+
+malilib.gui.title.all_hotkeys=Tüm kayıtlı kısayollar
+malilib.gui.title.black_white_list_edit=Kara/Beyaz Listeyi Düzenle '%s'
+malilib.gui.title.block_list_edit=Blok Listesini Düzenle '%s'
+malilib.gui.title.color_editor=Renk Düzenleyicisi
+malilib.gui.title.configs=malilib Ayarları
+malilib.gui.title.confirm_config_reset=Ayar sıƒırlamayı onayla
+malilib.gui.title.create_directory=Yeni bir dizin oluştur
+malilib.gui.title.debug=Hata Ayıklaması
+malilib.gui.title.directory_browser=Dizin Tarayıcısı
+malilib.gui.title.equipment_slot_list_edit=Ekipman alan listesini düzenle '%s'
+malilib.gui.title.file_browser=Dosya Tarayıcısı
+malilib.gui.title.generic=Genel
+malilib.gui.title.identifier_list_edit=Tanımlayıcı listesini değiştir '%s'
+malilib.gui.title.info=Bilgi
+malilib.gui.title.item_list_edit=Bilgi listesini düzenle '%s'
+malilib.gui.title.keybind_settings.advanced=Gelişmiş Tuş Ataması Ayarları '%s'
+malilib.gui.title.status_effect_list_edit=Durum efekt listesini düzenle '%s'
+malilib.gui.title.string_list_edit=Dizge listesini düzenle '%s'
+
+malilib.hotkeys.category.debug_hotkeys=Hata ayıklama kısayolları
+malilib.hotkeys.category.generic_hotkeys=Genel kısayolları
+
+malilib.label.active_mode.always=Her Zaman
+malilib.label.active_mode.never=Asla
+malilib.label.active_mode.with_key=Tuş İle
+
+malilib.label.info_type.chat=Sohbet
+malilib.label.info_type.hotbar=Sık Kullanılan Çubuğu
+malilib.label.info_type.message=Mesajlaşma Arayüzü
+malilib.label.info_type.none=Yok
+
+malilib.label.key_action.both=HER İKİSİ
+malilib.label.key_action.press=BAS
+malilib.label.key_action.release=BIRAK
+
+malilib.label.key_context.any=Her
+malilib.label.key_context.gui=GUI
+malilib.label.key_context.ingame=Oyun İçi
+
+malilib.label.list_type.blacklist=Karaliste
+malilib.label.list_type.none=Yok
+malilib.label.list_type.whitelist=Beyazliste
+
+malilib.label.alignment.top_left=Sol Üst
+malilib.label.alignment.top_right=Sağ Üst
+malilib.label.alignment.bottom_left=Sol Alt
+malilib.label.alignment.bottom_right=Sağ Alt
+malilib.label.alignment.center=Merkez
+
+malilib.label.colored.false=§cyanlış§r
+malilib.label.colored.true=§adoğru§r
+
+malilib.label.colored.no=§chayır§r
+malilib.label.colored.yes=§aevet§r
+
+malilib.label.colored.off.caps=§cKAPALI§r
+malilib.label.colored.on.caps=§aAÇIK§r
+
+malilib.label.colored.off=§ckapalı§r
+malilib.label.colored.on=§aaçık§r
+
+malilib.label.off=kapalı
+malilib.label.on=açık
+
+malilib.label.off.caps=KAPALI
+malilib.label.on.caps=AÇIK
+
+malilib.label.false=yanlış
+malilib.label.true=doğru
+
+malilib.label.no=hayır
+malilib.label.yes=evet
+
+malilib.message.directory_created='%s' dizini oluşturuldu
+malilib.message.toggled=%s %s Açıldı/Kapatıldı
+malilib.message.value.off=KAPALI
+malilib.message.value.on=AÇIK
+
+malilib.message.formatting_code.error=§c
+malilib.message.formatting_code.info=§f
+malilib.message.formatting_code.success=§a
+malilib.message.formatting_code.warning=§6
+
+malilib.message.layer_range.range_max=en çok
+malilib.message.layer_range.range_min=en az
+malilib.message.moved_layer_range=Bütün katman aralığı §a%s§r tarafından taşındı (§a%s§r ekseninde)
+malilib.message.moved_layer_range_boundary=Katman aralığı §a%s§r tarafından taşındı (§a%s§r ekseninde)
+malilib.message.moved_max_layer_to=En üst katman şuraya taşındı: %s
+malilib.message.moved_min_layer_to=En alt katman şuraya taşındı: %s
+malilib.message.set_layer_axis_to=Katman eksenini şuna ayarla: %s
+malilib.message.set_layer_mode_to=Katman modunu şuna ayarla: %s
+malilib.message.set_layer_to=Katmanı şuna ayarla: %s
+
+malilib.toast.keybind_display.keys=§eTuşlar:§r §6%s§r
+malilib.toast.keybind_display.action=Eylem: §b%s : %s§r
