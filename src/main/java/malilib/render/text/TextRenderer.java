@@ -12,7 +12,6 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -124,13 +123,9 @@ public class TextRenderer implements IResourceManagerReloadListener
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
     {
-        this.unicode = GameUtils.getClient().isUnicode();
-
-        if (GameUtils.getOptions().anaglyph != this.anaglyph)
-        {
-            this.anaglyph = GameUtils.getOptions().anaglyph;
-            this.setColorCodes(this.anaglyph);
-        }
+        this.unicode = GameUtils.isUnicode();
+        this.anaglyph = GameUtils.getOptions().anaglyph;
+        this.setColorCodes(this.anaglyph);
 
         StyledText.clearCache();
         this.glyphs.clear();
@@ -279,11 +274,9 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public void startBuffers()
     {
-        Minecraft mc = GameUtils.getClient();
-
-        if (this.unicode != mc.isUnicode())
+        if (this.unicode != GameUtils.isUnicode())
         {
-            this.onResourceManagerReload(mc.getResourceManager());
+            this.onResourceManagerReload(GameUtils.getClient().getResourceManager());
         }
 
         this.textBuffer.start();

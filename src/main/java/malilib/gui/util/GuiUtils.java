@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
 import org.lwjgl.input.Mouse;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -43,12 +42,11 @@ public class GuiUtils
 
     public static int getVanillaScreenScale()
     {
-        Minecraft mc = GameUtils.getClient();
         int scale = Math.min(getDisplayWidth() / 320, getDisplayHeight() / 240);
         scale = Math.min(scale, GameUtils.getVanillaOptionsScreenScale());
         scale = Math.max(scale, 1);
 
-        if (mc.isUnicode() && (scale & 0x1) != 0 && scale > 1)
+        if (GameUtils.isUnicode() && (scale & 0x1) != 0 && scale > 1)
         {
             scale -= 1;
         }

@@ -156,6 +156,11 @@ public class GameUtils
         return getClient().isSingleplayer();
     }
 
+    public static boolean isUnicode()
+    {
+        return getClient().isUnicode();
+    }
+
     public static void scheduleToClientThread(Runnable task)
     {
         Minecraft mc = getClient();
