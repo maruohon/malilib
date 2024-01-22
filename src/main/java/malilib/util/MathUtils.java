@@ -1,7 +1,11 @@
 package malilib.util;
 
+import net.minecraft.util.math.Vec3i;
+
 public class MathUtils
 {
+    private static final int[] MULTIPLY_DE_BRUIJN_BIT_POSITION = new int[] { 0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9 };
+
     /**
      * @return The average value of the elements in the given array
      */
@@ -234,6 +238,11 @@ public class MathUtils
         }
     }
 
+    public static float sqrtf(double value)
+    {
+        return (float) Math.sqrt(value);
+    }
+
     /**
      * Wraps/normalizes the given angle to the range 0 ... 2 * Pi
      */
@@ -359,6 +368,16 @@ public class MathUtils
         return maxValue;
     }
 
+    public static float positiveModulo(float numerator, float denominator)
+    {
+        return (numerator % denominator + denominator) % denominator;
+    }
+
+    public static double positiveModulo(double numerator, double denominator)
+    {
+        return (numerator % denominator + denominator) % denominator;
+    }
+
     /**
      * Adjust the angle so that its value is in range [-180;180[
      */
@@ -417,5 +436,60 @@ public class MathUtils
         }
 
         return angle;
+    }
+
+    public static long getCoordinateRandom(int x, int y, int z)
+    {
+        long l = (long)(x * 3129871) ^ (long) z * 116129781L ^ (long) y;
+        return l * l * 42317861L + l * 11L;
+    }
+
+    public static long getPositionRandom(Vec3i pos)
+    {
+        return getCoordinateRandom(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public static int smallestEncompassingPowerOfTwo(int value) {
+        int i = value - 1;
+        i |= i >> 1;
+        i |= i >> 2;
+        i |= i >> 4;
+        i |= i >> 8;
+        i |= i >> 16;
+        return i + 1;
+    }
+
+    /**
+     * "Is the given value a power of two?  (1, 2, 4, 8, 16, ...)"
+     */
+    private static boolean isPowerOfTwo(int value)
+    {
+        return value != 0 && (value & value - 1) == 0;
+    }
+
+    /**
+     * "Uses a B(2, 5) De Bruijn sequence and a lookup table to efficiently calculate the log-base-two
+     * of the given value. Optimized for cases where the input value is a power-of-two.
+     * If the input value is not a power-of-two, then subtract 1 from the return value."
+     */
+    public static int log2DeBruijn(int value)
+    {
+        value = isPowerOfTwo(value) ? value : smallestEncompassingPowerOfTwo(value);
+        return MULTIPLY_DE_BRUIJN_BIT_POSITION[(int) ((long) value * 125613361L >> 27) & 31];
+    }
+
+    /**
+     * "Efficiently calculates the floor of the base-2 log of an integer value.
+     * This is effectively the index of the highest bit that is set.
+     * For example, if the number in binary is 0...100101, this will return 5."
+     */
+    public static int log2(int value)
+    {
+        if (isPowerOfTwo(value))
+        {
+            return log2DeBruijn(value);
+        }
+
+        return log2DeBruijn(value) - 1;
     }
 }
