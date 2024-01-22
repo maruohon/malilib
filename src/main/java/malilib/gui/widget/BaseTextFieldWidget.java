@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.math.MathHelper;
 
 import malilib.MaLiLibConfigs;
 import malilib.config.value.HorizontalAlignment;
@@ -26,6 +25,7 @@ import malilib.render.ShapeRenderUtils;
 import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.TextRenderer;
+import malilib.util.MathUtils;
 import malilib.util.StringUtils;
 import malilib.util.data.LeftRight;
 
@@ -450,7 +450,7 @@ public class BaseTextFieldWidget extends ContainerWidget
         }
 
         // The cursor can go after the last character, so not length - 1 here
-        this.cursorPosition = MathHelper.clamp(position, 0, this.getTextLength());
+        this.cursorPosition = MathUtils.clamp(position, 0, this.getTextLength());
 
         if (this.cursorPosition <= this.visibleText.getStartIndex() ||
             this.visibleText.isIndexVisibleWithCurrentStart(this.cursorPosition, this.text) == false)

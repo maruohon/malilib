@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
-
 import javax.annotation.Nullable;
-
-import net.minecraft.util.math.MathHelper;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.callback.IntegerSliderCallback;
+import malilib.util.MathUtils;
 import malilib.util.StringUtils;
 import malilib.util.data.RangedIntegerStorage;
 
@@ -116,7 +114,7 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
 
     protected void clampAndSetValue(int newValue)
     {
-        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+        this.value = MathUtils.clamp(newValue, this.minValue, this.maxValue);
         this.sliderWidget.updateWidgetState();
     }
 

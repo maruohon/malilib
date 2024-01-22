@@ -2,10 +2,9 @@ package malilib.gui.callback;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.MathHelper;
-
 import malilib.listener.EventListener;
 import malilib.render.text.StyledTextLine;
+import malilib.util.MathUtils;
 import malilib.util.data.RangedIntegerStorage;
 
 public class IntegerSliderCallback implements SliderCallbackWithText
@@ -25,7 +24,7 @@ public class IntegerSliderCallback implements SliderCallbackWithText
     public int getMaxSteps()
     {
         long steps = (long) this.storage.getMaxIntegerValue() - (long) this.storage.getMinIntegerValue() + 1L;
-        return steps > 0 ? (int) MathHelper.clamp(steps, 1, 8192) : 8192;
+        return steps > 0 ? (int) MathUtils.clamp(steps, 1, 8192) : 8192;
     }
 
     @Override

@@ -37,7 +37,6 @@ import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
@@ -56,6 +55,7 @@ import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.util.MathUtils;
 import malilib.util.game.RayTraceUtils;
 import malilib.util.game.WorldUtils;
 import malilib.util.game.wrap.GameUtils;
@@ -405,8 +405,8 @@ public class InventoryRenderUtils
         int x = baseX + horizontalAlignment.getXStartOffsetForEdgeAlignment(width);
         int y = baseY + verticalAlignment.getYStartOffsetForEdgeAlignment(height);
 
-        x = MathHelper.clamp(x, 0, screenWidth - width);
-        y = MathHelper.clamp(y, 0, screenHeight - height);
+        x = MathUtils.clamp(x, 0, screenWidth - width);
+        y = MathUtils.clamp(y, 0, screenHeight - height);
 
         if (bgTintColor == 0xFFFFFFFF && inv instanceof ColoredVanillaInventoryView)
         {

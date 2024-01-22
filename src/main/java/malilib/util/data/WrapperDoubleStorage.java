@@ -3,7 +3,7 @@ package malilib.util.data;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
-import net.minecraft.util.math.MathHelper;
+import malilib.util.MathUtils;
 
 public class WrapperDoubleStorage implements RangedDoubleStorage
 {
@@ -41,7 +41,7 @@ public class WrapperDoubleStorage implements RangedDoubleStorage
     @Override
     public boolean setDoubleValue(double newValue)
     {
-        this.valueConsumer.accept(MathHelper.clamp(newValue, this.minValue, this.maxValue));
+        this.valueConsumer.accept(MathUtils.clamp(newValue, this.minValue, this.maxValue));
         return true;
     }
 }

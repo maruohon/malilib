@@ -1,11 +1,10 @@
 package malilib.gui.widget;
 
-import net.minecraft.util.math.MathHelper;
-
 import malilib.gui.callback.SliderCallbackWithText;
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
+import malilib.util.MathUtils;
 
 public class HorizontalSliderWidget extends BaseSliderWidget<SliderCallbackWithText>
 {
@@ -16,7 +15,7 @@ public class HorizontalSliderWidget extends BaseSliderWidget<SliderCallbackWithT
         super(width, height, callback);
 
         int usableWidth = this.getWidth() - 4;
-        this.sliderThickness = MathHelper.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);
+        this.sliderThickness = MathUtils.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);
         this.textOffset.setCenterHorizontally(true);
         this.textOffset.setXOffset(0);
     }
@@ -37,7 +36,7 @@ public class HorizontalSliderWidget extends BaseSliderWidget<SliderCallbackWithT
     protected double getRelativePosition(int mouseX, int mouseY)
     {
         int relPos = mouseX - this.getX() - this.sliderThickness / 2;
-        return MathHelper.clamp((double) relPos / (double) (this.getWidth() - this.sliderThickness - 4), 0, 1);
+        return MathUtils.clamp((double) relPos / (double) (this.getWidth() - this.sliderThickness - 4), 0, 1);
     }
 
     @Override

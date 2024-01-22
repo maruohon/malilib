@@ -1,14 +1,12 @@
 package malilib.config.option;
 
 import java.util.StringJoiner;
-
 import javax.annotation.Nullable;
-
-import net.minecraft.util.math.MathHelper;
 
 import malilib.MaLiLib;
 import malilib.config.option.BooleanAndDoubleConfig.BooleanAndDouble;
 import malilib.gui.callback.DoubleSliderCallback;
+import malilib.util.MathUtils;
 import malilib.util.data.BooleanStorageWithDefault;
 import malilib.util.data.RangedDoubleStorage;
 
@@ -131,7 +129,7 @@ public class BooleanAndDoubleConfig extends BaseBooleanAndNumberConfig<BooleanAn
 
     protected double getClampedValue(double value)
     {
-        return MathHelper.clamp(value, this.minValue, this.maxValue);
+        return MathUtils.clamp(value, this.minValue, this.maxValue);
     }
 
     public boolean isModified(String newValue)

@@ -1,6 +1,6 @@
 package malilib.util.data;
 
-import net.minecraft.util.math.MathHelper;
+import malilib.util.MathUtils;
 
 public class WrapperFloatStorage implements RangedFloatStorage
 {
@@ -38,7 +38,7 @@ public class WrapperFloatStorage implements RangedFloatStorage
     @Override
     public boolean setFloatValue(float newValue)
     {
-        this.valueConsumer.accept(MathHelper.clamp(newValue, this.minValue, this.maxValue));
+        this.valueConsumer.accept(MathUtils.clamp(newValue, this.minValue, this.maxValue));
         return true;
     }
 }

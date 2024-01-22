@@ -2,10 +2,9 @@ package malilib.config.option;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.MathHelper;
-
 import malilib.MaLiLib;
 import malilib.gui.callback.IntegerSliderCallback;
+import malilib.util.MathUtils;
 import malilib.util.data.RangedIntegerStorage;
 
 public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIntegerStorage
@@ -92,7 +91,7 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
 
     protected int getClampedValue(int value)
     {
-        return MathHelper.clamp(value, this.minValue, this.maxValue);
+        return MathUtils.clamp(value, this.minValue, this.maxValue);
     }
 
     public boolean isModified(String newValue)

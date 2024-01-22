@@ -3,7 +3,7 @@ package malilib.util.data;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
-import net.minecraft.util.math.MathHelper;
+import malilib.util.MathUtils;
 
 public class WrapperIntStorage implements RangedIntegerStorage
 {
@@ -41,7 +41,7 @@ public class WrapperIntStorage implements RangedIntegerStorage
     @Override
     public boolean setIntegerValue(int newValue)
     {
-        this.valueConsumer.accept(MathHelper.clamp(newValue, this.minValue, this.maxValue));
+        this.valueConsumer.accept(MathUtils.clamp(newValue, this.minValue, this.maxValue));
         return true;
     }
 }

@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.MathHelper;
 
 import malilib.gui.callback.FloatSliderCallback;
 import malilib.gui.callback.IntegerSliderCallback;
@@ -18,6 +17,7 @@ import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.render.shader.ShaderProgram;
+import malilib.util.MathUtils;
 import malilib.util.data.Color4f;
 import malilib.util.data.FloatStorage;
 import malilib.util.data.FloatSupplier;
@@ -371,8 +371,8 @@ public class ColorEditorWidgetHsv extends ContainerWidget
 
         protected void setValuesForPosition(int mouseX, int mouseY)
         {
-            float relX = MathHelper.clamp((mouseX - this.getX() - 1) / (float) (this.getWidth() - 2), 0.0F, 1.0F);
-            float relY = 1.0F - MathHelper.clamp((mouseY - this.getY() - 1) / (float) (this.getHeight() - 2), 0.0F, 1.0F);
+            float relX = MathUtils.clamp((mouseX - this.getX() - 1) / (float) (this.getWidth() - 2), 0.0F, 1.0F);
+            float relY = 1.0F - MathUtils.clamp((mouseY - this.getY() - 1) / (float) (this.getHeight() - 2), 0.0F, 1.0F);
 
             this.value.setFloatValue(relX);
             this.saturation.setFloatValue(relY);

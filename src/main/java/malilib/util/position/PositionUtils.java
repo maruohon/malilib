@@ -9,7 +9,6 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import malilib.util.game.wrap.EntityWrap;
@@ -22,7 +21,7 @@ public class PositionUtils
     public static final Mirror[] MIRROR_VALUES = Mirror.values();
     public static final Rotation[] ROTATION_VALUES = Rotation.values();
 
-    public static final int SIZE_BITS_X = 1 + MathHelper.log2(MathHelper.smallestEncompassingPowerOfTwo(30000000));
+    public static final int SIZE_BITS_X = 25 + 1; // minimum bits for 30M + sign bit
     public static final int SIZE_BITS_Z = SIZE_BITS_X;
     public static final int SIZE_BITS_Y = 64 - SIZE_BITS_X - SIZE_BITS_Z;
     public static final long BITMASK_X = (1L << SIZE_BITS_X) - 1L;

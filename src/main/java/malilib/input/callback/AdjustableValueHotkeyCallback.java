@@ -11,8 +11,6 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.MathHelper;
-
 import malilib.MaLiLibConfigs;
 import malilib.action.Action;
 import malilib.action.ActionContext;
@@ -25,6 +23,7 @@ import malilib.input.KeyBind;
 import malilib.listener.EventListener;
 import malilib.overlay.message.MessageHelpers.BooleanConfigMessageFactory;
 import malilib.overlay.message.MessageOutput;
+import malilib.util.MathUtils;
 import malilib.util.data.DoubleStorage;
 import malilib.util.data.IntegerStorage;
 import malilib.util.data.RangedDoubleStorage;
@@ -254,7 +253,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
     public static AdjustableValueHotkeyCallback createClamped(@Nullable BooleanContainingConfig<?> toggleConfig,
                                                               IntegerStorage intConfig, int minValue, int maxValue)
     {
-        IntConsumer adjuster = (v) -> intConfig.setIntegerValue(MathHelper.clamp(intConfig.getIntegerValue() + v, minValue, maxValue));
+        IntConsumer adjuster = (v) -> intConfig.setIntegerValue(MathUtils.clamp(intConfig.getIntegerValue() + v, minValue, maxValue));
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
 
@@ -318,7 +317,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
                                                               DoubleStorage doubleConfig,
                                                               double minValue, double maxValue, DoubleSupplier multiplier)
     {
-        IntConsumer adjuster = (v) -> doubleConfig.setDoubleValue(MathHelper.clamp(doubleConfig.getDoubleValue() +
+        IntConsumer adjuster = (v) -> doubleConfig.setDoubleValue(MathUtils.clamp(doubleConfig.getDoubleValue() +
                                                                                    (double) v * multiplier.getAsDouble(), minValue, maxValue));
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
@@ -330,7 +329,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
     {
         IntConsumer adjuster = (v) -> {
             DoubleStorage doubleConfig = doubleDelegate.get();
-            doubleConfig.setDoubleValue(MathHelper.clamp(doubleConfig.getDoubleValue() + (double) v * multiplier.getAsDouble(), minValue, maxValue));
+            doubleConfig.setDoubleValue(MathUtils.clamp(doubleConfig.getDoubleValue() + (double) v * multiplier.getAsDouble(), minValue, maxValue));
         };
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }
@@ -342,7 +341,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
     {
         IntConsumer adjuster = (v) -> {
             DoubleStorage doubleConfig = doubleDelegate.get();
-            doubleConfig.setDoubleValue(MathHelper.clamp(doubleConfig.getDoubleValue() + (double) v * multiplier.apply(v), minValue, maxValue));
+            doubleConfig.setDoubleValue(MathUtils.clamp(doubleConfig.getDoubleValue() + (double) v * multiplier.apply(v), minValue, maxValue));
         };
         return new AdjustableValueHotkeyCallback(toggleConfig, adjuster);
     }

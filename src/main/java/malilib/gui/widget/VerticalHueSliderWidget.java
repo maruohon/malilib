@@ -5,13 +5,13 @@ import java.awt.Color;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.MathHelper;
 
 import malilib.gui.callback.SliderCallback;
 import malilib.gui.util.ScreenContext;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.util.MathUtils;
 import malilib.util.data.Color4f;
 import malilib.util.data.FloatSupplier;
 
@@ -42,7 +42,7 @@ public class VerticalHueSliderWidget extends BaseSliderWidget<SliderCallback>
     protected double getRelativePosition(int mouseX, int mouseY)
     {
         int relPos = mouseY - (this.getY() + 1) - this.sliderThickness / 2;
-        return MathHelper.clamp((double) relPos / (double) (this.getSliderTravelDistance() - 2), 0.0, 1.0);
+        return MathUtils.clamp((double) relPos / (double) (this.getSliderTravelDistance() - 2), 0.0, 1.0);
     }
 
     protected int getUsableDistance()

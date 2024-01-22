@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import malilib.util.MathUtils;
 import malilib.util.inventory.InventoryUtils;
 
 public class EntityWrap
@@ -88,17 +88,17 @@ public class EntityWrap
 
     public static int getChunkX(Entity entity)
     {
-        return MathHelper.floor(getX(entity) / 16.0);
+        return MathUtils.floor(getX(entity) / 16.0);
     }
 
     public static int getChunkY(Entity entity)
     {
-        return MathHelper.floor(getY(entity) / 16.0);
+        return MathUtils.floor(getY(entity) / 16.0);
     }
 
     public static int getChunkZ(Entity entity)
     {
-        return MathHelper.floor(getZ(entity) / 16.0);
+        return MathUtils.floor(getZ(entity) / 16.0);
     }
 
     public static void setYaw(Entity entity, float yaw)

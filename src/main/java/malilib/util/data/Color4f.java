@@ -3,7 +3,7 @@ package malilib.util.data;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.util.math.MathHelper;
+import malilib.util.MathUtils;
 
 public class Color4f
 {
@@ -35,10 +35,10 @@ public class Color4f
         if (b == -0.0F) { b = 0.0F; }
         if (a == -0.0F) { a = 0.0F; }
 
-        r = MathHelper.clamp(r, 0.0F, 1.0F);
-        g = MathHelper.clamp(g, 0.0F, 1.0F);
-        b = MathHelper.clamp(b, 0.0F, 1.0F);
-        a = MathHelper.clamp(a, 0.0F, 1.0F);
+        r = MathUtils.clamp(r, 0.0F, 1.0F);
+        g = MathUtils.clamp(g, 0.0F, 1.0F);
+        b = MathUtils.clamp(b, 0.0F, 1.0F);
+        a = MathUtils.clamp(a, 0.0F, 1.0F);
 
         this.r = r;
         this.g = g;

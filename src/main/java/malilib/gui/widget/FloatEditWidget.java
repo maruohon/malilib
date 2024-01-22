@@ -3,10 +3,9 @@ package malilib.gui.widget;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.util.math.MathHelper;
-
 import malilib.gui.BaseScreen;
 import malilib.gui.callback.FloatSliderCallback;
+import malilib.util.MathUtils;
 import malilib.util.StringUtils;
 import malilib.util.data.FloatConsumer;
 import malilib.util.data.RangedFloatStorage;
@@ -71,7 +70,7 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
 
     protected void clampAndSetValue(float newValue)
     {
-        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+        this.value = MathUtils.clamp(newValue, this.minValue, this.maxValue);
         this.consumer.accept(this.value);
         this.sliderWidget.updateWidgetState();
     }

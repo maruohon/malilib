@@ -2,13 +2,12 @@ package malilib.gui.widget;
 
 import java.util.function.IntSupplier;
 
-import net.minecraft.util.math.MathHelper;
-
 import malilib.gui.callback.SliderCallback;
 import malilib.gui.util.ScreenContext;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.util.MathUtils;
 import malilib.util.data.Color4f;
 
 public class HorizontalColorSliderWidget extends BaseSliderWidget<SliderCallback>
@@ -37,7 +36,7 @@ public class HorizontalColorSliderWidget extends BaseSliderWidget<SliderCallback
     protected double getRelativePosition(int mouseX, int mouseY)
     {
         int relPos = mouseX - (this.getX() + 1) - this.sliderThickness / 2;
-        return MathHelper.clamp((double) relPos / (double) (this.getSliderTravelDistance() - 2), 0, 1);
+        return MathUtils.clamp((double) relPos / (double) (this.getSliderTravelDistance() - 2), 0, 1);
     }
 
     protected int getUsableDistance()

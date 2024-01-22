@@ -68,6 +68,66 @@ public class MathUtils
         return sum / (double) size;
     }
 
+    public static int clamp(int value, int min, int max)
+    {
+        if (value < min)
+        {
+            return min;
+        }
+        else
+        {
+            return Math.min(value, max);
+        }
+    }
+
+    public static long clamp(long value, long min, long max)
+    {
+        if (value < min)
+        {
+            return min;
+        }
+        else
+        {
+            return Math.min(value, max);
+        }
+    }
+
+    public static float clamp(float value, float min, float max)
+    {
+        if (value < min)
+        {
+            return min;
+        }
+        else
+        {
+            return Math.min(value, max);
+        }
+    }
+
+    public static double clamp(double value, double min, double max)
+    {
+        if (value < min)
+        {
+            return min;
+        }
+        else
+        {
+            return Math.min(value, max);
+        }
+    }
+
+    public static int floor(float value)
+    {
+        int i = (int) value;
+        return value < (float) i ? i - 1 : i;
+    }
+
+    public static int floor(double value)
+    {
+        int i = (int) value;
+        return value < (double) i ? i - 1 : i;
+    }
+
     public static int roundDown(int value, int interval)
     {
         if (interval == 0 || value == 0)
@@ -297,5 +357,65 @@ public class MathUtils
         }
 
         return maxValue;
+    }
+
+    /**
+     * Adjust the angle so that its value is in range [-180;180[
+     */
+    public static float wrapDegrees(float value)
+    {
+        value %= 360.0f;
+
+        if (value >= 180.0f)
+        {
+            value -= 360.0f;
+        }
+
+        if (value < -180.0f)
+        {
+            value += 360.0f;
+        }
+
+        return value;
+    }
+
+    /**
+     * Adjust the angle so that its value is in range [-180;180[
+     */
+    public static double wrapDegrees(double value)
+    {
+        value %= 360.0;
+
+        if (value >= 180.0)
+        {
+            value -= 360.0;
+        }
+
+        if (value < -180.0)
+        {
+            value += 360.0;
+        }
+
+        return value;
+    }
+
+    /**
+     * Adjust the angle so that its value is in range [-180;180[
+     */
+    public static int wrapDegrees(int angle)
+    {
+        angle %= 360;
+
+        if (angle >= 180)
+        {
+            angle -= 360;
+        }
+
+        if (angle < -180)
+        {
+            angle += 360;
+        }
+
+        return angle;
     }
 }

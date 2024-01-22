@@ -8,13 +8,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 
 import malilib.config.value.BaseOptionListConfigValue;
 import malilib.config.value.LayerMode;
 import malilib.listener.LayerRangeChangeListener;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.util.ListUtils;
+import malilib.util.MathUtils;
 import malilib.util.data.json.JsonUtils;
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.game.wrap.GameUtils;
@@ -293,9 +293,9 @@ public class LayerRange
     {
         switch (this.axis)
         {
-            case X: return MathHelper.floor(EntityWrap.getX(entity));
-            case Y: return MathHelper.floor(EntityWrap.getY(entity));
-            case Z: return MathHelper.floor(EntityWrap.getZ(entity));
+            case X: return MathUtils.floor(EntityWrap.getX(entity));
+            case Y: return MathUtils.floor(EntityWrap.getY(entity));
+            case Z: return MathUtils.floor(EntityWrap.getZ(entity));
         }
 
         return 0;
@@ -561,9 +561,9 @@ public class LayerRange
 
     protected int getLimitsClampedValue(int value, IntBoundingBox limits)
     {
-        return MathHelper.clamp(value,
-                                limits.getMinValueForAxis(this.axis),
-                                limits.getMaxValueForAxis(this.axis));
+        return MathUtils.clamp(value,
+                               limits.getMinValueForAxis(this.axis),
+                               limits.getMaxValueForAxis(this.axis));
     }
 
     public boolean isPositionWithinRange(BlockPos pos)
@@ -699,10 +699,10 @@ public class LayerRange
     {
         if (this.axis == axis)
         {
-            return MathHelper.clamp(value, this.getMinLayerBoundary(), this.getMaxLayerBoundary());
+            return MathUtils.clamp(value, this.getMinLayerBoundary(), this.getMaxLayerBoundary());
         }
 
-        //return MathHelper.clamp(value, limits.getMinValueForAxis(axis), limits.getMaxValueForAxis(axis));
+        //return MathUtils.clamp(value, limits.getMinValueForAxis(axis), limits.getMaxValueForAxis(axis));
         return value;
     }
 

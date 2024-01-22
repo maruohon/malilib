@@ -11,11 +11,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import malilib.util.MathUtils;
 import malilib.util.position.LayerRange;
 
 public class RayTraceUtils
@@ -344,9 +344,9 @@ public class RayTraceUtils
             data.currentZ = nextZ;
         }
 
-        int x = MathHelper.floor(data.currentX) - (data.facing == EnumFacing.EAST ?  1 : 0);
-        int y = MathHelper.floor(data.currentY) - (data.facing == EnumFacing.UP ?    1 : 0);
-        int z = MathHelper.floor(data.currentZ) - (data.facing == EnumFacing.SOUTH ? 1 : 0);
+        int x = MathUtils.floor(data.currentX) - (data.facing == EnumFacing.EAST ? 1 : 0);
+        int y = MathUtils.floor(data.currentY) - (data.facing == EnumFacing.UP ?    1 : 0);
+        int z = MathUtils.floor(data.currentZ) - (data.facing == EnumFacing.SOUTH ? 1 : 0);
         data.setBlockPos(x, y, z);
 
         return false;
@@ -382,10 +382,10 @@ public class RayTraceUtils
             this.currentX = start.x;
             this.currentY = start.y;
             this.currentZ = start.z;
-            this.endBlockX = MathHelper.floor(end.x);
-            this.endBlockY = MathHelper.floor(end.y);
-            this.endBlockZ = MathHelper.floor(end.z);
-            this.setBlockPos(MathHelper.floor(start.x), MathHelper.floor(start.y), MathHelper.floor(start.z));
+            this.endBlockX = MathUtils.floor(end.x);
+            this.endBlockY = MathUtils.floor(end.y);
+            this.endBlockZ = MathUtils.floor(end.z);
+            this.setBlockPos(MathUtils.floor(start.x), MathUtils.floor(start.y), MathUtils.floor(start.z));
         }
 
         public void setBlockPos(int x, int y, int z)

@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ScreenShotHelper;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -29,6 +28,7 @@ import malilib.config.option.ConfigOption;
 import malilib.input.ActionResult;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
+import malilib.util.MathUtils;
 import malilib.util.data.ModInfo;
 import malilib.util.datadump.DataDump;
 import malilib.util.datadump.DataDump.Format;
@@ -76,8 +76,8 @@ public class UtilityActions
                 {
                     double fx = Math.abs(Double.parseDouble(args[0])) % 1.0;
                     double fz = Math.abs(Double.parseDouble(args[1])) % 1.0;
-                    double px = MathHelper.floor(EntityWrap.getX(player));
-                    double pz = MathHelper.floor(EntityWrap.getZ(player));
+                    double px = MathUtils.floor(EntityWrap.getX(player));
+                    double pz = MathUtils.floor(EntityWrap.getZ(player));
                     double x = px < 0.0 ? px + 1.0 - fx : px + fx;
                     double z = pz < 0.0 ? pz + 1.0 - fz : pz + fz;
                     player.setLocationAndAngles(x, EntityWrap.getY(player), z,
@@ -97,7 +97,7 @@ public class UtilityActions
         {
             try
             {
-                EntityWrap.setYaw(ctx.getPlayer(), MathHelper.wrapDegrees(Float.parseFloat(arg)));
+                EntityWrap.setYaw(ctx.getPlayer(), MathUtils.wrapDegrees(Float.parseFloat(arg)));
                 return ActionResult.SUCCESS;
             }
             catch (Exception ignore) {}
