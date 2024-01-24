@@ -1,8 +1,5 @@
 package malilib.util.position;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-
 public enum Quadrant
 {
     NORTH_WEST,

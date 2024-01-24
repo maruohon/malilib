@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nullable;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.icon.DefaultIcons;
@@ -309,7 +309,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         this.headerWidgetPositioner = positioner;
     }
 
-    public BaseListWidget setParentScreen(GuiScreen parent)
+    public BaseListWidget setParentScreen(Screen parent)
     {
         if (parent instanceof BaseScreen)
         {

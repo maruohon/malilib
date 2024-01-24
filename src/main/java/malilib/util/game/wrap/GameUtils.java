@@ -7,19 +7,19 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.entity.living.player.InputPlayerEntity;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.living.player.PlayerEntity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Container;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 public class GameUtils
 {
@@ -29,29 +29,27 @@ public class GameUtils
     }
 
     @Nullable
-    public static WorldClient getClientWorld()
+    public static World getClientWorld()
     {
         return getClient().world;
     }
 
     @Nullable
-    public static WorldServer getClientPlayersServerWorld()
+    public static World getClientPlayersServerWorld()
     {
-        Entity player = getClientPlayer();
-        MinecraftServer server = getIntegratedServer();
-        return player != null && server != null ? server.getWorld(player.dimension) : null;
+        return getClientWorld();
     }
 
     @Nullable
-    public static EntityPlayerSP getClientPlayer()
+    public static InputPlayerEntity getClientPlayer()
     {
         return getClient().player;
     }
 
     @Nullable
-    public static InventoryPlayer getPlayerInventory()
+    public static PlayerInventory getPlayerInventory()
     {
-        EntityPlayer player = getClient().player;
+        PlayerEntity player = getClient().player;
         return player != null ? player.inventory : null;
     }
 
@@ -79,11 +77,13 @@ public class GameUtils
         return getInteractionManager().getBlockReachDistance();
     }
 
+    /*
     @Nullable
     public static MinecraftServer getIntegratedServer()
     {
         return getClient().getIntegratedServer();
     }
+    */
 
     @Nullable
     public static NetHandlerPlayClient getNetworkConnection()
@@ -91,18 +91,18 @@ public class GameUtils
         return getClient().getConnection();
     }
 
-    public static GameSettings getOptions()
+    public static GameOptions getOptions()
     {
-        return getClient().gameSettings;
+        return getClient().options;
     }
 
     public static void sendCommand(String command)
     {
-        EntityPlayerSP player = getClientPlayer();
+        InputPlayerEntity player = getClientPlayer();
 
         if (player != null)
         {
-            player.sendChatMessage(command);
+            player.sendChat(command);
         }
     }
 
@@ -113,7 +113,7 @@ public class GameUtils
     public static Entity getCameraEntity()
     {
         Minecraft mc = getClient();
-        Entity entity = mc.getRenderViewEntity();
+        Entity entity = mc.camera;
         return entity != null ? entity : mc.player;
     }
 
@@ -132,13 +132,12 @@ public class GameUtils
     public static long getCurrentWorldTick()
     {
         World world = getClientWorld();
-        return world != null ? world.getTotalWorldTime() : -1L;
+        return world != null ? world.getTime() : -1L;
     }
 
     public static boolean isCreativeMode()
     {
-        EntityPlayerSP player = getClientPlayer();
-        return player != null && player.capabilities.isCreativeMode;
+        return false;
     }
 
     public static int getRenderDistanceChunks()
@@ -177,27 +176,27 @@ public class GameUtils
 
     public static void profilerPush(String name)
     {
-        getClient().profiler.startSection(name);
+        //getClient().profiler.startSection(name);
     }
 
     public static void profilerPush(Supplier<String> nameSupplier)
     {
-        getClient().profiler.m_4994039(nameSupplier);
+        //getClient().profiler.m_4994039(nameSupplier);
     }
 
     public static void profilerSwap(String name)
     {
-        getClient().profiler.endStartSection(name);
+        //getClient().profiler.endStartSection(name);
     }
 
     public static void profilerSwap(Supplier<String> nameSupplier)
     {
-        getClient().profiler.m_3681950(nameSupplier);
+        //getClient().profiler.m_3681950(nameSupplier);
     }
 
     public static void profilerPop()
     {
-        getClient().profiler.endSection();
+        //getClient().profiler.endSection();
     }
 
     public static void openFile(Path file)

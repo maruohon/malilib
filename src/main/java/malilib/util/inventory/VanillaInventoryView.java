@@ -1,13 +1,13 @@
 package malilib.util.inventory;
 
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
 public class VanillaInventoryView implements InventoryView
 {
-    protected final IInventory inv;
+    protected final Inventory inv;
 
-    public VanillaInventoryView(IInventory inv)
+    public VanillaInventoryView(Inventory inv)
     {
         this.inv = inv;
     }
@@ -15,12 +15,12 @@ public class VanillaInventoryView implements InventoryView
     @Override
     public int getSize()
     {
-        return this.inv.getSizeInventory();
+        return this.inv.getSize();
     }
 
     @Override
     public ItemStack getStack(int slot)
     {
-        return this.inv.getStackInSlot(slot);
+        return this.inv.getStack(slot);
     }
 }

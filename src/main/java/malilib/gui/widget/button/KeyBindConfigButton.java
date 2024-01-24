@@ -1,15 +1,10 @@
 package malilib.gui.widget.button;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.settings.KeyBinding;
 
 import malilib.MaLiLibConfigs;
 import malilib.input.Hotkey;
@@ -20,7 +15,6 @@ import malilib.listener.EventListener;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.util.StringUtils;
-import malilib.util.game.wrap.GameUtils;
 
 public class KeyBindConfigButton extends GenericButton
 {
@@ -363,6 +357,7 @@ public class KeyBindConfigButton extends GenericButton
 
     protected void getVanillaKeybindOverlaps(List<String> overlapInfoOut)
     {
+        /* TODO b1.7.3
         IntArrayList keyList = new IntArrayList();
         Map<String, List<KeyBinding>> overlaps = new HashMap<>();
 
@@ -399,6 +394,7 @@ public class KeyBindConfigButton extends GenericButton
                 }
             }
         }
+        */
     }
 
     protected void buildOverlapInfoHoverStrings(List<String> overlapInfo)

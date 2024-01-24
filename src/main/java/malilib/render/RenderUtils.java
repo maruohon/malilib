@@ -16,6 +16,7 @@ import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.position.Vec2i;
 
@@ -35,7 +36,7 @@ public class RenderUtils
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void bindTexture(ResourceLocation texture)
+    public static void bindTexture(Identifier texture)
     {
         GameUtils.getClient().getTextureManager().bindTexture(texture);
     }

@@ -1,14 +1,6 @@
 package malilib.util.game.wrap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.annotation.Nullable;
-import org.apache.commons.lang3.Validate;
-
-import net.minecraft.util.NonNullList;
-
-public class DefaultedList<E> extends NonNullList<E>
+public class DefaultedList{/*<E> extends NonNullList<E>
 {
     protected DefaultedList()
     {
@@ -24,10 +16,12 @@ public class DefaultedList<E> extends NonNullList<E>
     {
         return new DefaultedList<>();
     }
+    */
 
     /**
      * Creates a new NonNullList with <i>fixed</i> size, and filled with the object passed.
      */
+    /*
     @SuppressWarnings("unchecked")
     public static <E> DefaultedList<E> ofSize(int size, E defaultValue)
     {
@@ -37,4 +31,5 @@ public class DefaultedList<E> extends NonNullList<E>
 
         return new DefaultedList<>(Arrays.asList((E[]) arr), defaultValue);
     }
+    */
 }

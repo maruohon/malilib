@@ -13,14 +13,9 @@ import javax.annotation.Nullable;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.NetworkManager;
+import net.minecraft.resource.language.I18n;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 
 import malilib.MaLiLib;
@@ -148,10 +143,8 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(String messageKey, Path file)
     {
-        TextComponentString name = new TextComponentString(file.getFileName().toString());
-        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString()));
-        name.getStyle().setUnderlined(Boolean.TRUE);
-        GameUtils.getClientPlayer().sendMessage(new TextComponentTranslation(messageKey, name));
+        String name = file.getFileName().toString();
+        GameUtils.getClient().gui.addChatMessage(StringUtils.translate(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -497,26 +490,6 @@ public class StringUtils
         }
         else
         {
-            Minecraft mc = GameUtils.getClient();
-
-            if (mc.isConnectedToRealms())
-            {
-                if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
-                {
-                    return "realms";
-                }
-                else
-                {
-                    NetHandlerPlayClient handler = mc.getConnection();
-                    NetworkManager connection = handler != null ? handler.getNetworkManager() : null;
-
-                    if (connection != null)
-                    {
-                        return "realms_" + stringifyAddress(connection.getRemoteAddress());
-                    }
-                }
-            }
-
             ServerData server = GameUtils.getClient().getCurrentServerData();
 
             if (server != null)
@@ -639,7 +612,7 @@ public class StringUtils
                 }
             }
 
-            return net.minecraft.client.resources.I18n.format(translationKey, args);
+            return I18n.translate(translationKey, args);
         }
         catch (Exception e)
         {
@@ -649,7 +622,13 @@ public class StringUtils
 
     public static boolean hasTranslation(String translationKey)
     {
-        return net.minecraft.client.resources.I18n.hasKey(translationKey);
+        return I18n.translate(translationKey).equals(translationKey) == false;
+    }
+
+    public static String stripVanillaFormattingCodes(String str)
+    {
+        // TODO b1.7.3
+        return str;
     }
 
     /**
@@ -657,7 +636,7 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return GameUtils.getClient().fontRenderer.FONT_HEIGHT;
+        return 8;//GameUtils.getClient().textRenderer.FONT_HEIGHT; // TODO b1.7.3
     }
 
     /**
@@ -665,6 +644,6 @@ public class StringUtils
      */
     public static int getStringWidth(String text)
     {
-        return GameUtils.getClient().fontRenderer.getStringWidth(text);
+        return GameUtils.getClient().textRenderer.getWidth(text);
     }
 }

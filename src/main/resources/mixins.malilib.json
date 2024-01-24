@@ -6,7 +6,7 @@
 	"client": [
 		"access.AbstractHorseMixin",
 		"access.GuiContainerMixin",
-		"access.NBTBaseMixin",
+      "access.NbtElementMixin",
 		"access.NBTTagLongArrayMixin",
 		"command.GuiScreenMixin",
 		"command.TabCompleterMixin",

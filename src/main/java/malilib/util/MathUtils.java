@@ -1,6 +1,6 @@
 package malilib.util;
 
-import net.minecraft.util.math.Vec3i;
+import malilib.util.position.Vec3i;
 
 public class MathUtils
 {

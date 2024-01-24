@@ -1,8 +1,5 @@
 package malilib.overlay.message;
 
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentString;
-
 import malilib.MaLiLibConfigs;
 import malilib.overlay.widget.MessageRendererWidget;
 import malilib.overlay.widget.ToastRendererWidget;
@@ -53,31 +50,27 @@ public class DefaultMessageDispatchers
 
     public static void sendVanillaHotbarMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        TextComponentString msg = new TextComponentString(translatedMessage);
-        GameUtils.getClient().ingameGUI.addChatMessage(ChatType.GAME_INFO, msg);
+        GameUtils.getClient().gui.addChatMessage(translatedMessage);
     }
 
     public static void sendVanillaHotbarMessageText(StyledText text, MessageDispatcher messageDispatcher)
     {
         if (text.lines.size() > 0)
         {
-            TextComponentString msg = new TextComponentString(text.lines.get(0).displayText);
-            GameUtils.getClient().ingameGUI.addChatMessage(ChatType.GAME_INFO, msg);
+            GameUtils.getClient().gui.addChatMessage(text.lines.get(0).displayText);
         }
     }
 
     public static void sendVanillaChatMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        TextComponentString msg = new TextComponentString(translatedMessage);
-        GameUtils.getClient().ingameGUI.addChatMessage(ChatType.CHAT, msg);
+        GameUtils.getClient().gui.addChatMessage(translatedMessage);
     }
 
     public static void sendVanillaChatMessageText(StyledText text, MessageDispatcher messageDispatcher)
     {
         if (text.lines.size() > 0)
         {
-            TextComponentString msg = new TextComponentString(text.lines.get(0).displayText);
-            GameUtils.getClient().ingameGUI.addChatMessage(ChatType.CHAT, msg);
+            GameUtils.getClient().gui.addChatMessage(text.lines.get(0).displayText);
         }
     }
 

@@ -3,7 +3,7 @@ package malilib.gui.tab;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.BaseTabbedScreen;
@@ -39,7 +39,7 @@ public interface ScreenTab extends NameIdentifiable
      * @param currentScreen
      * @return true if no screen switch is needed
      */
-    boolean canUseCurrentScreen(@Nullable GuiScreen currentScreen);
+    boolean canUseCurrentScreen(@Nullable Screen currentScreen);
 
     /**
      * Creates a new screen for this tab.<br>
@@ -47,14 +47,14 @@ public interface ScreenTab extends NameIdentifiable
      * screen is not suitable for this tab.
      * @return
      */
-    GuiScreen createScreen();
+    Screen createScreen();
 
     /**
      * Opens the screen for this tab
      */
     default void createAndOpenScreen()
     {
-        GuiScreen screen = this.createScreen();
+        Screen screen = this.createScreen();
 
         if (screen instanceof BaseTabbedScreen)
         {

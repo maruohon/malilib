@@ -16,10 +16,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
+import net.minecraft.client.Minecraft;
+
 import malilib.MaLiLib;
 import malilib.config.value.FileWriteType;
 import malilib.overlay.message.MessageDispatcher;
-import malilib.util.game.wrap.GameUtils;
 
 public class FileUtils
 {
@@ -30,7 +31,7 @@ public class FileUtils
 
     public static Path getMinecraftDirectory()
     {
-        return GameUtils.getClient().gameDir.toPath();
+        return Minecraft.getRunDirectory().toPath();
     }
 
     public static Path getRootDirectory()

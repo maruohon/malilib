@@ -1,17 +1,13 @@
 package malilib.util.game.wrap;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.living.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 import malilib.util.MathUtils;
-import malilib.util.inventory.InventoryUtils;
+import malilib.util.position.BlockPos;
+import malilib.util.position.Direction;
+import malilib.util.position.Vec3d;
 
 public class EntityWrap
 {
@@ -35,54 +31,57 @@ public class EntityWrap
 
     public static Vec3d getEntityPos(Entity entity)
     {
-        return entity.getPositionVector();
+        // TODO b1.7.3 eye pos or feet pos?
+        return new Vec3d(entity.x, entity.y, entity.z);
     }
 
     public static BlockPos getEntityBlockPos(Entity entity)
     {
-        return new BlockPos(entity);
+        // TODO b1.7.3 eye pos or feet pos?
+        return BlockPos.ofFloored(entity.x, entity.y, entity.z);
     }
 
     public static double getX(Entity entity)
     {
-        return entity.posX;
+        return entity.x;
     }
 
     public static double getY(Entity entity)
     {
-        return entity.posY;
+        return entity.y;
     }
 
     public static double getZ(Entity entity)
     {
-        return entity.posZ;
+        return entity.z;
     }
 
     public static float getYaw(Entity entity)
     {
-        return entity.rotationYaw;
+        return entity.yaw;
     }
 
     public static float getPitch(Entity entity)
     {
-        return entity.rotationPitch;
+        return entity.pitch;
     }
 
     public static double lerpX(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosX;
+        // TODO b1.7.3 is this the correct field?
+        double lastTickPos = entity.prevTickX;
         return lastTickPos + (getX(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpY(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosY;
+        double lastTickPos = entity.prevTickY;
         return lastTickPos + (getY(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpZ(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosZ;
+        double lastTickPos = entity.prevTickZ;
         return lastTickPos + (getZ(entity) - lastTickPos) * tickDelta;
     }
 
@@ -103,44 +102,45 @@ public class EntityWrap
 
     public static void setYaw(Entity entity, float yaw)
     {
-        entity.rotationYaw = yaw;
+        entity.yaw = yaw;
     }
 
     public static void setPitch(Entity entity, float pitch)
     {
-        entity.rotationPitch = pitch;
+        entity.pitch = pitch;
     }
 
-    public static EnumFacing getClosestHorizontalLookingDirection(Entity entity)
+    public static Direction getClosestHorizontalLookingDirection(Entity entity)
     {
-        return EnumFacing.fromAngle(EntityWrap.getYaw(entity));
+        return Direction.fromAngle(EntityWrap.getYaw(entity));
     }
 
     /**
      * @param verticalThreshold The pitch rotation angle over which the up or down direction is preferred over the horizontal directions
      * @return the closest direction the entity is currently looking at.
      */
-    public static EnumFacing getClosestLookingDirection(Entity entity, float verticalThreshold)
+    public static Direction getClosestLookingDirection(Entity entity, float verticalThreshold)
     {
         float pitch = EntityWrap.getPitch(entity);
 
         if (pitch > verticalThreshold)
         {
-            return EnumFacing.DOWN;
+            return Direction.DOWN;
         }
         else if (-pitch > verticalThreshold)
         {
-            return EnumFacing.UP;
+            return Direction.UP;
         }
 
         return getClosestHorizontalLookingDirection(entity);
     }
 
-    public static ItemStack getMainHandItem(EntityLivingBase entity)
+    public static ItemStack getMainHandItem(PlayerEntity entity)
     {
-        return getHeldItem(entity, EnumHand.MAIN_HAND);
+        return entity.inventory.getMainHandStack();
     }
 
+    /*
     public static ItemStack getOffHandItem(EntityLivingBase entity)
     {
         return getHeldItem(entity, EnumHand.OFF_HAND);
@@ -150,12 +150,14 @@ public class EntityWrap
     {
         return entity.getHeldItem(hand);
     }
+    */
 
     /**
      * Checks if the requested item is currently in the entity's hand such that it would be used for using/placing.
      * This means, that it must either be in the main hand, or the main hand must be empty and the item is in the offhand.
      * @param lenient if true, then NBT tags and also damage of damageable items are ignored
      */
+    /*
     @Nullable
     public static EnumHand getUsedHandForItem(EntityLivingBase entity, ItemStack stack, boolean lenient)
     {
@@ -171,4 +173,5 @@ public class EntityWrap
 
         return hand;
     }
+    */
 }

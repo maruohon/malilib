@@ -1,14 +1,13 @@
 package malilib.util.data;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 import malilib.util.game.wrap.ItemWrap;
-import malilib.util.game.wrap.RegistryUtils;
 
 /**
  * A wrapper around ItemStack, that implements hashCode() and equals().
- * Whether or not the NBT data and damage of damageable items are considered by those methods,
+ * Whether the NBT data and damage of damageable items are considered by those methods,
  * depends on the ignoreDamage and checkNbt arguments to the constructor.
  */
 public class ItemType
@@ -30,7 +29,7 @@ public class ItemType
 
     public ItemType(ItemStack stack, boolean copy, boolean ignoreDamage, boolean checkNbt)
     {
-        this.stack = ItemWrap.isEmpty(stack) ? ItemStack.EMPTY : (copy ? stack.copy() : stack);
+        this.stack = ItemWrap.isEmpty(stack) ? ItemWrap.EMPTY_STACK : (copy ? stack.copy() : stack);
         this.ignoreDamage = ignoreDamage;
         this.checkNbt = checkNbt;
         this.hashCode = this.calculateHashCode();
@@ -61,18 +60,24 @@ public class ItemType
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.stack.getItem().hashCode();
 
-        if (this.ignoreDamage == false || this.stack.isItemStackDamageable() == false)
+        if (this.stack != null)
+        {
+            result = prime * result + this.stack.getItem().hashCode();
+        }
+
+        if (this.ignoreDamage == false || this.stack.isDamageable() == false)
         {
             result = prime * result + this.stack.getMetadata();
         }
 
+        /*
         if (this.checkNbt())
         {
             NBTTagCompound tag = ItemWrap.getTag(this.stack);
             result = prime * result + (tag != null ? tag.hashCode() : 0);
         }
+        */
 
         return result;
     }
@@ -100,19 +105,20 @@ public class ItemType
                 return false;
             }
 
-            if ((this.ignoreDamage == false || this.stack.isItemStackDamageable() == false) &&
+            if ((this.ignoreDamage == false || this.stack.isDamageable() == false) &&
                 this.stack.getMetadata() != other.stack.getMetadata())
             {
                 return false;
             }
 
-            return this.checkNbt() == false || ItemStack.areItemStackTagsEqual(this.stack, other.stack);
+            return true;//this.checkNbt() == false || ItemStack.areItemStackTagsEqual(this.stack, other.stack);
         }
     }
 
     @Override
     public String toString()
     {
+        /*
         if (this.checkNbt())
         {
             String id = RegistryUtils.getItemIdStr(this.stack.getItem());
@@ -124,5 +130,8 @@ public class ItemType
             String id = RegistryUtils.getItemIdStr(this.stack.getItem());
             return (id != null ? id : "<null>") + "@" + this.stack.getMetadata();
         }
+        */
+        Item item = this.stack.getItem();;
+        return this.stack != null ? String.format("%s [id: %d]", item.getTranslationKey(), item.id)  : "<null>";
     }
 }

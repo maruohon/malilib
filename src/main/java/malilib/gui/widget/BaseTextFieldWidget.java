@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.SharedConstants;
 
 import malilib.MaLiLibConfigs;
 import malilib.config.value.HorizontalAlignment;
@@ -622,13 +622,18 @@ public class BaseTextFieldWidget extends ContainerWidget
 
     protected boolean isUsableCharacter(char typedChar, int modifiers)
     {
-        if (typedChar != 167 && ChatAllowedCharacters.isAllowedCharacter(typedChar) == false)
+        if (typedChar != 167 && isAllowedCharacter(typedChar) == false)
         {
             return false;
         }
 
         return this.inputValidator == null ||
                this.inputValidator.canWriteCharacter(this.cursorPosition, this.text, typedChar, modifiers);
+    }
+
+    public static boolean isAllowedCharacter(char c)
+    {
+        return SharedConstants.VALID_CHAT_CHARACTERS.indexOf(c) >= 0;
     }
 
     protected void writeCharacter(char typedChar, int modifiers)

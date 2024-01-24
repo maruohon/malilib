@@ -6,13 +6,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.RegistryNamespaced;
-
-import malilib.MaLiLib;
 import malilib.config.value.BaseOptionListConfigValue;
 import malilib.config.value.BlackWhiteList;
-import malilib.util.StringUtils;
 
 public class UsageRestriction<TYPE>
 {
@@ -91,6 +86,7 @@ public class UsageRestriction<TYPE>
      * @param registry
      * @param errorTranslationKey
      */
+    /*
     public void setValuesBasedOnRegistry(ListType type, List<String> blackList, List<String> whiteList,
                                          RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
     {
@@ -98,6 +94,7 @@ public class UsageRestriction<TYPE>
         this.setValuesForListBasedOnRegistry(ListType.BLACKLIST, blackList, registry, errorTranslationKey);
         this.setValuesForListBasedOnRegistry(ListType.WHITELIST, whiteList, registry, errorTranslationKey);
     }
+    */
 
     /**
      * Clears the old values for the given  {@link ListType} and then populates them from the provided list of names
@@ -107,6 +104,7 @@ public class UsageRestriction<TYPE>
      * @param registry
      * @param errorTranslationKey
      */
+    /*
     protected void setValuesForListBasedOnRegistry(ListType type, List<String> names,
                                                    RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
     {
@@ -135,6 +133,7 @@ public class UsageRestriction<TYPE>
             }
         }
     }
+    */
 
     /**
      * Check if the given object is currently allowed by this restriction

@@ -6,17 +6,16 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import malilib.util.MathUtils;
+import malilib.util.position.BlockPos;
+import malilib.util.position.Direction;
 import malilib.util.position.LayerRange;
+import malilib.util.position.Vec3d;
 
 public class RayTraceUtils
 {
@@ -75,7 +74,7 @@ public class RayTraceUtils
 
         if (result == null || eyesPos.distanceTo(result.hitVec) > range)
         {
-            result = new RayTraceResult(RayTraceResult.Type.MISS, Vec3d.ZERO, EnumFacing.UP, BlockPos.ORIGIN);
+            result = new RayTraceResult(RayTraceResult.Type.MISS, Vec3d.ZERO, Direction.UP, BlockPos.ORIGIN);
         }
 
         return result;
@@ -120,7 +119,7 @@ public class RayTraceUtils
      */
     @Nullable
     public static RayTraceResult rayTraceBlocks(World world, Vec3d start, Vec3d end,
-            IRayPositionHandler handler, RayTraceFluidHandling fluidMode, Predicate<IBlockState> blockFilter, boolean ignoreNonCollidable,
+            IRayPositionHandler handler, RayTraceFluidHandling fluidMode, Predicate<Block> blockFilter, boolean ignoreNonCollidable,
             boolean returnLastUncollidableBlock, @Nullable LayerRange layerRange, int maxSteps)
     {
         if (Double.isNaN(start.x) || Double.isNaN(start.y) || Double.isNaN(start.z) ||
@@ -324,29 +323,29 @@ public class RayTraceUtils
 
         if (relStepX < relStepY && relStepX < relStepZ)
         {
-            data.facing = data.endBlockX > data.blockX ? EnumFacing.WEST : EnumFacing.EAST;
+            data.facing = data.endBlockX > data.blockX ? Direction.WEST : Direction.EAST;
             data.currentX = nextX;
             data.currentY += distToEndY * relStepX;
             data.currentZ += distToEndZ * relStepX;
         }
         else if (relStepY < relStepZ)
         {
-            data.facing = data.endBlockY > data.blockY ? EnumFacing.DOWN : EnumFacing.UP;
+            data.facing = data.endBlockY > data.blockY ? Direction.DOWN : Direction.UP;
             data.currentX += distToEndX * relStepY;
             data.currentY = nextY;
             data.currentZ += distToEndZ * relStepY;
         }
         else
         {
-            data.facing = data.endBlockZ > data.blockZ ? EnumFacing.NORTH : EnumFacing.SOUTH;
+            data.facing = data.endBlockZ > data.blockZ ? Direction.NORTH : Direction.SOUTH;
             data.currentX += distToEndX * relStepZ;
             data.currentY += distToEndY * relStepZ;
             data.currentZ = nextZ;
         }
 
-        int x = MathUtils.floor(data.currentX) - (data.facing == EnumFacing.EAST ? 1 : 0);
-        int y = MathUtils.floor(data.currentY) - (data.facing == EnumFacing.UP ?    1 : 0);
-        int z = MathUtils.floor(data.currentZ) - (data.facing == EnumFacing.SOUTH ? 1 : 0);
+        int x = MathUtils.floor(data.currentX) - (data.facing == Direction.EAST ? 1 : 0);
+        int y = MathUtils.floor(data.currentY) - (data.facing == Direction.UP ?    1 : 0);
+        int z = MathUtils.floor(data.currentZ) - (data.facing == Direction.SOUTH ? 1 : 0);
         data.setBlockPos(x, y, z);
 
         return false;
@@ -356,7 +355,7 @@ public class RayTraceUtils
     {
         @Nullable protected final LayerRange range;
         public final RayTraceFluidHandling fluidMode;
-        public final Predicate<IBlockState> blockFilter;
+        public final Predicate<Block> blockFilter;
         public final BlockPos.MutableBlockPos blockPosMutable = new BlockPos.MutableBlockPos();
         public final Vec3d start;
         public final Vec3d end;
@@ -369,10 +368,10 @@ public class RayTraceUtils
         public double currentX;
         public double currentY;
         public double currentZ;
-        public EnumFacing facing;
+        public Direction facing;
         @Nullable public RayTraceResult trace;
 
-        public RayTraceCalculationData(Vec3d start, Vec3d end, RayTraceFluidHandling fluidMode, Predicate<IBlockState> blockFilter, @Nullable LayerRange range)
+        public RayTraceCalculationData(Vec3d start, Vec3d end, RayTraceFluidHandling fluidMode, Predicate<Block> blockFilter, @Nullable LayerRange range)
         {
             this.start = start;
             this.end = end;
@@ -396,7 +395,7 @@ public class RayTraceUtils
             this.blockPosMutable.setPos(this.blockX, this.blockY, this.blockZ);
         }
 
-        public boolean isValidBlock(IBlockState state)
+        public boolean isValidBlock(@Nullable Block state)
         {
             return this.blockFilter.test(state);
         }
@@ -438,8 +437,8 @@ public class RayTraceUtils
         }
     }
 
-    public static final Predicate<IBlockState> BLOCK_FILTER_ANY = (state) -> true;
-    public static final Predicate<IBlockState> BLOCK_FILTER_NON_AIR = (state) -> state.getMaterial() != Material.AIR;
+    public static final Predicate<Block> BLOCK_FILTER_ANY = (block) -> true;
+    public static final Predicate<Block> BLOCK_FILTER_NON_AIR = (block) -> block != null && block.material != Material.AIR;
 
     public enum RayTraceFluidHandling
     {
@@ -447,14 +446,14 @@ public class RayTraceUtils
         SOURCE_ONLY(BlockUtils::isFluidSourceBlock),
         ANY(BlockUtils::isFluidBlock);
 
-        private final Predicate<IBlockState> predicate;
+        private final Predicate<Block> predicate;
 
-        RayTraceFluidHandling(Predicate<IBlockState> predicate)
+        RayTraceFluidHandling(Predicate<Block> predicate)
         {
             this.predicate = predicate;
         }
 
-        public boolean handled(IBlockState blockState)
+        public boolean handled(Block blockState)
         {
             return this.predicate.test(blockState);
         }

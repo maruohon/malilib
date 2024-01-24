@@ -1,6 +1,5 @@
 package malilib.gui.widget.list.entry.config.list;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 
 import malilib.config.option.list.ItemListConfig;
@@ -29,7 +28,7 @@ public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemLi
         return new BaseValueListEditButton<>(width, height,
                                              config,
                                              this::updateWidgetState,
-                                             () -> Items.STICK,
+                                             () -> Item.STICK,
                                              RegistryUtils::getSortedItemList,
                                              RegistryUtils::getItemIdStr,
                                              ItemStackWidget::createItemWidget,

@@ -3,15 +3,15 @@ package malilib.render;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 import malilib.util.data.EdgeInt;
+import malilib.util.position.BlockPos;
+import malilib.util.position.Direction;
 import malilib.util.position.IntBoundingBox;
+import malilib.util.position.Vec3d;
 
 public class ShapeRenderUtils
 {
@@ -807,7 +807,7 @@ public class ShapeRenderUtils
     /**
      * Takes in a VertexBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
-    public static void renderBlockPosSideQuad(BlockPos pos, EnumFacing side, double expand,
+    public static void renderBlockPosSideQuad(BlockPos pos, Direction side, double expand,
                                               Color4f color, VertexBuilder builder)
     {
         renderBlockPosSideQuad(pos, side, expand, color, Vec3d.ZERO, builder);
@@ -816,7 +816,7 @@ public class ShapeRenderUtils
     /**
      * Takes in a VertexBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
-    public static void renderBlockPosSideQuad(BlockPos pos, EnumFacing side, double expand,
+    public static void renderBlockPosSideQuad(BlockPos pos, Direction side, double expand,
                                               Color4f color, Vec3d cameraPos, VertexBuilder builder)
     {
         double minX = pos.getX() - expand - cameraPos.x;

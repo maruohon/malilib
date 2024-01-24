@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.options.KeyBinding;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
@@ -557,7 +557,7 @@ public class KeyBindImpl implements KeyBind
 
     public static boolean hotkeyMatchesKeyBind(Hotkey hotkey, KeyBinding keybind)
     {
-        return hotkey.getKeyBind().matches(keybind.getKeyCode());
+        return hotkey.getKeyBind().matches(keybind.keyCode);
     }
 
     public static KeyBindImpl fromStorageString(String storageString, KeyBindSettings settings)

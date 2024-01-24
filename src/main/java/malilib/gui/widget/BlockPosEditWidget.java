@@ -2,9 +2,8 @@ package malilib.gui.widget;
 
 import java.util.function.Consumer;
 
-import net.minecraft.util.math.BlockPos;
-
 import malilib.util.game.wrap.EntityWrap;
+import malilib.util.position.BlockPos;
 import malilib.util.position.Coordinate;
 
 public class BlockPosEditWidget extends BaseTripleNumberEditWidget<BlockPos, IntegerEditWidget>

@@ -3,8 +3,6 @@ package malilib.gui.widget;
 import java.awt.Color;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
-
 import malilib.gui.callback.SliderCallback;
 import malilib.gui.util.ScreenContext;
 import malilib.render.ShapeRenderUtils;
@@ -12,6 +10,7 @@ import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.MathUtils;
 import malilib.util.data.FloatSupplier;
+import malilib.util.game.wrap.RenderWrap;
 
 public class HorizontalHueSliderWidget extends BaseSliderWidget<SliderCallback>
 {
@@ -75,11 +74,11 @@ public class HorizontalHueSliderWidget extends BaseSliderWidget<SliderCallback>
             ShapeRenderUtils.renderHorizontalGradientRectangle(x1, y + 1, z, x2 - x1, height, color1, color2, builder);
         }
 
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderWrap.shadeModel(GL11.GL_SMOOTH);
 
         builder.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
+        RenderWrap.shadeModel(GL11.GL_FLAT);
     }
 
     protected void renderPositionMarker(int x, int y, float z)

@@ -5,10 +5,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.init.SoundEvents;
-
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
 import malilib.gui.util.ScreenContext;
@@ -270,8 +266,10 @@ public class GenericButton extends InteractableWidget
     {
         if (this.playClickSound)
         {
+            /* TODO b1.7.3
             ISound sound = PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F);
             this.mc.getSoundHandler().playSound(sound);
+            */
         }
     }
 

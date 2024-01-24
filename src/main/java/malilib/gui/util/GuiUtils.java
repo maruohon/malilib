@@ -2,7 +2,6 @@ package malilib.gui.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -10,16 +9,11 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
 import org.lwjgl.input.Mouse;
 
-import net.minecraft.client.gui.GuiConfirmOpenLink;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.living.player.PlayerEntity;
 
 import malilib.MaLiLib;
 import malilib.config.value.HudAlignment;
-import malilib.gui.BaseScreen;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.listener.EventListener;
 import malilib.util.game.wrap.GameUtils;
@@ -30,14 +24,16 @@ public class GuiUtils
 
     public static int getScaledWindowWidth()
     {
-        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
-        return sr.getScaledWidth();
+        int scale = Math.min(getDisplayWidth() / 320, getDisplayHeight() / 240);
+        scale = Math.max(scale, 1);
+        return getDisplayWidth() / scale;
     }
 
     public static int getScaledWindowHeight()
     {
-        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
-        return sr.getScaledHeight();
+        int scale = Math.min(getDisplayWidth() / 320, getDisplayHeight() / 240);
+        scale = Math.max(scale, 1);
+        return getDisplayHeight() / scale;
     }
 
     public static int getVanillaScreenScale()
@@ -56,17 +52,17 @@ public class GuiUtils
 
     public static int getDisplayWidth()
     {
-        return GameUtils.getClient().displayWidth;
+        return GameUtils.getClient().width;
     }
 
     public static int getDisplayHeight()
     {
-        return GameUtils.getClient().displayHeight;
+        return GameUtils.getClient().height;
     }
 
     public static int getMouseScreenX()
     {
-        GuiScreen screen = getCurrentScreen();
+        Screen screen = getCurrentScreen();
         return screen != null ? getMouseScreenX(screen.width) : 0;
     }
 
@@ -77,7 +73,7 @@ public class GuiUtils
 
     public static int getMouseScreenY()
     {
-        GuiScreen screen = getCurrentScreen();
+        Screen screen = getCurrentScreen();
         return screen != null ? getMouseScreenY(screen.height) : 0;
     }
 
@@ -97,15 +93,15 @@ public class GuiUtils
     }
 
     @Nullable
-    public static GuiScreen getCurrentScreen()
+    public static Screen getCurrentScreen()
     {
-        return GameUtils.getClient().currentScreen;
+        return GameUtils.getClient().screen;
     }
 
     @Nullable
     public static <T> T getCurrentScreenIfMatches(Class<T> clazz)
     {
-        GuiScreen screen = getCurrentScreen();
+        Screen screen = getCurrentScreen();
 
         if (screen != null && clazz.isAssignableFrom(screen.getClass()))
         {
@@ -117,11 +113,11 @@ public class GuiUtils
 
     public static void reInitCurrentScreen()
     {
-        GuiScreen screen = getCurrentScreen();
+        Screen screen = getCurrentScreen();
 
         if (screen != null)
         {
-            screen.initGui();
+            screen.init();
         }
     }
 
@@ -130,8 +126,10 @@ public class GuiUtils
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
+    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, PlayerEntity player)
     {
+        // TODO b1.7.3
+        /*
         if (alignment == HudAlignment.TOP_RIGHT)
         {
             // Only Chuck Norris can divide by zero
@@ -168,6 +166,7 @@ public class GuiUtils
                 return (int) (Math.max(y1, y2) / scale);
             }
         }
+        */
 
         return 0;
     }
@@ -267,8 +266,9 @@ public class GuiUtils
                 throw new URISyntaxException(urlString, "Unsupported protocol: " + s.toLowerCase(Locale.ROOT));
             }
 
-            final GuiScreen currentScreen = getCurrentScreen();
+            final Screen currentScreen = getCurrentScreen();
 
+            /* TODO b1.7.3
             if (GameUtils.getOptions().chatLinksPrompt)
             {
                 //BaseScreen.openGui(new ConfirmActionScreen(320, "", () -> openWebLink(uri), getCurrentScreen(), ""));
@@ -283,6 +283,7 @@ public class GuiUtils
             {
                 openWebLink(uri);
             }
+            */
         }
         catch (URISyntaxException urisyntaxexception)
         {

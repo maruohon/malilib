@@ -2,10 +2,9 @@ package malilib.gui.widget;
 
 import java.util.function.Consumer;
 
-import net.minecraft.util.math.Vec3i;
-
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.position.Coordinate;
+import malilib.util.position.Vec3i;
 
 public class Vec3iEditWidget extends BaseTripleNumberEditWidget<Vec3i, IntegerEditWidget>
 {

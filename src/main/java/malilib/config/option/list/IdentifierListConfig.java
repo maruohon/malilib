@@ -6,20 +6,20 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.ResourceLocation;
+import malilib.util.data.Identifier;
 
-public class IdentifierListConfig extends ValueListConfig<ResourceLocation>
+public class IdentifierListConfig extends ValueListConfig<Identifier>
 {
-    public IdentifierListConfig(String name, ImmutableList<ResourceLocation> defaultValues,
-                                Function<ResourceLocation, String> toStringConverter,
-                                Function<String, ResourceLocation> fromStringConverter)
+    public IdentifierListConfig(String name, ImmutableList<Identifier> defaultValues,
+                                Function<Identifier, String> toStringConverter,
+                                Function<String, Identifier> fromStringConverter)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter);
     }
 
-    public IdentifierListConfig(String name, ImmutableList<ResourceLocation> defaultValues,
-                                Function<ResourceLocation, String> toStringConverter,
-                                Function<String, ResourceLocation> fromStringConverter,
+    public IdentifierListConfig(String name, ImmutableList<Identifier> defaultValues,
+                                Function<Identifier, String> toStringConverter,
+                                Function<String, Identifier> fromStringConverter,
                                 @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter, commentTranslationKey, commentArgs);
@@ -38,7 +38,7 @@ public class IdentifierListConfig extends ValueListConfig<ResourceLocation>
         return create(cfgName, null, names);
     }
 
-    public static IdentifierListConfig create(String cfgName, @Nullable List<ResourceLocation> validValues, String... names)
+    public static IdentifierListConfig create(String cfgName, @Nullable List<Identifier> validValues, String... names)
     {
         return create(cfgName, Arrays.asList(names), validValues);
     }
@@ -48,16 +48,16 @@ public class IdentifierListConfig extends ValueListConfig<ResourceLocation>
         return create(cfgName, names, null);
     }
 
-    public static IdentifierListConfig create(String cfgName, List<String> names, @Nullable List<ResourceLocation> validValues)
+    public static IdentifierListConfig create(String cfgName, List<String> names, @Nullable List<Identifier> validValues)
     {
-        ImmutableList.Builder<ResourceLocation> builder = ImmutableList.builder();
+        ImmutableList.Builder<Identifier> builder = ImmutableList.builder();
 
         for (String name : names)
         {
-            builder.add(new ResourceLocation(name));
+            builder.add(new Identifier(name));
         }
 
-        IdentifierListConfig config = new IdentifierListConfig(cfgName, builder.build(), ResourceLocation::toString, ResourceLocation::new);
+        IdentifierListConfig config = new IdentifierListConfig(cfgName, builder.build(), Identifier::toString, Identifier::new);
         config.setValidValues(validValues);
         return config;
     }

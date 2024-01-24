@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import malilib.gui.tab.ScreenTab;
 import malilib.gui.tab.TabbedScreenState;
@@ -19,7 +18,7 @@ import malilib.util.data.ModInfo;
 public abstract class BaseTabbedScreen extends BaseScreen
 {
     protected static final Map<String, TabbedScreenState> CURRENT_STATE = new HashMap<>();
-    protected static final Object2IntOpenHashMap<ScreenTab> SCROLLBAR_POSITIONS = new Object2IntOpenHashMap<>();
+    protected static final Map<ScreenTab, Integer> SCROLLBAR_POSITIONS = new HashMap<>();
 
     protected final List<? extends ScreenTab> screenTabs;
     protected final List<GenericButton> tabButtons = new ArrayList<>();
@@ -282,7 +281,7 @@ public abstract class BaseTabbedScreen extends BaseScreen
 
     public static int getScrollBarPosition(ScreenTab tab)
     {
-        return SCROLLBAR_POSITIONS.getInt(tab);
+        return SCROLLBAR_POSITIONS.get(tab);
     }
 
     public static void setScrollBarPosition(ScreenTab tab, int position)

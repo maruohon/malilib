@@ -23,6 +23,7 @@ import malilib.util.data.FloatStorage;
 import malilib.util.data.FloatSupplier;
 import malilib.util.data.WrapperFloatStorage;
 import malilib.util.data.WrapperIntStorage;
+import malilib.util.game.wrap.RenderWrap;
 
 public class ColorEditorWidgetHsv extends ContainerWidget
 {
@@ -431,7 +432,7 @@ public class ColorEditorWidgetHsv extends ContainerWidget
 
             GlStateManager.disableRescaleNormal();
             GlStateManager.disableAlpha();
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            RenderWrap.shadeModel(GL11.GL_SMOOTH);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
 
             GL20.glUseProgram(SHADER_HUE.getProgram());
@@ -440,7 +441,7 @@ public class ColorEditorWidgetHsv extends ContainerWidget
             builder.draw();
 
             GL20.glUseProgram(0);
-            GlStateManager.shadeModel(GL11.GL_FLAT);
+            RenderWrap.shadeModel(GL11.GL_FLAT);
         }
     }
 }

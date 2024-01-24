@@ -122,6 +122,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
         return this.buffer.getByteBuffer();
     }
 
+    /*
     @Override
     public BufferBuilder.State getVertexData()
     {
@@ -133,6 +134,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
     {
         this.buffer.setVertexState(date);
     }
+    */
 
     @Override
     public void addVertexData(int[] data)

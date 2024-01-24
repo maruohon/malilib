@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 import malilib.gui.BaseScreen;
 import malilib.gui.BaseTabbedScreen;
@@ -19,16 +19,16 @@ public class BaseScreenTab implements ScreenTab
     protected final String translationKey;
     protected final Supplier<BaseScreen> screenFactory;
     protected final Function<BaseTabbedScreen, ButtonActionListener> listenerFactory;
-    protected final Predicate<GuiScreen> screenChecker;
+    protected final Predicate<Screen> screenChecker;
     @Nullable protected String hoverTextTranslationKey;
 
-    public BaseScreenTab(ModInfo modInfo, String name, Predicate<GuiScreen> screenChecker,
+    public BaseScreenTab(ModInfo modInfo, String name, Predicate<Screen> screenChecker,
                          Supplier<BaseScreen> screenFactory)
     {
         this(name, modInfo.getModId() + ".screen.tab." + name, screenChecker, screenFactory);
     }
 
-    public BaseScreenTab(String name, String translationKey, Predicate<GuiScreen> screenChecker,
+    public BaseScreenTab(String name, String translationKey, Predicate<Screen> screenChecker,
                          Supplier<BaseScreen> screenFactory)
     {
         this.name = name;
@@ -38,7 +38,7 @@ public class BaseScreenTab implements ScreenTab
         this.listenerFactory = (scr) -> (mBtn, btn) -> this.openTab(scr);
     }
 
-    public BaseScreenTab(String name, String translationKey, Predicate<GuiScreen> screenChecker,
+    public BaseScreenTab(String name, String translationKey, Predicate<Screen> screenChecker,
                          Supplier<BaseScreen> screenFactory,
                          Function<BaseTabbedScreen, ButtonActionListener> listenerFactory)
     {
@@ -75,7 +75,7 @@ public class BaseScreenTab implements ScreenTab
     }
 
     @Override
-    public boolean canUseCurrentScreen(@Nullable GuiScreen currentScreen)
+    public boolean canUseCurrentScreen(@Nullable Screen currentScreen)
     {
         return this.screenChecker.test(currentScreen);
     }

@@ -13,13 +13,13 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
 
 import malilib.render.RenderUtils;
 import malilib.util.BackupUtils;
 import malilib.util.data.json.JsonUtils;
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.position.Vec3d;
 
 public class OverlayRendererContainer
 {

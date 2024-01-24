@@ -2,12 +2,7 @@ package malilib.util.game;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 import malilib.util.game.wrap.GameUtils;
 
@@ -15,12 +10,12 @@ public class WorldUtils
 {
     public static int getDimensionId(World world)
     {
-        return world.provider.getDimensionType().getId();
+        return world.dimension.id;
     }
 
     public static String getDimensionIdAsString(World world)
     {
-        return String.valueOf(world.provider.getDimensionType().getId());
+        return String.valueOf(world.dimension.id);
     }
 
     /**
@@ -29,45 +24,35 @@ public class WorldUtils
      */
     public static World getBestWorld()
     {
-        Minecraft mc = GameUtils.getClient();
-
-        if (mc.isSingleplayer() && mc.world != null)
-        {
-            IntegratedServer server = mc.getIntegratedServer();
-            return server.getWorld(getDimensionId(mc.world));
-        }
-        else
-        {
-            return mc.world;
-        }
+        return GameUtils.getClientWorld();
     }
 
     @Nullable
-    public static WorldServer getServerWorldForClientWorld()
+    public static World getServerWorldForClientWorld()
     {
-        World world = GameUtils.getClientWorld();
-        return world != null ? getServerWorldForClientWorld(world) : null;
+        return GameUtils.getClientWorld();
     }
 
     @Nullable
-    public static WorldServer getServerWorldForClientWorld(World world)
+    public static World getServerWorldForClientWorld(World world)
     {
-        MinecraftServer server = GameUtils.getIntegratedServer();
-        return server != null ? server.getWorld(getDimensionId(world)) : null;
+        return world;
     }
 
-    public static boolean isClientChunkLoaded(int chunkX, int chunkZ, WorldClient world)
+    public static boolean isClientChunkLoaded(int chunkX, int chunkZ, World world)
     {
-        return world.getChunkProvider().isChunkGeneratedAt(chunkX, chunkZ);
+        return world.isChunkLoaded(chunkX << 4, 0, chunkZ << 4);
     }
 
-    public static void loadClientChunk(int chunkX, int chunkZ, WorldClient world)
+    /*
+    public static void loadClientChunk(int chunkX, int chunkZ, World world)
     {
-        world.m_5061960()/*getChunkProvider()*/.loadChunk(chunkX, chunkZ);
+        //world.(chunkX, chunkZ);
     }
 
-    public static void unloadClientChunk(int chunkX, int chunkZ, WorldClient world)
+    public static void unloadClientChunk(int chunkX, int chunkZ, World world)
     {
-        world.m_5061960()/*getChunkProvider()*/.unloadChunk(chunkX, chunkZ);
+        //world.(chunkX, chunkZ);
     }
+    */
 }

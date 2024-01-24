@@ -1,12 +1,6 @@
 package malilib.util.data.palette;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-
-public class HashMapPalette<T> implements Palette<T>
+public class HashMapPalette{/* TODO b1.7.3 <T> implements Palette<T>
 {
     protected final PaletteResizeHandler<T> paletteResizer;
     protected final Object2IntOpenHashMap<T> valueToIdMap;
@@ -130,4 +124,5 @@ public class HashMapPalette<T> implements Palette<T>
 
         return copy;
     }
+    */
 }

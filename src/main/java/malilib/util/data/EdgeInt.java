@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import malilib.listener.EventListener;
 import malilib.util.StringUtils;
@@ -209,10 +210,10 @@ public class EdgeInt
     {
         JsonArray arr = new JsonArray();
 
-        arr.add(this.top);
-        arr.add(this.right);
-        arr.add(this.bottom);
-        arr.add(this.left);
+        arr.add(new JsonPrimitive(this.top));
+        arr.add(new JsonPrimitive(this.right));
+        arr.add(new JsonPrimitive(this.bottom));
+        arr.add(new JsonPrimitive(this.left));
 
         return arr;
     }

@@ -6,41 +6,14 @@ import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.block.BlockFurnace;
-import net.minecraft.block.BlockHopper;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.DispenserBlockEntity;
+import net.minecraft.block.entity.FurnaceBlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.ContainerHorseChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryLargeChest;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemShulkerBox;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityBrewingStand;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.tileentity.TileEntityHopper;
-import net.minecraft.tileentity.TileEntityLockableLoot;
-import net.minecraft.tileentity.TileEntityShulkerBox;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 import malilib.config.value.HorizontalAlignment;
 import malilib.config.value.VerticalAlignment;
@@ -64,8 +37,8 @@ import malilib.util.inventory.ColoredVanillaInventoryView;
 import malilib.util.inventory.CombinedInventoryView;
 import malilib.util.inventory.EquipmentInventoryView;
 import malilib.util.inventory.InventoryView;
-import malilib.util.inventory.StorageItemInventoryUtils;
 import malilib.util.inventory.VanillaInventoryView;
+import malilib.util.position.BlockPos;
 import malilib.util.position.Vec2i;
 
 public class InventoryRenderUtils
@@ -364,33 +337,6 @@ public class InventoryRenderUtils
         }
     }
 
-    public static void renderItemInventoryPreview(ItemStack stack, int baseX, int baseY, float z,
-                                                  boolean useShulkerBackgroundColor, RenderContext ctx)
-    {
-        if (stack.hasTagCompound())
-        {
-            int bgTintColor = 0xFFFFFFFF;
-
-            if (useShulkerBackgroundColor && (stack.getItem() instanceof ItemShulkerBox))
-            {
-                BlockShulkerBox block = (BlockShulkerBox) ((ItemBlock) stack.getItem()).getBlock();
-                bgTintColor = getShulkerBoxBackgroundTintColor(block);
-            }
-
-            InventoryView inv = StorageItemInventoryUtils.getExactStoredItemsView(stack);
-
-            if (inv == null || inv.getSize()  <= 0)
-            {
-                return;
-            }
-
-            InventoryRenderDefinition renderDefinition = InventoryRenderUtils.getInventoryType(stack);
-
-            renderInventoryPreview(inv, renderDefinition, baseX, baseY, z, bgTintColor,
-                                   HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM, ctx);
-        }
-    }
-
     public static void renderInventoryPreview(InventoryView inv,
                                               InventoryRenderDefinition renderDefinition,
                                               int baseX, int baseY, float z, int bgTintColor,
@@ -416,85 +362,24 @@ public class InventoryRenderUtils
         renderDefinition.renderInventory(x, y, z, bgTintColor, inv, ctx);
     }
 
-    /**
-     * @return the background tint color fo the given Shulker Box block
-     */
-    public static int getShulkerBoxBackgroundTintColor(@Nullable BlockShulkerBox block)
+    public static InventoryRenderDefinition getInventoryType(Inventory inv)
     {
-        // In 1.13+ there is the separate uncolored Shulker Box variant,
-        // which returns null from getColor().
-        // In that case don't tint the background.
-        EnumDyeColor dye = block != null ? block.getColor() : null;
-        return dye != null ? 0xFF000000 | dye.getColorValue() : 0xFFFFFFFF;
-    }
-
-    public static InventoryRenderDefinition getInventoryType(IInventory inv)
-    {
-        if (inv instanceof TileEntityShulkerBox)
+        if (inv instanceof ChestBlockEntity)
         {
             return BuiltinInventoryRenderDefinitions.GENERIC_27;
         }
-        else if (inv instanceof InventoryLargeChest)
-        {
-            return BuiltinInventoryRenderDefinitions.GENERIC_54;
-        }
-        else if (inv instanceof TileEntityFurnace)
+        else if (inv instanceof FurnaceBlockEntity)
         {
             return BuiltinInventoryRenderDefinitions.FURNACE;
         }
-        else if (inv instanceof TileEntityBrewingStand)
-        {
-            return BuiltinInventoryRenderDefinitions.BREWING_STAND;
-        }
-        else if (inv instanceof TileEntityDispenser) // this includes the Dropper as a sub class
+        else if (inv instanceof DispenserBlockEntity) // this includes the Dropper as a sub class
         {
             return BuiltinInventoryRenderDefinitions.DROPPER;
-        }
-        else if (inv instanceof TileEntityHopper)
-        {
-            return BuiltinInventoryRenderDefinitions.HOPPER;
-        }
-        else if (inv instanceof ContainerHorseChest)
-        {
-            return BuiltinInventoryRenderDefinitions.HORSE;
         }
         else
         {
             return BuiltinInventoryRenderDefinitions.GENERIC;
         }
-    }
-
-    public static InventoryRenderDefinition getInventoryType(ItemStack stack)
-    {
-        Item item = stack.getItem();
-
-        if (item instanceof ItemBlock)
-        {
-            Block block = ((ItemBlock) item).getBlock();
-
-            if (block instanceof BlockShulkerBox || block instanceof BlockChest)
-            {
-                return BuiltinInventoryRenderDefinitions.GENERIC_27;
-            }
-            else if (block instanceof BlockFurnace)
-            {
-                return BuiltinInventoryRenderDefinitions.FURNACE;
-            }
-            else if (block instanceof BlockDispenser) // this includes the Dropper as a sub class
-            {
-                return BuiltinInventoryRenderDefinitions.DROPPER;
-            }
-            else if (block instanceof BlockHopper)
-            {
-                return BuiltinInventoryRenderDefinitions.HOPPER;
-            }
-        }
-        else if (item == Items.BREWING_STAND)
-        {
-            return BuiltinInventoryRenderDefinitions.BREWING_STAND;
-        }
-
-        return BuiltinInventoryRenderDefinitions.GENERIC;
     }
 
     @Nullable
@@ -536,38 +421,11 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromBlock(BlockPos pos, World world)
     {
-        TileEntity te = world.getTileEntity(pos);
+        BlockEntity te = world.getBlockEntity(pos.getX(), pos.getY(), pos.getZ());
 
-        if (te instanceof IInventory)
+        if (te instanceof Inventory)
         {
-            IInventory inv = (IInventory) te;
-            IBlockState state = world.getBlockState(pos);
-
-            // Prevent loot generation attempt from crashing due to NPEs
-            // TODO 1.13+ check if this is still needed
-            if (te instanceof TileEntityLockableLoot && (world instanceof WorldServer) == false)
-            {
-                ((TileEntityLockableLoot) te).setLootTable(null, 0);
-            }
-
-            if (state.getBlock() instanceof BlockChest)
-            {
-                ILockableContainer cont = ((BlockChest) state.getBlock()).getLockableContainer(world, pos);
-
-                if (cont instanceof InventoryLargeChest)
-                {
-                    inv = cont;
-                }
-            }
-
-            Block block = world.getBlockState(pos).getBlock();
-
-            if (block instanceof BlockShulkerBox)
-            {
-                BlockShulkerBox shulkerBoxBlock = (BlockShulkerBox) block;
-                int bgColor = InventoryRenderUtils.getShulkerBoxBackgroundTintColor(shulkerBoxBlock);
-                return Pair.of(new ColoredVanillaInventoryView(inv, bgColor), getInventoryType(inv));
-            }
+            Inventory inv = (Inventory) te;
 
             return Pair.of(new VanillaInventoryView(inv), getInventoryType(inv));
         }
@@ -578,6 +436,7 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromEntity(Entity entity)
     {
+        /* TODO b1.7.3
         if (entity instanceof EntityVillager)
         {
             IInventory inv = ((EntityVillager) entity).getVillagerInventory();
@@ -608,6 +467,7 @@ public class InventoryRenderUtils
             return Pair.of(new EquipmentInventoryView((EntityLivingBase) entity),
                            BuiltinInventoryRenderDefinitions.LIVING_ENTITY);
         }
+        */
 
         return null;
     }

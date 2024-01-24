@@ -1,13 +1,8 @@
 package malilib.util.game;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import malilib.util.game.wrap.ItemWrap;
-import malilib.util.game.wrap.RegistryUtils;
-
 public class ItemUtils
 {
+    /* TODO b1.7.3
     public static String getStackString(ItemStack stack)
     {
         if (ItemWrap.notEmpty(stack))
@@ -22,4 +17,5 @@ public class ItemUtils
 
         return "<empty>";
     }
+    */
 }

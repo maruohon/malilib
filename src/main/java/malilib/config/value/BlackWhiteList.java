@@ -8,13 +8,9 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.RegistryNamespaced;
 
 import malilib.config.option.list.BlockListConfig;
 import malilib.config.option.list.ItemListConfig;
-import malilib.config.option.list.StatusEffectListConfig;
 import malilib.config.option.list.ValueListConfig;
 import malilib.util.restriction.UsageRestriction.ListType;
 
@@ -31,6 +27,7 @@ public class BlackWhiteList<TYPE>
         this(type, blackList, whiteList, blackList.getToStringConverter(), blackList.getFromStringConverter());
     }
 
+    /*
     public BlackWhiteList(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList,
                           RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
@@ -40,6 +37,7 @@ public class BlackWhiteList<TYPE>
         this.toStringConverter = getRegistryBasedToStringConverter(registry);
         this.fromStringConverter = getRegistryBasedFromStringConverter(registry);
     }
+    */
 
     public BlackWhiteList(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList,
                           Function<TYPE, String> toStringConverter, Function<String, TYPE> fromStringConverter)
@@ -126,10 +124,12 @@ public class BlackWhiteList<TYPE>
         return new BlackWhiteList<>(type, blackList, whiteList);
     }
 
+    /*
     public static <TYPE> BlackWhiteList<TYPE> of(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList, RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         return new BlackWhiteList<>(type, blackList, whiteList, registry);
     }
+    */
 
     public static BlackWhiteList<Item> items(ListType type, ImmutableList<Item> blackList, ImmutableList<Item> whiteList)
     {
@@ -152,6 +152,7 @@ public class BlackWhiteList<TYPE>
                                  BlockListConfig.create("malilib.label.list_type.whitelist", whiteList));
     }
 
+    /*
     public static BlackWhiteList<Potion> effects(ListType type, List<String> blackList, List<String> whiteList)
     {
         return BlackWhiteList.of(type,
@@ -159,6 +160,7 @@ public class BlackWhiteList<TYPE>
                                  StatusEffectListConfig.create("malilib.label.list_type.whitelist", whiteList),
                                  Potion.REGISTRY);
     }
+    */
 
     @Override
     public boolean equals(Object o)
@@ -183,6 +185,7 @@ public class BlackWhiteList<TYPE>
         return result;
     }
 
+    /*
     public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         return (t) -> {
@@ -205,4 +208,5 @@ public class BlackWhiteList<TYPE>
             }
         };
     }
+    */
 }

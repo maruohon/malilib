@@ -5,6 +5,8 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
+import malilib.util.game.wrap.ItemWrap;
+
 public class ListBackedInventoryView implements InventoryView
 {
     protected final List<ItemStack> items;
@@ -34,7 +36,7 @@ public class ListBackedInventoryView implements InventoryView
     @Override
     public ItemStack getStack(int slot)
     {
-        return slot >= 0 && slot < this.items.size() ? this.items.get(slot) : ItemStack.EMPTY;
+        return slot >= 0 && slot < this.items.size() ? this.items.get(slot) : ItemWrap.EMPTY_STACK;
     }
 
     public void addStack(ItemStack stack)
@@ -52,7 +54,7 @@ public class ListBackedInventoryView implements InventoryView
 
             for (int i = 0; i < toAdd; ++i)
             {
-                this.items.add(ItemStack.EMPTY);
+                this.items.add(ItemWrap.EMPTY_STACK);
             }
         }
 

@@ -1,34 +1,31 @@
 package malilib.util.inventory;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Slot;
-
-import malilib.mixin.access.GuiContainerMixin;
-
 public class InventoryScreenUtils
 {
-    public static int getGuiPosX(GuiContainer gui)
+    /* TODO b1.7.3
+    public static int getGuiPosX(InventoryMenuScreen gui)
     {
         return ((GuiContainerMixin) gui).getGuiPosX();
     }
 
-    public static int getGuiPosY(GuiContainer gui)
+    public static int getGuiPosY(InventoryMenuScreen gui)
     {
         return ((GuiContainerMixin) gui).getGuiPosY();
     }
 
-    public static int getGuiSizeX(GuiContainer gui)
+    public static int getGuiSizeX(InventoryMenuScreen gui)
     {
         return ((GuiContainerMixin) gui).getGuiSizeX();
     }
 
-    public static int getGuiSizeY(GuiContainer gui)
+    public static int getGuiSizeY(InventoryMenuScreen gui)
     {
         return ((GuiContainerMixin) gui).getGuiSizeY();
     }
 
-    public static Slot getSlotUnderMouse(GuiContainer gui)
+    public static InventorySlot getSlotUnderMouse(InventoryMenuScreen gui)
     {
         return ((GuiContainerMixin) gui).getHoveredSlot();
     }
+    */
 }

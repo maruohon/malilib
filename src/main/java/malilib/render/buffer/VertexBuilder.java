@@ -2,8 +2,6 @@ package malilib.render.buffer;
 
 import java.nio.ByteBuffer;
 
-import net.minecraft.client.renderer.BufferBuilder;
-
 import malilib.util.data.Color4f;
 
 public interface VertexBuilder
@@ -62,7 +60,8 @@ public interface VertexBuilder
 
     ByteBuffer getByteBuffer();
 
-    BufferBuilder.State getVertexData();
+    // TODO b1.7.3
+    //BufferBuilder.State getVertexData();
 
-    void setVertexData(BufferBuilder.State state);
+    //void setVertexData(BufferBuilder.State state);
 }

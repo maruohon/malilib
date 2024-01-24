@@ -23,9 +23,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -411,6 +410,7 @@ public class JsonUtils
         }
     }
 
+    /* TODO b1.7.3
     public static void addIfNotEqual(JsonObject obj, String name, Rotation value, Rotation excludeValue)
     {
         if (value != excludeValue)
@@ -426,6 +426,7 @@ public class JsonUtils
             obj.addProperty(name, value.name());
         }
     }
+    */
 
     public static void addStringIfNotNull(JsonObject obj, String name, @Nullable String value)
     {
@@ -448,6 +449,7 @@ public class JsonUtils
         return getBlockPos(obj, name) != null;
     }
 
+    /* TODO b1.7.3
     public static JsonArray blockPosToJson(Vec3i pos)
     {
         JsonArray arr = new JsonArray();
@@ -458,6 +460,7 @@ public class JsonUtils
 
         return arr;
     }
+    */
 
     @Nullable
     public static Vec3i getVec3i(JsonObject obj, String name)
@@ -533,6 +536,7 @@ public class JsonUtils
         }
     }
 
+    /* TODO b1.7.3
     public static void putBlockPosIfNotNull(JsonObject obj, String name, @Nullable BlockPos pos)
     {
         if (pos != null)
@@ -540,6 +544,7 @@ public class JsonUtils
             obj.add(name, blockPosToJson(pos));
         }
     }
+    */
 
     public static boolean hasVec3d(JsonObject obj, String name)
     {
@@ -550,9 +555,9 @@ public class JsonUtils
     {
         JsonArray arr = new JsonArray();
 
-        arr.add(vec.x);
-        arr.add(vec.y);
-        arr.add(vec.z);
+        arr.add(new JsonPrimitive(vec.x));
+        arr.add(new JsonPrimitive(vec.y));
+        arr.add(new JsonPrimitive(vec.z));
 
         return arr;
     }
@@ -568,7 +573,7 @@ public class JsonUtils
             {
                 try
                 {
-                    return new Vec3d(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
+                    return Vec3d.of(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
                 }
                 catch (Exception ignore) {}
             }
@@ -594,6 +599,7 @@ public class JsonUtils
         }
     }
 
+    /* TODO b1.7.3
     public static Rotation getRotation(JsonObject obj, String name)
     {
         String str = getString(obj, name);
@@ -625,6 +631,7 @@ public class JsonUtils
 
         return Mirror.NONE;
     }
+    */
 
     public static JsonArray stringListAsArray(List<String> list)
     {
@@ -632,7 +639,7 @@ public class JsonUtils
 
         for (String str : list)
         {
-            arr.add(str);
+            arr.add(new JsonPrimitive(str));
         }
 
         return arr;

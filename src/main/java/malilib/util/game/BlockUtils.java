@@ -1,33 +1,6 @@
 package malilib.util.game;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import javax.annotation.Nullable;
 import com.google.common.base.Splitter;
-import org.apache.commons.lang3.tuple.Pair;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-
-import malilib.render.text.StyledTextLine;
-import malilib.util.StringUtils;
-import malilib.util.data.Identifier;
-import malilib.util.game.wrap.NbtWrap;
-import malilib.util.game.wrap.RegistryUtils;
 
 public class BlockUtils
 {
@@ -39,6 +12,7 @@ public class BlockUtils
      * The string should be in either one of the following formats:<br>
      * 'minecraft:stone' or 'minecraft:smooth_stone_slab[half=top,waterlogged=false]'
      */
+    /*
     public static Optional<IBlockState> getBlockStateFromString(String str)
     {
         int index = str.indexOf("["); // [prop=value]
@@ -85,6 +59,7 @@ public class BlockUtils
 
         return Optional.empty();
     }
+    */
 
     /**
      * Parses the provided string into a compound tag representing the block state.<br>
@@ -95,6 +70,7 @@ public class BlockUtils
      * None of the values are checked for validity here, and this can be used for
      * parsing strings for states from another Minecraft version, such as 1.12 <-> 1.13+.
      */
+    /*
     public static NBTTagCompound getBlockStateTagFromString(String stateString)
     {
         int index = stateString.indexOf("["); // [f=b]
@@ -134,6 +110,7 @@ public class BlockUtils
 
         return tag;
     }
+    */
 
     /**
      * Parses the input tag representing a block state, and produces a string
@@ -141,6 +118,7 @@ public class BlockUtils
      * This string format is what the Sponge schematic format uses in the palette.
      * @return an equivalent of IBlockState.toString() of the given tag representing a block state
      */
+    /*
     public static String getBlockStateStringFromTag(NBTTagCompound stateTag)
     {
         String name = NbtWrap.getString(stateTag, "Name");
@@ -195,11 +173,13 @@ public class BlockUtils
     {
         return prop.parseValue(valStr).orNull();
     }
+    */
 
     /**
      * Returns the first PropertyDirection property from the provided state, if any.
      * @return the first PropertyDirection, or empty() if there are no such properties
      */
+    /*
     public static Optional<PropertyDirection> getFirstDirectionProperty(IBlockState state)
     {
         for (IProperty<?> prop : state.getProperties().keySet())
@@ -212,13 +192,15 @@ public class BlockUtils
 
         return Optional.empty();
     }
+    */
 
     /**
-     * Returns the EnumFacing value of the first found PropertyDirection
+     * Returns the Direction value of the first found PropertyDirection
      * type block state property in the given state, if any.
      * If there are no PropertyDirection properties, then empty() is returned.
      */
-    public static Optional<EnumFacing> getFirstPropertyFacingValue(IBlockState state)
+    /*
+    public static Optional<Direction> getFirstPropertyFacingValue(IBlockState state)
     {
         Optional<PropertyDirection> propOptional = getFirstDirectionProperty(state);
         return propOptional.isPresent() ? Optional.ofNullable(state.getValue(propOptional.get())) : Optional.empty();
@@ -325,7 +307,9 @@ public class BlockUtils
 
         return Collections.emptyList();
     }
+    */
 
+    /* TODO b1.7.3
     public static boolean isFluidBlock(IBlockState state)
     {
         return state.getMaterial().isLiquid();
@@ -335,4 +319,5 @@ public class BlockUtils
     {
         return state.getBlock() instanceof BlockLiquid && state.getValue(BlockLiquid.LEVEL).intValue() == 0;
     }
+    */
 }

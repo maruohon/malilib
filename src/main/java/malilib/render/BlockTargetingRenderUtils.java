@@ -2,25 +2,25 @@ package malilib.render;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 import malilib.util.game.wrap.EntityWrap;
+import malilib.util.position.BlockPos;
+import malilib.util.position.Direction;
 import malilib.util.position.PositionUtils;
 import malilib.util.position.PositionUtils.HitPart;
+import malilib.util.position.Vec3d;
 
 public class BlockTargetingRenderUtils
 {
     public static final Color4f TRANSLUCENT_WHITE = Color4f.fromColor(0xFFFFFF, 0.18f);
 
-    public static void render5WayBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
+    public static void render5WayBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
                                                        Color4f color, float partialTicks, RenderContext ctx)
     {
-        EnumFacing playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = EntityWrap.getClosestHorizontalLookingDirection(entity);
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
 
         double x = pos.getX() + 0.5d - EntityWrap.lerpX(entity, partialTicks);
@@ -108,10 +108,10 @@ public class BlockTargetingRenderUtils
         GlStateManager.popMatrix();
     }
 
-    public static void renderSimpleSquareBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side,
+    public static void renderSimpleSquareBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side,
                                                                Color4f color, float partialTicks, RenderContext ctx)
     {
-        EnumFacing playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = EntityWrap.getClosestHorizontalLookingDirection(entity);
 
         double x = pos.getX() + 0.5d - EntityWrap.lerpX(entity, partialTicks);
         double y = pos.getY() + 0.5d - EntityWrap.lerpY(entity, partialTicks);
@@ -147,7 +147,7 @@ public class BlockTargetingRenderUtils
     }
 
     protected static void blockTargetingOverlayTranslations(double x, double y, double z,
-                                                            EnumFacing side, EnumFacing playerFacing)
+                                                            Direction side, Direction playerFacing)
     {
         GlStateManager.translate(x, y, z);
 

@@ -3,9 +3,9 @@ package malilib.action;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.living.player.PlayerEntity;
+import net.minecraft.world.World;
 
 import malilib.overlay.message.MessageOutput;
 import malilib.util.game.wrap.GameUtils;
@@ -37,13 +37,13 @@ public class ActionContext
     }
 
     @Nullable
-    public WorldClient getWorld()
+    public World getWorld()
     {
         return GameUtils.getClientWorld();
     }
 
     @Nullable
-    public EntityPlayerSP getPlayer()
+    public PlayerEntity getPlayer()
     {
         return GameUtils.getClientPlayer();
     }

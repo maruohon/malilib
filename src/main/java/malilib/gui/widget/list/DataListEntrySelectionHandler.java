@@ -3,20 +3,20 @@ package malilib.gui.widget.list;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.AbstractIntCollection;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import malilib.gui.BaseScreen;
 
 public class DataListEntrySelectionHandler<DATATYPE>
 {
-    protected final IntOpenHashSet selectedEntryIndices = new IntOpenHashSet();
+    protected final Set<Integer> selectedEntryIndices = new HashSet<>();
     protected final Supplier<List<DATATYPE>> dataListSupplier;
 
     @Nullable protected List<DATATYPE> selectedEntries;
@@ -107,7 +107,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return this.selectedEntries;
     }
 
-    public IntOpenHashSet getSelectedEntryIndices()
+    public Set<Integer> getSelectedEntryIndices()
     {
         return this.selectedEntryIndices;
     }
@@ -187,7 +187,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
         this.clearSelection();
 
         List<DATATYPE> list = this.getDataList();
-        ObjectOpenHashSet<DATATYPE> set = new ObjectOpenHashSet<>(list);
+        HashSet<DATATYPE> set = new HashSet<>(list);
         final int size = list.size();
 
         for (DATATYPE e : entries)
