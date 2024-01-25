@@ -1,20 +1,40 @@
 package malilib.util.game.wrap;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.OptionalInt;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+
+import malilib.util.StringUtils;
+import malilib.util.game.BlockUtils;
+import malilib.util.game.ItemUtils;
+
 public class RegistryUtils
 {
-    /* ODO b1.7.3
+    @Nullable
     public static Block getBlockByIdStr(String name)
     {
-        try
+        OptionalInt opt = StringUtils.tryParseToInt(name);
+
+        if (opt.isPresent())
         {
-            return Block.REGISTRY.getObject(new ResourceLocation(name));
+            int id = opt.getAsInt();
+
+            if (id < Block.BY_ID.length)
+            {
+                return Block.BY_ID[id];
+            }
         }
-        catch (Exception e)
-        {
-            return Blocks.AIR;
-        }
+
+        return null;
     }
 
+    /* TODO b1.7.3
     public static Block getBlockById(ResourceLocation id)
     {
         Block block = Block.REGISTRY.getObject(id);
@@ -49,33 +69,44 @@ public class RegistryUtils
     {
         return Block.REGISTRY.getKeys();
     }
+    */
 
     public static List<Block> getSortedBlockList()
     {
         List<Block> blocks = new ArrayList<>();
 
-        for (Block block : Block.REGISTRY)
+        for (Block block : Block.BY_ID)
         {
-            blocks.add(block);
+            if (block != null)
+            {
+                blocks.add(block);
+            }
         }
 
-        blocks.sort(Comparator.comparing(RegistryUtils::getBlockIdStr));
+        blocks.sort(Comparator.comparing(BlockUtils::getDisplayNameForBlock));
 
         return blocks;
     }
 
+    @Nullable
     public static Item getItemByIdStr(String name)
     {
-        try
+        OptionalInt opt = StringUtils.tryParseToInt(name);
+
+        if (opt.isPresent())
         {
-            return Item.REGISTRY.getObject(new ResourceLocation(name));
+            int id = opt.getAsInt();
+
+            if (id < Item.BY_ID.length)
+            {
+                return Item.BY_ID[id];
+            }
         }
-        catch (Exception e)
-        {
-            return Items.AIR;
-        }
+
+        return null;
     }
 
+    /* TODO b1.7.3
     public static Item getItemById(ResourceLocation id)
     {
         Item item = Item.REGISTRY.getObject(id);
@@ -87,30 +118,34 @@ public class RegistryUtils
     {
         return Item.REGISTRY.getNameForObject(item);
     }
+    */
 
     public static String getItemIdStr(Item item)
     {
-        ResourceLocation id = Item.REGISTRY.getNameForObject(item);
-        return id != null ? id.toString() : "?";
+        return String.valueOf(item.id);
     }
 
+    /*
     public static Collection<ResourceLocation> getRegisteredItemIds()
     {
         return Item.REGISTRY.getKeys();
     }
+    */
 
     public static List<Item> getSortedItemList()
     {
         List<Item> items = new ArrayList<>();
 
-        for (Item item : Item.REGISTRY)
+        for (Item item : Item.BY_ID)
         {
-            items.add(item);
+            if (item != null)
+            {
+                items.add(item);
+            }
         }
 
-        items.sort(Comparator.comparing(RegistryUtils::getItemIdStr));
+        items.sort(Comparator.comparing(ItemUtils::getDisplayNameForItem));
 
         return items;
     }
-    */
 }

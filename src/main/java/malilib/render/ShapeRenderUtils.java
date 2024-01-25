@@ -2,12 +2,11 @@ package malilib.render;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
-
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 import malilib.util.data.EdgeInt;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.BlockPos;
 import malilib.util.position.Direction;
 import malilib.util.position.IntBoundingBox;
@@ -167,22 +166,22 @@ public class ShapeRenderUtils
                                                          double width, double height,
                                                          int color1, int color2, RenderContext ctx)
     {
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderWrap.shadeModel(GL11.GL_SMOOTH);
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
         renderHorizontalGradientRectangle(x, y, z, width, height, color1, color2, builder);
         builder.draw();
-        GlStateManager.shadeModel(GL11.GL_FLAT);
+        RenderWrap.shadeModel(GL11.GL_FLAT);
     }
 
     public static void renderVerticalGradientRectangle(double x, double y, double z,
                                                        double width, double height,
                                                        int color1, int color2, RenderContext ctx)
     {
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderWrap.shadeModel(GL11.GL_SMOOTH);
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
         renderVerticalGradientRectangle(x, y, z, width, height, color1, color2, builder);
         builder.draw();
-        GlStateManager.shadeModel(GL11.GL_FLAT);
+        RenderWrap.shadeModel(GL11.GL_FLAT);
     }
 
     /**
@@ -425,15 +424,15 @@ public class ShapeRenderUtils
     public static void renderGradientRectangle(float left, float top, float right, float bottom, float z,
                                                int startColor, int endColor, RenderContext ctx)
     {
-        GlStateManager.disableAlpha();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderWrap.disableAlpha();
+        RenderWrap.shadeModel(GL11.GL_SMOOTH);
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
         renderGradientRectangle(left, top, right, bottom, z, startColor, endColor, builder);
         builder.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.enableAlpha();
+        RenderWrap.shadeModel(GL11.GL_FLAT);
+        RenderWrap.enableAlpha();
     }
 
     /**
@@ -485,7 +484,7 @@ public class ShapeRenderUtils
         double lastAngle = startAngle;
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredLineStrip();
-        GlStateManager.glLineWidth(lineWidth);
+        RenderWrap.lineWidth(lineWidth);
 
         for (int i = 0; i <= steps; ++i)
         {
@@ -532,7 +531,7 @@ public class ShapeRenderUtils
         double lastAngle = startAngle;
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredLineLoop();
-        GlStateManager.glLineWidth(lineWidth);
+        RenderWrap.lineWidth(lineWidth);
 
         // First render the inner arc in the positive direction
         for (int i = 0; i <= steps; ++i)

@@ -1,7 +1,16 @@
 package malilib.util.game;
 
+import net.minecraft.item.Item;
+
+import malilib.util.StringUtils;
+
 public class ItemUtils
 {
+    public static String getDisplayNameForItem(Item item)
+    {
+        return StringUtils.translate(item.getTranslationKey());
+    }
+
     /* TODO b1.7.3
     public static String getStackString(ItemStack stack)
     {

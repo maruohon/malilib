@@ -1,17 +1,12 @@
 package malilib.render;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
 
-import malilib.render.text.StyledTextLine;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.game.wrap.ItemWrap;
+import malilib.util.game.wrap.RenderWrap;
 
 public class ItemRenderUtils
 {
@@ -22,19 +17,20 @@ public class ItemRenderUtils
             return;
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, 0);
+        RenderWrap.pushMatrix();
+        RenderWrap.translate(x, y, 0);
 
         if (scale != 1f)
         {
-            GlStateManager.scale(scale, scale, 1f);
+            RenderWrap.scale(scale, scale, 1f);
         }
 
-        GlStateManager.disableLighting();
+        RenderWrap.disableLighting();
         RenderUtils.enableGuiItemLighting();
 
         Minecraft mc = GameUtils.getClient();
-        RenderItem itemRenderer = mc.getRenderItem();
+        ItemRenderer itemRenderer = new ItemRenderer();
+        /*
         float oldZ = itemRenderer.zLevel;
 
         // Compensate for the extra z increments done in the RenderItem class.
@@ -44,17 +40,21 @@ public class ItemRenderUtils
         // -145 seems to work pretty well for things like boats where the issue occurs first,
         // but carpets actually need around -143 to not clip the back corner.
         itemRenderer.zLevel = z - 142f;
-        itemRenderer.renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
+        */
+        itemRenderer.renderGuiItemWithEnchantmentGlint(mc.textRenderer, mc.textureManager, stack, 0, 0);
+        /*
         itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
         itemRenderer.zLevel = oldZ;
+        */
 
-        //GlStateManager.disableBlend();
+        //RenderWrap.disableBlend();
         RenderUtils.disableItemLighting();
-        GlStateManager.popMatrix();
+        RenderWrap.popMatrix();
     }
 
     public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack, RenderContext ctx)
     {
+        /*
         if (stack == null || ItemWrap.isEmpty(stack))
         {
             return;
@@ -76,5 +76,6 @@ public class ItemRenderUtils
         }
 
         TextRenderUtils.renderStyledHoverText(x, y, zLevel, textLines, ctx);
+        */
     }
 }

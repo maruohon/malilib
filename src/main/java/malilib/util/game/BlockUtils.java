@@ -2,12 +2,22 @@ package malilib.util.game;
 
 import com.google.common.base.Splitter;
 
+import net.minecraft.block.Block;
+
+import malilib.util.StringUtils;
+
 public class BlockUtils
 {
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
 
+    public static String getDisplayNameForBlock(Block block)
+    {
+        return StringUtils.translate(block.getTranslationKey());
+    }
+
     /**
+     * 
      * Parses the provided string into the full block state.<br>
      * The string should be in either one of the following formats:<br>
      * 'minecraft:stone' or 'minecraft:smooth_stone_slab[half=top,waterlogged=false]'

@@ -1,38 +1,34 @@
 package malilib.network.message;
 
-import java.util.List;
-import com.google.common.collect.ImmutableList;
+import java.io.DataInputStream;
 import com.google.gson.JsonElement;
-
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 
 import malilib.MaLiLib;
 import malilib.config.util.ConfigLockUtils;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
+import malilib.util.data.Identifier;
 import malilib.util.data.json.JsonUtils;
 
 public class ConfigLockPacketHandler extends BasePacketHandler
 {
-    public static final String CHANNEL_NAME = "malilib:cfglock";
-    public static final List<ResourceLocation> CHANNELS = ImmutableList.of(new ResourceLocation(CHANNEL_NAME));
+    public static final Identifier CHANNEL_NAME = new Identifier("malilib:cfglock");
 
     private static final ConfigLockPacketHandler INSTANCE = new ConfigLockPacketHandler();
 
     @Override
-    public List<ResourceLocation> getChannels()
+    public Identifier getChannel()
     {
-        return CHANNELS;
+        return CHANNEL_NAME;
     }
 
     @Override
-    public void onPacketReceived(PacketBuffer buf)
+    public boolean onPacketReceived(DataInputStream buf)
     {
         try
         {
             boolean resetFirst = buf.readBoolean();
-            String str = buf.readString(256 * 1024);
+            String str = buf.readUTF();
             JsonElement el = JsonUtils.parseJsonFromString(str);
 
             MaLiLib.debugLog("Received a config lock packet from the server (reset first: {})", resetFirst);
@@ -46,16 +42,18 @@ public class ConfigLockPacketHandler extends BasePacketHandler
 
                 ConfigLockUtils.applyConfigLocksFromServer(el.getAsJsonObject());
 
-                return;
+                return true;
             }
         }
         catch (Exception e)
         {
             MessageDispatcher.error().console(e).translate("malilib.message.error.invalid_config_lock_packet");
-            return;
+            return true;
         }
 
         MessageDispatcher.error().console().translate("malilib.message.error.invalid_config_lock_packet");
+
+        return true;
     }
 
     public static void updateRegistration(boolean enabled)

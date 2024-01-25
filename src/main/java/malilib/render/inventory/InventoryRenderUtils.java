@@ -21,7 +21,6 @@ import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
 import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
-import malilib.mixin.access.AbstractHorseMixin;
 import malilib.render.ItemRenderUtils;
 import malilib.render.RenderContext;
 import malilib.render.RenderUtils;
@@ -29,13 +28,9 @@ import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.MathUtils;
-import malilib.util.game.RayTraceUtils;
-import malilib.util.game.WorldUtils;
-import malilib.util.game.wrap.GameUtils;
 import malilib.util.game.wrap.ItemWrap;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.inventory.ColoredVanillaInventoryView;
-import malilib.util.inventory.CombinedInventoryView;
-import malilib.util.inventory.EquipmentInventoryView;
 import malilib.util.inventory.InventoryView;
 import malilib.util.inventory.VanillaInventoryView;
 import malilib.util.position.BlockPos;
@@ -54,8 +49,8 @@ public class InventoryRenderUtils
         final int invSize = inv.getSize();
 
         RenderUtils.enableGuiItemLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.enableRescaleNormal();
+        RenderWrap.enableDepthTest();
+        RenderWrap.enableRescaleNormal();
 
         for (int slot : customSlotPositions.keySet())
         {
@@ -135,7 +130,7 @@ public class InventoryRenderUtils
         float pw = icon.getTexturePixelWidth();
         float ph = icon.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(icon.getTexture());
         RenderUtils.setupBlend();
 
@@ -205,7 +200,7 @@ public class InventoryRenderUtils
         float pw = icon.getTexturePixelWidth();
         float ph = icon.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.color(1f, 1f, 1f, 1f);
         RenderUtils.disableItemLighting();
         RenderUtils.setupBlend();
         RenderUtils.bindTexture(icon.getTexture());
@@ -312,8 +307,8 @@ public class InventoryRenderUtils
         y += slotOffset.y;
 
         RenderUtils.enableGuiItemLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.enableRescaleNormal();
+        RenderWrap.enableDepthTest();
+        RenderWrap.enableRescaleNormal();
 
         for (int slotOnRow = 0; slot < endSlot; ++slot)
         {
@@ -385,6 +380,7 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory()
     {
+        /* TODO b1.7.3
         World world = WorldUtils.getBestWorld();
         EntityPlayer clientPlayer = GameUtils.getClientPlayer();
 
@@ -414,6 +410,7 @@ public class InventoryRenderUtils
         {
             return getInventoryViewFromEntity(trace.entityHit);
         }
+        */
 
         return null;
     }

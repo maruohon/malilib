@@ -1,22 +1,11 @@
 package malilib.action.builtin;
 
-import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ScreenShotHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.GameType;
+import net.minecraft.entity.living.player.PlayerEntity;
 
 import malilib.MaLiLib;
 import malilib.action.ActionContext;
@@ -29,6 +18,7 @@ import malilib.input.ActionResult;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.util.MathUtils;
+import malilib.util.StringUtils;
 import malilib.util.data.ModInfo;
 import malilib.util.datadump.DataDump;
 import malilib.util.datadump.DataDump.Format;
@@ -46,7 +36,7 @@ public class UtilityActions
 
         if (ctx.getPlayer() != null)
         {
-            ctx.getPlayer().sendChatMessage(arg);
+            GameUtils.sendCommand(arg);
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -56,7 +46,7 @@ public class UtilityActions
     {
         if (ctx.getPlayer() != null)
         {
-            ctx.getPlayer().sendChatMessage(arg);
+            GameUtils.sendCommand(arg);
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -64,7 +54,7 @@ public class UtilityActions
 
     public static ActionResult setPlayerFractionalXZ(ActionContext ctx, String arg)
     {
-        EntityPlayer player = ctx.getPlayer();
+        PlayerEntity player = ctx.getPlayer();
 
         if (player != null)
         {
@@ -80,8 +70,9 @@ public class UtilityActions
                     double pz = MathUtils.floor(EntityWrap.getZ(player));
                     double x = px < 0.0 ? px + 1.0 - fx : px + fx;
                     double z = pz < 0.0 ? pz + 1.0 - fz : pz + fz;
-                    player.setLocationAndAngles(x, EntityWrap.getY(player), z,
-                                                EntityWrap.getYaw(player), EntityWrap.getPitch(player));
+                    // TODO b1.7.3 is this the correct method?
+                    player.refreshPositionAndAngles(x, EntityWrap.getY(player), z,
+                                                    EntityWrap.getYaw(player), EntityWrap.getPitch(player));
                 }
 
                 return ActionResult.SUCCESS;
@@ -133,7 +124,7 @@ public class UtilityActions
                 int slot = Integer.parseInt(arg);
                 if (slot >= 1 && slot <= 9)
                 {
-                    ctx.getPlayer().inventory.currentItem = slot - 1;
+                    ctx.getPlayer().inventory.selectedSlot = slot - 1;
                     return ActionResult.SUCCESS;
                 }
             }
@@ -146,13 +137,15 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            GameUtils.getOptions().showDebugInfo = ! GameUtils.getOptions().showDebugInfo;
+            GameUtils.getOptions().debugEnabled = ! GameUtils.getOptions().debugEnabled;
 
+            /*
             if (GameUtils.getOptions().showDebugInfo == false)
             {
                 GameUtils.getOptions().showDebugProfilerChart = false;
                 GameUtils.getOptions().showLagometer = false;
             }
+            */
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -160,6 +153,7 @@ public class UtilityActions
 
     public static ActionResult toggleF3ScreenProfilerPieChart(ActionContext ctx, String arg)
     {
+        /*
         if (ctx.getWorld() != null)
         {
             GameUtils.getOptions().showDebugProfilerChart = ! GameUtils.getOptions().showDebugProfilerChart;
@@ -169,11 +163,13 @@ public class UtilityActions
             GameUtils.getOptions().showDebugInfo = state;
             return ActionResult.SUCCESS;
         }
+        */
         return ActionResult.FAIL;
     }
 
     public static ActionResult toggleF3ScreenLagometer(ActionContext ctx, String arg)
     {
+        /*
         if (ctx.getWorld() != null)
         {
             GameUtils.getOptions().showLagometer = ! GameUtils.getOptions().showLagometer;
@@ -183,22 +179,26 @@ public class UtilityActions
             GameUtils.getOptions().showDebugInfo = state;
             return ActionResult.SUCCESS;
         }
+        */
         return ActionResult.FAIL;
     }
 
     public static ActionResult toggleChunkBorders(ActionContext ctx)
     {
+        /*
         if (ctx.getWorld() != null)
         {
             boolean enabled = ctx.getClient().debugRenderer.toggleChunkBorders();
             translateDebugToggleMessage(enabled ? "debug.chunk_boundaries.on" : "debug.chunk_boundaries.off");
             return ActionResult.SUCCESS;
         }
+        */
         return ActionResult.FAIL;
     }
 
     public static ActionResult copyScreenshotToClipboard(ActionContext ctx)
     {
+        /* TODO b1.7.3
         Minecraft mc = ctx.getClient();
 
         try
@@ -206,44 +206,52 @@ public class UtilityActions
             BufferedImage image = ScreenShotHelper.createScreenshot(mc.displayWidth, mc.displayHeight, mc.getFramebuffer());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new BufferedImageTransferable(image), null);
             MessageDispatcher.generic("malilib.message.info.utility_actions.screenshot_copied_to_clipboard");
+            return ActionResult.SUCCESS;
         }
         catch (Exception e)
         {
             MessageDispatcher.error().console(e).translate("malilib.message.error.utility_actions.failed_to_copy_screenshot_to_clipboard");
         }
 
-        return ActionResult.SUCCESS;
+        */
+        return ActionResult.FAIL;
     }
 
     public static ActionResult takeScreenshot(ActionContext ctx)
     {
+        /* TODO b1.7.3
         Minecraft mc = ctx.getClient();
-        mc.ingameGUI.getChatGUI().printChatMessage(ScreenShotHelper.saveScreenshot(mc.gameDir,
-                                    mc.displayWidth, mc.displayHeight, mc.getFramebuffer()));
+        DefaultMessageDispatchers.sendVanillaChatMessageString(ScreenShotHelper.saveScreenshot(mc.gameDir,
+                                                                  mc.displayWidth, mc.displayHeight, mc.getFramebuffer()));
+        */
         return ActionResult.SUCCESS;
     }
 
     public static ActionResult dropOneItem(ActionContext ctx)
     {
-        if (ctx.getPlayer() != null && ctx.getPlayer().isSpectator() == false)
+        if (ctx.getPlayer() != null) // && ctx.getPlayer().isSpectator() == false)
         {
-            ctx.getPlayer().dropItem(false);
+            ctx.getPlayer().dropItem();
         }
         return ActionResult.SUCCESS;
     }
 
     public static ActionResult dropHeldStack(ActionContext ctx)
     {
-        if (ctx.getPlayer() != null && ctx.getPlayer().isSpectator() == false)
+        /* TODO b1.7.3
+        if (ctx.getPlayer() != null) // && ctx.getPlayer().isSpectator() == false)
         {
             ctx.getPlayer().dropItem(true);
         }
         return ActionResult.SUCCESS;
+        */
+        return ActionResult.FAIL;
     }
 
     public static ActionResult cycleGameMode(ActionContext ctx, String arg)
     {
-        if (ctx.getPlayer() != null && ctx.getClient().getConnection() != null)
+        /* TODO b1.7.3
+        if (ctx.getPlayer() != null && GameUtils.getNetworkConnection() != null)
         {
             String[] parts = arg.split(",");
 
@@ -290,6 +298,7 @@ public class UtilityActions
                 return ActionResult.SUCCESS;
             }
         }
+        */
 
         return ActionResult.FAIL;
     }
@@ -362,11 +371,13 @@ public class UtilityActions
 
     private static void translateDebugToggleMessage(String key, Object... args)
     {
+        /*
         ITextComponent text = new TextComponentString("");
         text.appendSibling((new TextComponentTranslation("debug.prefix"))
                                 .setStyle((new Style()).setColor(TextFormatting.YELLOW).setBold(Boolean.TRUE)))
                 .appendText(" ").appendSibling(new TextComponentTranslation(key, args));
-        GameUtils.getClient().ingameGUI.getChatGUI().printChatMessage(text);
+        */
+        GameUtils.printMessageToChat(StringUtils.translate(key, args));
     }
 
     private static class BufferedImageTransferable implements Transferable

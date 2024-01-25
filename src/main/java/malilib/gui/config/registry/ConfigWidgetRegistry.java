@@ -25,10 +25,8 @@ import malilib.config.option.Vec2dConfig;
 import malilib.config.option.Vec2iConfig;
 import malilib.config.option.list.BlackWhiteListConfig;
 import malilib.config.option.list.BlockListConfig;
-import malilib.config.option.list.EquipmentSlotListConfig;
 import malilib.config.option.list.IdentifierListConfig;
 import malilib.config.option.list.ItemListConfig;
-import malilib.config.option.list.StatusEffectListConfig;
 import malilib.config.option.list.StringListConfig;
 import malilib.gui.config.ConfigOptionWidgetFactory;
 import malilib.gui.config.ConfigSearchInfo;
@@ -55,10 +53,8 @@ import malilib.gui.widget.list.entry.config.StringConfigWidget;
 import malilib.gui.widget.list.entry.config.Vec2dConfigWidget;
 import malilib.gui.widget.list.entry.config.Vec2iConfigWidget;
 import malilib.gui.widget.list.entry.config.list.BlockListConfigWidget;
-import malilib.gui.widget.list.entry.config.list.EquipmentSlotListConfigWidget;
 import malilib.gui.widget.list.entry.config.list.IdentifierListConfigWidget;
 import malilib.gui.widget.list.entry.config.list.ItemListConfigWidget;
-import malilib.gui.widget.list.entry.config.list.StatusEffectListConfigWidget;
 import malilib.gui.widget.list.entry.config.list.StringListConfigWidget;
 import malilib.input.CustomHotkeyDefinition;
 
@@ -127,7 +123,9 @@ public class ConfigWidgetRegistry
         this.registerConfigWidgetFactory(DirectoryConfig.class,         DirectoryConfigWidget::new);
         this.registerConfigWidgetFactory(DoubleConfig.class,            DoubleConfigWidget::new);
         this.registerConfigWidgetFactory(DualColorConfig.class,         DualColorConfigWidget::new);
+        /*
         this.registerConfigWidgetFactory(EquipmentSlotListConfig.class, EquipmentSlotListConfigWidget::new);
+        */
         this.registerConfigWidgetFactory(ExpandableConfigGroup.class,   ExpandableConfigGroupWidget::new);
         this.registerConfigWidgetFactory(FileConfig.class,              FileConfigWidget::new);
         this.registerConfigWidgetFactory(GenericButtonConfig.class,     GenericButtonConfigWidget::new);
@@ -137,7 +135,9 @@ public class ConfigWidgetRegistry
         this.registerConfigWidgetFactory(IntegerConfig.class,           IntegerConfigWidget::new);
         this.registerConfigWidgetFactory(ItemListConfig.class,          ItemListConfigWidget::new);
         this.registerConfigWidgetFactory(PopupConfigGroup.class,        PopupConfigGroupWidget::new);
+        /*
         this.registerConfigWidgetFactory(StatusEffectListConfig.class,  StatusEffectListConfigWidget::new);
+        */
         this.registerConfigWidgetFactory(StringConfig.class,            StringConfigWidget::new);
         this.registerConfigWidgetFactory(StringListConfig.class,        StringListConfigWidget::new);
         this.registerConfigWidgetFactory(Vec2dConfig.class,             Vec2dConfigWidget::new);

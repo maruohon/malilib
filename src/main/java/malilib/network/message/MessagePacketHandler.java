@@ -1,16 +1,14 @@
 package malilib.network.message;
 
-import java.util.List;
+import java.io.DataInputStream;
+import java.io.IOException;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 
 import malilib.config.value.ScreenLocation;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.overlay.message.MessageOutput;
 import malilib.registry.Registry;
+import malilib.util.data.Identifier;
 
 /**
  * This packet is for receiving messages from the server that should be displayed
@@ -32,19 +30,18 @@ import malilib.registry.Registry;
  */
 public class MessagePacketHandler extends BasePacketHandler
 {
-    public static final String CHANNEL_NAME = "malilib:message";
-    public static final List<ResourceLocation> CHANNELS = ImmutableList.of(new ResourceLocation(CHANNEL_NAME));
+    public static final Identifier CHANNEL_NAME = new Identifier("malilib:message");
 
     private static final MessagePacketHandler INSTANCE = new MessagePacketHandler();
 
     @Override
-    public List<ResourceLocation> getChannels()
+    public Identifier getChannel()
     {
-        return CHANNELS;
+        return CHANNEL_NAME;
     }
 
     @Override
-    public void onPacketReceived(PacketBuffer buf)
+    public boolean onPacketReceived(DataInputStream buf) throws IOException
     {
         // type (string)
         // displayTimeMs (varInt)
@@ -57,25 +54,25 @@ public class MessagePacketHandler extends BasePacketHandler
 
         @Nullable ScreenLocation location = null;
         @Nullable String marker = null;
-        MessageOutput type = MessageOutput.findValueByName(buf.readString(16), MessageOutput.getValues());
-        int displayTimeMs = buf.readVarInt();
+        MessageOutput type = MessageOutput.findValueByName(buf.readUTF(), MessageOutput.getValues());
+        int displayTimeMs = buf.readInt();
         int defaultColor = buf.readInt();
 
         boolean hasLocation = buf.readBoolean();
 
         if (hasLocation)
         {
-            location = ScreenLocation.findValueByName(buf.readString(16), ScreenLocation.VALUES);
+            location = ScreenLocation.findValueByName(buf.readUTF(), ScreenLocation.VALUES);
         }
 
         boolean hasMarker = buf.readBoolean();
 
         if (hasMarker)
         {
-            marker = buf.readString(64);
+            marker = buf.readUTF();
         }
 
-        String message = buf.readString(8192);
+        String message = buf.readUTF();
 
         MessageDispatcher.generic(displayTimeMs)
                 .type(type)
@@ -83,6 +80,8 @@ public class MessagePacketHandler extends BasePacketHandler
                 .color(defaultColor)
                 .rendererMarker(marker).append(true)
                 .send(message);
+
+        return true;
     }
 
     public static void updateRegistration(boolean enabled)

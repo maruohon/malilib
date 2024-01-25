@@ -183,7 +183,7 @@ public class MessageDispatcher
         if (MaLiLibConfigs.Debug.MESSAGE_KEY_TO_CHAT.getBooleanValue())
         {
             String message = StringUtils.translate(translationKey, args);
-            GameUtils.getClient().gui.addChatMessage(message);
+            GameUtils.printMessageToChat(message);
         }
 
         MessageOutput output = Registry.MESSAGE_REDIRECT_MANAGER.getRedirectedMessageOutput(translationKey, this.type);

@@ -1,5 +1,7 @@
 package malilib.util;
 
+import java.io.File;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -7,19 +9,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.network.handler.ClientNetworkHandler;
+import net.minecraft.network.Connection;
 import net.minecraft.resource.language.I18n;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.WorldStorage;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
+import malilib.mixin.access.ClientNetworkHandlerMixin;
+import malilib.mixin.access.ConnectionMixin;
+import malilib.mixin.access.WorldMixin;
 import malilib.registry.Registry;
 import malilib.util.data.Identifier;
 import malilib.util.data.LeftRight;
@@ -144,7 +151,7 @@ public class StringUtils
     public static void sendOpenFileChatMessage(String messageKey, Path file)
     {
         String name = file.getFileName().toString();
-        GameUtils.getClient().gui.addChatMessage(StringUtils.translate(messageKey, name));
+        GameUtils.printMessageToChat(StringUtils.translate(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -479,22 +486,34 @@ public class StringUtils
     @Nullable
     public static String getWorldOrServerName()
     {
-        if (GameUtils.isSinglePlayer())
+        if (GameUtils.isSinglePlayer() && GameUtils.getClientWorld() != null)
         {
-            IntegratedServer server = GameUtils.getClient().getIntegratedServer();
+            WorldStorage storage = ((WorldMixin) GameUtils.getClientWorld()).malilib_getWorldStorage();
+            File file = storage.getDataFile("foo");
 
-            if (server != null)
+            if (file != null)
             {
-                return FileNameUtils.generateSimpleSafeFileName(server.getFolderName());
+                return file.getParentFile().getParent();
             }
         }
         else
         {
-            ServerData server = GameUtils.getClient().getCurrentServerData();
+            ClientNetworkHandler handler = GameUtils.getNetworkConnection();
 
-            if (server != null)
+            if (handler != null)
             {
-                return server.serverIP.trim().replace(':', '_');
+                Connection connection = ((ClientNetworkHandlerMixin) handler).malilib_getConnection();
+
+                if (connection != null)
+                {
+                    SocketAddress address = ((ConnectionMixin) connection).malilib_getAddress();
+
+                    if (address instanceof InetSocketAddress)
+                    {
+                        InetSocketAddress ia = (InetSocketAddress) address;
+                        return ia.getHostName().replaceAll(":", "_") + "_" + ia.getPort();
+                    }
+                }
             }
         }
 
@@ -569,6 +588,18 @@ public class StringUtils
 
         String fmt = "%." + decimalPlaces + "f %s";
         return String.format(fmt, size, unitStr);
+    }
+
+    public static OptionalInt tryParseToInt(String str)
+    {
+        try
+        {
+            int i = Integer.parseInt(str);
+            return OptionalInt.of(i);
+        }
+        catch (NumberFormatException ignore) {}
+
+        return OptionalInt.empty();
     }
 
     public static List<String> translateAndLineSplit(String translationKey, Object... args)

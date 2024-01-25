@@ -59,6 +59,6 @@ public class BlockListConfig extends ValueListConfig<Block>
 
     public static BlockListConfig create(String cfgName, ImmutableList<Block> blocks)
     {
-        return new BlockListConfig(cfgName, blocks, RegistryUtils::getBlockIdStr, RegistryUtils::getBlockByIdStr);
+        return new BlockListConfig(cfgName, blocks, b -> String.valueOf(b.id), RegistryUtils::getBlockByIdStr);
     }
 }

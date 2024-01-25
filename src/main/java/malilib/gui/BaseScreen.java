@@ -31,6 +31,7 @@ import malilib.render.text.TextStyle;
 import malilib.util.StringUtils;
 import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec2i;
 
 public abstract class BaseScreen extends Screen
@@ -491,7 +492,7 @@ public abstract class BaseScreen extends Screen
             this.getParent().render(mouseX, mouseY, partialTicks);
         }
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.color(1f, 1f, 1f, 1f);
         RenderUtils.setupBlend();
 
         // These are after the parent rendering, because the parent

@@ -1,6 +1,5 @@
 package malilib.util.game.wrap;
 
-import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -15,6 +14,8 @@ import net.minecraft.nbt.NbtLong;
 import net.minecraft.nbt.NbtShort;
 import net.minecraft.nbt.NbtString;
 
+import malilib.mixin.access.NbtCompoundMixin;
+import malilib.mixin.access.NbtListMixin;
 import malilib.util.data.Constants;
 
 public class NbtWrap
@@ -81,22 +82,8 @@ public class NbtWrap
 
     public static boolean contains(NbtCompound tag, String name, int typeId)
     {
-        // TODO b1.7.3 f*** performance, right?!
-        try
-        {
-            for (Object o : tag.getValues())
-            {
-                NbtElement el = (NbtElement) o;
-
-                if (el.getType() == typeId && name.equals(el.getName()))
-                {
-                    return true;
-                }
-            }
-        }
-        catch (Exception ignore) {}
-
-        return false;
+        NbtElement element = ((NbtCompoundMixin) tag).malilib_getTags().get(name);
+        return element != null && element.getType() == typeId;
     }
 
     public static boolean hasUUID(NbtCompound tag)
@@ -156,8 +143,17 @@ public class NbtWrap
 
     public static NbtList getList(NbtCompound tag, String name, int type)
     {
-        // TODO b1.7.3 type check
-        return tag.getList(name);
+        NbtList list = tag.getList(name);
+
+        if (getListStoredType(list) == type)
+        {
+            return list;
+        }
+
+        list = new NbtList();
+        list.setName(name);
+
+        return list;
     }
 
     public static byte[] getByteArray(NbtCompound tag, String name)
@@ -165,30 +161,17 @@ public class NbtWrap
         return tag.getByteArray(name);
     }
 
+    /*
     public static int[] getIntArray(NbtCompound tag, String name)
     {
-        return new int[0]; //tag.getIntArray(name);
+        return tag.getIntArray(name);
     }
+    */
 
     @Nullable
     public static NbtElement getTag(NbtCompound tag, String name)
     {
-        // TODO b1.7.3 f*** performance, right?!
-        try
-        {
-            for (Object o : tag.getValues())
-            {
-                NbtElement el = (NbtElement) o;
-
-                if (name.equals(el.getName()))
-                {
-                    return el;
-                }
-            }
-        }
-        catch (Exception ignore) {}
-
-        return null;
+        return ((NbtCompoundMixin) tag).malilib_getTags().get(name);
     }
 
     public static boolean getBooleanOrDefault(NbtCompound tag, String name, boolean defaultValue)
@@ -327,15 +310,16 @@ public class NbtWrap
         tag.putByteArray(name, value);
     }
 
+    /*
     public static void putIntArray(NbtCompound tag, String name, int[] value)
     {
-        //tag.setIntArray(name, value);
+        tag.setIntArray(name, value);
     }
+    */
 
     public static void remove(NbtCompound tag, String name)
     {
-        // TODO b1.7.3
-        //tag.removeTag(name);
+        ((NbtCompoundMixin) tag).malilib_getTags().remove(name);
     }
 
     public static void addTag(NbtList listTag, NbtElement value)
@@ -345,8 +329,7 @@ public class NbtWrap
 
     public static Set<String> getKeys(NbtCompound tag)
     {
-        // TODO b1.7.3
-        return Collections.emptySet(); //tag.getKeySet();
+        return ((NbtCompoundMixin) tag).malilib_getTags().keySet();
     }
 
     public static int getListSize(NbtList list)
@@ -356,8 +339,7 @@ public class NbtWrap
 
     public static int getListStoredType(NbtList listTag)
     {
-        // TODO b1.7.3
-        return 0; //listTag.getTagType();
+        return ((NbtListMixin) listTag).malilib_getContainedType();
     }
 
     public static NbtList getListOfCompounds(NbtCompound tag, String name)

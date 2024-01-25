@@ -50,27 +50,27 @@ public class DefaultMessageDispatchers
 
     public static void sendVanillaHotbarMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        GameUtils.getClient().gui.addChatMessage(translatedMessage);
+        GameUtils.printMessageToChat(translatedMessage);
     }
 
     public static void sendVanillaHotbarMessageText(StyledText text, MessageDispatcher messageDispatcher)
     {
         if (text.lines.size() > 0)
         {
-            GameUtils.getClient().gui.addChatMessage(text.lines.get(0).displayText);
+            GameUtils.printMessageToChat(text.lines.get(0).displayText);
         }
     }
 
     public static void sendVanillaChatMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        GameUtils.getClient().gui.addChatMessage(translatedMessage);
+        GameUtils.printMessageToChat(translatedMessage);
     }
 
     public static void sendVanillaChatMessageText(StyledText text, MessageDispatcher messageDispatcher)
     {
         if (text.lines.size() > 0)
         {
-            GameUtils.getClient().gui.addChatMessage(text.lines.get(0).displayText);
+            GameUtils.printMessageToChat(text.lines.get(0).displayText);
         }
     }
 

@@ -272,7 +272,6 @@ public class CustomIconEditScreen extends BaseScreen
                 height = (int) Math.floor(scale * height);
             }
 
-            RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlend();
 
             //ShapeRenderUtils.renderOutline(x, y, z, width + 4, height + 4, 1, 0xFFFFFFFF);

@@ -1,18 +1,22 @@
 package malilib.network;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import io.netty.buffer.Unpooled;
+import net.ornithemc.osl.networking.api.DataStreams;
+import net.ornithemc.osl.networking.impl.client.ClientPlayNetworkingImpl;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.network.play.server.SPacketCustomPayload;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.network.handler.ClientNetworkHandler;
+import net.minecraft.network.PacketHandler;
+
+import malilib.MaLiLib;
 
 /**
  * Network packet splitter code from QuickCarpet by skyrising
@@ -27,95 +31,118 @@ public class PacketSplitter
     public static final int DEFAULT_MAX_RECEIVE_SIZE_C2S = 1048576;
     public static final int DEFAULT_MAX_RECEIVE_SIZE_S2C = 67108864;
 
-    private static final Map<Pair<INetHandler, ResourceLocation>, ReadingSession> READING_SESSIONS = new HashMap<>();
+    private static final Map<Pair<PacketHandler, String>, ReadingSession> READING_SESSIONS = new HashMap<>();
 
-    public static void send(ResourceLocation channel,
-                            PacketBuffer packet,
-                            NetHandlerPlayClient networkHandler)
+    public static void send(String channel, ByteBuffer data)
     {
-        send(packet, MAX_PAYLOAD_PER_PACKET_C2S,
-             buf -> networkHandler.sendPacket(new CPacketCustomPayload(channel.toString(), buf)));
+        send(data, MAX_PAYLOAD_PER_PACKET_C2S, arr -> ClientPlayNetworkingImpl.send(channel, arr));
     }
 
-    private static void send(PacketBuffer packet,
-                             int payloadLimit,
-                             Consumer<PacketBuffer> sender)
+    private static void send(ByteBuffer data, int payloadLimit, Consumer<byte[]> sender)
     {
-        int totalSize = packet.writerIndex();
-
-        packet.resetReaderIndex();
-
-        for (int offset = 0; offset < totalSize; offset += payloadLimit)
+        try
         {
-            int packetSize = Math.min(totalSize - offset, payloadLimit);
-            PacketBuffer buf = new PacketBuffer(Unpooled.buffer(packetSize));
+            int totalSize = data.position();
 
-            buf.resetWriterIndex();
-
-            if (offset == 0)
+            for (int offset = 0, index = 0; offset < totalSize; offset += payloadLimit, index += payloadLimit)
             {
-                buf.writeVarInt(totalSize);
+                int packetSize = Math.min(totalSize - offset, payloadLimit);
+                int start = 0;
+                byte[] arr = new byte[packetSize];
+                ByteArrayOutputStream bos = new ByteArrayOutputStream(4);
+                DataOutputStream dos = new DataOutputStream(bos);
+
+                if (offset == 0)
+                {
+                    dos.writeInt(totalSize);
+                    System.arraycopy(bos.toByteArray(), 0, arr, 0, 4);
+                    start = 4;
+                }
+
+                data.get(arr, start, packetSize);
+                sender.accept(arr);
             }
-
-            buf.writeBytes(packet, packetSize);
-
-            sender.accept(buf);
         }
-
-        packet.release();
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Exception in PacketSplitter: {}", e);
+        }
     }
 
     @Nullable
-    public static PacketBuffer receive(NetHandlerPlayClient networkHandler,
-                                       SPacketCustomPayload message)
+    public static DataInputStream receive(ClientNetworkHandler networkHandler,
+                                          String channel,
+                                          DataInputStream data)
     {
-        return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_S2C);
+        return receive(networkHandler, channel, data, DEFAULT_MAX_RECEIVE_SIZE_S2C);
     }
 
     @Nullable
-    private static PacketBuffer receive(NetHandlerPlayClient networkHandler,
-                                        SPacketCustomPayload message,
-                                        int maxLength)
+    private static DataInputStream receive(ClientNetworkHandler networkHandler,
+                                           String channel,
+                                           DataInputStream data,
+                                           int maxLength)
     {
-        Pair<INetHandler, ResourceLocation> key = Pair.of(networkHandler,
-                                                          new ResourceLocation(message.getChannelName()));
-
-        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new)
-                .receive(PacketUtils.slice(message.getBufferData()), maxLength);
+        Pair<PacketHandler, String> key = Pair.of(networkHandler, channel);
+        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(data, maxLength);
     }
 
     private static class ReadingSession
     {
-        private final Pair<INetHandler, ResourceLocation> key;
+        private final Pair<PacketHandler, String> key;
         private int expectedSize = -1;
-        private PacketBuffer received;
+        private int index;
+        private byte[] dataBuffer;
 
-        private ReadingSession(Pair<INetHandler, ResourceLocation> key)
+        private ReadingSession(Pair<PacketHandler, String> key)
         {
             this.key = key;
         }
 
         @Nullable
-        private PacketBuffer receive(PacketBuffer data, int maxLength)
+        private DataInputStream receive(DataInputStream data, int maxLength)
         {
-            if (this.expectedSize < 0)
+            try
             {
-                this.expectedSize = data.readVarInt();
-
-                if (this.expectedSize > maxLength)
+                if (this.expectedSize < 0)
                 {
-                    throw new IllegalArgumentException("Payload too large");
+                    this.expectedSize = data.readInt();
+
+                    if (this.expectedSize <= 0)
+                    {
+                        MaLiLib.LOGGER.warn("PacketSplitter.ReadingSession.receive(): Invalid packet size: {}", this.expectedSize);
+                        READING_SESSIONS.remove(this.key);
+                        return null;
+                    }
+
+                    if (this.expectedSize > maxLength)
+                    {
+                        READING_SESSIONS.remove(this.key);
+                        throw new IllegalArgumentException("Payload too large: " + this.expectedSize);
+                    }
+
+                    this.dataBuffer = new byte[this.expectedSize];
                 }
 
-                this.received = new PacketBuffer(Unpooled.buffer(this.expectedSize));
+                int readBytes = data.read(this.dataBuffer, this.index, data.available());
+                this.index += readBytes;
+
+                if (readBytes <= 0)
+                {
+                    MaLiLib.LOGGER.warn("PacketSplitter.ReadingSession.receive(): Failed to read data");
+                    READING_SESSIONS.remove(this.key);
+                    return null;
+                }
+
+                if (this.index >= this.expectedSize)
+                {
+                    READING_SESSIONS.remove(this.key);
+                    return DataStreams.input(this.dataBuffer);
+                }
             }
-
-            this.received.writeBytes(data.readBytes(data.readableBytes()));
-
-            if (this.received.writerIndex() >= this.expectedSize)
+            catch (IOException e)
             {
-                READING_SESSIONS.remove(this.key);
-                return this.received;
+                MaLiLib.LOGGER.warn("Exception in PacketSplitter.ReadingSession.receive(): {}", e);
             }
 
             return null;

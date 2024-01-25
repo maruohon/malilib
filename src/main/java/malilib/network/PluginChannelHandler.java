@@ -1,9 +1,9 @@
 package malilib.network;
 
-import java.util.List;
+import java.io.DataInputStream;
+import java.io.IOException;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import malilib.util.data.Identifier;
 
 public interface PluginChannelHandler
 {
@@ -24,10 +24,10 @@ public interface PluginChannelHandler
     /**
      * @return a list of message channels this handler can handle
      */
-    List<ResourceLocation> getChannels();
+    Identifier getChannel();
 
     /**
      * Called when the packet is received from the other end of the connection
      */
-    void onPacketReceived(PacketBuffer buf);
+    boolean onPacketReceived(DataInputStream data) throws IOException;
 }

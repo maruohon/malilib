@@ -6,12 +6,11 @@ import java.util.function.IntUnaryOperator;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
-import net.minecraft.client.renderer.GlStateManager;
-
 import malilib.gui.icon.Icon;
 import malilib.gui.icon.PositionedIcon;
 import malilib.render.RenderContext;
 import malilib.render.RenderUtils;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.inventory.InventoryView;
 import malilib.util.position.Vec2i;
 
@@ -63,7 +62,7 @@ public class InventoryRenderDefinition
 
     public void renderInventory(int x, int y, float z, int backgroundTintColor, InventoryView inv, RenderContext ctx)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.color(1f, 1f, 1f, 1f);
         RenderUtils.disableItemLighting();
 
         this.renderInventoryBackground(x, y, z, backgroundTintColor, inv, ctx);
@@ -73,8 +72,8 @@ public class InventoryRenderDefinition
             InventoryRenderUtils.renderEmptySlotBackgrounds(x, y, z, backgroundTintColor, inv, this.emptySlotTextures, ctx);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, z + 1);
+        RenderWrap.pushMatrix();
+        RenderWrap.translate(0f, 0f, z + 1);
 
         if (this.hasInventoryRanges)
         {
@@ -92,9 +91,8 @@ public class InventoryRenderDefinition
             InventoryRenderUtils.renderGenericInventoryItems(x, y, 100f, 0, -1, slotsPerRow, this.slotOffset, inv, ctx);
         }
 
-        GlStateManager.popMatrix();
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.popMatrix();
+        RenderWrap.color(1f, 1f, 1f, 1f);
     }
 
     protected void renderInventoryBackground(int x, int y, float z, int backgroundTintColor,

@@ -7,7 +7,6 @@ import malilib.config.value.HorizontalAlignment;
 import malilib.gui.util.BackgroundSettings;
 import malilib.gui.util.BorderSettings;
 import malilib.gui.util.ScreenContext;
-import malilib.render.RenderUtils;
 import malilib.render.text.StringListRenderer;
 import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
@@ -264,8 +263,6 @@ public class LabelWidget extends InteractableWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
         int width = this.totalWidth;
 
         if (this.getBackgroundRenderer().getNormalSettings().isEnabled() == false &&

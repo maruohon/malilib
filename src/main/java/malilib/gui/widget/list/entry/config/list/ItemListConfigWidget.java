@@ -9,6 +9,7 @@ import malilib.gui.widget.button.BaseValueListEditButton;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.util.StringUtils;
+import malilib.util.game.ItemUtils;
 import malilib.util.game.wrap.RegistryUtils;
 
 public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemListConfig>
@@ -30,7 +31,7 @@ public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemLi
                                              this::updateWidgetState,
                                              () -> Item.STICK,
                                              RegistryUtils::getSortedItemList,
-                                             RegistryUtils::getItemIdStr,
+                                             ItemUtils::getDisplayNameForItem,
                                              ItemStackWidget::createItemWidget,
                                              title);
     }

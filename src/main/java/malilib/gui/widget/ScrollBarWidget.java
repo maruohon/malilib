@@ -298,8 +298,6 @@ public class ScrollBarWidget extends InteractableWidget
         int mouseX = ctx.mouseX;
         int mouseY = ctx.mouseY;
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
         if (this.renderScrollbarBackgroundColor)
         {
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor, ctx);

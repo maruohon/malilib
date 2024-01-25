@@ -100,7 +100,6 @@ public class BackgroundWidget extends BaseWidget
         int width = this.getBackgroundWidth(hovered, ctx);
         int height = this.getBackgroundHeight(hovered, ctx);
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.setupBlend();
 
         BackgroundSettings backgroundSettings = this.getActiveBackgroundSettings(ctx);

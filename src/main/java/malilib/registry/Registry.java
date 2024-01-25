@@ -1,7 +1,6 @@
 package malilib.registry;
 
 import malilib.action.ActionRegistry;
-import malilib.command.ClientCommandHandler;
 import malilib.config.ConfigManager;
 import malilib.config.ConfigManagerImpl;
 import malilib.config.serialization.JsonConfigSerializerRegistry;
@@ -47,7 +46,9 @@ public class Registry
     public static final JsonConfigSerializerRegistry JSON_CONFIG_SERIALIZER = new JsonConfigSerializerRegistry();
 
     // Various "managers" or "handlers"
+    /*
     public static final ClientCommandHandler CLIENT_COMMAND_HANDLER = new ClientCommandHandler();
+    */
     public static final ConfigManager CONFIG_MANAGER = new ConfigManagerImpl();
     public static final HotkeyManager HOTKEY_MANAGER = new HotkeyManagerImpl();
     public static final InfoOverlay INFO_OVERLAY = new InfoOverlay();

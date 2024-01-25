@@ -1,30 +1,19 @@
 package malilib.network;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import com.google.common.base.Charsets;
+import java.io.DataInputStream;
 import com.google.common.collect.ArrayListMultimap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import net.ornithemc.osl.networking.impl.client.ClientPlayNetworkingImpl;
 
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.network.play.server.SPacketCustomPayload;
-import net.minecraft.util.ResourceLocation;
-
-import malilib.MaLiLib;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.data.Identifier;
 
 public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandler
 {
-    public static final ResourceLocation REGISTER = new ResourceLocation("minecraft:register");
-    public static final ResourceLocation UNREGISTER = new ResourceLocation("minecraft:unregister");
+    /*
+    public static final Identifier REGISTER = new Identifier("minecraft:register");
+    public static final Identifier UNREGISTER = new Identifier("minecraft:unregister");
+    */
 
-    protected final ArrayListMultimap<ResourceLocation, PluginChannelHandler> handlers = ArrayListMultimap.create();
+    protected final ArrayListMultimap<Identifier, PluginChannelHandler> handlers = ArrayListMultimap.create();
 
     public ClientPacketChannelHandlerImpl()
     {
@@ -33,52 +22,51 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     @Override
     public void registerClientChannelHandler(PluginChannelHandler handler)
     {
-        Set<ResourceLocation> toRegister = new HashSet<>();
+        Identifier channel = handler.getChannel();
 
-        for (ResourceLocation channel : handler.getChannels())
+        if (this.handlers.containsEntry(channel, handler) == false)
         {
-            if (this.handlers.containsEntry(channel, handler) == false)
-            {
-                this.handlers.put(channel, handler);
+            this.handlers.put(channel, handler);
 
-                if (handler.registerToServer())
+            if (handler.registerToServer())
+            {
+                if (handler.usePacketSplitter())
                 {
-                    toRegister.add(channel);
+                    ClientPlayNetworkingImpl.registerListener(channel.toString(), (mc, net, disIn) -> {
+                        DataInputStream dis = PacketSplitter.receive(net, channel.toString(), disIn);
+                        if (dis != null)
+                        {
+                            return handler.onPacketReceived(dis);
+                        }
+                        return true;
+                    });
+                }
+                else
+                {
+                    ClientPlayNetworkingImpl.registerListener(channel.toString(), (mc, net, dis) -> handler.onPacketReceived(dis));
                 }
             }
-        }
-
-        if (toRegister.isEmpty() == false)
-        {
-            this.sendRegisterPacket(REGISTER, toRegister);
         }
     }
 
     @Override
     public void unregisterClientChannelHandler(PluginChannelHandler handler)
     {
-        Set<ResourceLocation> toUnRegister = new HashSet<>();
+        Identifier channel = handler.getChannel();
 
-        for (ResourceLocation channel : handler.getChannels())
+        if (this.handlers.remove(channel, handler) && handler.registerToServer())
         {
-            if (this.handlers.remove(channel, handler) && handler.registerToServer())
-            {
-                toUnRegister.add(channel);
-            }
-        }
-
-        if (toUnRegister.isEmpty() == false)
-        {
-            this.sendRegisterPacket(UNREGISTER, toUnRegister);
+            ClientPlayNetworkingImpl.unregisterListener(channel.toString());
         }
     }
 
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
+    /*
     public boolean processPacketFromServer(SPacketCustomPayload packet, NetHandlerPlayClient netHandler)
     {
-        ResourceLocation channel = new ResourceLocation(packet.getChannelName());
+        Identifier channel = new Identifier(packet.getChannelName());
         List<PluginChannelHandler> handlers = this.handlers.get(channel);
 
         if (handlers.isEmpty() == false)
@@ -110,9 +98,9 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
         return false;
     }
 
-    protected void sendRegisterPacket(ResourceLocation type, Collection<ResourceLocation> channels)
+    protected void sendRegisterPacket(Identifier type, Collection<Identifier> channels)
     {
-        String joinedChannels = channels.stream().map(ResourceLocation::toString).collect(Collectors.joining("\0"));
+        String joinedChannels = channels.stream().map(Identifier::toString).collect(Collectors.joining("\0"));
         ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
         NetHandlerPlayClient handler = GameUtils.getClient().getConnection();
         CPacketCustomPayload packet = new CPacketCustomPayload(type.toString(), new PacketBuffer(payload));
@@ -127,4 +115,5 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
             MaLiLib.debugLog("Failed to send register channel packet for '{}' - network handler was null", channels);
         }
     }
+    */
 }

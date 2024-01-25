@@ -112,6 +112,7 @@ public class NbtUtils
         return tag;
     }
 
+    /*
     @Nullable
     public static NbtCompound writeBlockPosToArrayTag(Vec3i pos, NbtCompound tag, String tagName)
     {
@@ -121,6 +122,7 @@ public class NbtUtils
 
         return tag;
     }
+    */
 
     @Nullable
     public static BlockPos readBlockPos(@Nullable NbtCompound tag)
@@ -152,6 +154,7 @@ public class NbtUtils
         return null;
     }
 
+    /*
     @Nullable
     public static BlockPos readBlockPosFromArrayTag(NbtCompound tag, String tagName)
     {
@@ -167,6 +170,7 @@ public class NbtUtils
 
         return null;
     }
+    */
 
     public static NbtCompound removeBlockPosFromTag(NbtCompound tag)
     {

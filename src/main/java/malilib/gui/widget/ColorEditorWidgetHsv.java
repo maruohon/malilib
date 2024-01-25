@@ -423,17 +423,17 @@ public class ColorEditorWidgetHsv extends ContainerWidget
             builder.posUv(x + w, y + h, z, 0.0F, 1.0F);
             builder.posUv(x + w, y    , z, 1.0F, 1.0F);
 
-            GlStateManager.enableBlend();
-            GlStateManager.disableTexture2D();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                                                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                                                GlStateManager.SourceFactor.ONE,
-                                                GlStateManager.DestFactor.ZERO);
+            RenderWrap.enableBlend();
+            RenderWrap.disableTexture2D();
+            RenderWrap.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                                            GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                                            GlStateManager.SourceFactor.ONE,
+                                            GlStateManager.DestFactor.ZERO);
 
-            GlStateManager.disableRescaleNormal();
-            GlStateManager.disableAlpha();
+            RenderWrap.disableRescaleNormal();
+            RenderWrap.disableAlpha();
             RenderWrap.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
+            RenderWrap.alphaFunc(GL11.GL_GREATER, 0.01F);
 
             GL20.glUseProgram(SHADER_HUE.getProgram());
             GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.hue.getAsFloat());

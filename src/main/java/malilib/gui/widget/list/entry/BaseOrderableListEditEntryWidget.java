@@ -14,7 +14,6 @@ import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.DataListWidget;
 import malilib.input.Keys;
 import malilib.listener.EventListener;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
@@ -372,8 +371,6 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
         int width = this.getWidth();
         int height = this.getHeight();
         int listIndex = this.getDataListIndex();

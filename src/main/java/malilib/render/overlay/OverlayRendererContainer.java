@@ -10,8 +10,6 @@ import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 
 import malilib.render.RenderUtils;
@@ -19,6 +17,7 @@ import malilib.util.BackupUtils;
 import malilib.util.data.json.JsonUtils;
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec3d;
 
 public class OverlayRendererContainer
@@ -165,23 +164,23 @@ public class OverlayRendererContainer
     {
         if (this.resourcesAllocated && this.countActive > 0)
         {
-            GlStateManager.pushMatrix();
+            RenderWrap.pushMatrix();
 
-            GlStateManager.disableTexture2D();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
-            GlStateManager.disableCull();
-            GlStateManager.disableLighting();
-            GlStateManager.depthMask(false);
-            GlStateManager.doPolygonOffset(-3f, -3f);
-            GlStateManager.enablePolygonOffset();
+            RenderWrap.disableTexture2D();
+            RenderWrap.alphaFunc(GL11.GL_GREATER, 0.01F);
+            RenderWrap.disableCull();
+            RenderWrap.disableLighting();
+            RenderWrap.depthMask(false);
+            RenderWrap.polygonOffset(-3f, -3f);
+            RenderWrap.enablePolygonOffset();
 
             RenderUtils.setupBlend();
-            RenderUtils.color(1f, 1f, 1f, 1f);
+            RenderWrap.color(1f, 1f, 1f, 1f);
 
-            if (OpenGlHelper.useVbo())
+            // TODO b1.7.3 if (OpenGlHelper.useVbo())
             {
-                GlStateManager.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-                GlStateManager.glEnableClientState(GL11.GL_COLOR_ARRAY);
+                RenderWrap.enableClientState(GL11.GL_VERTEX_ARRAY);
+                RenderWrap.enableClientState(GL11.GL_COLOR_ARRAY);
             }
 
             double cx = cameraPos.x;
@@ -195,44 +194,44 @@ public class OverlayRendererContainer
                 if (renderer.shouldRender())
                 {
                     Vec3d updatePos = renderer.getUpdatePosition();
-                    GlStateManager.pushMatrix();
-                    GlStateManager.translate(updatePos.x - cx, updatePos.y - cy, updatePos.z - cz);
+                    RenderWrap.pushMatrix();
+                    RenderWrap.translate(updatePos.x - cx, updatePos.y - cy, updatePos.z - cz);
 
                     renderer.draw();
 
-                    GlStateManager.popMatrix();
+                    RenderWrap.popMatrix();
                 }
 
                 GameUtils.profilerPop();
             }
 
-            if (OpenGlHelper.useVbo())
+            // TODO b1.7.3 if (OpenGlHelper.useVbo())
             {
-                OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, 0);
-                GlStateManager.resetColor();
+                RenderWrap.bindBuffer(RenderWrap.GL_ARRAY_BUFFER, 0);
+                //RenderWrap.resetColor();
 
-                GlStateManager.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-                GlStateManager.glDisableClientState(GL11.GL_COLOR_ARRAY);
+                RenderWrap.disableClientState(GL11.GL_VERTEX_ARRAY);
+                RenderWrap.disableClientState(GL11.GL_COLOR_ARRAY);
             }
 
             RenderUtils.color(1f, 1f, 1f, 1f);
 
-            GlStateManager.doPolygonOffset(0f, 0f);
-            GlStateManager.disablePolygonOffset();
-            GlStateManager.disableBlend();
-            GlStateManager.enableDepth();
-            GlStateManager.enableCull();
-            GlStateManager.depthMask(true);
-            GlStateManager.enableTexture2D();
+            RenderWrap.polygonOffset(0f, 0f);
+            RenderWrap.disablePolygonOffset();
+            RenderWrap.disableBlend();
+            RenderWrap.enableDepthTest();
+            RenderWrap.enableCull();
+            RenderWrap.depthMask(true);
+            RenderWrap.enableTexture2D();
 
-            GlStateManager.popMatrix();
+            RenderWrap.popMatrix();
         }
     }
 
     protected void checkVideoSettings()
     {
         boolean vboLast = this.useVbo;
-        this.useVbo = OpenGlHelper.useVbo();
+        this.useVbo = true; // TODO b1.7.3 OpenGlHelper.useVbo();
 
         if (vboLast != this.useVbo || this.resourcesAllocated == false)
         {

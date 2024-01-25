@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 
 import malilib.MaLiLib;
+import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
 
 /**
@@ -35,11 +36,13 @@ public class ShaderProgram
 
     private void init(final String domain, final String vertShaderFilename, final String fragShaderFilename)
     {
+        /* TODO b1.7.3
         if (OpenGlHelper.shadersSupported == false)
         {
             this.program = 0;
             return;
         }
+        */
 
         this.program = GL20.glCreateProgram();
 
@@ -91,7 +94,7 @@ public class ShaderProgram
             return 0;
         }
 
-        final String code = loadFile(new ResourceLocation(domain, filename));
+        final String code = this.loadFile(new Identifier(domain, filename));
 
         if (code == null)
         {
@@ -112,7 +115,7 @@ public class ShaderProgram
         return handle;
     }
 
-    private String loadFile(final ResourceLocation resourceLocation)
+    private String loadFile(final Identifier resourceLocation)
     {
         try
         {

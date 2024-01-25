@@ -8,6 +8,7 @@ import malilib.gui.widget.button.BaseValueListEditButton;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import malilib.util.StringUtils;
+import malilib.util.game.BlockUtils;
 import malilib.util.game.wrap.RegistryUtils;
 
 public class BlockListConfigWidget extends BaseValueListConfigWidget<Block, BlockListConfig>
@@ -29,8 +30,8 @@ public class BlockListConfigWidget extends BaseValueListConfigWidget<Block, Bloc
                                              this::updateWidgetState,
                                              () -> Block.STONE,
                                              RegistryUtils::getSortedBlockList,
-                                             RegistryUtils::getBlockIdStr,
-                                             (p) -> null, //BlockModelWidget::new, // TODO b1.7.3
+                                             BlockUtils::getDisplayNameForBlock, //RegistryUtils::getBlockIdStr,
+                                             null, //BlockModelWidget::new, // TODO b1.7.3
                                              title);
     }
 }

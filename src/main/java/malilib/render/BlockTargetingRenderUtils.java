@@ -1,12 +1,12 @@
 package malilib.render;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 import malilib.util.game.wrap.EntityWrap;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.BlockPos;
 import malilib.util.position.Direction;
 import malilib.util.position.PositionUtils;
@@ -27,7 +27,7 @@ public class BlockTargetingRenderUtils
         double y = pos.getY() + 0.5d - EntityWrap.lerpY(entity, partialTicks);
         double z = pos.getZ() + 0.5d - EntityWrap.lerpZ(entity, partialTicks);
 
-        GlStateManager.pushMatrix();
+        RenderWrap.pushMatrix();
 
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
@@ -70,7 +70,7 @@ public class BlockTargetingRenderUtils
 
         builder.draw();
 
-        GlStateManager.glLineWidth(1.6f);
+        RenderWrap.lineWidth(1.6f);
 
         builder = VanillaWrappingVertexBuilder.coloredLines();
 
@@ -105,7 +105,7 @@ public class BlockTargetingRenderUtils
 
         builder.draw();
 
-        GlStateManager.popMatrix();
+        RenderWrap.popMatrix();
     }
 
     public static void renderSimpleSquareBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side,
@@ -117,7 +117,7 @@ public class BlockTargetingRenderUtils
         double y = pos.getY() + 0.5d - EntityWrap.lerpY(entity, partialTicks);
         double z = pos.getZ() + 0.5d - EntityWrap.lerpZ(entity, partialTicks);
 
-        GlStateManager.pushMatrix();
+        RenderWrap.pushMatrix();
 
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
@@ -131,7 +131,7 @@ public class BlockTargetingRenderUtils
 
         builder.draw();
 
-        GlStateManager.glLineWidth(1.6f);
+        RenderWrap.lineWidth(1.6f);
 
         builder = VanillaWrappingVertexBuilder.coloredLineLoop();
 
@@ -143,38 +143,38 @@ public class BlockTargetingRenderUtils
 
         builder.draw();
 
-        GlStateManager.popMatrix();
+        RenderWrap.popMatrix();
     }
 
     protected static void blockTargetingOverlayTranslations(double x, double y, double z,
                                                             Direction side, Direction playerFacing)
     {
-        GlStateManager.translate(x, y, z);
+        RenderWrap.translate(x, y, z);
 
         switch (side)
         {
             case DOWN:
-                GlStateManager.rotate(180f - playerFacing.getHorizontalAngle(), 0, 1f, 0);
-                GlStateManager.rotate( 90f, 1f, 0, 0);
+                RenderWrap.rotate(180f - playerFacing.getHorizontalAngle(), 0, 1f, 0);
+                RenderWrap.rotate( 90f, 1f, 0, 0);
                 break;
             case UP:
-                GlStateManager.rotate(180f - playerFacing.getHorizontalAngle(), 0, 1f, 0);
-                GlStateManager.rotate(-90f, 1f, 0, 0);
+                RenderWrap.rotate(180f - playerFacing.getHorizontalAngle(), 0, 1f, 0);
+                RenderWrap.rotate(-90f, 1f, 0, 0);
                 break;
             case NORTH:
-                GlStateManager.rotate(180f, 0, 1f, 0);
+                RenderWrap.rotate(180f, 0, 1f, 0);
                 break;
             case SOUTH:
-                GlStateManager.rotate(   0, 0, 1f, 0);
+                RenderWrap.rotate(   0, 0, 1f, 0);
                 break;
             case WEST:
-                GlStateManager.rotate(-90f, 0, 1f, 0);
+                RenderWrap.rotate(-90f, 0, 1f, 0);
                 break;
             case EAST:
-                GlStateManager.rotate( 90f, 0, 1f, 0);
+                RenderWrap.rotate( 90f, 0, 1f, 0);
                 break;
         }
 
-        GlStateManager.translate(-x, -y, -z + 0.501);
+        RenderWrap.translate(-x, -y, -z + 0.501);
     }
 }

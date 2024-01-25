@@ -8,6 +8,7 @@ import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
+import malilib.util.game.wrap.RenderWrap;
 
 public interface Icon
 {
@@ -122,7 +123,7 @@ public interface Icon
         float pw = this.getTexturePixelWidth();
         float ph = this.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(this.getTexture());
         RenderUtils.setupBlend();
 
@@ -148,7 +149,7 @@ public interface Icon
         float pw = this.getTexturePixelWidth();
         float ph = this.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(this.getTexture());
         RenderUtils.setupBlend();
 
@@ -189,7 +190,7 @@ public interface Icon
         float pw = this.getTexturePixelWidth();
         float ph = this.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(this.getTexture());
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();

@@ -1,13 +1,12 @@
 package malilib.mixin.access;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-
-@Mixin(net.minecraft.client.gui.inventory.GuiContainer.class)
+public interface GuiContainerMixin {}
+/*
+@Mixin(GuiContainer.class)
 public interface GuiContainerMixin
 {
     @Accessor("hoveredSlot")
-    net.minecraft.inventory.Slot getHoveredSlot();
+    Slot getHoveredSlot();
 
     @Accessor("guiLeft")
     int getGuiPosX();
@@ -21,3 +20,4 @@ public interface GuiContainerMixin
     @Accessor("ySize")
     int getGuiSizeY();
 }
+*/
