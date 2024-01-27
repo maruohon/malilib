@@ -5,7 +5,7 @@ import malilib.gui.util.BackgroundSettings;
 import malilib.gui.util.BorderRenderer;
 import malilib.gui.util.BorderSettings;
 import malilib.gui.util.ScreenContext;
-import malilib.render.RenderUtils;
+import malilib.util.game.wrap.RenderWrap;
 
 public class BackgroundWidget extends BaseWidget
 {
@@ -100,7 +100,7 @@ public class BackgroundWidget extends BaseWidget
         int width = this.getBackgroundWidth(hovered, ctx);
         int height = this.getBackgroundHeight(hovered, ctx);
 
-        RenderUtils.setupBlend();
+        RenderWrap.setupBlend();
 
         BackgroundSettings backgroundSettings = this.getActiveBackgroundSettings(ctx);
         this.getBackgroundRenderer().renderBackgroundIfEnabled(x, y, z, width, height, backgroundSettings, ctx);

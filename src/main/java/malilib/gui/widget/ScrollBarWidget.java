@@ -7,7 +7,6 @@ import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
 import malilib.gui.util.ScreenContext;
 import malilib.listener.EventListener;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
@@ -332,7 +331,7 @@ public class ScrollBarWidget extends InteractableWidget
 
             if (this.barTexture != null && barHeight >= 4)
             {
-                RenderUtils.bindTexture(this.barTexture.getTexture());
+                this.bindTexture(this.barTexture.getTexture());
                 int u = this.barTexture.getU();
                 int v = this.barTexture.getV();
                 int w = this.barTexture.getWidth();

@@ -63,7 +63,7 @@ public class InventoryRenderDefinition
     public void renderInventory(int x, int y, float z, int backgroundTintColor, InventoryView inv, RenderContext ctx)
     {
         RenderWrap.color(1f, 1f, 1f, 1f);
-        RenderUtils.disableItemLighting();
+        RenderWrap.disableItemLighting();
 
         this.renderInventoryBackground(x, y, z, backgroundTintColor, inv, ctx);
 

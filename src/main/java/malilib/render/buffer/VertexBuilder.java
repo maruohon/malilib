@@ -48,15 +48,21 @@ public interface VertexBuilder
 
     void sortVertexData(float cameraX, float cameraY, float cameraZ);
 
-    boolean isStarted();
-
     VertexBuilder start();
-
-    void draw();
 
     void finishDrawing();
 
+    void draw();
+
     void reset();
+
+    boolean isStarted();
+
+    int getVertexCount();
+
+    int getGlDrawMode();
+
+    VertexFormat getVertexFormat();
 
     ByteBuffer getByteBuffer();
 

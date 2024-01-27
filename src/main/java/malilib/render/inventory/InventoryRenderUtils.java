@@ -23,7 +23,6 @@ import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
 import malilib.render.ItemRenderUtils;
 import malilib.render.RenderContext;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
@@ -48,7 +47,7 @@ public class InventoryRenderUtils
     {
         final int invSize = inv.getSize();
 
-        RenderUtils.enableGuiItemLighting();
+        RenderWrap.enableGuiItemLighting();
         RenderWrap.enableDepthTest();
         RenderWrap.enableRescaleNormal();
 
@@ -131,8 +130,8 @@ public class InventoryRenderUtils
         float ph = icon.getTexturePixelHeight();
 
         RenderWrap.color(1f, 1f, 1f, 1f);
-        RenderUtils.bindTexture(icon.getTexture());
-        RenderUtils.setupBlend();
+        RenderWrap.setupBlend();
+        RenderWrap.bindTexture(icon.getTexture());
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
         // Main part (top left) with all the slots
@@ -201,9 +200,9 @@ public class InventoryRenderUtils
         float ph = icon.getTexturePixelHeight();
 
         RenderWrap.color(1f, 1f, 1f, 1f);
-        RenderUtils.disableItemLighting();
-        RenderUtils.setupBlend();
-        RenderUtils.bindTexture(icon.getTexture());
+        RenderWrap.setupBlend();
+        RenderWrap.disableItemLighting();
+        RenderWrap.bindTexture(icon.getTexture());
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
 
@@ -228,7 +227,7 @@ public class InventoryRenderUtils
             pw = icon.getTexturePixelWidth();
             ph = icon.getTexturePixelHeight();
 
-            RenderUtils.bindTexture(icon.getTexture());
+            RenderWrap.bindTexture(icon.getTexture());
             ShapeRenderUtils.renderScaledTintedTexturedRectangle(x, ty, z, u, v, w, h, w, h, pw, ph, color, ctx);
         }
     }
@@ -306,7 +305,7 @@ public class InventoryRenderUtils
         x = startX;
         y += slotOffset.y;
 
-        RenderUtils.enableGuiItemLighting();
+        RenderWrap.enableGuiItemLighting();
         RenderWrap.enableDepthTest();
         RenderWrap.enableRescaleNormal();
 

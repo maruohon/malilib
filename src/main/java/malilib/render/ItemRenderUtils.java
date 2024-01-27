@@ -26,7 +26,7 @@ public class ItemRenderUtils
         }
 
         RenderWrap.disableLighting();
-        RenderUtils.enableGuiItemLighting();
+        RenderWrap.enableGuiItemLighting();
 
         Minecraft mc = GameUtils.getClient();
         ItemRenderer itemRenderer = new ItemRenderer();
@@ -48,7 +48,7 @@ public class ItemRenderUtils
         */
 
         //RenderWrap.disableBlend();
-        RenderUtils.disableItemLighting();
+        RenderWrap.disableItemLighting();
         RenderWrap.popMatrix();
     }
 

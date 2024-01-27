@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.living.player.PlayerEntity;
+import net.minecraft.world.World;
 
 import malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl;
 import malilib.event.dispatch.InitializationDispatcherImpl;
@@ -19,20 +19,20 @@ import malilib.registry.Registry;
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin
 {
-    @Shadow public WorldClient world;
-    @Shadow public EntityPlayerSP player;
+    @Shadow public World world;
+    @Shadow public PlayerEntity player;
 
-    private WorldClient worldBefore;
+    private World worldBefore;
 
     @Inject(method = "init", at = @At("RETURN"))
-    private void onInitComplete(CallbackInfo ci)
+    private void malilib_onInitComplete(CallbackInfo ci)
     {
         // Register all mod handlers
         ((InitializationDispatcherImpl) Registry.INITIALIZATION_DISPATCHER).onGameInitDone();
     }
 
-    @Inject(method = "runTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getSystemTime()J"))
-    private void onRunTickEnd(CallbackInfo ci)
+    @Inject(method = "tick()V", at = @At(value = "TAIL")) // TODO b1.7.3 is this ok?
+    private void malilib_onTickEnd(CallbackInfo ci)
     {
         if (this.world != null && this.player != null)
         {
@@ -40,17 +40,19 @@ public abstract class MinecraftMixin
         }
     }
 
-    @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
-    private void onLoadWorldPre(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
+    @Inject(method = "setWorld(Lnet/minecraft/world/World;Ljava/lang/String;Lnet/minecraft/entity/living/player/PlayerEntity;)V",
+            at = @At("HEAD"))
+    private void malilib_onLoadWorldPre(@Nullable World worldIn, String loadingMessage, PlayerEntity player, CallbackInfo ci)
     {
         this.worldBefore = this.world;
-        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.world, worldClientIn);
+        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.world, worldIn);
     }
 
-    @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("RETURN"))
-    private void onLoadWorldPost(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
+    @Inject(method = "setWorld(Lnet/minecraft/world/World;Ljava/lang/String;Lnet/minecraft/entity/living/player/PlayerEntity;)V",
+            at = @At("RETURN"))
+    private void malilib_onLoadWorldPost(@Nullable World worldIn, String loadingMessage, PlayerEntity player, CallbackInfo ci)
     {
-        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, worldClientIn);
+        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, worldIn);
         this.worldBefore = null;
     }
 }

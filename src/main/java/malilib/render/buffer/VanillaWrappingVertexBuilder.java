@@ -9,8 +9,6 @@ import malilib.util.game.wrap.RenderWrap;
 
 public class VanillaWrappingVertexBuilder implements VertexBuilder
 {
-    protected static final WorldVertexBufferUploader VBO_UPLOADER = new WorldVertexBufferUploader();
-
     protected final BufferBuilder buffer;
     protected final boolean hasTexture;
     protected VertexFormat vertexFormat;
@@ -27,7 +25,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
         this.buffer = buffer;
         this.glMode = glMode;
         this.vertexFormat = vertexFormat;
-        this.hasTexture = this.vertexFormat.getElements().stream().anyMatch((el) -> el.getUsage() == VertexFormatElement.EnumUsage.UV);
+        this.hasTexture = this.vertexFormat.hasTexture();
     }
 
     @Override
@@ -94,9 +92,9 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
                 RenderWrap.disableTexture2D();
             }
 
-            RenderUtils.setupBlend();
+            RenderWrap.setupBlend();
             this.buffer.finishDrawing();
-            VBO_UPLOADER.draw(this.buffer);
+            RenderUtils.uploadVertexData(this.buffer);
 
             RenderWrap.enableTexture2D();
         }
@@ -180,42 +178,42 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
 
     public static VertexBuilder coloredLines()
     {
-        return create(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+        return create(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
     }
 
     public static VertexBuilder coloredLineStrip()
     {
-        return create(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+        return create(GL11.GL_LINE_STRIP, VertexFormats.POSITION_COLOR);
     }
 
     public static VertexBuilder coloredLineLoop()
     {
-        return create(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+        return create(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
     }
 
     public static VertexBuilder coloredQuads()
     {
-        return create(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        return create(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
     }
 
     public static VertexBuilder texturedQuad()
     {
-        return create(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        return create(GL11.GL_QUADS, VertexFormats.POSITION_TEX);
     }
 
     public static VertexBuilder tintedTexturedQuad()
     {
-        return create(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        return create(GL11.GL_QUADS, VertexFormats.POSITION_TEX_COLOR);
     }
 
     public static VertexBuilder coloredTriangles()
     {
-        return create(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
+        return create(GL11.GL_TRIANGLES, VertexFormats.POSITION_COLOR);
     }
 
     public static VertexBuilder coloredTriangleStrip()
     {
-        return create(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+        return create(GL11.GL_TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
     }
 
     public static VertexBuilder create(int glMode, VertexFormat vertexFormat)

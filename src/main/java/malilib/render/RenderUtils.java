@@ -1,69 +1,25 @@
 package malilib.render;
 
+import java.nio.ByteBuffer;
 import java.util.List;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.render.texture.TextureManager;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.init.Items;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.MapData;
 
 import malilib.gui.icon.Icon;
 import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.render.buffer.VertexFormat;
 import malilib.util.data.Identifier;
-import malilib.util.game.wrap.GameUtils;
 import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec2i;
 
 public class RenderUtils
 {
     public static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
-
-    public static void setupBlend()
-    {
-        RenderWrap.enableBlend();
-        RenderWrap.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-    }
-
-    public static void setupBlendSimple()
-    {
-        RenderWrap.enableBlend();
-        RenderWrap.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-    }
-
-    public static void bindTexture(Identifier texture)
-    {
-        TextureManager manager = GameUtils.getClient().textureManager;
-        manager.bind(manager.load(texture.toString()));
-    }
-
-    public static void color(float r, float g, float b, float a)
-    {
-        RenderWrap.color(r, g, b, a);
-    }
-
-    public static void disableItemLighting()
-    {
-        RenderHelper.disableStandardItemLighting();
-    }
-
-    public static void enableItemLighting()
-    {
-        RenderHelper.enableStandardItemLighting();
-    }
-
-    public static void enableGuiItemLighting()
-    {
-        RenderHelper.enableGUIStandardItemLighting();
-    }
 
     public static void setupScaledScreenRendering(double scaleFactor)
     {
@@ -122,7 +78,7 @@ public class RenderUtils
         int u = icon.getVariantU(variantIndex);
         int v = icon.getVariantV(variantIndex);
 
-        RenderUtils.bindTexture(icon.getTexture());
+        RenderWrap.bindTexture(icon.getTexture());
 
         renderNineSplicedTexture(x, y, z, u, v, width, height, textureWidth, textureHeight, edgeThickness, ctx);
     }
@@ -220,6 +176,82 @@ public class RenderUtils
         }
 
         builder.draw();
+    }
+
+    public static void uploadVertexData(VertexBuilder buffer)
+    {
+        if (buffer.getVertexCount() <= 0)
+        {
+            buffer.reset();
+            return;
+        }
+
+        VertexFormat vertexFormat = buffer.getVertexFormat();
+        List<VertexFormatElement> list = vertexFormat.getElements();
+        ByteBuffer byteBuffer = buffer.getByteBuffer();
+        int i = vertexFormat.getSize();
+
+        for (int j = 0; j < list.size(); ++j)
+        {
+            VertexFormatElement vertexFormatElement = list.get(j);
+            VertexFormatElement.EnumUsage enumUsage = vertexFormatElement.getUsage();
+            int elementCount = vertexFormatElement.getElementCount();
+            int k = vertexFormatElement.getType().getGlConstant();
+            int l = vertexFormatElement.getIndex();
+
+            byteBuffer.position(vertexFormat.getOffset(j));
+
+            switch (enumUsage)
+            {
+                case POSITION:
+                    RenderWrap.vertexPointer(elementCount, k, i, byteBuffer);
+                    RenderWrap.enableClientState(GL11.GL_VERTEX_ARRAY);
+                    break;
+                case UV:
+                    RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT + l);
+                    RenderWrap.texCoordPointer(elementCount, k, i, byteBuffer);
+                    RenderWrap.enableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                    RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
+                    break;
+                case COLOR:
+                    RenderWrap.colorPointer(elementCount, k, i, byteBuffer);
+                    RenderWrap.enableClientState(GL11.GL_COLOR_ARRAY);
+                    break;
+                case NORMAL:
+                    RenderWrap.normalPointer(k, i, byteBuffer);
+                    RenderWrap.enableClientState(GL11.GL_NORMAL_ARRAY);
+            }
+        }
+
+        RenderWrap.glDrawArrays(buffer.getGlDrawMode(), 0, buffer.getVertexCount());
+        int j = 0;
+
+        for (int m = list.size(); j < m; ++j)
+        {
+            VertexFormatElement vertexFormatElement2 = list.get(j);
+            VertexFormatElement.EnumUsage enumUsage2 = vertexFormatElement2.getUsage();
+            int l = vertexFormatElement2.getIndex();
+
+            switch (enumUsage2)
+            {
+                case POSITION:
+                    RenderWrap.disableClientState(GL11.GL_VERTEX_ARRAY);
+                    break;
+                case UV:
+                    RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT + l);
+                    RenderWrap.disableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                    RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
+                    break;
+                case COLOR:
+                    RenderWrap.disableClientState(GL11.GL_COLOR_ARRAY);
+                    //RenderWrap.resetColor();
+                    break;
+                case NORMAL:
+                    RenderWrap.disableClientState(GL11.GL_NORMAL_ARRAY);
+            }
+        }
+
+        buffer.reset();
     }
 
     public static void renderMapPreview(ItemStack stack, int x, int y, float z, int dimensions, RenderContext ctx)

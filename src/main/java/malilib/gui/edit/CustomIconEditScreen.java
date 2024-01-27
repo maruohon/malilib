@@ -10,10 +10,10 @@ import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.gui.widget.IntegerEditWidget;
 import malilib.gui.widget.LabelWidget;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.util.StringUtils;
 import malilib.util.data.Identifier;
+import malilib.util.game.wrap.RenderWrap;
 
 public class CustomIconEditScreen extends BaseScreen
 {
@@ -272,14 +272,14 @@ public class CustomIconEditScreen extends BaseScreen
                 height = (int) Math.floor(scale * height);
             }
 
-            RenderUtils.setupBlend();
+            RenderWrap.setupBlend();
 
             //ShapeRenderUtils.renderOutline(x, y, z, width + 4, height + 4, 1, 0xFFFFFFFF);
 
             x += 2;
             y += 2;
 
-            RenderUtils.bindTexture(this.texture);
+            this.bindTexture(this.texture);
 
             ShapeRenderUtils.renderScaledTexturedRectangle(x, y, z,
                                                            this.u, this.v,

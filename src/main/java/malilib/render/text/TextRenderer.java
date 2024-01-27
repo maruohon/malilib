@@ -5,24 +5,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.render.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
-
 import malilib.render.RenderContext;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.render.buffer.VertexFormats;
 import malilib.util.data.Color4f;
 import malilib.util.data.FloatUnaryOperator;
 import malilib.util.data.Identifier;
@@ -42,8 +35,8 @@ public class TextRenderer
     public static final TextRenderer INSTANCE = new TextRenderer(ASCII_TEXTURE, false, false);
 
     protected final Random rand = new Random();
-    protected final VertexBuilder textBuffer = VanillaWrappingVertexBuilder.create(32768, GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-    protected final VertexBuilder styleBuffer = VanillaWrappingVertexBuilder.create(8192, GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+    protected final VertexBuilder textBuffer = VanillaWrappingVertexBuilder.create(32768, GL11.GL_QUADS, VertexFormats.POSITION_TEX_COLOR);
+    protected final VertexBuilder styleBuffer = VanillaWrappingVertexBuilder.create(8192, GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
     protected final Identifier asciiTexture;
 
     protected final Char2ObjectOpenHashMap<Glyph> glyphs = new Char2ObjectOpenHashMap<>();
@@ -289,7 +282,7 @@ public class TextRenderer
     {
         if (this.currentFontTexture != null)
         {
-            RenderUtils.bindTexture(this.currentFontTexture);
+            RenderWrap.bindTexture(this.currentFontTexture);
             this.textBuffer.draw();
         }
 
@@ -361,7 +354,7 @@ public class TextRenderer
             int segmentX = x;
             Color4f defaultColor4f = Color4f.fromColor(defaultColor);
             RenderWrap.color(1f, 1f, 1f, 1f);
-            RenderUtils.setupBlend();
+            RenderWrap.setupBlend();
 
             for (StyledTextSegment segment : line.segments)
             {

@@ -1,8 +1,13 @@
 package malilib.util.game.wrap;
 
+import java.awt.image.BufferedImage;
+import java.nio.IntBuffer;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.InputPlayerEntity;
@@ -224,6 +229,52 @@ public class GameUtils
         */
 
         return null;
+    }
+
+    public static BufferedImage createScreenshot(int width, int height)
+    {
+        IntBuffer buffer = BufferUtils.createIntBuffer(width * height);
+        int[] intArr = new int[width * height];
+
+        GL11.glPixelStorei(3333, 1);
+        GL11.glPixelStorei(3317, 1);
+        //GL11.glReadPixels(0, 0, width, height, 6407, 5121, buffer);
+        //GL11.glReadPixels(0, 0, width, height, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
+        //GlStateManager.glReadPixels(0, 0, width, height, 32993, 33639, pixelBuffer);
+        GL11.glReadPixels(0, 0, width, height, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, buffer);
+        buffer.clear();
+        buffer.get(intArr);
+        swapLineOrder(intArr, width, height);
+
+        /*
+        for(int x = 0; x < width; ++x) {
+            for(int y = 0; y < height; ++y) {
+                int index = x + (height - y - 1) * width;
+                int baseIndex = index * 3;
+                int r = byteArr[baseIndex + 0] & 0xFF;
+                int g = byteArr[baseIndex + 1] & 0xFF;
+                int b = byteArr[baseIndex + 2] & 0xFF;
+                int color = 0xFF000000 | (r << 16) | (g << 8) | b;
+                intArr[x + y * width] = color;
+            }
+        }
+        */
+
+        BufferedImage image = new BufferedImage(width, height, 1);
+        image.setRGB(0, 0, width, height, intArr, 0, width);
+
+        return image;
+    }
+
+    private static void swapLineOrder(int[] arr, int width, int height) {
+        int[] line = new int[width];
+        int maxY = height / 2;
+
+        for(int y = 0; y < maxY; ++y) {
+            System.arraycopy(arr, y * width, line, 0, width);
+            System.arraycopy(arr, (height - 1 - y) * width, arr, y * width, width);
+            System.arraycopy(line, 0, arr, (height - 1 - y) * width, width);
+        }
     }
 
     public static class Options

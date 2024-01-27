@@ -13,7 +13,6 @@ import net.minecraft.client.options.KeyBinding;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
-import malilib.MinecraftClientAccessor;
 import malilib.config.value.KeybindDisplayMode;
 import malilib.gui.util.GuiUtils;
 import malilib.input.callback.AdjustableValueHotkeyCallback;
@@ -25,7 +24,6 @@ import malilib.render.text.StyledText;
 import malilib.util.StringUtils;
 import malilib.util.data.ModInfo;
 import malilib.util.data.json.JsonUtils;
-import malilib.util.game.wrap.GameUtils;
 
 public class KeyBindImpl implements KeyBind
 {
@@ -336,11 +334,13 @@ public class KeyBindImpl implements KeyBind
         }
         else if (pressedLast == false)
         {
+            /*
             if (this.keyCodes.contains(Keys.KEY_F3))
             {
                 // Prevent the debug GUI from opening after the F3 key is released
                 ((MinecraftClientAccessor) GameUtils.getClient()).setActionKeyF3(true);
             }
+            */
 
             if (activateOn == KeyAction.PRESS || activateOn == KeyAction.BOTH)
             {

@@ -22,7 +22,6 @@ import malilib.overlay.InfoOverlay;
 import malilib.overlay.InfoOverlay.OverlayRenderContext;
 import malilib.overlay.InfoWidgetRegistry.InfoWidgetFactory;
 import malilib.registry.Registry;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.text.MultiLineTextRenderSettings;
 import malilib.render.text.StyledTextLine;
@@ -300,7 +299,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
             return;
         }
 
-        RenderUtils.setupBlend();
+        RenderWrap.setupBlend();
 
         boolean scaled = this.scale != 1.0;
 

@@ -12,7 +12,6 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.Entity;
 
-import malilib.render.RenderUtils;
 import malilib.util.BackupUtils;
 import malilib.util.data.json.JsonUtils;
 import malilib.util.game.wrap.EntityWrap;
@@ -174,8 +173,8 @@ public class OverlayRendererContainer
             RenderWrap.polygonOffset(-3f, -3f);
             RenderWrap.enablePolygonOffset();
 
-            RenderUtils.setupBlend();
             RenderWrap.color(1f, 1f, 1f, 1f);
+            RenderWrap.setupBlend();
 
             // TODO b1.7.3 if (OpenGlHelper.useVbo())
             {
@@ -214,7 +213,7 @@ public class OverlayRendererContainer
                 RenderWrap.disableClientState(GL11.GL_COLOR_ARRAY);
             }
 
-            RenderUtils.color(1f, 1f, 1f, 1f);
+            RenderWrap.color(1f, 1f, 1f, 1f);
 
             RenderWrap.polygonOffset(0f, 0f);
             RenderWrap.disablePolygonOffset();

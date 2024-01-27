@@ -89,7 +89,7 @@ public class TextRenderUtils
             int textStartY = startPos.y + 4;
 
             RenderWrap.disableRescaleNormal();
-            RenderUtils.disableItemLighting();
+            RenderWrap.disableItemLighting();
             RenderWrap.disableLighting();
             RenderWrap.disableDepthTest();
 
@@ -105,7 +105,7 @@ public class TextRenderUtils
             textRenderer.renderBuffers();
             RenderWrap.enableLighting();
             RenderWrap.enableDepthTest();
-            // TODO b1.7.3 RenderHelper.enableStandardItemLighting();
+            RenderWrap.enableItemLighting();
             RenderWrap.enableRescaleNormal();
         }
     }
@@ -263,7 +263,7 @@ public class TextRenderUtils
             RenderWrap.disablePolygonOffset();
         }
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.color(1f, 1f, 1f, 1f);
         RenderWrap.enableCull();
         RenderWrap.disableBlend();
         RenderWrap.popMatrix();

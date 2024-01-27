@@ -1,5 +1,8 @@
 package malilib.mixin.input;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -8,43 +11,65 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
 
-import malilib.MinecraftClientAccessor;
 import malilib.input.InputDispatcherImpl;
 import malilib.input.KeyBindImpl;
+import malilib.input.Keys;
 import malilib.registry.Registry;
 
 @Mixin(Minecraft.class)
-public abstract class MinecraftMixin implements MinecraftClientAccessor
+public abstract class MinecraftMixin
 {
-    @Shadow private boolean actionKeyF3;
+    @Shadow boolean hasTakenScreenshot;
 
-    @Override
-    public void setActionKeyF3(boolean value)
+    @ModifyExpressionValue(method = "tick", remap = false,
+                           at = @At(value = "INVOKE",
+                                    target = "Lorg/lwjgl/input/Keyboard;next()Z"))
+    private boolean malilib_keyInputHandler(boolean original)
     {
-        this.actionKeyF3 = value;
-    }
-
-    @Inject(method = "runTickKeyboard", cancellable = true,
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V"))
-    private void onKeyboardInput(CallbackInfo ci)
-    {
-        if (((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onKeyInput())
+        while (original)
         {
-            ci.cancel();
+            // If not canceled (= false), return true to allow the vanilla code to handle the key
+            if (((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onKeyInput() == false)
+            {
+                return true;
+            }
+
+            // Key handled, and it was F2
+            if (Keyboard.getEventKey() == Keys.KEY_F2)
+            {
+                this.hasTakenScreenshot = true;
+            }
+
+            // When the dispatcher says to cancel further handling, fetch the next key
+            // to prevent vanilla from handling the just handled key
+            original = Keyboard.next();
         }
+
+        return original;
     }
 
-    @Inject(method = "runTickMouse", cancellable = true,
-            at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I", remap = false))
-    private void onMouseInput(CallbackInfo ci)
+    @ModifyExpressionValue(method = "tick", remap = false,
+                           at = @At(value = "INVOKE",
+                                    target = "Lorg/lwjgl/input/Mouse;next()Z"))
+    private boolean malilib_mouseInputHandler(boolean original)
     {
-        if (((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onMouseInput())
+        while (original)
         {
-            ci.cancel();
+            // If not canceled (= false), return true to allow the vanilla code to handle the key
+            if (((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onMouseInput() == false)
+            {
+                return true;
+            }
+
+            // When the dispatcher says to cancel further handling, fetch the next key
+            // to prevent vanilla from handling the just handled key
+            original = Mouse.next();
         }
+
+        return original;
     }
 
-    @Inject(method = "runTick", at = @At("RETURN"))
+    @Inject(method = "tick", at = @At("TAIL"))
     private void onPostKeyboardInput(CallbackInfo ci)
     {
         KeyBindImpl.reCheckPressedKeys();

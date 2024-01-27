@@ -16,7 +16,6 @@ import malilib.gui.util.ElementOffset;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.render.RectangleRenderer;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.TextRenderUtils;
 import malilib.render.text.MultiLineTextRenderSettings;
@@ -27,6 +26,7 @@ import malilib.util.data.Color4f;
 import malilib.util.data.EdgeInt;
 import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.RenderWrap;
 
 public class BaseWidget
 {
@@ -619,7 +619,7 @@ public class BaseWidget
 
     public void bindTexture(Identifier texture)
     {
-        RenderUtils.bindTexture(texture);
+        RenderWrap.bindTexture(texture);
     }
 
     public int getLineHeight()
@@ -864,7 +864,7 @@ public class BaseWidget
             }
 
             DEBUG_STRINGS.clear();
-            RenderUtils.disableItemLighting();
+            RenderWrap.disableItemLighting();
         }
 
         lastDebugOutlineColorHue = 0;

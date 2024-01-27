@@ -2,13 +2,10 @@ package malilib.render.overlay;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-
 import malilib.listener.EventListener;
+import malilib.render.buffer.VertexBuffer;
 import malilib.render.buffer.VertexBuilder;
+import malilib.render.buffer.VertexFormat;
 import malilib.util.game.wrap.RenderWrap;
 
 public class VboRenderObject extends BaseRenderObject
@@ -39,7 +36,7 @@ public class VboRenderObject extends BaseRenderObject
         {
             RenderWrap.enableTexture2D();
 
-            OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
+            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
             RenderWrap.enableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
         }
         else
@@ -53,7 +50,7 @@ public class VboRenderObject extends BaseRenderObject
 
         if (this.hasTexture)
         {
-            OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
+            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
             RenderWrap.disableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
         }
     }

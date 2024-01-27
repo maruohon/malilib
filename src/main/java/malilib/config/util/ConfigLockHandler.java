@@ -18,8 +18,6 @@ import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.client.multiplayer.ServerData;
-
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
 import malilib.MaLiLibReference;
@@ -243,6 +241,7 @@ public class ConfigLockHandler
 
     protected void readLocksFromServer()
     {
+        /*
         ServerData serverData = GameUtils.getClient().getCurrentServerData();
 
         if (serverData != null)
@@ -265,6 +264,7 @@ public class ConfigLockHandler
                 }
             }
         }
+        */
     }
 
     protected void readLockConfigFromFile(Path file)

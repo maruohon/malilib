@@ -493,7 +493,7 @@ public abstract class BaseScreen extends Screen
         }
 
         RenderWrap.color(1f, 1f, 1f, 1f);
-        RenderUtils.setupBlend();
+        RenderWrap.setupBlend();
 
         // These are after the parent rendering, because the parent
         // can/will also both enable and disable the custom scale,
@@ -866,7 +866,7 @@ public abstract class BaseScreen extends Screen
 
     public void bindTexture(Identifier texture)
     {
-        RenderUtils.bindTexture(texture);
+        RenderWrap.bindTexture(texture);
     }
 
     public BaseScreen setZ(float z)
@@ -1015,7 +1015,7 @@ public abstract class BaseScreen extends Screen
         if (this.hoveredWidgetForHoverInfo != null)
         {
             this.hoveredWidgetForHoverInfo.postRenderHovered(ctx);
-            RenderUtils.disableItemLighting();
+            RenderWrap.disableItemLighting();
         }
     }
 

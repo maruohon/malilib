@@ -3,6 +3,7 @@ package malilib.util.game;
 import com.google.common.base.Splitter;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.LiquidSourceBlock;
 
 import malilib.util.StringUtils;
 
@@ -319,15 +320,13 @@ public class BlockUtils
     }
     */
 
-    /* TODO b1.7.3
-    public static boolean isFluidBlock(IBlockState state)
+    public static boolean isFluidBlock(Block block)
     {
-        return state.getMaterial().isLiquid();
+        return block.material.isLiquid();
     }
 
-    public static boolean isFluidSourceBlock(IBlockState state)
+    public static boolean isFluidSourceBlock(Block block)
     {
-        return state.getBlock() instanceof BlockLiquid && state.getValue(BlockLiquid.LEVEL).intValue() == 0;
+        return block instanceof LiquidSourceBlock;
     }
-    */
 }

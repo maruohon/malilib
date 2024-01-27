@@ -1,10 +1,13 @@
 package malilib.action.builtin;
 
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.entity.living.player.PlayerEntity;
 
 import malilib.MaLiLib;
@@ -24,6 +27,7 @@ import malilib.util.datadump.DataDump;
 import malilib.util.datadump.DataDump.Format;
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.inventory.InventoryUtils;
 
 public class UtilityActions
 {
@@ -124,7 +128,7 @@ public class UtilityActions
                 int slot = Integer.parseInt(arg);
                 if (slot >= 1 && slot <= 9)
                 {
-                    ctx.getPlayer().inventory.selectedSlot = slot - 1;
+                    InventoryUtils.setSelectedHotbarSlot(slot - 1);
                     return ActionResult.SUCCESS;
                 }
             }
@@ -198,12 +202,11 @@ public class UtilityActions
 
     public static ActionResult copyScreenshotToClipboard(ActionContext ctx)
     {
-        /* TODO b1.7.3
         Minecraft mc = ctx.getClient();
 
         try
         {
-            BufferedImage image = ScreenShotHelper.createScreenshot(mc.displayWidth, mc.displayHeight, mc.getFramebuffer());
+            BufferedImage image = GameUtils.createScreenshot(mc.width, mc.height);
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new BufferedImageTransferable(image), null);
             MessageDispatcher.generic("malilib.message.info.utility_actions.screenshot_copied_to_clipboard");
             return ActionResult.SUCCESS;
@@ -213,17 +216,13 @@ public class UtilityActions
             MessageDispatcher.error().console(e).translate("malilib.message.error.utility_actions.failed_to_copy_screenshot_to_clipboard");
         }
 
-        */
         return ActionResult.FAIL;
     }
 
     public static ActionResult takeScreenshot(ActionContext ctx)
     {
-        /* TODO b1.7.3
         Minecraft mc = ctx.getClient();
-        DefaultMessageDispatchers.sendVanillaChatMessageString(ScreenShotHelper.saveScreenshot(mc.gameDir,
-                                                                  mc.displayWidth, mc.displayHeight, mc.getFramebuffer()));
-        */
+        GameUtils.printMessageToChat(ScreenshotUtils.saveScreenshot(Minecraft.getRunDirectory(), mc.width, mc.height));
         return ActionResult.SUCCESS;
     }
 

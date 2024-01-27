@@ -8,8 +8,6 @@ import com.google.common.collect.ImmutableList;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import net.minecraft.client.renderer.GlStateManager;
-
 import malilib.gui.callback.FloatSliderCallback;
 import malilib.gui.callback.IntegerSliderCallback;
 import malilib.gui.util.ScreenContext;
@@ -24,11 +22,11 @@ import malilib.util.data.FloatSupplier;
 import malilib.util.data.WrapperFloatStorage;
 import malilib.util.data.WrapperIntStorage;
 import malilib.util.game.wrap.RenderWrap;
+import malilib.util.game.wrap.RenderWrap.BlendDestFactor;
+import malilib.util.game.wrap.RenderWrap.BlendSourceFactor;
 
 public class ColorEditorWidgetHsv extends ContainerWidget
 {
-    protected static final ShaderProgram SHADER_HUE = new ShaderProgram("malilib", null, "shaders/sv_selector.frag");
-
     protected final IntConsumer colorConsumer;
     protected final int colorIn;
     protected final IntegerEditWidget editH;
@@ -425,10 +423,10 @@ public class ColorEditorWidgetHsv extends ContainerWidget
 
             RenderWrap.enableBlend();
             RenderWrap.disableTexture2D();
-            RenderWrap.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                                            GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                                            GlStateManager.SourceFactor.ONE,
-                                            GlStateManager.DestFactor.ZERO);
+            RenderWrap.tryBlendFuncSeparate(BlendSourceFactor.SRC_ALPHA,
+                                            BlendDestFactor.ONE_MINUS_SRC_ALPHA,
+                                            BlendSourceFactor.ONE,
+                                            BlendDestFactor.ZERO);
 
             RenderWrap.disableRescaleNormal();
             RenderWrap.disableAlpha();
