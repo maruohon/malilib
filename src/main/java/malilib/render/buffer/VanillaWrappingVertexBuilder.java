@@ -130,17 +130,26 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
                 RenderWrap.disableTexture2D();
             }
 
+            this.drawNoModeChanges();
+
+            RenderWrap.enableTexture2D();
+        }
+    }
+
+    @Override
+    public void drawNoModeChanges()
+    {
+        if (this.started)
+        {
             this.finishDrawing();
 
             if (this.getVertexCount() > 0)
             {
-                RenderWrap.setupBlend();
                 this.vertexFormat.setupDraw(this.byteBuffer);
                 RenderWrap.glDrawArrays(this.glDrawMode, 0, this.vertexCount);
                 this.vertexFormat.disableAfterDraw();
             }
 
-            RenderWrap.enableTexture2D();
             this.reset();
         }
     }

@@ -1,6 +1,7 @@
 package malilib.util;
 
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -15,12 +16,15 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
+import net.ornithemc.osl.resource.loader.api.ModTexturePack;
+import net.ornithemc.osl.resource.loader.impl.ResourceLoader;
 
 import net.minecraft.client.Minecraft;
 
 import malilib.MaLiLib;
 import malilib.config.value.FileWriteType;
 import malilib.overlay.message.MessageDispatcher;
+import malilib.util.game.wrap.GameUtils;
 
 public class FileUtils
 {
@@ -728,5 +732,25 @@ public class FileUtils
         }
 
         return false;
+    }
+
+    @Nullable
+    public static InputStream openModResource(String modId, String path)
+    {
+        for (ModTexturePack pack : ResourceLoader.getDefaultModResourcePacks())
+        {
+            if (pack.getModMetadata().getId().equals(modId))
+            {
+                return pack.getResource(path);
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static InputStream openVanillaResource(String path)
+    {
+        return GameUtils.getClient().texturePacks.selected.getResource(path);
     }
 }

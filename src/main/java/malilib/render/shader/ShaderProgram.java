@@ -1,9 +1,14 @@
 package malilib.render.shader;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import malilib.MaLiLib;
+import malilib.util.FileUtils;
 import malilib.util.data.Identifier;
 
 /**
@@ -108,15 +113,21 @@ public class ShaderProgram
         return handle;
     }
 
-    private String loadFile(final Identifier resourceLocation)
+    @Nullable
+    private String loadFile(Identifier shaderLocation)
     {
-        /* TODO b1.7.3
         try
         {
-            final StringBuilder code = new StringBuilder();
-            final InputStream inputStream = GameUtils.getClient().getResourceManager().getResource(resourceLocation).getInputStream();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String path = String.format("/assets/%s/%s", shaderLocation.getNamespace(), shaderLocation.getPath());
+            InputStream inputStream = FileUtils.openModResource(shaderLocation.getNamespace(), path);
 
+            if (inputStream == null)
+            {
+                return null;
+            }
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder code = new StringBuilder();
             String line;
 
             while ((line = reader.readLine()) != null)
@@ -131,9 +142,8 @@ public class ShaderProgram
         }
         catch (final Exception e)
         {
-            MaLiLib.LOGGER.error("Could not load shader file!", e);
+            MaLiLib.LOGGER.error("Could not load shader file from '{}'", shaderLocation, e);
         }
-        */
 
         return null;
     }

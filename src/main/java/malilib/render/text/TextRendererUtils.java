@@ -1,8 +1,13 @@
 package malilib.render.text;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.function.IntConsumer;
 
+import javax.imageio.ImageIO;
+
+import malilib.MaLiLib;
+import malilib.util.FileUtils;
 import malilib.util.data.Identifier;
 
 public class TextRendererUtils
@@ -61,19 +66,33 @@ public class TextRendererUtils
     {
         BufferedImage bufferedImage = null;
 
-        /* TODO b1.7.3
-        try (IResource resource = GameUtils.getClient().getResourceManager().getResource(texture))
+        try
         {
-            bufferedImage = TextureUtil.readBufferedImage(resource.getInputStream());
+            InputStream is;
+
+            if ("minecraft".equals(texture.getNamespace()))
+            {
+                is = FileUtils.openVanillaResource(texture.getPath());
+            }
+            else
+            {
+                is = FileUtils.openModResource(texture.getNamespace(), texture.getPath());
+            }
+
+            if (is != null)
+            {
+                bufferedImage = ImageIO.read(is);
+                is.close();
+            }
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            throw new RuntimeException(e);
+            MaLiLib.LOGGER.warn("Failed to read font texture from '{}'", texture, e);
         }
-        */
 
         if (bufferedImage == null)
         {
+            MaLiLib.LOGGER.warn("Failed to read font texture from '{}' (failed to open image)", texture);
             return;
         }
 

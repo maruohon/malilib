@@ -12,7 +12,18 @@ public class Identifier
 
     public Identifier(String resourceName)
     {
-        this("minecraft", resourceName);
+        int colonIndex = resourceName.indexOf(':');
+
+        if (colonIndex >= 0)
+        {
+            this.namespace = resourceName.substring(0, colonIndex);
+            this.path = resourceName.substring(colonIndex + 1);
+        }
+        else
+        {
+            this.namespace = "minecraft";
+            this.path = resourceName;
+        }
     }
 
     public Identifier(String namespaceIn, String pathIn)

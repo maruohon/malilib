@@ -688,14 +688,18 @@ public class StringUtils
             {
                 line = line.trim();
 
-                if (line.startsWith("#") == false)
+                if (line.startsWith("#"))
                 {
-                    String[] parts = line.split("=");
+                    continue;
+                }
 
-                    if (parts != null && parts.length == 2)
-                    {
-                        translationsOut.setProperty(parts[0], parts[1]);
-                    }
+                int equalsIndex = line.indexOf('=');
+
+                if (equalsIndex > 0 && line.length() > equalsIndex + 1)
+                {
+                    String key = line.substring(0, equalsIndex);
+                    String val = line.substring(equalsIndex + 1);
+                    translationsOut.setProperty(key, val);
                 }
             }
         }

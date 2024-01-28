@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableList;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
+import malilib.MaLiLibReference;
 import malilib.gui.callback.FloatSliderCallback;
 import malilib.gui.callback.IntegerSliderCallback;
 import malilib.gui.util.ScreenContext;
@@ -315,7 +316,7 @@ public class ColorEditorWidgetHsv extends ContainerWidget
 
     public static class SvSelectorWidget extends InteractableWidget
     {
-        protected static final ShaderProgram SHADER_HUE = new ShaderProgram("malilib", null, "shaders/sv_selector.frag");
+        protected static final ShaderProgram SHADER_HUE = new ShaderProgram(MaLiLibReference.MOD_ID, null, "shaders/sv_selector.frag");
 
         protected final FloatStorage saturation;
         protected final FloatStorage value;
@@ -436,10 +437,11 @@ public class ColorEditorWidgetHsv extends ContainerWidget
             GL20.glUseProgram(SHADER_HUE.getProgram());
             GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.hue.getAsFloat());
 
-            builder.draw();
+            builder.drawNoModeChanges();
 
             GL20.glUseProgram(0);
             RenderWrap.shadeModel(GL11.GL_FLAT);
+            RenderWrap.enableTexture2D();
         }
     }
 }

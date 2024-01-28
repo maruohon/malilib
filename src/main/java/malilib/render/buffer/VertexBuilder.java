@@ -60,6 +60,8 @@ public interface VertexBuilder
 
     void draw();
 
+    void drawNoModeChanges();
+
     void uploadVertexData();
 
     void reset();

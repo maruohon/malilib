@@ -37,7 +37,17 @@ public class RenderWrap
 
     public static void bindTexture(Identifier texture)
     {
-        String path = String.format("/assets/%s/%s", texture.getNamespace(), texture.getPath());
+        String path;
+
+        if ("minecraft".equals(texture.getNamespace()))
+        {
+            path = texture.getPath();
+        }
+        else
+        {
+            path = String.format("/assets/%s/%s", texture.getNamespace(), texture.getPath());
+        }
+
         TextureManager manager = GameUtils.getClient().textureManager;
         manager.bind(manager.load(path));
     }
