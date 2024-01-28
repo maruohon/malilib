@@ -6,6 +6,7 @@
 	"client": [
 		"access.ClientNetworkHandlerMixin",
 		"access.ConnectionMixin",
+		"access.LanguageManagerMixin",
 		"access.MinecraftMixin",
 		"access.NbtCompoundMixin",
 		"access.NbtElementMixin",

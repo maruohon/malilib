@@ -35,6 +35,7 @@ public class MaLiLibActions
         register("openTranslationOverridesListScreen",  TranslationOverridesListScreen::openTranslationOverridesListScreenAction);
         register("switchConfigProfile",                 ConfigUtils::switchConfigProfile);
 
+        register("closeGame",                       UtilityActions::closeGame);
         register("cycleGameMode",                   UtilityActions::cycleGameMode);
         register("copyScreenshotToClipboard",       UtilityActions::copyScreenshotToClipboard);
         register("dropHeldStack",                   UtilityActions::dropHeldStack);
@@ -42,6 +43,9 @@ public class MaLiLibActions
         register("listAllBaseActions",              UtilityActions::listAllBaseActions);
         register("listAllConfigs",                  UtilityActions::listAllConfigs);
         register("listAllConfigCategories",         UtilityActions::listAllConfigCategories);
+        register("openChat",                        UtilityActions::openChat);
+        register("reloadModLanguages",              UtilityActions::reloadModLanguages);
+        register("reloadTextures",                  UtilityActions::reloadTextures);
         register("runCommand",                      UtilityActions::runVanillaCommand);
         register("sendChatMessage",                 UtilityActions::sendChatMessage);
         register("setPlayerFractionalXZ",           UtilityActions::setPlayerFractionalXZ);

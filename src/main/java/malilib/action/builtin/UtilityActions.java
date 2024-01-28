@@ -7,8 +7,11 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.entity.living.player.PlayerEntity;
+import net.minecraft.locale.LanguageManager;
 
 import malilib.MaLiLib;
 import malilib.action.ActionContext;
@@ -17,7 +20,10 @@ import malilib.config.ConfigManagerImpl;
 import malilib.config.ModConfig;
 import malilib.config.category.ConfigOptionCategory;
 import malilib.config.option.ConfigOption;
+import malilib.gui.BaseScreen;
+import malilib.gui.util.GuiUtils;
 import malilib.input.ActionResult;
+import malilib.mixin.access.LanguageManagerMixin;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.util.MathUtils;
@@ -141,7 +147,7 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            GameUtils.getOptions().debugEnabled = ! GameUtils.getOptions().debugEnabled;
+            GameUtils.getOptions().debugProfilerEnabled = ! GameUtils.getOptions().debugProfilerEnabled;
 
             /*
             if (GameUtils.getOptions().showDebugInfo == false)
@@ -365,6 +371,37 @@ public class UtilityActions
         dump.getLines().forEach(MaLiLib.LOGGER::info);
         MessageDispatcher.generic("malilib.message.info.utility_actions.output_printed_to_console");
 
+        return ActionResult.SUCCESS;
+    }
+
+    public static ActionResult closeGame(ActionContext ctx)
+    {
+        if (GuiUtils.getCurrentScreen() instanceof GameMenuScreen)
+        {
+            ctx.getClient().scheduleStop();
+            return ActionResult.SUCCESS;
+        }
+
+        return ActionResult.FAIL;
+    }
+
+    public static ActionResult openChat(ActionContext ctx)
+    {
+        BaseScreen.openScreen(new ChatScreen());
+        return ActionResult.SUCCESS;
+    }
+
+    public static ActionResult reloadModLanguages(ActionContext ctx)
+    {
+        StringUtils.loadLowerCaseLangFile(((LanguageManagerMixin) LanguageManager.getInstance()).malilib_getProperties());
+        MessageDispatcher.generic("malilib.message.info.utility_actions.mod_languages_reloaded");
+        return ActionResult.SUCCESS;
+    }
+
+    public static ActionResult reloadTextures(ActionContext ctx)
+    {
+        ctx.getClient().textureManager.reload();
+        MessageDispatcher.generic("malilib.message.info.utility_actions.textures_reloaded");
         return ActionResult.SUCCESS;
     }
 

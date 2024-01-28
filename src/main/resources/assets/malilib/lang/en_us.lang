@@ -615,8 +615,10 @@ malilib.message.info.successfully_imported_n_entries=Successfully imported §6%s
 malilib.message.info.switched_config_profile=Switched to config profile §e%s§r
 malilib.message.info.toggled_config_off=Toggled %s §cOFF§r
 malilib.message.info.toggled_config_on=Toggled %s §aON§r
+malilib.message.info.utility_actions.mod_languages_reloaded=All mod language packs reloaded
 malilib.message.info.utility_actions.output_printed_to_console=Output printed to the game console/log
 malilib.message.info.utility_actions.screenshot_copied_to_clipboard=Screenshot copied to the clipboard
+malilib.message.info.utility_actions.textures_reloaded=All textures reloaded
 
 malilib.message.warn.import_entries.didnt_import_any_entries=Didn't import anything
 
