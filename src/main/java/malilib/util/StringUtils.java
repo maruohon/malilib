@@ -1,6 +1,8 @@
 package malilib.util;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.file.Path;
@@ -10,11 +12,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.ornithemc.osl.resource.loader.api.ModTexturePack;
+import net.ornithemc.osl.resource.loader.impl.ResourceLoader;
 
 import net.minecraft.client.network.handler.ClientNetworkHandler;
 import net.minecraft.network.Connection;
@@ -660,6 +666,40 @@ public class StringUtils
     {
         // TODO b1.7.3
         return str;
+    }
+
+    public static void loadLowerCaseLangFile(Properties translationsOut)
+    {
+        for (ModTexturePack pack : ResourceLoader.getDefaultModResourcePacks())
+        {
+            loadLowerCaseLangFile(translationsOut, pack);
+        }
+    }
+
+    public static void loadLowerCaseLangFile(Properties translationsOut, ModTexturePack pack)
+    {
+        ModMetadata mod = pack.getModMetadata();
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(pack.getResource("/assets/" + mod.getId() + "/lang/en_us.lang"))))
+        {
+            String line;
+
+            while ((line = br.readLine()) != null)
+            {
+                line = line.trim();
+
+                if (line.startsWith("#") == false)
+                {
+                    String[] parts = line.split("=");
+
+                    if (parts != null && parts.length == 2)
+                    {
+                        translationsOut.setProperty(parts[0], parts[1]);
+                    }
+                }
+            }
+        }
+        catch (Exception ignore) {}
     }
 
     /**

@@ -12,6 +12,7 @@
 		"access.NbtListMixin",
 		"access.WorldMixin",
 		"event.MinecraftMixin",
+		"fix.LanguageManagerMixin",
 		"input.MinecraftMixin",
 		"input.ScreenMixin",
 		"render.GameRendererMixin"
