@@ -37,8 +37,9 @@ public class RenderWrap
 
     public static void bindTexture(Identifier texture)
     {
+        String path = String.format("/assets/%s/%s", texture.getNamespace(), texture.getPath());
         TextureManager manager = GameUtils.getClient().textureManager;
-        manager.bind(manager.load(texture.toString()));
+        manager.bind(manager.load(path));
     }
 
     public static void setupBlendSimple()
@@ -93,12 +94,12 @@ public class RenderWrap
 
     public static void enableRescaleNormal()
     {
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
     }
 
     public static void enableTexture2D()
     {
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
     public static void disableAlpha()

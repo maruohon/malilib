@@ -8,7 +8,7 @@ package malilib.util.data;
 public class Identifier
 {
     protected final String namespace;
-    protected final String value;
+    protected final String path;
 
     public Identifier(String resourceName)
     {
@@ -18,7 +18,17 @@ public class Identifier
     public Identifier(String namespaceIn, String pathIn)
     {
         this.namespace = namespaceIn;
-        this.value = pathIn;
+        this.path = pathIn;
+    }
+
+    public String getNamespace()
+    {
+        return this.namespace;
+    }
+
+    public String getPath()
+    {
+        return this.path;
     }
 
     @Override
@@ -30,14 +40,20 @@ public class Identifier
         Identifier that = (Identifier) o;
 
         if (!this.namespace.equals(that.namespace)) {return false;}
-        return this.value.equals(that.value);
+        return this.path.equals(that.path);
     }
 
     @Override
     public int hashCode()
     {
         int result = this.namespace.hashCode();
-        result = 31 * result + this.value.hashCode();
+        result = 31 * result + this.path.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString()
+    {
+        return this.namespace + ":" + this.path;
     }
 }
