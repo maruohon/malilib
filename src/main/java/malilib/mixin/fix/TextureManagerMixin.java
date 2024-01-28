@@ -2,12 +2,7 @@ package malilib.mixin.fix;
 
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
 import javax.imageio.ImageIO;
-import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,7 +22,6 @@ public class TextureManagerMixin
     @Inject(method = "readImage", at = @At("HEAD"), cancellable = true)
     private void malilib_preventCrashes(InputStream is, CallbackInfoReturnable<BufferedImage> cir)
     {
-        System.out.printf("TextureManager#readImage(%s)\n", is);
         if (is == null)
         {
             cir.setReturnValue(this.image);
@@ -50,3 +44,4 @@ public class TextureManagerMixin
     {
         TextRenderer.INSTANCE.onResourceManagerReload();
     }
+}
