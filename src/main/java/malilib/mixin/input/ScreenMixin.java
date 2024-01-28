@@ -14,7 +14,7 @@ import malilib.input.InputDispatcherImpl;
 import malilib.registry.Registry;
 
 @Mixin(Screen.class)
-public abstract class GuiScreenMixin extends GuiElement
+public abstract class ScreenMixin extends GuiElement
 {
     @Inject(method = "handleInputs", cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;handleKeyboard()V"))

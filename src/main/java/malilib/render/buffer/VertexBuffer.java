@@ -22,6 +22,11 @@ public class VertexBuffer
         RenderWrap.glBindBuffer(RenderWrap.GL_ARRAY_BUFFER, this.glBufferId);
     }
 
+    public void unbindBuffer()
+    {
+        RenderWrap.glBindBuffer(RenderWrap.GL_ARRAY_BUFFER, 0);
+    }
+
     public void bufferData(ByteBuffer data)
     {
         this.bindBuffer();
@@ -33,11 +38,6 @@ public class VertexBuffer
     public void drawArrays(int mode)
     {
         RenderWrap.glDrawArrays(mode, 0, this.vertexCount);
-    }
-
-    public void unbindBuffer()
-    {
-        RenderWrap.glBindBuffer(RenderWrap.GL_ARRAY_BUFFER, 0);
     }
 
     public void deleteGlBuffers()

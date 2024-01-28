@@ -4,18 +4,17 @@
 	"compatibilityLevel": "JAVA_8",
 	"minVersion": "0.8",
 	"client": [
-		"access.AbstractHorseMixin",
-		"access.GuiContainerMixin",
-      "access.NbtElementMixin",
-		"access.NBTTagLongArrayMixin",
-		"command.GuiScreenMixin",
-		"command.TabCompleterMixin",
+		"access.ClientNetworkHandlerMixin",
+		"access.ConnectionMixin",
+		"access.MinecraftMixin",
+		"access.NbtCompoundMixin",
+		"access.NbtElementMixin",
+		"access.NbtListMixin",
+		"access.WorldMixin",
 		"event.MinecraftMixin",
-		"input.GuiScreenMixin",
 		"input.MinecraftMixin",
-		"network.MixinNetHandlerPlayClient",
-		"render.EntityRendererMixin",
-		"render.GuiScreenMixin"
+		"input.ScreenMixin",
+		"render.GameRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

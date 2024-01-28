@@ -6,6 +6,8 @@ import malilib.util.data.Color4f;
 
 public interface VertexBuilder
 {
+    VertexBuilder pos(double x, double y, double z);
+
     VertexBuilder posColor(double x, double y, double z, int r, int g, int b, int a);
 
     default VertexBuilder posColor(double x, double y, double z, Color4f color)
@@ -32,6 +34,7 @@ public interface VertexBuilder
         return this.posUvColor(x, y, z, u, v, r, g, b, a);
     }
 
+    /*
     void addVertexData(int[] data);
 
     void putPosition(double x, double y, double z);
@@ -47,12 +50,17 @@ public interface VertexBuilder
     void putBrightness(int vertex0, int vertex1, int vertex2, int vertex3);
 
     void sortVertexData(float cameraX, float cameraY, float cameraZ);
+    */
 
     VertexBuilder start();
+
+    VertexBuilder start(int glMode, VertexFormat format);
 
     void finishDrawing();
 
     void draw();
+
+    void uploadVertexData();
 
     void reset();
 

@@ -33,7 +33,7 @@
 	],
 
 	"depends": {
-		"minecraft": "1.12.x",
+		"minecraft": "1.0.0-beta.7.3",
 		"osl-entrypoints": "*",
 		"osl-resource-loader": "*"
 	}

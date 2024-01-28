@@ -2,7 +2,6 @@ package malilib.gui.widget.list;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -11,6 +10,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.AbstractIntCollection;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntComparators;
 
 import malilib.gui.BaseScreen;
 
@@ -372,7 +372,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
         IntArrayList indexList = new IntArrayList(this.selectedEntryIndices);
         final int size = dataList.size();
 
-        indexList.sort(Comparator.naturalOrder());
+        indexList.sort(IntComparators.NATURAL_COMPARATOR);
 
         for (int index : indexList)
         {

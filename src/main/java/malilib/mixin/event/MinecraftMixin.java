@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.living.player.InputPlayerEntity;
 import net.minecraft.entity.living.player.PlayerEntity;
 import net.minecraft.world.World;
 
@@ -20,9 +21,9 @@ import malilib.registry.Registry;
 public abstract class MinecraftMixin
 {
     @Shadow public World world;
-    @Shadow public PlayerEntity player;
+    @Shadow public InputPlayerEntity player;
 
-    private World worldBefore;
+    private World malilib_worldBefore;
 
     @Inject(method = "init", at = @At("RETURN"))
     private void malilib_onInitComplete(CallbackInfo ci)
@@ -44,7 +45,7 @@ public abstract class MinecraftMixin
             at = @At("HEAD"))
     private void malilib_onLoadWorldPre(@Nullable World worldIn, String loadingMessage, PlayerEntity player, CallbackInfo ci)
     {
-        this.worldBefore = this.world;
+        this.malilib_worldBefore = this.world;
         ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.world, worldIn);
     }
 
@@ -52,7 +53,7 @@ public abstract class MinecraftMixin
             at = @At("RETURN"))
     private void malilib_onLoadWorldPost(@Nullable World worldIn, String loadingMessage, PlayerEntity player, CallbackInfo ci)
     {
-        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, worldIn);
-        this.worldBefore = null;
+        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.malilib_worldBefore, worldIn);
+        this.malilib_worldBefore = null;
     }
 }
