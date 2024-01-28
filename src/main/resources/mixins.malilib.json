@@ -13,6 +13,7 @@
 		"access.WorldMixin",
 		"event.MinecraftMixin",
 		"fix.LanguageManagerMixin",
+		"fix.TextureManagerMixin",
 		"input.MinecraftMixin",
 		"input.ScreenMixin",
 		"render.GameRendererMixin"
