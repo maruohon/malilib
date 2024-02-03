@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.util.TabCompleter;
-import net.minecraft.util.text.TextFormatting;
 
 import malilib.registry.Registry;
+import malilib.render.text.TextRendererUtils;
 
 @Mixin(TabCompleter.class)
 public abstract class TabCompleterMixin
@@ -46,12 +46,12 @@ public abstract class TabCompleterMixin
 
             for (String str : complete)
             {
-                result[i++] = TextFormatting.getTextWithoutFormattingCodes(str);
+                result[i++] = TextRendererUtils.stripVanillaFormattingCodes(str);
             }
 
             for (String str : newCompl)
             {
-                result[i++] = TextFormatting.getTextWithoutFormattingCodes(str);
+                result[i++] = TextRendererUtils.stripVanillaFormattingCodes(str);
             }
 
             return result;
@@ -66,6 +66,6 @@ public abstract class TabCompleterMixin
             ))
     private String removeFormattingCodes2(String text)
     {
-        return TextFormatting.getTextWithoutFormattingCodes(text);
+        return TextRendererUtils.stripVanillaFormattingCodes(text);
     }
 }

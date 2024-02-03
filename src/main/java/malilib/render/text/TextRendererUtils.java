@@ -3,6 +3,7 @@ package malilib.render.text;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.function.IntConsumer;
+import java.util.regex.Pattern;
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
@@ -16,6 +17,8 @@ import malilib.util.game.wrap.GameUtils;
 
 public class TextRendererUtils
 {
+    private static final Pattern VANILLA_FORMATTING_CODE_PATTERN = Pattern.compile("(?i)§[0-9A-FK-OR]");
+
     public static void setColorCodes(int[] colorCodes, boolean anaglyph)
     {
         for (int i = 0; i < 32; ++i)
@@ -138,5 +141,10 @@ public class TextRendererUtils
         {
             return text;
         }
+    }
+
+    public static String stripVanillaFormattingCodes(String text)
+    {
+        return VANILLA_FORMATTING_CODE_PATTERN.matcher(text).replaceAll("");
     }
 }

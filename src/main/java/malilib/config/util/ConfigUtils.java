@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import org.apache.commons.lang3.StringUtils;
-
-import net.minecraft.util.text.TextFormatting;
 
 import malilib.MaLiLibConfigs;
 import malilib.action.ActionContext;
@@ -28,6 +25,7 @@ import malilib.input.Hotkey;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.render.overlay.OverlayRendererContainer;
+import malilib.render.text.TextRendererUtils;
 import malilib.util.FileUtils;
 import malilib.util.ListUtils;
 import malilib.util.data.ConfigOnTab;
@@ -77,7 +75,7 @@ public class ConfigUtils
     {
         Path baseConfigDir = getConfigDirectory();
 
-        if (StringUtils.isBlank(profile) == false)
+        if (org.apache.commons.lang3.StringUtils.isBlank(profile) == false)
         {
             try
             {
@@ -96,7 +94,7 @@ public class ConfigUtils
      */
     public static List<ConfigInfo> sortConfigsInPlaceByDisplayName(List<ConfigInfo> configs)
     {
-        configs.sort(Comparator.comparing((c) -> TextFormatting.getTextWithoutFormattingCodes(c.getDisplayName())));
+        configs.sort(Comparator.comparing((c) -> TextRendererUtils.stripVanillaFormattingCodes(c.getDisplayName())));
         return configs;
     }
 
@@ -227,7 +225,7 @@ public class ConfigUtils
 
     private static void copyConfigsIfProfileNotExist(String profile)
     {
-        if (StringUtils.isBlank(profile) == false)
+        if (org.apache.commons.lang3.StringUtils.isBlank(profile) == false)
         {
             Path dir = getActiveConfigDirectory();
 
