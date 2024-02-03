@@ -10,7 +10,6 @@ import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.ResourceLocation;
 
 import malilib.MaLiLibConfigs;
 import malilib.gui.icon.DefaultIcons;
@@ -29,6 +28,7 @@ import malilib.render.text.StyledTextLine;
 import malilib.render.text.TextRenderer;
 import malilib.render.text.TextStyle;
 import malilib.util.StringUtils;
+import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.position.Vec2i;
 
@@ -860,7 +860,7 @@ public abstract class BaseScreen extends GuiScreen
         return textFields;
     }
 
-    public void bindTexture(ResourceLocation texture)
+    public void bindTexture(Identifier texture)
     {
         RenderUtils.bindTexture(texture);
     }

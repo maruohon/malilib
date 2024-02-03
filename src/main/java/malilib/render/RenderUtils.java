@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.MapData;
 
 import malilib.gui.icon.Icon;
@@ -16,12 +15,13 @@ import malilib.gui.icon.PositionedIcon;
 import malilib.gui.util.GuiUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.position.Vec2i;
 
 public class RenderUtils
 {
-    public static final ResourceLocation TEXTURE_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
+    public static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
 
     public static void setupBlend()
     {
@@ -35,7 +35,7 @@ public class RenderUtils
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void bindTexture(ResourceLocation texture)
+    public static void bindTexture(Identifier texture)
     {
         GameUtils.getClient().getTextureManager().bindTexture(texture);
     }

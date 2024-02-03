@@ -18,11 +18,14 @@ import net.minecraft.util.math.Vec3i;
 
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.position.PositionUtils;
 
 public class ModelRenderUtils
 {
+    private static final Identifier BLOCK_TEXTURE = new Identifier(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
     public static void renderModelInGui(int x, int y, float zLevel,
                                         IBakedModel model, IBlockState state, RenderContext ctx)
     {
@@ -33,7 +36,7 @@ public class ModelRenderUtils
 
         GlStateManager.pushMatrix();
 
-        RenderUtils.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        RenderUtils.bindTexture(BLOCK_TEXTURE);
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlpha();
