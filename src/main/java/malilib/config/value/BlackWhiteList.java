@@ -10,12 +10,12 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.RegistryNamespaced;
 
 import malilib.config.option.list.BlockListConfig;
 import malilib.config.option.list.ItemListConfig;
 import malilib.config.option.list.StatusEffectListConfig;
 import malilib.config.option.list.ValueListConfig;
+import malilib.util.data.Identifier;
 import malilib.util.restriction.UsageRestriction.ListType;
 
 public class BlackWhiteList<TYPE>
@@ -29,16 +29,6 @@ public class BlackWhiteList<TYPE>
     public BlackWhiteList(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList)
     {
         this(type, blackList, whiteList, blackList.getToStringConverter(), blackList.getFromStringConverter());
-    }
-
-    public BlackWhiteList(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList,
-                          RegistryNamespaced<ResourceLocation, TYPE> registry)
-    {
-        this.type = type;
-        this.blackList = blackList;
-        this.whiteList = whiteList;
-        this.toStringConverter = getRegistryBasedToStringConverter(registry);
-        this.fromStringConverter = getRegistryBasedFromStringConverter(registry);
     }
 
     public BlackWhiteList(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList,
@@ -121,14 +111,22 @@ public class BlackWhiteList<TYPE>
         return new BlackWhiteList<>(this.type, this.blackList.copy(), this.whiteList.copy(), this.getToStringConverter(), this.getFromStringConverter());
     }
 
-    public static <TYPE> BlackWhiteList<TYPE> of(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList)
+    public static <TYPE> BlackWhiteList<TYPE> of(ListType type,
+                                                 ValueListConfig<TYPE> blackList,
+                                                 ValueListConfig<TYPE> whiteList)
     {
         return new BlackWhiteList<>(type, blackList, whiteList);
     }
 
-    public static <TYPE> BlackWhiteList<TYPE> of(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList, RegistryNamespaced<ResourceLocation, TYPE> registry)
+    public static <TYPE> BlackWhiteList<TYPE> of(ListType type,
+                                                 ValueListConfig<TYPE> blackList,
+                                                 ValueListConfig<TYPE> whiteList,
+                                                 Function<Identifier, TYPE> toValueLookup,
+                                                 Function<TYPE, ResourceLocation> toIdLookup)
     {
-        return new BlackWhiteList<>(type, blackList, whiteList, registry);
+        return new BlackWhiteList<>(type, blackList, whiteList,
+                                    getRegistryBasedToStringConverter(toIdLookup),
+                                    getRegistryBasedFromStringConverter(toValueLookup));
     }
 
     public static BlackWhiteList<Item> items(ListType type, ImmutableList<Item> blackList, ImmutableList<Item> whiteList)
@@ -157,7 +155,8 @@ public class BlackWhiteList<TYPE>
         return BlackWhiteList.of(type,
                                  StatusEffectListConfig.create("malilib.label.list_type.blacklist", blackList),
                                  StatusEffectListConfig.create("malilib.label.list_type.whitelist", whiteList),
-                                 Potion.REGISTRY);
+                                 Potion.REGISTRY::getObject,
+                                 Potion.REGISTRY::getNameForObject);
     }
 
     @Override
@@ -183,23 +182,22 @@ public class BlackWhiteList<TYPE>
         return result;
     }
 
-    public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(RegistryNamespaced<ResourceLocation, TYPE> registry)
+    public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(Function<TYPE, ResourceLocation> lookup)
     {
         return (t) -> {
-            ResourceLocation id = registry.getNameForObject(t);
+            ResourceLocation id = lookup.apply(t);
             return id != null ? id.toString() : "<N/A>";
         };
     }
 
-    public static <TYPE> Function<String, TYPE> getRegistryBasedFromStringConverter(RegistryNamespaced<ResourceLocation, TYPE> registry)
+    public static <TYPE> Function<String, TYPE> getRegistryBasedFromStringConverter(Function<Identifier, TYPE> lookup)
     {
         return (str) -> {
             try
             {
-                ResourceLocation id = new ResourceLocation(str);
-                return registry.getObject(id);
+                return lookup.apply(new Identifier(str));
             }
-            catch (Exception e)
+            catch (Exception ignore)
             {
                 return null;
             }

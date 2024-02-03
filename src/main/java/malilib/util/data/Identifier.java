@@ -9,6 +9,11 @@ import net.minecraft.util.ResourceLocation;
  */
 public class Identifier extends ResourceLocation
 {
+    public Identifier(ResourceLocation resourceLocation)
+    {
+        this(resourceLocation.getNamespace(), resourceLocation.getPath());
+    }
+
     public Identifier(String resourceName)
     {
         super(resourceName);

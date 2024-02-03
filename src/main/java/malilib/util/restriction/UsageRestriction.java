@@ -57,7 +57,7 @@ public class UsageRestriction<TYPE>
      * Sets both the black- and whitelist contents based on the provided names, replacing any old values.
      * @param list
      */
-    public void setListContents(BlackWhiteList<TYPE> list)
+    public <T extends TYPE> void setListContents(BlackWhiteList<T> list)
     {
         this.type = list.getListType();
         this.setValuesForList(this.getListForType(ListType.BLACKLIST), list.getBlackList().getValue());
@@ -69,7 +69,7 @@ public class UsageRestriction<TYPE>
      * @param set
      * @param values
      */
-    protected void setValuesForList(Set<TYPE> set, List<TYPE> values)
+    protected <T extends TYPE> void setValuesForList(Set<TYPE> set, List<T> values)
     {
         set.clear();
 
