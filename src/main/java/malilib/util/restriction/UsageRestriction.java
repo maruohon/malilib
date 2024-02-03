@@ -6,13 +6,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.RegistryNamespaced;
-
-import malilib.MaLiLib;
 import malilib.config.value.BaseOptionListConfigValue;
 import malilib.config.value.BlackWhiteList;
-import malilib.util.StringUtils;
 
 public class UsageRestriction<TYPE>
 {
@@ -78,60 +73,6 @@ public class UsageRestriction<TYPE>
             if (value != null && this.valueValidator.test(value))
             {
                 set.add(value);
-            }
-        }
-    }
-
-    /**
-     * Sets both the black- and whitelist contents based on the provided names, replacing any old values,
-     * using the provided registry to fetch the values.
-     * @param type
-     * @param blackList
-     * @param whiteList
-     * @param registry
-     * @param errorTranslationKey
-     */
-    public void setValuesBasedOnRegistry(ListType type, List<String> blackList, List<String> whiteList,
-                                         RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
-    {
-        this.type = type;
-        this.setValuesForListBasedOnRegistry(ListType.BLACKLIST, blackList, registry, errorTranslationKey);
-        this.setValuesForListBasedOnRegistry(ListType.WHITELIST, whiteList, registry, errorTranslationKey);
-    }
-
-    /**
-     * Clears the old values for the given  {@link ListType} and then populates them from the provided list of names
-     * fetching the values from the provided Registry
-     * @param type
-     * @param names
-     * @param registry
-     * @param errorTranslationKey
-     */
-    protected void setValuesForListBasedOnRegistry(ListType type, List<String> names,
-                                                   RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
-    {
-        Set<TYPE> set = this.getListForType(type);
-        set.clear();
-
-        for (String name : names)
-        {
-            try
-            {
-                ResourceLocation key = new ResourceLocation(name);
-                TYPE value = registry.getObject(key);
-
-                if (value != null && this.valueValidator.test(value))
-                {
-                    set.add(value);
-                }
-                else
-                {
-                    MaLiLib.LOGGER.warn(StringUtils.translate(errorTranslationKey, name));
-                }
-            }
-            catch (Exception e)
-            {
-                MaLiLib.LOGGER.warn(StringUtils.translate(errorTranslationKey, name));
             }
         }
     }
