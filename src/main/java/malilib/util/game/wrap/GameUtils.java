@@ -17,6 +17,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -97,14 +99,37 @@ public class GameUtils
         return getClient().gameSettings;
     }
 
-    public static void sendCommand(String command)
+    public static void printToChat(String msg)
+    {
+        getClient().ingameGUI.addChatMessage(ChatType.CHAT, new TextComponentString(msg));
+    }
+
+    public static void showHotbarMessage(String msg)
+    {
+        getClient().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentString(msg));
+    }
+
+    public static boolean sendChatMessage(String command)
     {
         EntityPlayerSP player = getClientPlayer();
 
         if (player != null)
         {
             player.sendChatMessage(command);
+            return true;
         }
+
+        return false;
+    }
+
+    public static boolean sendCommand(String command)
+    {
+        if (command.startsWith("/") == false)
+        {
+            command = "/" + command;
+        }
+
+        return sendChatMessage(command);
     }
 
     /**

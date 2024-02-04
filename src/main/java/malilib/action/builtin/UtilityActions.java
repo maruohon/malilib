@@ -39,14 +39,8 @@ public class UtilityActions
 {
     public static ActionResult runVanillaCommand(ActionContext ctx, String arg)
     {
-        if (arg.length() > 0 && arg.charAt(0) != '/')
+        if (GameUtils.sendCommand(arg))
         {
-            arg = '/' + arg;
-        }
-
-        if (ctx.getPlayer() != null)
-        {
-            ctx.getPlayer().sendChatMessage(arg);
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -54,9 +48,8 @@ public class UtilityActions
 
     public static ActionResult sendChatMessage(ActionContext ctx, String arg)
     {
-        if (ctx.getPlayer() != null)
+        if (GameUtils.sendChatMessage(arg))
         {
-            ctx.getPlayer().sendChatMessage(arg);
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -285,7 +278,7 @@ public class UtilityActions
                 }
 
                 GameType mode = modes.get(index);
-                ctx.getPlayer().sendChatMessage("/gamemode " + mode.getName());
+                GameUtils.sendChatMessage("/gamemode " + mode.getName());
 
                 return ActionResult.SUCCESS;
             }
