@@ -4,14 +4,13 @@ import java.nio.ByteBuffer;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 
-import malilib.render.RenderUtils;
+import malilib.util.game.wrap.RenderWrap;
 
 public class VanillaWrappingVertexBuilder implements VertexBuilder
 {
@@ -93,18 +92,18 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
         {
             if (this.hasTexture)
             {
-                GlStateManager.enableTexture2D();
+                RenderWrap.enableTexture2D();
             }
             else
             {
-                GlStateManager.disableTexture2D();
+                RenderWrap.disableTexture2D();
             }
 
-            RenderUtils.setupBlend();
+            RenderWrap.setupBlendSeparate();
             this.buffer.finishDrawing();
             VBO_UPLOADER.draw(this.buffer);
 
-            GlStateManager.enableTexture2D();
+            RenderWrap.enableTexture2D();
         }
 
         this.started = false;

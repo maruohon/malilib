@@ -12,7 +12,6 @@ import malilib.gui.util.ScreenContext;
 import malilib.input.CancelCondition;
 import malilib.input.KeyBind;
 import malilib.input.KeyBindSettings;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
@@ -59,7 +58,6 @@ public class KeybindSettingsWidget extends InteractableWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(TEXTURE);
 
         KeyBindSettings settings = this.keyBind.getSettings();

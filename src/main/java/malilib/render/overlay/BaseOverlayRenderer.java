@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
@@ -12,6 +11,7 @@ import net.minecraft.entity.Entity;
 import malilib.listener.EventListener;
 import malilib.util.data.ModInfo;
 import malilib.util.data.json.JsonUtils;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.BlockPos;
 import malilib.util.position.Vec3d;
 
@@ -102,12 +102,12 @@ public abstract class BaseOverlayRenderer
 
     protected void preRender()
     {
-        GlStateManager.glLineWidth(this.lineWidth);
+        RenderWrap.lineWidth(this.lineWidth);
 
         if (this.disableDepthTest)
         {
-            GlStateManager.disableDepth();
-            //GlStateManager.depthMask(false);
+            RenderWrap.disableDepthTest();
+            //RenderWrap.depthMask(false);
         }
     }
 
@@ -115,8 +115,8 @@ public abstract class BaseOverlayRenderer
     {
         if (this.disableDepthTest)
         {
-            GlStateManager.enableDepth();
-            //GlStateManager.depthMask(true);
+            RenderWrap.enableDepthTest();
+            //RenderWrap.depthMask(true);
         }
     }
 

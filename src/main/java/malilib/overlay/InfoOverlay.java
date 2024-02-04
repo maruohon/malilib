@@ -20,8 +20,8 @@ import malilib.overlay.widget.InfoRendererWidget;
 import malilib.overlay.widget.StringListRendererWidget;
 import malilib.registry.Registry;
 import malilib.render.RenderContext;
-import malilib.render.RenderUtils;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.RenderWrap;
 
 public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer, ClientTickHandler
 {
@@ -184,7 +184,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     {
         boolean isScreenOpen = GuiUtils.isScreenOpen();
         boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
-        RenderUtils.disableItemLighting();
+        RenderWrap.disableItemLighting();
 
         if (debug)
         {

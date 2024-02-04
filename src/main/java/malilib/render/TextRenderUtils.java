@@ -5,8 +5,6 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
 
 import malilib.gui.util.GuiUtils;
@@ -17,6 +15,7 @@ import malilib.render.text.StyledTextLine;
 import malilib.render.text.TextRenderer;
 import malilib.util.game.wrap.EntityWrap;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec2i;
 
 public class TextRenderUtils
@@ -90,10 +89,10 @@ public class TextRenderUtils
             int textStartX = startPos.x + 4;
             int textStartY = startPos.y + 4;
 
-            GlStateManager.disableRescaleNormal();
-            RenderUtils.disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
+            RenderWrap.disableRescaleNormal();
+            RenderWrap.disableItemLighting();
+            RenderWrap.disableLighting();
+            RenderWrap.disableDepthTest();
 
             backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight, ctx);
             textRenderer.startBuffers();
@@ -105,10 +104,10 @@ public class TextRenderUtils
             }
 
             textRenderer.renderBuffers();
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
+            RenderWrap.enableLighting();
+            RenderWrap.enableDepthTest();
+            RenderWrap.enableItemLighting();
+            RenderWrap.enableRescaleNormal();
         }
     }
 
@@ -151,13 +150,13 @@ public class TextRenderUtils
         ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yt3, z, borderColor1, borderColor1, builder);
         ShapeRenderUtils.renderGradientRectangle(xl2, yb1, xr2, yb2, z, borderColor2, borderColor2, builder);
 
-        GlStateManager.disableAlpha();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderWrap.disableAlpha();
+        RenderWrap.shadeModel(GL11.GL_SMOOTH);
 
         builder.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.enableAlpha();
+        RenderWrap.shadeModel(GL11.GL_FLAT);
+        RenderWrap.enableAlpha();
     }
 
     /**
@@ -184,19 +183,19 @@ public class TextRenderUtils
     {
         FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
 
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
-        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
+        RenderWrap.alphaFunc(GL11.GL_GREATER, 0.1F);
+        RenderWrap.pushMatrix(ctx);
+        RenderWrap.translate(x, y, z, ctx);
+        RenderWrap.normal(0.0F, 1.0F, 0.0F);
 
-        GlStateManager.rotate(-yaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(pitch, 1.0F, 0.0F, 0.0F);
+        RenderWrap.rotate(-yaw, 0.0F, 1.0F, 0.0F, ctx);
+        RenderWrap.rotate(pitch, 1.0F, 0.0F, 0.0F, ctx);
 
-        GlStateManager.scale(-scale, -scale, scale);
-        GlStateManager.disableLighting();
-        GlStateManager.disableCull();
+        RenderWrap.scale(-scale, -scale, scale, ctx);
+        RenderWrap.disableLighting();
+        RenderWrap.disableCull();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderWrap.color(1f, 1f, 1f, 1f);
 
         int maxLineLen = 0;
 
@@ -214,8 +213,8 @@ public class TextRenderUtils
 
         if (disableDepth)
         {
-            GlStateManager.depthMask(false);
-            GlStateManager.disableDepth();
+            RenderWrap.depthMask(false);
+            RenderWrap.disableDepthTest();
         }
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.coloredQuads();
@@ -225,32 +224,32 @@ public class TextRenderUtils
         builder.posColor( strLenHalf    ,          -1, 0.0, bgr, bgg, bgb, bga);
         builder.draw();
 
-        GlStateManager.enableTexture2D();
+        RenderWrap.enableTexture2D();
         int textY = 0;
 
         // translate the text a bit infront of the background
         if (disableDepth == false)
         {
-            GlStateManager.enablePolygonOffset();
-            GlStateManager.doPolygonOffset(-0.6f, -1.2f);
-            //GlStateManager.translate(0, 0, -0.02);
+            RenderWrap.enablePolygonOffset();
+            RenderWrap.polygonOffset(-0.6f, -1.2f);
+            //RenderWrap.translate(0, 0, -0.02);
 
-            GlStateManager.enableDepth();
-            GlStateManager.depthMask(true);
+            RenderWrap.enableDepthTest();
+            RenderWrap.depthMask(true);
         }
 
         for (String line : text)
         {
             if (disableDepth)
             {
-                GlStateManager.depthMask(false);
-                GlStateManager.disableDepth();
+                RenderWrap.depthMask(false);
+                RenderWrap.disableDepthTest();
 
                 // Render the faint version that will also show through blocks
                 textRenderer.drawString(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
 
-                GlStateManager.enableDepth();
-                GlStateManager.depthMask(true);
+                RenderWrap.enableDepthTest();
+                RenderWrap.depthMask(true);
             }
 
             // Render the actual fully opaque text, that will not show through blocks
@@ -260,13 +259,13 @@ public class TextRenderUtils
 
         if (disableDepth == false)
         {
-            GlStateManager.doPolygonOffset(0f, 0f);
-            GlStateManager.disablePolygonOffset();
+            RenderWrap.polygonOffset(0f, 0f);
+            RenderWrap.disablePolygonOffset();
         }
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        GlStateManager.enableCull();
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        RenderWrap.color(1f, 1f, 1f, 1f);
+        RenderWrap.enableCull();
+        RenderWrap.disableBlend();
+        RenderWrap.popMatrix(ctx);
     }
 }

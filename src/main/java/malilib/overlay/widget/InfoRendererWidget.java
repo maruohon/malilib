@@ -9,8 +9,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
-import net.minecraft.client.renderer.GlStateManager;
-
 import malilib.MaLiLibConfigs;
 import malilib.config.value.ScreenLocation;
 import malilib.gui.util.BackgroundRenderer;
@@ -24,12 +22,12 @@ import malilib.overlay.InfoOverlay;
 import malilib.overlay.InfoOverlay.OverlayRenderContext;
 import malilib.overlay.InfoWidgetRegistry.InfoWidgetFactory;
 import malilib.registry.Registry;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.text.MultiLineTextRenderSettings;
 import malilib.render.text.StyledTextLine;
 import malilib.util.data.EdgeInt;
 import malilib.util.data.json.JsonUtils;
+import malilib.util.game.wrap.RenderWrap;
 
 public abstract class InfoRendererWidget extends BaseOverlayWidget
 {
@@ -301,16 +299,15 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
             return;
         }
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.setupBlend();
+        RenderWrap.setupBlendSeparate();
 
         boolean scaled = this.scale != 1.0;
 
         if (scaled)
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(x, y, z);
-            GlStateManager.scale(this.scale, this.scale, 1);
+            RenderWrap.pushMatrix(ctx);
+            RenderWrap.translate(x, y, z, ctx);
+            RenderWrap.scale(this.scale, this.scale, 1, ctx);
 
             x = 0;
             y = 0;
@@ -333,7 +330,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
 
         if (scaled)
         {
-            GlStateManager.popMatrix();
+            RenderWrap.popMatrix(ctx);
         }
     }
 

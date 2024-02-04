@@ -12,15 +12,12 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 
 import malilib.render.RenderContext;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
@@ -28,6 +25,7 @@ import malilib.util.data.Color4f;
 import malilib.util.data.FloatUnaryOperator;
 import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.RenderWrap;
 
 public class TextRenderer implements IResourceManagerReloadListener
 {
@@ -39,13 +37,11 @@ public class TextRenderer implements IResourceManagerReloadListener
     protected static final Identifier[] UNICODE_PAGE_LOCATIONS = new Identifier[256];
 
     // This needs to be below the other static fields, because the resource manager reload will access the  other fields!
-    public static final TextRenderer INSTANCE = new TextRenderer(GameUtils.getClient().getTextureManager(),
-                                                                 ASCII_TEXTURE, false, false);
+    public static final TextRenderer INSTANCE = new TextRenderer(ASCII_TEXTURE, false, false);
 
     protected final Random rand = new Random();
     protected final VertexBuilder textBuffer = VanillaWrappingVertexBuilder.create(32768, GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
     protected final VertexBuilder styleBuffer = VanillaWrappingVertexBuilder.create(8192, GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-    protected final TextureManager textureManager;
     protected final Identifier asciiTexture;
 
     protected final Char2ObjectOpenHashMap<Glyph> glyphs = new Char2ObjectOpenHashMap<>();
@@ -62,9 +58,8 @@ public class TextRenderer implements IResourceManagerReloadListener
     protected int asciiGlyphWidth = 8;
     protected int asciiGlyphHeight = 8;
 
-    public TextRenderer(TextureManager textureManager, Identifier asciiTexture, boolean unicode, boolean anaglyph)
+    public TextRenderer(Identifier asciiTexture, boolean unicode, boolean anaglyph)
     {
-        this.textureManager = textureManager;
         this.asciiTexture = asciiTexture;
         this.unicode = unicode;
         this.anaglyph = anaglyph;
@@ -288,14 +283,14 @@ public class TextRenderer implements IResourceManagerReloadListener
         this.renderTextBuffer();
         this.renderStyleBuffer();
 
-        GlStateManager.enableTexture2D();
+        RenderWrap.enableTexture2D();
     }
 
     protected void renderTextBuffer()
     {
         if (this.currentFontTexture != null)
         {
-            this.textureManager.bindTexture(this.currentFontTexture);
+            RenderWrap.bindTexture(this.currentFontTexture);
             this.textBuffer.draw();
         }
 
@@ -366,8 +361,8 @@ public class TextRenderer implements IResourceManagerReloadListener
         {
             int segmentX = x;
             Color4f defaultColor4f = Color4f.fromColor(defaultColor);
-            RenderUtils.color(1f, 1f, 1f, 1f);
-            RenderUtils.setupBlend();
+            RenderWrap.color(1f, 1f, 1f, 1f);
+            RenderWrap.setupBlendSeparate();
 
             for (StyledTextSegment segment : line.segments)
             {

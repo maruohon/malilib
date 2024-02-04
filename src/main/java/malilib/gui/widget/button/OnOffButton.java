@@ -8,11 +8,11 @@ import malilib.gui.icon.Icon;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.IconWidget;
 import malilib.listener.EventListener;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.StringUtils;
+import malilib.util.game.wrap.RenderWrap;
 
 public class OnOffButton extends GenericButton
 {
@@ -162,7 +162,7 @@ public class OnOffButton extends GenericButton
         int v1 = icon.getVariantV(variantIndex);
         int v2 = v1 + icon.getHeight() - iconHeight2;
 
-        RenderUtils.bindTexture(icon.getTexture());
+        RenderWrap.bindTexture(icon.getTexture());
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
         ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1, builder);
         ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2, builder);

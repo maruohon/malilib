@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
@@ -17,6 +16,7 @@ import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Direction;
 import malilib.util.position.PositionUtils;
 import malilib.util.position.Vec3d;
@@ -33,52 +33,51 @@ public class ModelRenderUtils
             return;
         }
 
-        GlStateManager.pushMatrix();
+        RenderWrap.pushMatrix(ctx);
 
-        RenderUtils.bindTexture(BLOCK_TEXTURE);
+        RenderWrap.bindTexture(BLOCK_TEXTURE);
+        RenderWrap.enableRescaleNormal();
+        RenderWrap.enableAlpha();
+        RenderWrap.alphaFunc(GL11.GL_GREATER, 0.01F);
+        RenderWrap.setupBlendSimple();
+        RenderWrap.color(1f, 1f, 1f, 1f);
 
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.enableAlpha();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
-        RenderUtils.setupBlendSimple();
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
-        setupGuiTransform(x, y, model.isGui3d(), zLevel);
+        setupGuiTransform(x, y, model.isGui3d(), zLevel, ctx);
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
-        GlStateManager.rotate( 30, 1, 0, 0);
-        GlStateManager.rotate(225, 0, 1, 0);
-        GlStateManager.scale(0.625, 0.625, 0.625);
+        RenderWrap.rotate( 30, 1, 0, 0, ctx);
+        RenderWrap.rotate(225, 0, 1, 0, ctx);
+        RenderWrap.scale(0.625, 0.625, 0.625, ctx);
 
         renderModel(model, state, zLevel, ctx);
 
-        GlStateManager.disableAlpha();
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.disableLighting();
+        RenderWrap.disableAlpha();
+        RenderWrap.disableRescaleNormal();
+        RenderWrap.disableLighting();
 
-        GlStateManager.popMatrix();
+        RenderWrap.popMatrix(ctx);
     }
 
-    public static void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float zLevel)
+    public static void setupGuiTransform(int x, int y, boolean isGui3d, float zLevel, RenderContext ctx)
     {
-        GlStateManager.translate(xPosition, yPosition, 100.0F + zLevel);
-        GlStateManager.translate(8.0F, 8.0F, 0.0F);
-        GlStateManager.scale(1.0F, -1.0F, 1.0F);
-        GlStateManager.scale(16.0F, 16.0F, 16.0F);
+        RenderWrap.translate(x + 8.0F, y + 8.0F, 100.0F + zLevel, ctx);
+        //RenderWrap.translate(8.0F, 8.0F, 0.0F, ctx);
+        RenderWrap.scale(1.0F, -1.0F, 1.0F, ctx);
+        RenderWrap.scale(16.0F, 16.0F, 16.0F, ctx);
 
         if (isGui3d)
         {
-            GlStateManager.enableLighting();
+            RenderWrap.enableLighting();
         }
         else
         {
-            GlStateManager.disableLighting();
+            RenderWrap.disableLighting();
         }
     }
 
     public static void renderModel(IBakedModel model, IBlockState state, float zLevel, RenderContext ctx)
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(-0.5F, -0.5F, zLevel);
+        RenderWrap.pushMatrix(ctx);
+        RenderWrap.translate(-0.5F, -0.5F, zLevel, ctx);
         int color = 0xFFFFFFFF;
 
         if (model.isBuiltInRenderer() == false)
@@ -95,7 +94,7 @@ public class ModelRenderUtils
             builder.draw();
         }
 
-        GlStateManager.popMatrix();
+        RenderWrap.popMatrix(ctx);
     }
 
     public static void renderQuads(List<BakedQuad> quads, IBlockState state, int color, VertexBuilder builder)

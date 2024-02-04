@@ -10,7 +10,6 @@ import malilib.gui.icon.Icon;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.list.SelectionListener;
-import malilib.render.RenderUtils;
 import malilib.render.text.StyledTextLine;
 
 public class RadioButtonWidget<T> extends InteractableWidget
@@ -137,8 +136,6 @@ public class RadioButtonWidget<T> extends InteractableWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
         final boolean hovered = this.isHoveredForRender(ctx);
         final int count = Math.min(this.options.size(), this.displayStrings.size());
         final int width = this.getWidth();

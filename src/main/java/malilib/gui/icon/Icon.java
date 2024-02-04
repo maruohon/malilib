@@ -3,11 +3,11 @@ package malilib.gui.icon;
 import com.google.gson.JsonObject;
 
 import malilib.render.RenderContext;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
+import malilib.util.game.wrap.RenderWrap;
 
 public interface Icon
 {
@@ -122,9 +122,9 @@ public interface Icon
         float pw = this.getTexturePixelWidth();
         float ph = this.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.bindTexture(this.getTexture());
-        RenderUtils.setupBlend();
+        RenderWrap.color(1f, 1f, 1f, 1f);
+        RenderWrap.setupBlendSeparate();
+        RenderWrap.bindTexture(this.getTexture());
 
         ShapeRenderUtils.renderScaledTexturedRectangle(x, y, z, u, v, renderWidth, renderHeight,
                                                        width, height, pw, ph, ctx);
@@ -148,9 +148,9 @@ public interface Icon
         float pw = this.getTexturePixelWidth();
         float ph = this.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.bindTexture(this.getTexture());
-        RenderUtils.setupBlend();
+        RenderWrap.color(1f, 1f, 1f, 1f);
+        RenderWrap.setupBlendSeparate();
+        RenderWrap.bindTexture(this.getTexture());
 
         ShapeRenderUtils.renderScaledTintedTexturedRectangle(x, y, z, u, v, width, height,
                                                              width, height, pw, ph, backgroundTintColor, ctx);
@@ -189,8 +189,8 @@ public interface Icon
         float pw = this.getTexturePixelWidth();
         float ph = this.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.bindTexture(this.getTexture());
+        RenderWrap.color(1f, 1f, 1f, 1f);
+        RenderWrap.bindTexture(this.getTexture());
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
         ShapeRenderUtils.renderTexturedRectangle(x, y     , z, u, v      , w1, h1, pw, ph, builder); // top left

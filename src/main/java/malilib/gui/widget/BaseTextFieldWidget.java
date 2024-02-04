@@ -20,7 +20,6 @@ import malilib.gui.widget.util.TextFieldValidator;
 import malilib.input.Keys;
 import malilib.overlay.message.Message;
 import malilib.overlay.widget.MessageRendererWidget;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
@@ -1136,8 +1135,6 @@ public class BaseTextFieldWidget extends ContainerWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
         super.renderAt(x, y, z, ctx);
 
         int textX = x + this.getTextStartRelativeX();

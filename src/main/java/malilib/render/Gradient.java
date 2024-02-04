@@ -1,7 +1,6 @@
 package malilib.render;
 
-import net.minecraft.client.renderer.BufferBuilder;
-
+import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 
 public class Gradient
@@ -19,8 +18,9 @@ public class Gradient
         this.bottomRight = bottomRight;
     }
 
-    public void putColorForPosition(float x, float y, float totalWidth, float totalHeight, BufferBuilder buffer)
+    public void putColorForPosition(float x, float y, float totalWidth, float totalHeight, VertexBuilder buffer)
     {
+        /*
         float relativeX = x / totalWidth;
         float relativeY = y / totalHeight;
 
@@ -38,5 +38,6 @@ public class Gradient
         float a = aLeft + relativeX * (aRight - aLeft);
 
         buffer.color(r, g, b, a);
+        */
     }
 }

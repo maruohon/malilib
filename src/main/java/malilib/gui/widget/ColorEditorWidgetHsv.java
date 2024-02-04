@@ -8,8 +8,6 @@ import com.google.common.collect.ImmutableList;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import net.minecraft.client.renderer.GlStateManager;
-
 import malilib.gui.callback.FloatSliderCallback;
 import malilib.gui.callback.IntegerSliderCallback;
 import malilib.gui.util.ScreenContext;
@@ -23,11 +21,12 @@ import malilib.util.data.FloatStorage;
 import malilib.util.data.FloatSupplier;
 import malilib.util.data.WrapperFloatStorage;
 import malilib.util.data.WrapperIntStorage;
+import malilib.util.game.wrap.RenderWrap;
+import malilib.util.game.wrap.RenderWrap.BlendDestFactor;
+import malilib.util.game.wrap.RenderWrap.BlendSourceFactor;
 
 public class ColorEditorWidgetHsv extends ContainerWidget
 {
-    protected static final ShaderProgram SHADER_HUE = new ShaderProgram("malilib", null, "shaders/sv_selector.frag");
-
     protected final IntConsumer colorConsumer;
     protected final int colorIn;
     protected final IntegerEditWidget editH;
@@ -422,17 +421,17 @@ public class ColorEditorWidgetHsv extends ContainerWidget
             builder.posUv(x + w, y + h, z, 0.0F, 1.0F);
             builder.posUv(x + w, y    , z, 1.0F, 1.0F);
 
-            GlStateManager.enableBlend();
-            GlStateManager.disableTexture2D();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                                                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                                                GlStateManager.SourceFactor.ONE,
-                                                GlStateManager.DestFactor.ZERO);
+            RenderWrap.enableBlend();
+            RenderWrap.disableTexture2D();
+            RenderWrap.tryBlendFuncSeparate(BlendSourceFactor.SRC_ALPHA,
+                                            BlendDestFactor.ONE_MINUS_SRC_ALPHA,
+                                            BlendSourceFactor.ONE,
+                                            BlendDestFactor.ZERO);
 
-            GlStateManager.disableRescaleNormal();
-            GlStateManager.disableAlpha();
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
+            RenderWrap.disableRescaleNormal();
+            RenderWrap.disableAlpha();
+            RenderWrap.shadeModel(GL11.GL_SMOOTH);
+            RenderWrap.alphaFunc(GL11.GL_GREATER, 0.01F);
 
             GL20.glUseProgram(SHADER_HUE.getProgram());
             GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.hue.getAsFloat());
@@ -440,7 +439,7 @@ public class ColorEditorWidgetHsv extends ContainerWidget
             builder.draw();
 
             GL20.glUseProgram(0);
-            GlStateManager.shadeModel(GL11.GL_FLAT);
+            RenderWrap.shadeModel(GL11.GL_FLAT);
         }
     }
 }

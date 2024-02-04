@@ -21,7 +21,6 @@ import malilib.gui.widget.InteractableWidget;
 import malilib.gui.widget.button.GenericButton;
 import malilib.input.ActionResult;
 import malilib.input.Keys;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
@@ -30,6 +29,7 @@ import malilib.render.text.TextStyle;
 import malilib.util.StringUtils;
 import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec2i;
 
 public abstract class BaseScreen extends GuiScreen
@@ -488,8 +488,8 @@ public abstract class BaseScreen extends GuiScreen
             this.getParent().drawScreen(mouseX, mouseY, partialTicks);
         }
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.setupBlend();
+        RenderWrap.color(1f, 1f, 1f, 1f);
+        RenderWrap.setupBlendSeparate();
 
         // These are after the parent rendering, because the parent
         // can/will also both enable and disable the custom scale,
@@ -497,7 +497,7 @@ public abstract class BaseScreen extends GuiScreen
         // rendering the parent screen.
         if (this.useCustomScreenScaling)
         {
-            RenderUtils.setupScaledScreenRendering(this.customScreenScale);
+            RenderWrap.setupScaledScreenRendering(this.customScreenScale);
         }
 
         ScreenContext ctx = this.getContext();
@@ -522,7 +522,7 @@ public abstract class BaseScreen extends GuiScreen
 
         if (this.useCustomScreenScaling)
         {
-            RenderUtils.setupScaledScreenRendering(GuiUtils.getVanillaScreenScale());
+            RenderWrap.setupScaledScreenRendering(GuiUtils.getVanillaScreenScale());
         }
     }
 
@@ -862,7 +862,7 @@ public abstract class BaseScreen extends GuiScreen
 
     public void bindTexture(Identifier texture)
     {
-        RenderUtils.bindTexture(texture);
+        RenderWrap.bindTexture(texture);
     }
 
     public BaseScreen setZ(float z)
@@ -1011,7 +1011,7 @@ public abstract class BaseScreen extends GuiScreen
         if (this.hoveredWidgetForHoverInfo != null)
         {
             this.hoveredWidgetForHoverInfo.postRenderHovered(ctx);
-            RenderUtils.disableItemLighting();
+            RenderWrap.disableItemLighting();
         }
     }
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -12,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import malilib.render.text.StyledTextLine;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.game.wrap.ItemWrap;
+import malilib.util.game.wrap.RenderWrap;
 
 public class ItemRenderUtils
 {
@@ -22,16 +22,16 @@ public class ItemRenderUtils
             return;
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, 0);
+        RenderWrap.pushMatrix(ctx);
+        RenderWrap.translate(x, y, 0, ctx);
 
         if (scale != 1f)
         {
-            GlStateManager.scale(scale, scale, 1f);
+            RenderWrap.scale(scale, scale, 1f, ctx);
         }
 
-        GlStateManager.disableLighting();
-        RenderUtils.enableGuiItemLighting();
+        RenderWrap.disableLighting();
+        RenderWrap.enableGuiItemLighting(ctx);
 
         Minecraft mc = GameUtils.getClient();
         RenderItem itemRenderer = mc.getRenderItem();
@@ -48,9 +48,9 @@ public class ItemRenderUtils
         itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
         itemRenderer.zLevel = oldZ;
 
-        //GlStateManager.disableBlend();
-        RenderUtils.disableItemLighting();
-        GlStateManager.popMatrix();
+        //RenderWrap.disableBlend();
+        RenderWrap.disableItemLighting();
+        RenderWrap.popMatrix(ctx);
     }
 
     public static void renderStackToolTip(int x, int y, float zLevel, ItemStack stack, RenderContext ctx)

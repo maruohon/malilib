@@ -1,10 +1,7 @@
 package malilib.render;
 
 import java.util.List;
-import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
@@ -17,67 +14,12 @@ import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec2i;
 
 public class RenderUtils
 {
-    public static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
-
-    public static void setupBlend()
-    {
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-    }
-
-    public static void setupBlendSimple()
-    {
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-    }
-
-    public static void bindTexture(Identifier texture)
-    {
-        GameUtils.getClient().getTextureManager().bindTexture(texture);
-    }
-
-    public static void color(float r, float g, float b, float a)
-    {
-        GlStateManager.color(r, g, b, a);
-    }
-
-    public static void disableItemLighting()
-    {
-        RenderHelper.disableStandardItemLighting();
-    }
-
-    public static void enableItemLighting()
-    {
-        RenderHelper.enableStandardItemLighting();
-    }
-
-    public static void enableGuiItemLighting()
-    {
-        RenderHelper.enableGUIStandardItemLighting();
-    }
-
-    public static void setupScaledScreenRendering(double scaleFactor)
-    {
-        double width = GuiUtils.getDisplayWidth() / scaleFactor;
-        double height = GuiUtils.getDisplayHeight() / scaleFactor;
-
-        setupScaledScreenRendering(width, height);
-    }
-
-    public static void setupScaledScreenRendering(double width, double height)
-    {
-        GlStateManager.clear(256);
-        GlStateManager.matrixMode(GL11.GL_PROJECTION);
-        GlStateManager.loadIdentity();
-        GlStateManager.ortho(0.0D, width, height, 0.0D, 1000.0D, 3000.0D);
-        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-        GlStateManager.loadIdentity();
-        GlStateManager.translate(0.0F, 0.0F, -2000.0F);
-    }
+    public static final Identifier MAP_BACKGROUND_TEXTURE = new Identifier("textures/map/map_background.png");
 
     /**
      * Renders the given list of icons at their relative positions.
@@ -117,8 +59,8 @@ public class RenderUtils
         int u = icon.getVariantU(variantIndex);
         int v = icon.getVariantV(variantIndex);
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.bindTexture(icon.getTexture());
+        RenderWrap.color(1f, 1f, 1f, 1f);
+        RenderWrap.bindTexture(icon.getTexture());
 
         renderNineSplicedTexture(x, y, z, u, v, width, height, textureWidth, textureHeight, edgeThickness, ctx);
     }
@@ -222,9 +164,9 @@ public class RenderUtils
     {
         if (stack.getItem() instanceof ItemMap)
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.disableLighting();
-            color(1f, 1f, 1f, 1f);
+            RenderWrap.pushMatrix(ctx);
+            RenderWrap.disableLighting();
+            RenderWrap.color(1f, 1f, 1f, 1f);
 
             int screenWidth = GuiUtils.getScaledWindowWidth();
             int screenHeight = GuiUtils.getScaledWindowHeight();
@@ -244,7 +186,7 @@ public class RenderUtils
             int x2 = x1 + dimensions;
             int y2 = y1 + dimensions;
 
-            bindTexture(RenderUtils.TEXTURE_MAP_BACKGROUND);
+            RenderWrap.bindTexture(MAP_BACKGROUND_TEXTURE);
 
             VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
 
@@ -262,15 +204,14 @@ public class RenderUtils
                 x1 += 8;
                 y1 += 8;
                 double scale = (double) (dimensions - 16) / 128.0;
-                GlStateManager.translate(x1, y1, z + 1f);
-                GlStateManager.scale(scale, scale, 0);
+                RenderWrap.translate(x1, y1, z + 1f, ctx);
+                RenderWrap.scale(scale, scale, 0, ctx);
                 GameUtils.getClient().entityRenderer.getMapItemRenderer().renderMap(mapdata, false);
             }
 
-            GlStateManager.enableLighting();
-            GlStateManager.popMatrix();
-
-            color(1f, 1f, 1f, 1f);
+            RenderWrap.enableLighting();
+            RenderWrap.popMatrix(ctx);
+            RenderWrap.color(1f, 1f, 1f, 1f);
         }
     }
 }

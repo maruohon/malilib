@@ -13,7 +13,6 @@ import net.minecraft.block.BlockFurnace;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -49,7 +48,6 @@ import malilib.gui.util.GuiUtils;
 import malilib.mixin.access.AbstractHorseMixin;
 import malilib.render.ItemRenderUtils;
 import malilib.render.RenderContext;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
@@ -58,6 +56,7 @@ import malilib.util.game.RayTraceUtils;
 import malilib.util.game.WorldUtils;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.game.wrap.ItemWrap;
+import malilib.util.game.wrap.RenderWrap;
 import malilib.util.inventory.ColoredVanillaInventoryView;
 import malilib.util.inventory.CombinedInventoryView;
 import malilib.util.inventory.EquipmentInventoryView;
@@ -80,9 +79,9 @@ public class InventoryRenderUtils
     {
         final int invSize = inv.getSize();
 
-        RenderUtils.enableGuiItemLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.enableRescaleNormal();
+        RenderWrap.enableGuiItemLighting(ctx);
+        RenderWrap.enableDepthTest();
+        RenderWrap.enableRescaleNormal();
 
         for (int slot : customSlotPositions.keySet())
         {
@@ -162,9 +161,9 @@ public class InventoryRenderUtils
         float pw = icon.getTexturePixelWidth();
         float ph = icon.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.bindTexture(icon.getTexture());
-        RenderUtils.setupBlend();
+        RenderWrap.color(1f, 1f, 1f, 1f);
+        RenderWrap.setupBlendSeparate();
+        RenderWrap.bindTexture(icon.getTexture());
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
         // Main part (top left) with all the slots
@@ -232,10 +231,10 @@ public class InventoryRenderUtils
         float pw = icon.getTexturePixelWidth();
         float ph = icon.getTexturePixelHeight();
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.disableItemLighting();
-        RenderUtils.setupBlend();
-        RenderUtils.bindTexture(icon.getTexture());
+        RenderWrap.color(1f, 1f, 1f, 1f);
+        RenderWrap.setupBlendSeparate();
+        RenderWrap.disableItemLighting();
+        RenderWrap.bindTexture(icon.getTexture());
 
         VertexBuilder builder = VanillaWrappingVertexBuilder.texturedQuad();
 
@@ -260,7 +259,7 @@ public class InventoryRenderUtils
             pw = icon.getTexturePixelWidth();
             ph = icon.getTexturePixelHeight();
 
-            RenderUtils.bindTexture(icon.getTexture());
+            RenderWrap.bindTexture(icon.getTexture());
             ShapeRenderUtils.renderScaledTintedTexturedRectangle(x, ty, z, u, v, w, h, w, h, pw, ph, color, ctx);
         }
     }
@@ -338,9 +337,9 @@ public class InventoryRenderUtils
         x = startX;
         y += slotOffset.y;
 
-        RenderUtils.enableGuiItemLighting();
-        GlStateManager.enableDepth();
-        GlStateManager.enableRescaleNormal();
+        RenderWrap.enableGuiItemLighting(ctx);
+        RenderWrap.enableDepthTest();
+        RenderWrap.enableRescaleNormal();
 
         for (int slotOnRow = 0; slot < endSlot; ++slot)
         {

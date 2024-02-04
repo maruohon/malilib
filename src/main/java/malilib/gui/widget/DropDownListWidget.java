@@ -18,7 +18,6 @@ import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.list.SelectionListener;
 import malilib.input.Keys;
-import malilib.render.RenderUtils;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.text.SingleTextLineRenderer;
 import malilib.render.text.StyledTextLine;
@@ -751,7 +750,6 @@ public class DropDownListWidget<T> extends ContainerWidget
             int bgColor = 0xFF404040;
             int height = this.dropdownHeight;
 
-            RenderUtils.color(1f, 1f, 1f, 1f);
             ShapeRenderUtils.renderOutlinedRectangle(x, ddY, z, this.getWidth(), height, bgColor, this.borderColorOpen, ctx);
 
             this.renderSearchTip(diffX, diffY, z, ctx);
