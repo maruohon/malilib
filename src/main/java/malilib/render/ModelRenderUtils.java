@@ -12,15 +12,14 @@ import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.position.Direction;
 import malilib.util.position.PositionUtils;
+import malilib.util.position.Vec3d;
 
 public class ModelRenderUtils
 {
@@ -86,9 +85,9 @@ public class ModelRenderUtils
         {
             VertexBuilder builder = VanillaWrappingVertexBuilder.create(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 
-            for (EnumFacing enumfacing : PositionUtils.ALL_DIRECTIONS)
+            for (Direction side : PositionUtils.ALL_DIRECTIONS)
             {
-                renderQuads(model.getQuads(state, enumfacing, 0L), state, color, builder);
+                renderQuads(model.getQuads(state, side.getVanillaDirection(), 0L), state, color, builder);
             }
 
             renderQuads(model.getQuads(state, null, 0L), state, color, builder);
@@ -131,7 +130,7 @@ public class ModelRenderUtils
 
     public static void putQuadNormal(BakedQuad quad, VertexBuilder builder)
     {
-        Vec3i direction = quad.getFace().getDirectionVec();
+        net.minecraft.util.math.Vec3i direction = quad.getFace().getDirectionVec();
         builder.putNormal(direction.getX(), direction.getY(), direction.getZ());
     }
 
@@ -151,9 +150,9 @@ public class ModelRenderUtils
     public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, @Nullable IBlockState state,
                                                   float brightness, float r, float g, float b, VertexBuilder builder)
     {
-        for (EnumFacing side : PositionUtils.ALL_DIRECTIONS)
+        for (Direction side : PositionUtils.ALL_DIRECTIONS)
         {
-            renderQuads(model.getQuads(state, side, 0L), pos, brightness, r, g, b, builder);
+            renderQuads(model.getQuads(state, side.getVanillaDirection(), 0L), pos, brightness, r, g, b, builder);
         }
 
         renderQuads(model.getQuads(state, null, 0L), pos, brightness, r, g, b, builder);

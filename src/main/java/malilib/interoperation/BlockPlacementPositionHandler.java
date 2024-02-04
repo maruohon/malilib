@@ -3,7 +3,7 @@ package malilib.interoperation;
 import java.util.ArrayList;
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.BlockPos;
+import malilib.util.position.BlockPos;
 
 public class BlockPlacementPositionHandler
 {

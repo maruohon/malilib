@@ -5,13 +5,13 @@ import javax.annotation.Nullable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 import malilib.util.MathUtils;
 import malilib.util.inventory.InventoryUtils;
+import malilib.util.position.BlockPos;
+import malilib.util.position.Direction;
+import malilib.util.position.Vec3d;
 
 public class EntityWrap
 {
@@ -35,12 +35,24 @@ public class EntityWrap
 
     public static Vec3d getEntityPos(Entity entity)
     {
-        return entity.getPositionVector();
+        return new Vec3d(getX(entity), getY(entity), getZ(entity));
+    }
+
+    public static Vec3d getEntityEyePos(Entity entity)
+    {
+        return new Vec3d(getX(entity), getY(entity) + entity.getEyeHeight(), getZ(entity));
     }
 
     public static BlockPos getEntityBlockPos(Entity entity)
     {
-        return new BlockPos(entity);
+        return new BlockPos(MathUtils.floor(getX(entity)),
+                            MathUtils.floor(getY(entity)),
+                            MathUtils.floor(getZ(entity)));
+    }
+
+    public static Vec3d getScaledLookVector(Entity entity, double range)
+    {
+        return MathUtils.getRotationVector(getYaw(entity), getPitch(entity)).scale(range);
     }
 
     public static double getX(Entity entity)
@@ -111,26 +123,32 @@ public class EntityWrap
         entity.rotationPitch = pitch;
     }
 
-    public static EnumFacing getClosestHorizontalLookingDirection(Entity entity)
+    public static Direction getClosestHorizontalLookingDirection(Entity entity)
     {
-        return EnumFacing.fromAngle(EntityWrap.getYaw(entity));
+        //return Direction.fromAngle(EntityWrap.getYaw(entity));
+        return Direction.byHorizontalIndex(MathUtils.floor((EntityWrap.getYaw(entity) * 4.0F / 360.0F) + 0.5) & 3);
+    }
+
+    public static Direction getClosestLookingDirection(Entity entity)
+    {
+        return getClosestLookingDirection(entity, 60F);
     }
 
     /**
      * @param verticalThreshold The pitch rotation angle over which the up or down direction is preferred over the horizontal directions
      * @return the closest direction the entity is currently looking at.
      */
-    public static EnumFacing getClosestLookingDirection(Entity entity, float verticalThreshold)
+    public static Direction getClosestLookingDirection(Entity entity, float verticalThreshold)
     {
         float pitch = EntityWrap.getPitch(entity);
 
         if (pitch > verticalThreshold)
         {
-            return EnumFacing.DOWN;
+            return Direction.DOWN;
         }
         else if (-pitch > verticalThreshold)
         {
-            return EnumFacing.UP;
+            return Direction.UP;
         }
 
         return getClosestHorizontalLookingDirection(entity);

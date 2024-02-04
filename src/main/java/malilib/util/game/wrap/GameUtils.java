@@ -17,9 +17,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+
+import malilib.util.position.HitResult;
 
 public class GameUtils
 {
@@ -123,10 +124,9 @@ public class GameUtils
         return player != null ? player.getName() : "?";
     }
 
-    @Nullable
-    public static RayTraceResult getHitResult()
+    public static HitResult getHitResult()
     {
-        return getClient().objectMouseOver;
+        return HitResult.of(getClient().objectMouseOver);
     }
 
     public static long getCurrentWorldTick()

@@ -8,12 +8,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 import malilib.listener.EventListener;
 import malilib.util.data.ModInfo;
 import malilib.util.data.json.JsonUtils;
+import malilib.util.position.BlockPos;
+import malilib.util.position.Vec3d;
 
 public abstract class BaseOverlayRenderer
 {

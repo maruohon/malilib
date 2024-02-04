@@ -24,18 +24,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.util.FileUtils;
 import malilib.util.data.BooleanConsumer;
 import malilib.util.data.FloatConsumer;
+import malilib.util.position.BlockMirror;
+import malilib.util.position.BlockPos;
+import malilib.util.position.BlockRotation;
+import malilib.util.position.Vec3d;
+import malilib.util.position.Vec3i;
 
 public class JsonUtils
 {
@@ -411,19 +410,19 @@ public class JsonUtils
         }
     }
 
-    public static void addIfNotEqual(JsonObject obj, String name, Rotation value, Rotation excludeValue)
+    public static void addIfNotEqual(JsonObject obj, String name, BlockRotation value, BlockRotation excludeValue)
     {
         if (value != excludeValue)
         {
-            obj.addProperty(name, value.name());
+            obj.addProperty(name, value.getName());
         }
     }
 
-    public static void addIfNotEqual(JsonObject obj, String name, Mirror value, Mirror excludeValue)
+    public static void addIfNotEqual(JsonObject obj, String name, BlockMirror value, BlockMirror excludeValue)
     {
         if (value != excludeValue)
         {
-            obj.addProperty(name, value.name());
+            obj.addProperty(name, value.getName());
         }
     }
 
@@ -568,7 +567,7 @@ public class JsonUtils
             {
                 try
                 {
-                    return new Vec3d(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
+                    return Vec3d.of(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
                 }
                 catch (Exception ignore) {}
             }
@@ -594,7 +593,7 @@ public class JsonUtils
         }
     }
 
-    public static Rotation getRotation(JsonObject obj, String name)
+    public static BlockRotation getRotation(JsonObject obj, String name)
     {
         String str = getString(obj, name);
 
@@ -602,15 +601,15 @@ public class JsonUtils
         {
             try
             {
-                return Rotation.valueOf(str);
+                return BlockRotation.byName(str);
             }
             catch (Exception ignore) {}
         }
 
-        return Rotation.NONE;
+        return BlockRotation.NONE;
     }
 
-    public static Mirror getMirror(JsonObject obj, String name)
+    public static BlockMirror getMirror(JsonObject obj, String name)
     {
         String str = getString(obj, name);
 
@@ -618,12 +617,12 @@ public class JsonUtils
         {
             try
             {
-                return Mirror.valueOf(str);
+                return BlockMirror.byName(str);
             }
             catch (Exception ignore) {}
         }
 
-        return Mirror.NONE;
+        return BlockMirror.NONE;
     }
 
     public static JsonArray stringListAsArray(List<String> list)

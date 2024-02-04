@@ -3,10 +3,6 @@ package malilib.util.position;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-
 public enum Coordinate
 {
     X((v) -> v.x, Vec3i::getX, Vec2d::getX, Vec2i::getX, (n, o) -> new Vec3d(n  , o.y, o.z), (n, o) -> new Vec3i(n       , o.getY(), o.getZ()), (n, o) -> new BlockPos(n       , o.getY(), o.getZ()), (n, o) -> new Vec2d(n, o.y), (n, o) -> new Vec2i(n, o.y)),

@@ -36,8 +36,6 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.tileentity.TileEntityShulkerBox;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -66,6 +64,8 @@ import malilib.util.inventory.EquipmentInventoryView;
 import malilib.util.inventory.InventoryView;
 import malilib.util.inventory.StorageItemInventoryUtils;
 import malilib.util.inventory.VanillaInventoryView;
+import malilib.util.position.BlockPos;
+import malilib.util.position.HitResult;
 import malilib.util.position.Vec2i;
 
 public class InventoryRenderUtils
@@ -513,28 +513,27 @@ public class InventoryRenderUtils
         }
 
         RayTraceUtils.RayTraceFluidHandling fluidHandling = RayTraceUtils.RayTraceFluidHandling.NONE;
-        RayTraceResult trace = RayTraceUtils.getRayTraceFromEntity(world, player, fluidHandling, true, 6.0);
+        HitResult trace = RayTraceUtils.getRayTraceFromEntity(world, player, fluidHandling, true, 6.0);
 
         if (trace == null)
         {
             return null;
         }
 
-        if (trace.typeOfHit == RayTraceResult.Type.BLOCK)
+        if (trace.type == HitResult.Type.BLOCK)
         {
-            BlockPos pos = trace.getBlockPos();
-            return getInventoryViewFromBlock(pos, world);
+            return getInventoryViewFromBlock(world, trace.blockPos);
         }
-        else if (trace.typeOfHit == RayTraceResult.Type.ENTITY)
+        else if (trace.type == HitResult.Type.ENTITY)
         {
-            return getInventoryViewFromEntity(trace.entityHit);
+            return getInventoryViewFromEntity(trace.entity);
         }
 
         return null;
     }
 
     @Nullable
-    public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromBlock(BlockPos pos, World world)
+    public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromBlock(World world, BlockPos pos)
     {
         TileEntity te = world.getTileEntity(pos);
 

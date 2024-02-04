@@ -21,13 +21,13 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 
 import malilib.render.text.StyledTextLine;
 import malilib.util.StringUtils;
 import malilib.util.data.Identifier;
 import malilib.util.game.wrap.NbtWrap;
 import malilib.util.game.wrap.RegistryUtils;
+import malilib.util.position.Direction;
 
 public class BlockUtils
 {
@@ -214,14 +214,14 @@ public class BlockUtils
     }
 
     /**
-     * Returns the EnumFacing value of the first found PropertyDirection
+     * Returns the Direction value of the first found PropertyDirection
      * type block state property in the given state, if any.
      * If there are no PropertyDirection properties, then empty() is returned.
      */
-    public static Optional<EnumFacing> getFirstPropertyFacingValue(IBlockState state)
+    public static Optional<Direction> getFirstPropertyFacingValue(IBlockState state)
     {
         Optional<PropertyDirection> propOptional = getFirstDirectionProperty(state);
-        return propOptional.isPresent() ? Optional.ofNullable(state.getValue(propOptional.get())) : Optional.empty();
+        return propOptional.isPresent() ? Optional.ofNullable(Direction.byIndex(state.getValue(propOptional.get()).getIndex())) : Optional.empty();
     }
 
     public static List<String> getFormattedBlockStateProperties(IBlockState state)

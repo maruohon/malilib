@@ -1,6 +1,7 @@
 package malilib.util;
 
-import net.minecraft.util.math.Vec3i;
+import malilib.util.position.Vec3d;
+import malilib.util.position.Vec3i;
 
 public class MathUtils
 {
@@ -436,6 +437,16 @@ public class MathUtils
         }
 
         return angle;
+    }
+
+    public static Vec3d getRotationVector(float pitch, float yaw)
+    {
+        double f = Math.cos(-yaw * (Math.PI / 180.0) - Math.PI);
+        double g = Math.sin(-yaw * (Math.PI / 180.0) - Math.PI);
+        double h = -Math.cos(-pitch * (Math.PI / 180.0));
+        double i = Math.sin(-pitch * (Math.PI / 180.0));
+
+        return new Vec3d(g * h, i, f * h);
     }
 
     public static long getCoordinateRandom(int x, int y, int z)

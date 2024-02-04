@@ -1,11 +1,11 @@
 package malilib.util.game;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import malilib.util.position.BlockPos;
 import malilib.util.position.HitPosition;
+import malilib.util.position.Vec3d;
 
 public class PlacementUtils
 {
@@ -34,7 +34,7 @@ public class PlacementUtils
      * based on the replaceability of the material instead. If <b>checkMaterial</b> is true, then the position
      * is only offset if both of them say they are not replaceable. If <b>checkMaterial</b> is false, then only
      * the block's replaceability is checked, and it's enough for the position to be offset.
-     * @param checkMaterial whether or not to check the replaceability of the material too, or only the block
+     * @param checkMaterial whether to check the replaceability of the material too, or only the block
      */
     public static HitPosition getPlacementPositionForClickPosition(World world, HitPosition originalPos, boolean checkMaterial)
     {

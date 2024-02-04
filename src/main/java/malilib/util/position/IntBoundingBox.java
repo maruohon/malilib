@@ -2,9 +2,9 @@ package malilib.util.position;
 
 import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
 
 import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
@@ -81,7 +81,7 @@ public class IntBoundingBox
                this.minY <= box.maxY;
     }
 
-    public int getMinValueForAxis(EnumFacing.Axis axis)
+    public int getMinValueForAxis(Direction.Axis axis)
     {
         switch (axis)
         {
@@ -93,7 +93,7 @@ public class IntBoundingBox
         return 0;
     }
 
-    public int getMaxValueForAxis(EnumFacing.Axis axis)
+    public int getMaxValueForAxis(Direction.Axis axis)
     {
         switch (axis)
         {
@@ -119,12 +119,12 @@ public class IntBoundingBox
     {
         JsonArray arr = new JsonArray();
 
-        arr.add(this.minX);
-        arr.add(this.minY);
-        arr.add(this.minZ);
-        arr.add(this.maxX);
-        arr.add(this.maxY);
-        arr.add(this.maxZ);
+        arr.add(new JsonPrimitive(this.minX));
+        arr.add(new JsonPrimitive(this.minY));
+        arr.add(new JsonPrimitive(this.minZ));
+        arr.add(new JsonPrimitive(this.maxX));
+        arr.add(new JsonPrimitive(this.maxY));
+        arr.add(new JsonPrimitive(this.maxZ));
 
         return arr;
     }

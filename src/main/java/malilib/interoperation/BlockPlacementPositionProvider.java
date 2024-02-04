@@ -2,7 +2,7 @@ package malilib.interoperation;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.BlockPos;
+import malilib.util.position.BlockPos;
 
 public interface BlockPlacementPositionProvider
 {
