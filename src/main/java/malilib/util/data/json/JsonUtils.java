@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
@@ -451,9 +452,9 @@ public class JsonUtils
     {
         JsonArray arr = new JsonArray();
 
-        arr.add(pos.getX());
-        arr.add(pos.getY());
-        arr.add(pos.getZ());
+        arr.add(new JsonPrimitive(pos.getX()));
+        arr.add(new JsonPrimitive(pos.getY()));
+        arr.add(new JsonPrimitive(pos.getZ()));
 
         return arr;
     }
@@ -549,9 +550,9 @@ public class JsonUtils
     {
         JsonArray arr = new JsonArray();
 
-        arr.add(vec.x);
-        arr.add(vec.y);
-        arr.add(vec.z);
+        arr.add(new JsonPrimitive(vec.x));
+        arr.add(new JsonPrimitive(vec.y));
+        arr.add(new JsonPrimitive(vec.z));
 
         return arr;
     }
@@ -631,7 +632,7 @@ public class JsonUtils
 
         for (String str : list)
         {
-            arr.add(str);
+            arr.add(new JsonPrimitive(str));
         }
 
         return arr;
