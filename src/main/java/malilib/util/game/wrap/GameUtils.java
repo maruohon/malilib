@@ -186,6 +186,11 @@ public class GameUtils
         return getClient().isUnicode();
     }
 
+    public static boolean isHideGui()
+    {
+        return getOptions().hideGUI;
+    }
+
     public static void scheduleToClientThread(Runnable task)
     {
         Minecraft mc = getClient();
@@ -241,13 +246,5 @@ public class GameUtils
         }
 
         return null;
-    }
-
-    public static class Options
-    {
-        public static boolean hideGui()
-        {
-            return getOptions().hideGUI;
-        }
     }
 }

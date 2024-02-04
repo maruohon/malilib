@@ -40,7 +40,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     @Override
     public void onPostGameOverlayRender(RenderContext ctx)
     {
-        if (GameUtils.Options.hideGui() == false)
+        if (GameUtils.isHideGui() == false)
         {
             this.renderInGame(ctx);
         }
@@ -146,7 +146,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      */
     public void renderInGame(RenderContext ctx)
     {
-        if (GameUtils.Options.hideGui() == false)
+        if (GameUtils.isHideGui() == false)
         {
             boolean isScreenOpen = GuiUtils.isScreenOpen();
             boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
