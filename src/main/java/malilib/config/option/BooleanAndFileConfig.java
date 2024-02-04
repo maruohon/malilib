@@ -3,7 +3,6 @@ package malilib.config.option;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.StringJoiner;
-
 import javax.annotation.Nullable;
 
 import malilib.config.option.BooleanAndFileConfig.BooleanAndFile;

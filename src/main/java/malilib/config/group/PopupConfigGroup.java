@@ -1,7 +1,6 @@
 package malilib.config.group;
 
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import malilib.config.option.ConfigInfo;

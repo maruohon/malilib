@@ -1,10 +1,10 @@
 package malilib;
 
 import malilib.action.Action;
-import malilib.action.util.ActionUtils;
 import malilib.action.NamedAction;
 import malilib.action.ParameterizedAction;
 import malilib.action.builtin.UtilityActions;
+import malilib.action.util.ActionUtils;
 import malilib.config.util.ConfigUtils;
 import malilib.gui.action.ActionPromptScreen;
 import malilib.gui.action.ActionWidgetScreen;

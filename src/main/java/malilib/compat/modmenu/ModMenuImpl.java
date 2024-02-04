@@ -2,6 +2,7 @@ package malilib.compat.modmenu;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
+
 import malilib.MaLiLibConfigScreen;
 import malilib.gui.BaseScreen;
 
