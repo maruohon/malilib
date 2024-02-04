@@ -34,7 +34,7 @@ public class HitResult
         {
             case BLOCK:     return new RayTraceResult(this.pos.toVanilla(), this.side.getVanillaDirection(), this.blockPos.toVanillaPos());
             case ENTITY:    return new RayTraceResult(this.entity, this.pos.toVanilla());
-            default:        return new RayTraceResult(RayTraceResult.Type.MISS, this.pos.toVanilla(), Direction.DOWN.getVanillaDirection(), net.minecraft.util.math.BlockPos.ORIGIN);
+            default:        return new RayTraceResult(RayTraceResult.Type.MISS, net.minecraft.util.math.Vec3d.ZERO, Direction.DOWN.getVanillaDirection(), net.minecraft.util.math.BlockPos.ORIGIN);
         }
     }
 
