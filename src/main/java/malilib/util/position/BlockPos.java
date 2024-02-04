@@ -2,6 +2,8 @@ package malilib.util.position;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.util.EnumFacing;
+
 import malilib.util.MathUtils;
 
 public class BlockPos extends Vec3i
@@ -200,15 +202,36 @@ public class BlockPos extends Vec3i
             this.z = z;
         }
 
-        public void set(Vec3i pos)
+        public BlockPos set(net.minecraft.util.math.Vec3i pos)
         {
             this.x = pos.getX();
             this.y = pos.getY();
             this.z = pos.getZ();
+            return this;
         }
 
-        @Override
-        public BlockPos offset(Direction direction, int amount)
+        public BlockPos setOffset(net.minecraft.util.math.Vec3i pos, EnumFacing direction)
+        {
+            this.x = pos.getX() + direction.getXOffset();
+            this.y = pos.getY() + direction.getYOffset();
+            this.z = pos.getZ() + direction.getZOffset();
+            return this;
+        }
+
+        public BlockPos setOffset(net.minecraft.util.math.Vec3i pos, Direction direction)
+        {
+            return this.setOffset(pos, direction, 1);
+        }
+
+        public BlockPos setOffset(net.minecraft.util.math.Vec3i pos, Direction direction, int amount)
+        {
+            this.x = pos.getX() + direction.getXOffset() * amount;
+            this.y = pos.getY() + direction.getYOffset() * amount;
+            this.z = pos.getZ() + direction.getZOffset() * amount;
+            return this;
+        }
+
+        public BlockPos move(Direction direction, int amount)
         {
             this.set(this.getX() + direction.getXOffset() * amount,
                      this.getY() + direction.getYOffset() * amount,
@@ -217,10 +240,9 @@ public class BlockPos extends Vec3i
             return this;
         }
 
-        @Override
-        public BlockPos offset(Direction direction)
+        public BlockPos move(Direction direction)
         {
-            return this.offset(direction, 1);
+            return this.move(direction, 1);
         }
 
         @Override
