@@ -12,6 +12,7 @@ import org.lwjgl.input.Mouse;
 
 import malilib.MaLiLib;
 
+@SuppressWarnings("unused")
 public class Keys
 {
     private static final Pattern PATTERN_CHAR_CODE = Pattern.compile("^CHAR_(?<code>[0-9]+)$");
