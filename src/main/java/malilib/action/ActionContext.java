@@ -8,7 +8,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 
 import malilib.overlay.message.MessageOutput;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class ActionContext
 {
@@ -33,24 +33,24 @@ public class ActionContext
 
     public Minecraft getClient()
     {
-        return GameUtils.getClient();
+        return GameWrap.getClient();
     }
 
     @Nullable
     public WorldClient getWorld()
     {
-        return GameUtils.getClientWorld();
+        return GameWrap.getClientWorld();
     }
 
     @Nullable
     public EntityPlayerSP getPlayer()
     {
-        return GameUtils.getClientPlayer();
+        return GameWrap.getClientPlayer();
     }
 
     @Nullable
     public Entity getCameraEntity()
     {
-        return GameUtils.getCameraEntity();
+        return GameWrap.getCameraEntity();
     }
 }

@@ -53,7 +53,7 @@ import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.MathUtils;
 import malilib.util.game.RayTraceUtils;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.ItemWrap;
 import malilib.util.game.wrap.RenderWrap;
 import malilib.util.game.wrap.WorldWrap;
@@ -500,7 +500,7 @@ public class InventoryRenderUtils
     public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory()
     {
         World world = WorldWrap.getBestWorld();
-        EntityPlayer clientPlayer = GameUtils.getClientPlayer();
+        EntityPlayer clientPlayer = GameWrap.getClientPlayer();
 
         // We need to get the player from the server world,
         // so that the player itself won't be included in the ray trace

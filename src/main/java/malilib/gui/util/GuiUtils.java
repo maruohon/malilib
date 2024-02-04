@@ -22,7 +22,7 @@ import malilib.config.value.HudAlignment;
 import malilib.gui.BaseScreen;
 import malilib.gui.widget.BaseTextFieldWidget;
 import malilib.listener.EventListener;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class GuiUtils
 {
@@ -30,23 +30,23 @@ public class GuiUtils
 
     public static int getScaledWindowWidth()
     {
-        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
+        ScaledResolution sr = new ScaledResolution(GameWrap.getClient());
         return sr.getScaledWidth();
     }
 
     public static int getScaledWindowHeight()
     {
-        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
+        ScaledResolution sr = new ScaledResolution(GameWrap.getClient());
         return sr.getScaledHeight();
     }
 
     public static int getVanillaScreenScale()
     {
         int scale = Math.min(getDisplayWidth() / 320, getDisplayHeight() / 240);
-        scale = Math.min(scale, GameUtils.getVanillaOptionsScreenScale());
+        scale = Math.min(scale, GameWrap.getVanillaOptionsScreenScale());
         scale = Math.max(scale, 1);
 
-        if (GameUtils.isUnicode() && (scale & 0x1) != 0 && scale > 1)
+        if (GameWrap.isUnicode() && (scale & 0x1) != 0 && scale > 1)
         {
             scale -= 1;
         }
@@ -56,12 +56,12 @@ public class GuiUtils
 
     public static int getDisplayWidth()
     {
-        return GameUtils.getClient().displayWidth;
+        return GameWrap.getClient().displayWidth;
     }
 
     public static int getDisplayHeight()
     {
-        return GameUtils.getClient().displayHeight;
+        return GameWrap.getClient().displayHeight;
     }
 
     public static int getMouseScreenX()
@@ -99,7 +99,7 @@ public class GuiUtils
     @Nullable
     public static GuiScreen getCurrentScreen()
     {
-        return GameUtils.getClient().currentScreen;
+        return GameWrap.getClient().currentScreen;
     }
 
     @Nullable
@@ -269,7 +269,7 @@ public class GuiUtils
 
             final GuiScreen currentScreen = getCurrentScreen();
 
-            if (GameUtils.getOptions().chatLinksPrompt)
+            if (GameWrap.getOptions().chatLinksPrompt)
             {
                 //BaseScreen.openGui(new ConfirmActionScreen(320, "", () -> openWebLink(uri), getCurrentScreen(), ""));
                 BaseScreen.openScreen(new GuiConfirmOpenLink((result, id) -> {

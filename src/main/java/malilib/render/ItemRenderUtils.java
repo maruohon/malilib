@@ -9,7 +9,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 
 import malilib.render.text.StyledTextLine;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.ItemWrap;
 import malilib.util.game.wrap.RenderWrap;
 
@@ -33,7 +33,7 @@ public class ItemRenderUtils
         RenderWrap.disableLighting();
         RenderWrap.enableGuiItemLighting(ctx);
 
-        Minecraft mc = GameUtils.getClient();
+        Minecraft mc = GameWrap.getClient();
         RenderItem itemRenderer = mc.getRenderItem();
         float oldZ = itemRenderer.zLevel;
 
@@ -60,7 +60,7 @@ public class ItemRenderUtils
             return;
         }
 
-        List<String> list = stack.getTooltip(GameUtils.getClientPlayer(), GameUtils.getOptions().advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        List<String> list = stack.getTooltip(GameWrap.getClientPlayer(), GameWrap.getOptions().advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
         List<StyledTextLine> textLines = new ArrayList<>();
 
         for (int i = 0; i < list.size(); ++i)

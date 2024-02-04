@@ -20,7 +20,7 @@ import malilib.listener.EventListener;
 import malilib.overlay.message.MessageDispatcher;
 import malilib.registry.Registry;
 import malilib.util.StringUtils;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class KeyBindConfigButton extends GenericButton
 {
@@ -368,7 +368,7 @@ public class KeyBindConfigButton extends GenericButton
 
         this.keyBind.getKeysToList(keyList);
 
-        for (KeyBinding vanillaKey : GameUtils.getOptions().keyBindings)
+        for (KeyBinding vanillaKey : GameWrap.getOptions().keyBindings)
         {
             if (keyList.contains(vanillaKey.getKeyCode()))
             {

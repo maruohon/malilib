@@ -15,7 +15,7 @@ import net.minecraft.init.Blocks;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Direction;
 import malilib.util.position.PositionUtils;
@@ -112,7 +112,7 @@ public class ModelRenderUtils
 
         if (quad.hasTintIndex())
         {
-            BlockColors blockColors = GameUtils.getClient().getBlockColors();
+            BlockColors blockColors = GameWrap.getClient().getBlockColors();
             int m = blockColors.colorMultiplier(state, null, null, quad.getTintIndex());
 
             float r = (float) (m >>> 16 & 0xFF) / 255F;

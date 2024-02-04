@@ -26,7 +26,7 @@ import malilib.util.DirectoryCreator;
 import malilib.util.FileUtils;
 import malilib.util.StringUtils;
 import malilib.util.data.LeftRight;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class DirectoryNavigationWidget extends SearchBarWidget
 {
@@ -360,7 +360,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     {
         if (BaseScreen.isShiftDown())
         {
-            GameUtils.openFile(dir);
+            GameWrap.openFile(dir);
         }
         else
         {

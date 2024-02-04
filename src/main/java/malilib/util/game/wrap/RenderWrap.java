@@ -36,7 +36,7 @@ public class RenderWrap
 
     public static void bindTexture(Identifier texture)
     {
-        GameUtils.getClient().getTextureManager().bindTexture(texture);
+        GameWrap.getClient().getTextureManager().bindTexture(texture);
     }
 
     public static void setupBlendSimple()

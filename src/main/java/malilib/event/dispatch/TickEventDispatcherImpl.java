@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import malilib.event.ClientTickHandler;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class TickEventDispatcherImpl implements TickEventDispatcher
 {
@@ -32,16 +32,16 @@ public class TickEventDispatcherImpl implements TickEventDispatcher
     {
         if (this.clientTickHandlers.isEmpty() == false)
         {
-            GameUtils.profilerPush("malilib_client_tick");
+            GameWrap.profilerPush("malilib_client_tick");
 
             for (ClientTickHandler handler : this.clientTickHandlers)
             {
-                GameUtils.profilerPush(handler.getProfilerSectionSupplier());
+                GameWrap.profilerPush(handler.getProfilerSectionSupplier());
                 handler.onClientTick();
-                GameUtils.profilerPop();
+                GameWrap.profilerPop();
             }
 
-            GameUtils.profilerPop();
+            GameWrap.profilerPop();
         }
     }
 }

@@ -19,7 +19,7 @@ import malilib.registry.Registry;
 import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
 import malilib.util.StringUtils;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class MessageDispatcher
 {
@@ -191,7 +191,7 @@ public class MessageDispatcher
             TextComponentTranslation hoverMessage = new TextComponentTranslation("malilib.label.message_debug.add_key_to_chat");
             message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
             message.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
-            GameUtils.getClient().ingameGUI.getChatGUI().printChatMessage(message);
+            GameWrap.getClient().ingameGUI.getChatGUI().printChatMessage(message);
         }
 
         MessageOutput output = Registry.MESSAGE_REDIRECT_MANAGER.getRedirectedMessageOutput(translationKey, this.type);

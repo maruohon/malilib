@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 
 import malilib.MaLiLib;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 /**
  * This class has been directly taken from Schematica by Lunatrius & contributors
@@ -117,7 +117,7 @@ public class ShaderProgram
         try
         {
             final StringBuilder code = new StringBuilder();
-            final InputStream inputStream = GameUtils.getClient().getResourceManager().getResource(resourceLocation).getInputStream();
+            final InputStream inputStream = GameWrap.getClient().getResourceManager().getResource(resourceLocation).getInputStream();
             final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;

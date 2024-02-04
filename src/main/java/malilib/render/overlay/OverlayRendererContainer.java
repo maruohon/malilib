@@ -16,7 +16,7 @@ import malilib.render.RenderContext;
 import malilib.util.BackupUtils;
 import malilib.util.data.json.JsonUtils;
 import malilib.util.game.wrap.EntityWrap;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec3d;
 
@@ -94,7 +94,7 @@ public class OverlayRendererContainer
 
     public void render(RenderContext ctx, float tickDelta)
     {
-        Entity cameraEntity = GameUtils.getCameraEntity();
+        Entity cameraEntity = GameWrap.getCameraEntity();
 
         if (cameraEntity == null)
         {
@@ -121,13 +121,13 @@ public class OverlayRendererContainer
 
         Vec3d cameraPos = this.getCameraPos(cameraEntity, tickDelta);
 
-        GameUtils.profilerPush("update");
+        GameWrap.profilerPush("update");
         this.update(cameraPos, cameraEntity);
-        GameUtils.profilerPop();
+        GameWrap.profilerPop();
 
-        GameUtils.profilerPush("draw");
+        GameWrap.profilerPush("draw");
         this.draw(cameraPos, ctx);
-        GameUtils.profilerPop();
+        GameWrap.profilerPop();
     }
 
     protected void update(Vec3d cameraPos, Entity entity)
@@ -142,7 +142,7 @@ public class OverlayRendererContainer
 
         for (BaseOverlayRenderer renderer : this.enabledRenderers)
         {
-            GameUtils.profilerPush(() -> renderer.getClass().getName());
+            GameWrap.profilerPush(() -> renderer.getClass().getName());
 
             if (renderer.shouldRender())
             {
@@ -156,7 +156,7 @@ public class OverlayRendererContainer
                 ++this.countActive;
             }
 
-            GameUtils.profilerPop();
+            GameWrap.profilerPop();
         }
     }
 
@@ -189,7 +189,7 @@ public class OverlayRendererContainer
 
             for (BaseOverlayRenderer renderer : this.enabledRenderers)
             {
-                GameUtils.profilerPush(() -> renderer.getClass().getName());
+                GameWrap.profilerPush(() -> renderer.getClass().getName());
 
                 if (renderer.shouldRender())
                 {
@@ -202,7 +202,7 @@ public class OverlayRendererContainer
                     RenderWrap.popMatrix(ctx);
                 }
 
-                GameUtils.profilerPop();
+                GameWrap.profilerPop();
             }
 
             if (RenderWrap.useVbo())

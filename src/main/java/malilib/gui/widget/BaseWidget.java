@@ -25,7 +25,7 @@ import malilib.render.text.TextStyle;
 import malilib.util.data.Color4f;
 import malilib.util.data.EdgeInt;
 import malilib.util.data.Identifier;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 
 public class BaseWidget
@@ -37,7 +37,7 @@ public class BaseWidget
     private static int lastDebugOutlineColorHue;
     private static int nextWidgetId;
 
-    protected final Minecraft mc = GameUtils.getClient();
+    protected final Minecraft mc = GameWrap.getClient();
     protected final EdgeInt margin = new EdgeInt();
     protected final EdgeInt padding = new EdgeInt();
     protected final ElementOffset iconOffset = new ElementOffset();

@@ -17,7 +17,7 @@ import net.minecraft.util.EnumHand;
 
 import malilib.util.data.IntRange;
 import malilib.util.data.ItemType;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.ItemWrap;
 
 public class InventoryUtils
@@ -70,7 +70,7 @@ public class InventoryUtils
 
     public static ItemStack getCursorStack()
     {
-        InventoryPlayer inv = GameUtils.getPlayerInventory();
+        InventoryPlayer inv = GameWrap.getPlayerInventory();
         return inv != null ? inv.getItemStack() : ItemStack.EMPTY;
     }
 
@@ -86,13 +86,13 @@ public class InventoryUtils
 
     public static int getSelectedHotbarSlot()
     {
-        InventoryPlayer inv = GameUtils.getPlayerInventory();
+        InventoryPlayer inv = GameWrap.getPlayerInventory();
         return inv != null ? inv.currentItem : 0;
     }
 
     public static void setSelectedHotbarSlot(int slotNumber)
     {
-        InventoryPlayer inv = GameUtils.getPlayerInventory();
+        InventoryPlayer inv = GameWrap.getPlayerInventory();
 
         if (inv != null && isHotbarSlot(slotNumber))
         {
@@ -326,8 +326,8 @@ public class InventoryUtils
      */
     public static boolean swapItemToMainHand(ItemStack stackReference, boolean ignoreNbt)
     {
-        EntityPlayer player = GameUtils.getClientPlayer();
-        InventoryPlayer inventory = GameUtils.getPlayerInventory();
+        EntityPlayer player = GameWrap.getClientPlayer();
+        InventoryPlayer inventory = GameWrap.getPlayerInventory();
 
         // Already holding the requested item
         if (areStacksEqual(stackReference, player.getHeldItemMainhand(), ignoreNbt))
@@ -337,19 +337,19 @@ public class InventoryUtils
 
         int currentHotbarSlot = getSelectedHotbarSlot();
 
-        if (GameUtils.isCreativeMode())
+        if (GameWrap.isCreativeMode())
         {
             inventory.setPickedItemStack(stackReference.copy());
-            GameUtils.getInteractionManager().sendSlotPacket(stackReference.copy(), 36 + currentHotbarSlot);
+            GameWrap.getInteractionManager().sendSlotPacket(stackReference.copy(), 36 + currentHotbarSlot);
             return true;
         }
         else
         {
-            int slot = findPlayerInventorySlotWithItem(GameUtils.getPlayerInventoryContainer(), stackReference, true);
+            int slot = findPlayerInventorySlotWithItem(GameWrap.getPlayerInventoryContainer(), stackReference, true);
 
             if (slot != -1)
             {
-                clickSlot(GameUtils.getPlayerInventoryContainer(), slot, currentHotbarSlot, ClickType.SWAP);
+                clickSlot(GameWrap.getPlayerInventoryContainer(), slot, currentHotbarSlot, ClickType.SWAP);
                 return true;
             }
         }
@@ -367,13 +367,13 @@ public class InventoryUtils
                                       int threshold,
                                       boolean allowHotbar)
     {
-        Container container = GameUtils.getPlayerInventoryContainer();
+        Container container = GameWrap.getPlayerInventoryContainer();
         final ItemStack handStack = player.getHeldItem(hand);
         final int count = handStack.getCount();
         final int max = handStack.getMaxStackSize();
 
         if (ItemWrap.notEmpty(handStack) &&
-            GameUtils.getCurrentInventoryContainer() == container &&
+            GameWrap.getCurrentInventoryContainer() == container &&
             ItemWrap.isEmpty(getCursorStack()) &&
             (count <= threshold && count < max))
         {
@@ -474,7 +474,7 @@ public class InventoryUtils
     {
         if (slotNum >= 0 && slotNum < getSlotCount(container))
         {
-            GameUtils.clickSlot(container.windowId, slotNum, mouseButton, clickType);
+            GameWrap.clickSlot(container.windowId, slotNum, mouseButton, clickType);
         }
     }
 }

@@ -14,7 +14,7 @@ import malilib.util.ListUtils;
 import malilib.util.MathUtils;
 import malilib.util.data.json.JsonUtils;
 import malilib.util.game.wrap.EntityWrap;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class LayerRange
 {
@@ -467,7 +467,7 @@ public class LayerRange
             }
             case LAYER_RANGE:
             {
-                Entity entity = GameUtils.getCameraEntity();
+                Entity entity = GameWrap.getCameraEntity();
 
                 if (entity != null)
                 {

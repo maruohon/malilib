@@ -25,7 +25,7 @@ import net.minecraft.world.WorldServer;
 
 import malilib.util.position.HitResult;
 
-public class GameUtils
+public class GameWrap
 {
     public static Minecraft getClient()
     {
@@ -184,7 +184,7 @@ public class GameUtils
 
     public static int getVanillaOptionsScreenScale()
     {
-        return GameUtils.getOptions().guiScale;
+        return GameWrap.getOptions().guiScale;
     }
 
     public static boolean isSinglePlayer()

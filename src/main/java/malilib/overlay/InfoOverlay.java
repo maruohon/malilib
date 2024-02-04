@@ -20,7 +20,7 @@ import malilib.overlay.widget.InfoRendererWidget;
 import malilib.overlay.widget.StringListRendererWidget;
 import malilib.registry.Registry;
 import malilib.render.RenderContext;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 
 public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer, ClientTickHandler
@@ -40,7 +40,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     @Override
     public void onPostGameOverlayRender(RenderContext ctx)
     {
-        if (GameUtils.isHideGui() == false)
+        if (GameWrap.isHideGui() == false)
         {
             this.renderInGame(ctx);
         }
@@ -146,7 +146,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      */
     public void renderInGame(RenderContext ctx)
     {
-        if (GameUtils.isHideGui() == false)
+        if (GameWrap.isHideGui() == false)
         {
             boolean isScreenOpen = GuiUtils.isScreenOpen();
             boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();

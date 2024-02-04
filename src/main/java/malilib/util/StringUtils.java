@@ -28,7 +28,7 @@ import malilib.MaLiLibConfigs;
 import malilib.registry.Registry;
 import malilib.util.data.Identifier;
 import malilib.util.data.LeftRight;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.WorldWrap;
 
 public class StringUtils
@@ -151,7 +151,7 @@ public class StringUtils
         TextComponentString name = new TextComponentString(file.getFileName().toString());
         name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString()));
         name.getStyle().setUnderlined(Boolean.TRUE);
-        GameUtils.getClientPlayer().sendMessage(new TextComponentTranslation(messageKey, name));
+        GameWrap.getClientPlayer().sendMessage(new TextComponentTranslation(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -486,9 +486,9 @@ public class StringUtils
     @Nullable
     public static String getWorldOrServerName()
     {
-        if (GameUtils.isSinglePlayer())
+        if (GameWrap.isSinglePlayer())
         {
-            IntegratedServer server = GameUtils.getClient().getIntegratedServer();
+            IntegratedServer server = GameWrap.getClient().getIntegratedServer();
 
             if (server != null)
             {
@@ -497,7 +497,7 @@ public class StringUtils
         }
         else
         {
-            Minecraft mc = GameUtils.getClient();
+            Minecraft mc = GameWrap.getClient();
 
             if (mc.isConnectedToRealms())
             {
@@ -517,7 +517,7 @@ public class StringUtils
                 }
             }
 
-            ServerData server = GameUtils.getClient().getCurrentServerData();
+            ServerData server = GameWrap.getClient().getCurrentServerData();
 
             if (server != null)
             {
@@ -548,7 +548,7 @@ public class StringUtils
             }
             else
             {
-                World world = GameUtils.getClientWorld();
+                World world = GameWrap.getClientWorld();
 
                 if (world != null)
                 {
@@ -657,7 +657,7 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return GameUtils.getClient().fontRenderer.FONT_HEIGHT;
+        return GameWrap.getClient().fontRenderer.FONT_HEIGHT;
     }
 
     /**
@@ -665,6 +665,6 @@ public class StringUtils
      */
     public static int getStringWidth(String text)
     {
-        return GameUtils.getClient().fontRenderer.getStringWidth(text);
+        return GameWrap.getClient().fontRenderer.getStringWidth(text);
     }
 }

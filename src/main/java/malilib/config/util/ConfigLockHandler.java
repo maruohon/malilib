@@ -39,7 +39,7 @@ import malilib.util.FileUtils;
 import malilib.util.HttpUtils;
 import malilib.util.data.ModInfo;
 import malilib.util.data.json.JsonUtils;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class ConfigLockHandler
 {
@@ -61,7 +61,7 @@ public class ConfigLockHandler
             this.readLocksFromLocalCommonConfig();
             this.readLocksFromLocalPerWorldConfig();
 
-            if (GameUtils.isSinglePlayer())
+            if (GameWrap.isSinglePlayer())
             {
                 this.readLocksFromSinglePlayerWorldConfig();
             }
@@ -215,7 +215,7 @@ public class ConfigLockHandler
 
     protected void readLocksFromSinglePlayerWorldConfig()
     {
-        Path worldDir = GameUtils.getCurrentSinglePlayerWorldDirectory();
+        Path worldDir = GameWrap.getCurrentSinglePlayerWorldDirectory();
         String fileName = "malilib_config_locks.json";
         Path file = worldDir.resolve(fileName);
 
@@ -243,7 +243,7 @@ public class ConfigLockHandler
 
     protected void readLocksFromServer()
     {
-        ServerData serverData = GameUtils.getClient().getCurrentServerData();
+        ServerData serverData = GameWrap.getClient().getCurrentServerData();
 
         if (serverData != null)
         {

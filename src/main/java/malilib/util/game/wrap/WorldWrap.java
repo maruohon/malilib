@@ -27,7 +27,7 @@ public class WorldWrap
      */
     public static World getBestWorld()
     {
-        Minecraft mc = GameUtils.getClient();
+        Minecraft mc = GameWrap.getClient();
 
         if (mc.isSingleplayer() && mc.world != null)
         {
@@ -43,14 +43,14 @@ public class WorldWrap
     @Nullable
     public static WorldServer getServerWorldForClientWorld()
     {
-        World world = GameUtils.getClientWorld();
+        World world = GameWrap.getClientWorld();
         return world != null ? getServerWorldForClientWorld(world) : null;
     }
 
     @Nullable
     public static WorldServer getServerWorldForClientWorld(World world)
     {
-        MinecraftServer server = GameUtils.getIntegratedServer();
+        MinecraftServer server = GameWrap.getIntegratedServer();
         return server != null ? server.getWorld(getDimensionId(world)) : null;
     }
 

@@ -12,7 +12,7 @@ import malilib.event.PostWorldRenderer;
 import malilib.gui.util.ScreenContext;
 import malilib.render.RenderContext;
 import malilib.render.overlay.OverlayRendererContainer;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class RenderEventDispatcherImpl implements RenderEventDispatcher
 {
@@ -64,16 +64,16 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     {
         if (this.overlayRenderers.isEmpty() == false)
         {
-            GameUtils.profilerPush("malilib_game_overlay_post");
+            GameWrap.profilerPush("malilib_game_overlay_post");
 
             for (PostGameOverlayRenderer renderer : this.overlayRenderers)
             {
-                GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
+                GameWrap.profilerPush(renderer.getProfilerSectionSupplier());
                 renderer.onPostGameOverlayRender(RenderContext.DUMMY);
-                GameUtils.profilerPop();
+                GameWrap.profilerPop();
             }
 
-            GameUtils.profilerPop();
+            GameWrap.profilerPop();
         }
     }
 
@@ -84,16 +84,16 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     {
         if (this.screenPostRenderers.isEmpty() == false)
         {
-            GameUtils.profilerPush("malilib_screen_post");
+            GameWrap.profilerPush("malilib_screen_post");
 
             for (PostScreenRenderer renderer : this.screenPostRenderers)
             {
-                GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
+                GameWrap.profilerPush(renderer.getProfilerSectionSupplier());
                 renderer.onPostScreenRender(ScreenContext.DUMMY, tickDelta);
-                GameUtils.profilerPop();
+                GameWrap.profilerPop();
             }
 
-            GameUtils.profilerPop();
+            GameWrap.profilerPop();
         }
     }
 
@@ -104,16 +104,16 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
     {
         if (this.tooltipLastRenderers.isEmpty() == false)
         {
-            GameUtils.profilerPush("malilib_tooltip_post");
+            GameWrap.profilerPush("malilib_tooltip_post");
 
             for (PostItemTooltipRenderer renderer : this.tooltipLastRenderers)
             {
-                GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
+                GameWrap.profilerPush(renderer.getProfilerSectionSupplier());
                 renderer.onPostRenderItemTooltip(stack, x, y, RenderContext.DUMMY);
-                GameUtils.profilerPop();
+                GameWrap.profilerPop();
             }
 
-            GameUtils.profilerPop();
+            GameWrap.profilerPop();
         }
     }
 
@@ -122,24 +122,24 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
      */
     public void onRenderWorldLast(float tickDelta)
     {
-        GameUtils.profilerPush("malilib_world_post");
+        GameWrap.profilerPush("malilib_world_post");
 
-        GameUtils.profilerPush("overlays");
+        GameWrap.profilerPush("overlays");
         OverlayRendererContainer.INSTANCE.render(RenderContext.DUMMY, tickDelta);
-        GameUtils.profilerPop();
+        GameWrap.profilerPop();
 
         if (this.worldLastRenderers.isEmpty() == false)
         {
 
             for (PostWorldRenderer renderer : this.worldLastRenderers)
             {
-                GameUtils.profilerPush(renderer.getProfilerSectionSupplier());
+                GameWrap.profilerPush(renderer.getProfilerSectionSupplier());
                 renderer.onPostWorldRender(RenderContext.DUMMY, tickDelta);
-                GameUtils.profilerPop();
+                GameWrap.profilerPop();
             }
 
         }
 
-        GameUtils.profilerPop();
+        GameWrap.profilerPop();
     }
 }

@@ -17,7 +17,7 @@ import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
 
 import malilib.MaLiLib;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandler
 {
@@ -114,7 +114,7 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     {
         String joinedChannels = channels.stream().map(ResourceLocation::toString).collect(Collectors.joining("\0"));
         ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
-        NetHandlerPlayClient handler = GameUtils.getClient().getConnection();
+        NetHandlerPlayClient handler = GameWrap.getClient().getConnection();
         CPacketCustomPayload packet = new CPacketCustomPayload(type.toString(), new PacketBuffer(payload));
 
         if (handler != null)

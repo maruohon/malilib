@@ -13,7 +13,7 @@ import net.minecraft.client.resources.IResource;
 
 import malilib.MaLiLib;
 import malilib.util.data.Identifier;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class TextRendererUtils
 {
@@ -53,7 +53,7 @@ public class TextRendererUtils
 
     public static void readGlyphSizes(byte[] glyphWidth)
     {
-        try (IResource resource = GameUtils.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin")))
+        try (IResource resource = GameWrap.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin")))
         {
             if (resource.getInputStream().read(glyphWidth) <= 0)
             {
@@ -71,7 +71,7 @@ public class TextRendererUtils
     {
         BufferedImage bufferedImage;
 
-        try (IResource resource = GameUtils.getClient().getResourceManager().getResource(texture))
+        try (IResource resource = GameWrap.getClient().getResourceManager().getResource(texture))
         {
             bufferedImage = TextureUtil.readBufferedImage(resource.getInputStream());
         }

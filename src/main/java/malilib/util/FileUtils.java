@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import malilib.MaLiLib;
 import malilib.config.value.FileWriteType;
 import malilib.overlay.message.MessageDispatcher;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class FileUtils
 {
@@ -30,7 +30,7 @@ public class FileUtils
 
     public static Path getMinecraftDirectory()
     {
-        return GameUtils.getClient().gameDir.toPath();
+        return GameWrap.getClient().gameDir.toPath();
     }
 
     public static Path getRootDirectory()

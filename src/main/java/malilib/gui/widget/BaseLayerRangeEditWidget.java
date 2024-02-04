@@ -5,7 +5,7 @@ import malilib.gui.widget.IntegerTextFieldWidget.IntValueValidator;
 import malilib.gui.widget.button.GenericButton;
 import malilib.gui.widget.button.OnOffButton;
 import malilib.util.StringUtils;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.position.LayerRange;
 
 public class BaseLayerRangeEditWidget extends ContainerWidget
@@ -190,7 +190,7 @@ public class BaseLayerRangeEditWidget extends ContainerWidget
 
     protected void setToPlayer()
     {
-        this.range.setToPosition(GameUtils.getClientPlayer());
+        this.range.setToPosition(GameWrap.getClientPlayer());
         this.setLayerValues();
     }
 

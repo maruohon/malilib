@@ -13,7 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import malilib.MaLiLib;
 import malilib.gui.util.GuiUtils;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class ClientCommandHandler extends CommandHandler
 {
@@ -87,7 +87,7 @@ public class ClientCommandHandler extends CommandHandler
 
             if (GuiUtils.getCurrentScreen() instanceof GuiChat)
             {
-                EntityPlayer player = GameUtils.getClientPlayer();
+                EntityPlayer player = GameWrap.getClientPlayer();
                 List<String> commands = this.getTabCompletions(player, leftOfCursor, player.getPosition());
 
                 if (commands.isEmpty() == false)
@@ -119,6 +119,6 @@ public class ClientCommandHandler extends CommandHandler
     @Override
     protected MinecraftServer getServer()
     {
-        return GameUtils.getClient().getIntegratedServer();
+        return GameWrap.getClient().getIntegratedServer();
     }
 }

@@ -13,7 +13,7 @@ import malilib.gui.util.GuiUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec2i;
 
@@ -197,7 +197,7 @@ public class RenderUtils
 
             builder.draw();
 
-            MapData mapdata = Items.FILLED_MAP.getMapData(stack, GameUtils.getClientWorld());
+            MapData mapdata = Items.FILLED_MAP.getMapData(stack, GameWrap.getClientWorld());
 
             if (mapdata != null)
             {
@@ -206,7 +206,7 @@ public class RenderUtils
                 double scale = (double) (dimensions - 16) / 128.0;
                 RenderWrap.translate(x1, y1, z + 1f, ctx);
                 RenderWrap.scale(scale, scale, 0, ctx);
-                GameUtils.getClient().entityRenderer.getMapItemRenderer().renderMap(mapdata, false);
+                GameWrap.getClient().entityRenderer.getMapItemRenderer().renderMap(mapdata, false);
             }
 
             RenderWrap.enableLighting();

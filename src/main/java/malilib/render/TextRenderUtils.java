@@ -14,7 +14,7 @@ import malilib.render.text.StyledText;
 import malilib.render.text.StyledTextLine;
 import malilib.render.text.TextRenderer;
 import malilib.util.game.wrap.EntityWrap;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec2i;
 
@@ -165,7 +165,7 @@ public class TextRenderUtils
      */
     public static void renderTextPlate(List<String> text, double x, double y, double z, float scale, RenderContext ctx)
     {
-        Entity entity = GameUtils.getCameraEntity();
+        Entity entity = GameWrap.getCameraEntity();
 
         if (entity != null)
         {
@@ -181,7 +181,7 @@ public class TextRenderUtils
     public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
                                        float scale, int textColor, int bgColor, boolean disableDepth, RenderContext ctx)
     {
-        FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
+        FontRenderer textRenderer = GameWrap.getClient().fontRenderer;
 
         RenderWrap.alphaFunc(GL11.GL_GREATER, 0.1F);
         RenderWrap.pushMatrix(ctx);

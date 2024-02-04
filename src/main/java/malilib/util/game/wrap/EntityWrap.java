@@ -17,19 +17,19 @@ public class EntityWrap
 {
     public static BlockPos getCameraEntityBlockPos()
     {
-        Entity entity = GameUtils.getCameraEntity();
+        Entity entity = GameWrap.getCameraEntity();
         return entity != null ? getEntityBlockPos(entity) : BlockPos.ORIGIN;
     }
 
     public static Vec3d getCameraEntityPosition()
     {
-        Entity entity = GameUtils.getCameraEntity();
+        Entity entity = GameWrap.getCameraEntity();
         return entity != null ? getEntityPos(entity) : Vec3d.ZERO;
     }
 
     public static BlockPos getPlayerBlockPos()
     {
-        Entity entity = GameUtils.getClientPlayer();
+        Entity entity = GameWrap.getClientPlayer();
         return entity != null ? getEntityBlockPos(entity) : BlockPos.ORIGIN;
     }
 

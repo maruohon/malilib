@@ -4,7 +4,7 @@ import malilib.MaLiLibConfigs;
 import malilib.overlay.widget.MessageRendererWidget;
 import malilib.overlay.widget.ToastRendererWidget;
 import malilib.render.text.StyledText;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class DefaultMessageDispatchers
 {
@@ -50,7 +50,7 @@ public class DefaultMessageDispatchers
 
     public static void sendVanillaHotbarMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        GameUtils.showHotbarMessage(translatedMessage);
+        GameWrap.showHotbarMessage(translatedMessage);
     }
 
     public static void sendVanillaHotbarMessageText(StyledText text, MessageDispatcher messageDispatcher)
@@ -63,14 +63,14 @@ public class DefaultMessageDispatchers
 
     public static void sendVanillaChatMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        GameUtils.printToChat(translatedMessage);
+        GameWrap.printToChat(translatedMessage);
     }
 
     public static void sendVanillaChatMessageText(StyledText text, MessageDispatcher messageDispatcher)
     {
         if (text.lines.size() > 0)
         {
-            GameUtils.printToChat(text.lines.get(0).displayText);
+            GameWrap.printToChat(text.lines.get(0).displayText);
         }
     }
 

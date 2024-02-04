@@ -33,13 +33,13 @@ import malilib.util.data.ModInfo;
 import malilib.util.datadump.DataDump;
 import malilib.util.datadump.DataDump.Format;
 import malilib.util.game.wrap.EntityWrap;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 
 public class UtilityActions
 {
     public static ActionResult runVanillaCommand(ActionContext ctx, String arg)
     {
-        if (GameUtils.sendCommand(arg))
+        if (GameWrap.sendCommand(arg))
         {
             return ActionResult.SUCCESS;
         }
@@ -48,7 +48,7 @@ public class UtilityActions
 
     public static ActionResult sendChatMessage(ActionContext ctx, String arg)
     {
-        if (GameUtils.sendChatMessage(arg))
+        if (GameWrap.sendChatMessage(arg))
         {
             return ActionResult.SUCCESS;
         }
@@ -139,12 +139,12 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            GameUtils.getOptions().showDebugInfo = ! GameUtils.getOptions().showDebugInfo;
+            GameWrap.getOptions().showDebugInfo = ! GameWrap.getOptions().showDebugInfo;
 
-            if (GameUtils.getOptions().showDebugInfo == false)
+            if (GameWrap.getOptions().showDebugInfo == false)
             {
-                GameUtils.getOptions().showDebugProfilerChart = false;
-                GameUtils.getOptions().showLagometer = false;
+                GameWrap.getOptions().showDebugProfilerChart = false;
+                GameWrap.getOptions().showLagometer = false;
             }
             return ActionResult.SUCCESS;
         }
@@ -155,11 +155,11 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            GameUtils.getOptions().showDebugProfilerChart = ! GameUtils.getOptions().showDebugProfilerChart;
-            boolean state = GameUtils.getOptions().showDebugProfilerChart;
+            GameWrap.getOptions().showDebugProfilerChart = ! GameWrap.getOptions().showDebugProfilerChart;
+            boolean state = GameWrap.getOptions().showDebugProfilerChart;
             if (arg.equalsIgnoreCase("on")) state = true;
             else if (arg.equalsIgnoreCase("off")) state = false;
-            GameUtils.getOptions().showDebugInfo = state;
+            GameWrap.getOptions().showDebugInfo = state;
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -169,11 +169,11 @@ public class UtilityActions
     {
         if (ctx.getWorld() != null)
         {
-            GameUtils.getOptions().showLagometer = ! GameUtils.getOptions().showLagometer;
-            boolean state = GameUtils.getOptions().showLagometer;
+            GameWrap.getOptions().showLagometer = ! GameWrap.getOptions().showLagometer;
+            boolean state = GameWrap.getOptions().showLagometer;
             if (arg.equalsIgnoreCase("on")) state = true;
             else if (arg.equalsIgnoreCase("off")) state = false;
-            GameUtils.getOptions().showDebugInfo = state;
+            GameWrap.getOptions().showDebugInfo = state;
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -278,7 +278,7 @@ public class UtilityActions
                 }
 
                 GameType mode = modes.get(index);
-                GameUtils.sendChatMessage("/gamemode " + mode.getName());
+                GameWrap.sendChatMessage("/gamemode " + mode.getName());
 
                 return ActionResult.SUCCESS;
             }
@@ -359,7 +359,7 @@ public class UtilityActions
         text.appendSibling((new TextComponentTranslation("debug.prefix"))
                                 .setStyle((new Style()).setColor(TextFormatting.YELLOW).setBold(Boolean.TRUE)))
                 .appendText(" ").appendSibling(new TextComponentTranslation(key, args));
-        GameUtils.getClient().ingameGUI.getChatGUI().printChatMessage(text);
+        GameWrap.getClient().ingameGUI.getChatGUI().printChatMessage(text);
     }
 
     private static class BufferedImageTransferable implements Transferable

@@ -24,7 +24,7 @@ import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Color4f;
 import malilib.util.data.FloatUnaryOperator;
 import malilib.util.data.Identifier;
-import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 
 public class TextRenderer implements IResourceManagerReloadListener
@@ -66,7 +66,7 @@ public class TextRenderer implements IResourceManagerReloadListener
 
         this.setColorCodes(anaglyph);
 
-        ((IReloadableResourceManager) GameUtils.getClient().getResourceManager()).registerReloadListener(this);
+        ((IReloadableResourceManager) GameWrap.getClient().getResourceManager()).registerReloadListener(this);
     }
 
     protected void setColorCodes(boolean anaglyph)
@@ -118,8 +118,8 @@ public class TextRenderer implements IResourceManagerReloadListener
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
     {
-        this.unicode = GameUtils.isUnicode();
-        this.anaglyph = GameUtils.getOptions().anaglyph;
+        this.unicode = GameWrap.isUnicode();
+        this.anaglyph = GameWrap.getOptions().anaglyph;
         this.setColorCodes(this.anaglyph);
 
         StyledText.clearCache();
@@ -269,9 +269,9 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public void startBuffers()
     {
-        if (this.unicode != GameUtils.isUnicode())
+        if (this.unicode != GameWrap.isUnicode())
         {
-            this.onResourceManagerReload(GameUtils.getClient().getResourceManager());
+            this.onResourceManagerReload(GameWrap.getClient().getResourceManager());
         }
 
         this.textBuffer.start();
