@@ -7,12 +7,12 @@ import malilib.util.StringUtils;
 
 public enum Direction
 {
-    DOWN (0, -1, 1, Axis.Y, AxisDirection.NEGATIVE, "down",  EnumFacing.DOWN),
-    UP   (1, -1, 0, Axis.Y, AxisDirection.POSITIVE, "up",    EnumFacing.UP),
-    NORTH(2,  2, 3, Axis.Z, AxisDirection.NEGATIVE, "north", EnumFacing.NORTH),
-    SOUTH(3,  0, 2, Axis.Z, AxisDirection.POSITIVE, "south", EnumFacing.SOUTH),
-    WEST (4,  1, 5, Axis.X, AxisDirection.NEGATIVE, "west",  EnumFacing.WEST),
-    EAST (5,  3, 4, Axis.X, AxisDirection.POSITIVE, "east",  EnumFacing.EAST);
+    DOWN (0, 1, -1, Axis.Y, AxisDirection.NEGATIVE, "down",  EnumFacing.DOWN),
+    UP   (1, 0, -1, Axis.Y, AxisDirection.POSITIVE, "up",    EnumFacing.UP),
+    NORTH(2, 3,  2, Axis.Z, AxisDirection.NEGATIVE, "north", EnumFacing.NORTH),
+    SOUTH(3, 2,  0, Axis.Z, AxisDirection.POSITIVE, "south", EnumFacing.SOUTH),
+    WEST (4, 5,  1, Axis.X, AxisDirection.NEGATIVE, "west",  EnumFacing.WEST),
+    EAST (5, 4,  3, Axis.X, AxisDirection.POSITIVE, "east",  EnumFacing.EAST);
 
     public static final Direction[] ALL_DIRECTIONS = new Direction[] { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
     public static final Direction[] HORIZONTAL_DIRECTIONS = new Direction[] { Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
