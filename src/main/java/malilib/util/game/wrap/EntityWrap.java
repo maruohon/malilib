@@ -98,6 +98,18 @@ public class EntityWrap
         return lastTickPos + (getZ(entity) - lastTickPos) * tickDelta;
     }
 
+    public static float lerpPitch(Entity entity, float tickDelta)
+    {
+        float lastTickPitch = entity.prevRotationPitch;
+        return lastTickPitch + (getPitch(entity) - lastTickPitch) * tickDelta;
+    }
+
+    public static float lerpYaw(Entity entity, float tickDelta)
+    {
+        float lastTickYaw = entity.prevRotationYaw;
+        return lastTickYaw + (getYaw(entity) - lastTickYaw) * tickDelta;
+    }
+
     public static int getChunkX(Entity entity)
     {
         return MathUtils.floor(getX(entity) / 16.0);
