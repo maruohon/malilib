@@ -19,7 +19,7 @@ public class RegistryUtils
     {
         try
         {
-            return Block.REGISTRY.getObject(new ResourceLocation(name));
+            return getBlockById(new ResourceLocation(name));
         }
         catch (Exception e)
         {
@@ -42,19 +42,18 @@ public class RegistryUtils
     @Nullable
     public static ResourceLocation getBlockId(IBlockState state)
     {
-        return Block.REGISTRY.getNameForObject(state.getBlock());
+        return getBlockId(state.getBlock());
     }
 
     public static String getBlockIdStr(Block block)
     {
-        ResourceLocation id = Block.REGISTRY.getNameForObject(block);
+        ResourceLocation id = getBlockId(block);
         return id != null ? id.toString() : "?";
     }
 
     public static String getBlockIdStr(IBlockState state)
     {
-        ResourceLocation id = Block.REGISTRY.getNameForObject(state.getBlock());
-        return id != null ? id.toString() : "?";
+        return getBlockIdStr(state.getBlock());
     }
 
     public static Collection<ResourceLocation> getRegisteredBlockIds()
@@ -80,7 +79,7 @@ public class RegistryUtils
     {
         try
         {
-            return Item.REGISTRY.getObject(new ResourceLocation(name));
+            return getItemById(new ResourceLocation(name));
         }
         catch (Exception e)
         {
@@ -102,7 +101,7 @@ public class RegistryUtils
 
     public static String getItemIdStr(Item item)
     {
-        ResourceLocation id = Item.REGISTRY.getNameForObject(item);
+        ResourceLocation id = getItemId(item);
         return id != null ? id.toString() : "?";
     }
 
