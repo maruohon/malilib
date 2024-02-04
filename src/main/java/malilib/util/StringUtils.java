@@ -28,8 +28,8 @@ import malilib.MaLiLibConfigs;
 import malilib.registry.Registry;
 import malilib.util.data.Identifier;
 import malilib.util.data.LeftRight;
-import malilib.util.game.WorldUtils;
 import malilib.util.game.wrap.GameUtils;
+import malilib.util.game.wrap.WorldWrap;
 
 public class StringUtils
 {
@@ -552,7 +552,7 @@ public class StringUtils
 
                 if (world != null)
                 {
-                    name = prefix + name + "_dim" + WorldUtils.getDimensionIdAsString(world);
+                    name = prefix + name + "_dim" + WorldWrap.getDimensionIdAsString(world);
                 }
             }
         }

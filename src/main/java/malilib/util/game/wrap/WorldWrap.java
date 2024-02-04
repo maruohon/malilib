@@ -1,4 +1,4 @@
-package malilib.util.game;
+package malilib.util.game.wrap;
 
 import javax.annotation.Nullable;
 
@@ -9,9 +9,7 @@ import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import malilib.util.game.wrap.GameUtils;
-
-public class WorldUtils
+public class WorldWrap
 {
     public static int getDimensionId(World world)
     {

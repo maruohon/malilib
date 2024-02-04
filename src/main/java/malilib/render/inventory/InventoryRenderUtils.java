@@ -53,10 +53,10 @@ import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.MathUtils;
 import malilib.util.game.RayTraceUtils;
-import malilib.util.game.WorldUtils;
 import malilib.util.game.wrap.GameUtils;
 import malilib.util.game.wrap.ItemWrap;
 import malilib.util.game.wrap.RenderWrap;
+import malilib.util.game.wrap.WorldWrap;
 import malilib.util.inventory.ColoredVanillaInventoryView;
 import malilib.util.inventory.CombinedInventoryView;
 import malilib.util.inventory.EquipmentInventoryView;
@@ -499,7 +499,7 @@ public class InventoryRenderUtils
     @Nullable
     public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory()
     {
-        World world = WorldUtils.getBestWorld();
+        World world = WorldWrap.getBestWorld();
         EntityPlayer clientPlayer = GameUtils.getClientPlayer();
 
         // We need to get the player from the server world,
