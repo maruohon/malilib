@@ -15,6 +15,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ChatType;
@@ -75,6 +76,16 @@ public class GameUtils
     public static PlayerControllerMP getInteractionManager()
     {
         return getClient().playerController;
+    }
+
+    public static void clickSlot(int syncId, int slotId, int mouseButton, ClickType clickType)
+    {
+        PlayerControllerMP controller = getInteractionManager();
+
+        if (controller != null)
+        {
+            controller.windowClick(syncId, slotId, mouseButton, clickType, getClientPlayer());
+        }
     }
 
     public static double getPlayerReachDistance()

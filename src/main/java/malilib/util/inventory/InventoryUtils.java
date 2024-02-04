@@ -472,10 +472,9 @@ public class InventoryUtils
 
     public static void clickSlot(Container container, int slotNum, int mouseButton, ClickType clickType)
     {
-        if (GameUtils.getClientPlayer() != null && slotNum >= 0 && slotNum < getSlotCount(container))
+        if (slotNum >= 0 && slotNum < getSlotCount(container))
         {
-            GameUtils.getInteractionManager().windowClick(container.windowId, slotNum, mouseButton,
-                                                          clickType, GameUtils.getClientPlayer());
+            GameUtils.clickSlot(container.windowId, slotNum, mouseButton, clickType);
         }
     }
 }
