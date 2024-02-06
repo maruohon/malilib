@@ -9,11 +9,11 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
+import malilib.render.buffer.VertexFormats;
 import malilib.util.data.Identifier;
 import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
@@ -78,18 +78,18 @@ public class ModelRenderUtils
     {
         RenderWrap.pushMatrix(ctx);
         RenderWrap.translate(-0.5F, -0.5F, zLevel, ctx);
-        int color = 0xFFFFFFFF;
+        int colorARGB = 0xFFFFFFFF;
 
         if (model.isBuiltInRenderer() == false)
         {
-            VertexBuilder builder = VanillaWrappingVertexBuilder.create(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+            VertexBuilder builder = VanillaWrappingVertexBuilder.create(GL11.GL_QUADS, VertexFormats.ITEM);
 
             for (Direction side : PositionUtils.ALL_DIRECTIONS)
             {
-                renderQuads(model.getQuads(state, side.getVanillaDirection(), 0L), state, color, builder);
+                renderQuads(model.getQuads(state, side.getVanillaDirection(), 0L), state, colorARGB, builder);
             }
 
-            renderQuads(model.getQuads(state, null, 0L), state, color, builder);
+            renderQuads(model.getQuads(state, null, 0L), state, colorARGB, builder);
 
             builder.draw();
         }
@@ -97,88 +97,63 @@ public class ModelRenderUtils
         RenderWrap.popMatrix(ctx);
     }
 
-    public static void renderQuads(List<BakedQuad> quads, IBlockState state, int color, VertexBuilder builder)
+    public static void renderQuads(List<BakedQuad> quads, IBlockState state, int colorARGB, VertexBuilder builder)
     {
+        BlockColors blockColors = GameWrap.getClient().getBlockColors();
+
         for (BakedQuad quad : quads)
         {
-            renderQuad(quad, state, color, builder);
+            renderQuad(quad, state, colorARGB, blockColors, builder);
         }
     }
 
-    public static void renderQuad(BakedQuad quad, IBlockState state, int color, VertexBuilder builder)
+    public static void renderQuad(BakedQuad quad, IBlockState state, int colorARGB,
+                                  BlockColors blockColors, VertexBuilder builder)
     {
-        builder.addVertexData(quad.getVertexData());
-        builder.putQuadColor(color);
-
         if (quad.hasTintIndex())
         {
-            BlockColors blockColors = GameWrap.getClient().getBlockColors();
-            int m = blockColors.colorMultiplier(state, null, null, quad.getTintIndex());
-
-            float r = (float) (m >>> 16 & 0xFF) / 255F;
-            float g = (float) (m >>>  8 & 0xFF) / 255F;
-            float b = (float) (m        & 0xFF) / 255F;
-            builder.putColorMultiplier(r, g, b, 4);
-            builder.putColorMultiplier(r, g, b, 3);
-            builder.putColorMultiplier(r, g, b, 2);
-            builder.putColorMultiplier(r, g, b, 1);
+            int colorMultiplier = blockColors.colorMultiplier(state, null, null, quad.getTintIndex());
+            builder.putBakedQuad(quad, colorARGB, colorMultiplier);
         }
-
-        putQuadNormal(quad, builder);
-    }
-
-    public static void putQuadNormal(BakedQuad quad, VertexBuilder builder)
-    {
-        net.minecraft.util.math.Vec3i direction = quad.getFace().getDirectionVec();
-        builder.putNormal(direction.getX(), direction.getY(), direction.getZ());
+        else
+        {
+            builder.putBakedQuad(quad, colorARGB);
+        }
     }
 
     /**
      * Renders the given model to the given vertex consumer.
-     * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
+     * Needs a vertex consumer initialized with mode GL11.GL_QUADS and VertexFormats.ITEM
      */
     public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, VertexBuilder builder)
     {
-        renderModelBrightnessColor(model, pos, null, 1f, 1f, 1f, 1f, builder);
+        renderModelBrightnessColor(model, pos, null, 0xFFFFFFFF, builder);
     }
 
     /**
      * Renders the given model to the given vertex consumer.
-     * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
+     * Needs a vertex consumer initialized with mode GL11.GL_QUADS and VertexFormats.ITEM
      */
     public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, @Nullable IBlockState state,
-                                                  float brightness, float r, float g, float b, VertexBuilder builder)
+                                                  int colorARGB, VertexBuilder builder)
     {
         for (Direction side : PositionUtils.ALL_DIRECTIONS)
         {
-            renderQuads(model.getQuads(state, side.getVanillaDirection(), 0L), pos, brightness, r, g, b, builder);
+            renderQuads(model.getQuads(state, side.getVanillaDirection(), 0L), pos, colorARGB, builder);
         }
 
-        renderQuads(model.getQuads(state, null, 0L), pos, brightness, r, g, b, builder);
+        renderQuads(model.getQuads(state, null, 0L), pos, colorARGB, builder);
     }
 
     /**
      * Renders the given quads to the given vertex consumer.
-     * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
+     * Needs a vertex consumer initialized with mode GL11.GL_QUADS and VertexFormats.ITEM
      */
-    public static void renderQuads(List<BakedQuad> quads, Vec3d pos, float brightness,
-                                   float red, float green, float blue, VertexBuilder builder)
+    public static void renderQuads(List<BakedQuad> quads, Vec3d pos, int colorARGB, VertexBuilder builder)
     {
         for (BakedQuad quad : quads)
         {
-            builder.addVertexData(quad.getVertexData());
-
-            if (quad.hasTintIndex())
-            {
-                builder.putQuadColor(red * brightness, green * brightness, blue * brightness);
-            }
-            else
-            {
-                builder.putQuadColor(brightness, brightness, brightness);
-            }
-
-            builder.putPosition(pos.x, pos.y, pos.z);
-            putQuadNormal(quad, builder);
+            builder.putBakedQuad(pos.x, pos.y, pos.z, quad, colorARGB);
         }
     }
 }
