@@ -1024,7 +1024,12 @@ public class RenderUtils
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
     {
-        if (stack.getItem() instanceof FilledMapItem && GuiBase.isShiftDown())
+        renderMapPreview(stack, x, y, dimensions, true);
+    }
+
+    public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions, boolean requireShift)
+    {
+        if (stack.getItem() instanceof FilledMapItem && (requireShift == false || GuiBase.isShiftDown()))
         {
             color(1f, 1f, 1f, 1f);
 
