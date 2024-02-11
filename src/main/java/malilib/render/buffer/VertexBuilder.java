@@ -42,7 +42,8 @@ public interface VertexBuilder
 
     VertexBuilder putBakedQuad(double x, double y, double z, BakedQuad quad, int colorARGB);
 
-    VertexBuilder putBlockQuad(double x, double y, double z, BakedQuad quad, int colorARGB);
+    VertexBuilder putBlockQuad(double x, double y, double z, BakedQuad quad, float cma, float cmr, float cmg, float cmb,
+                               int lightMapVertex0, int lightMapVertex1, int lightMapVertex2, int lightMapVertex3);
 
     /*
     void addVertexData(int[] data);
