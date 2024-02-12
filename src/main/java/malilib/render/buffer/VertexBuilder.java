@@ -87,7 +87,7 @@ public interface VertexBuilder
 
     ByteBuffer getByteBuffer();
 
-    //BufferBuilder.State getVertexData();
+    VertexBuilderState getState();
 
-    //void setVertexData(BufferBuilder.State state);
+    void setState(VertexBuilderState state);
 }
