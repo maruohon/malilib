@@ -111,6 +111,12 @@ public class BlockPos extends Vec3i
         return ((long) x << (26 + 12)) | ((long) y << 26) | ((long) z);
     }
 
+    @Override
+    public String toString()
+    {
+        return "BlockPos{x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + "}";
+    }
+
     public static BlockPos fromPacked(long posLong)
     {
         int x = (int) ((posLong & (0x3FFFFFFL << (26L + 12L)) >> (26L + 12L)));

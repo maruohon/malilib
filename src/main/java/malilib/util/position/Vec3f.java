@@ -45,4 +45,10 @@ public class Vec3f
         double d = Math.sqrt(x * x + y * y + z * z);
         return d < 1.0E-4 ? ZERO : new Vec3f(x / d, y / d, z / d);
     }
+
+    @Override
+    public String toString()
+    {
+        return "Vec3f{x=" + this.x + ", y=" + this.y + ", z=" + this.z + "}";
+    }
 }

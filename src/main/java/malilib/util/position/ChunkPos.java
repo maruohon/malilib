@@ -17,6 +17,12 @@ public class ChunkPos extends net.minecraft.util.math.ChunkPos
         return this.z;
     }
 
+    @Override
+    public String toString()
+    {
+        return "ChunkPos{x=" + this.x + ", z=" + this.z + "}";
+    }
+
     public static long asLong(int chunkX, int chunkZ)
     {
         return ((long) chunkZ << 32) | (long) chunkX;

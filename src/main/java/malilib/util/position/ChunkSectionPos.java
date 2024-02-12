@@ -14,6 +14,12 @@ public class ChunkSectionPos extends Vec3i
         super(x, y, z);
     }
 
+    @Override
+    public String toString()
+    {
+        return "ChunkSectionPos{x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + "}";
+    }
+
     public static ChunkSectionPos ofBlockPos(net.minecraft.util.math.Vec3i blockPos)
     {
         return new ChunkSectionPos(blockPos.getX() >> 4, blockPos.getY() >> 4, blockPos.getZ() >> 4);

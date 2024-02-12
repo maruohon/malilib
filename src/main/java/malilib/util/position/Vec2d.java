@@ -58,4 +58,10 @@ public class Vec2d
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Vec2d{x=" + this.x + ", y=" + this.y + "}";
+    }
 }

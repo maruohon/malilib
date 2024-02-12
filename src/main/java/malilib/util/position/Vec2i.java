@@ -55,4 +55,10 @@ public class Vec2i
         result = 31 * result + this.y;
         return result;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Vec2i{x=" + this.x + ", y=" + this.y + "}";
+    }
 }

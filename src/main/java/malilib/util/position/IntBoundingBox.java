@@ -248,8 +248,7 @@ public class IntBoundingBox
     @Override
     public String toString()
     {
-        return String.format("%s:{minX:%d,minY:%d,minZ:%d,maxX:%d,maxY:%d,maxZ:%d}\n",
-                             this.getClass().getSimpleName(),
+        return String.format("IntBoundingBox:{minX:%d, minY:%d, minZ:%d, maxX:%d, maxY:%d, maxZ:%d}\n",
                              this.minX, this.minY, this.minZ,
                              this.maxX, this.maxY, this.maxZ);
     }

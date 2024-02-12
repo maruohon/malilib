@@ -38,6 +38,13 @@ public class HitResult
         }
     }
 
+    @Override
+    public String toString()
+    {
+        return "HitResult{type=" + this.type + ", blockPos=" + this.blockPos + ", side=" + this.side +
+               ", pos=" + this.pos + ", entity=" + this.entity + "}";
+    }
+
     public enum Type
     {
         MISS,

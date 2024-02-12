@@ -51,4 +51,10 @@ public class Vec3i extends net.minecraft.util.math.BlockPos
     {
         return (this.getX() + 0.5) * pos.x + (this.getY() + 0.5) * pos.y + (this.getZ() + 0.5) * pos.z;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Vec3i{x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + "}";
+    }
 }

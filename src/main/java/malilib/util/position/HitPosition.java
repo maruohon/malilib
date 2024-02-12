@@ -28,6 +28,12 @@ public class HitPosition
         return this.direction;
     }
 
+    @Override
+    public String toString()
+    {
+        return "HitPosition{blockPos=" + this.blockPos + ", exactPos=" + this.exactPos + ", direction=" + this.direction + "}";
+    }
+
     public static HitPosition of(BlockPos blockPos, Vec3d exactPos, Direction direction)
     {
         return new HitPosition(blockPos, exactPos, direction);
