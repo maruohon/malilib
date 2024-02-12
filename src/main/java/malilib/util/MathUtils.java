@@ -439,7 +439,7 @@ public class MathUtils
         return angle;
     }
 
-    public static Vec3d getRotationVector(float pitch, float yaw)
+    public static Vec3d getRotationVector(float yaw, float pitch)
     {
         double f = Math.cos(-yaw * (Math.PI / 180.0) - Math.PI);
         double g = Math.sin(-yaw * (Math.PI / 180.0) - Math.PI);
