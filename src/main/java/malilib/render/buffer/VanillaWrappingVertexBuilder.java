@@ -21,8 +21,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
     protected IntBuffer rawIntBuffer;
     protected ShortBuffer rawShortBuffer;
     protected FloatBuffer rawFloatBuffer;
-    protected malilib.render.buffer.VertexFormat vertexFormat;
-    protected boolean hasTexture;
+    protected VertexFormat vertexFormat;
     protected boolean started;
     protected int glDrawMode;
     protected int vertexCount;
@@ -31,16 +30,15 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
 
     public VanillaWrappingVertexBuilder(ByteBuffer buffer, int glDrawMode, malilib.render.buffer.VertexFormat vertexFormat)
     {
-        this.byteBuffer = buffer;
         buffer.rewind(); // The derived FooBuffer for some reason gets a capacity from the position to limit
         buffer.limit(buffer.capacity());
+        this.byteBuffer = buffer;
         this.rawIntBuffer = buffer.asIntBuffer();
         this.rawShortBuffer = buffer.asShortBuffer();
         this.rawFloatBuffer = buffer.asFloatBuffer().asReadOnlyBuffer();
         this.glDrawMode = glDrawMode;
         this.vertexFormat = vertexFormat;
         this.vertexSize = vertexFormat.getSize();
-        this.hasTexture = this.vertexFormat.hasTexture();
         this.quadDataWorkBuffer = new int[this.vertexSize]; // vertexSize / 4 for bytes to ints, but 4 vertices per quad => just vertexSize
     }
 
@@ -176,7 +174,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
     }
 
     @Override
-    public VertexBuilder start(int glDrawMode, malilib.render.buffer.VertexFormat format)
+    public VertexBuilder start(int glDrawMode, VertexFormat format)
     {
         if (this.started == false)
         {
@@ -184,7 +182,6 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
             this.glDrawMode = glDrawMode;
             this.vertexFormat = format;
             this.vertexSize = format.getSize();
-            this.hasTexture = format.hasTexture();
             this.byteBuffer.limit(this.byteBuffer.capacity());
 
             if (this.quadDataWorkBuffer.length < this.vertexSize)
@@ -215,7 +212,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
     {
         if (this.started)
         {
-            if (this.hasTexture)
+            if (this.vertexFormat.hasTexture())
             {
                 RenderWrap.enableTexture2D();
             }
@@ -267,7 +264,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
     }
 
     @Override
-    public malilib.render.buffer.VertexFormat getVertexFormat()
+    public VertexFormat getVertexFormat()
     {
         return this.vertexFormat;
     }
@@ -281,6 +278,40 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
     @Override
     public void uploadVertexData()
     {
+    }
+
+    @Override
+    public VertexBuilderState getState()
+    {
+        int intSize = this.vertexCount * (this.vertexSize >> 2);
+        int[] arr = new int[intSize];
+
+        this.rawIntBuffer.rewind();
+        this.rawIntBuffer.limit(intSize);
+        this.rawIntBuffer.get(arr);
+        this.rawIntBuffer.position(intSize);
+        this.rawIntBuffer.limit(this.rawIntBuffer.capacity());
+
+        return new VertexBuilderState(this.vertexFormat, arr);
+    }
+
+    @Override
+    public void setState(VertexBuilderState state)
+    {
+        int[] vertexData = state.getVertexData();
+
+        this.growBuffer(vertexData.length << 2);
+        this.byteBuffer.clear();
+
+        this.vertexCount = state.getVertexCount();
+        this.vertexFormat = state.getVertexFormat();
+        this.vertexSize = this.vertexFormat.getSize();
+        this.rawIntBuffer.put(vertexData);
+
+        if (this.quadDataWorkBuffer.length < this.vertexSize)
+        {
+            this.quadDataWorkBuffer = new int[this.vertexSize]; // vertexSize / 4 for bytes to ints, but 4 vertices per quad => just vertexSize
+        }
     }
 
     /*
