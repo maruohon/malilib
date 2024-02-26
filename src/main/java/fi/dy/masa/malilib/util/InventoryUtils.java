@@ -39,7 +39,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.canCombine(stack1, stack2);
+        return ItemStack.areItemsEqual(stack1, stack2);
     }
 
     /**
