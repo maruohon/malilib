@@ -5,6 +5,9 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.BitSet;
+import com.google.common.primitives.Floats;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -586,6 +589,143 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
             this.rawIntBuffer.position(position);
             this.rawShortBuffer.position(position << 1);
         }
+    }
+
+    private static float getQuadDistanceSq(FloatBuffer floatBufferIn, float x, float y, float z, int integerSize, int offset)
+    {
+        float f = floatBufferIn.get(offset + integerSize * 0 + 0);
+        float g = floatBufferIn.get(offset + integerSize * 0 + 1);
+        float h = floatBufferIn.get(offset + integerSize * 0 + 2);
+        float i = floatBufferIn.get(offset + integerSize * 1 + 0);
+        float j = floatBufferIn.get(offset + integerSize * 1 + 1);
+        float k = floatBufferIn.get(offset + integerSize * 1 + 2);
+        float l = floatBufferIn.get(offset + integerSize * 2 + 0);
+        float m = floatBufferIn.get(offset + integerSize * 2 + 1);
+        float n = floatBufferIn.get(offset + integerSize * 2 + 2);
+        float o = floatBufferIn.get(offset + integerSize * 3 + 0);
+        float p = floatBufferIn.get(offset + integerSize * 3 + 1);
+        float q = floatBufferIn.get(offset + integerSize * 3 + 2);
+        float r = (f + i + l + o) * 0.25F - x;
+        float s = (g + j + m + p) * 0.25F - y;
+        float t = (h + k + n + q) * 0.25F - z;
+        return r * r + s * s + t * t;
+    }
+
+    @Override
+    public void sortVertices(float cameraX, float cameraY, float cameraZ)
+    {
+        final int quadCount = this.vertexCount / 4;
+        final int vertexSize = this.vertexSize;
+        final int intSize = this.vertexFormat.getSize() >> 2;
+        final float[] quadDistances = new float[quadCount];
+
+        for (int index = 0; index < quadCount; ++index)
+        {
+            quadDistances[index] = getQuadDistanceSq(this.rawFloatBuffer, cameraX, cameraY, cameraZ, intSize, index * vertexSize);
+        }
+
+        IntArrayList list = new IntArrayList(quadCount);
+        int[] integers = new int[quadCount];
+
+        for (int i = 0; i < integers.length; ++i)
+        {
+            integers[i] = i;
+            list.add(i);
+        }
+
+        list.sort((index1, index2) -> Floats.compare(quadDistances[index2], quadDistances[index1]));
+
+        BitSet bitSet = new BitSet();
+        int[] is = new int[vertexSize];
+
+        for (int index = bitSet.nextClearBit(0); index < quadCount; index = bitSet.nextClearBit(index + 1))
+        {
+            int newIndex = integers[index];
+
+            if (newIndex != index)
+            {
+                this.rawIntBuffer.limit(newIndex * vertexSize + vertexSize);
+                this.rawIntBuffer.position(newIndex * vertexSize);
+                this.rawIntBuffer.get(is);
+                int o = newIndex;
+
+                for (int p = integers[newIndex]; o != index; p = integers[p])
+                {
+                    this.rawIntBuffer.limit(p * vertexSize + vertexSize);
+                    this.rawIntBuffer.position(p * vertexSize);
+                    IntBuffer intBuffer = this.rawIntBuffer.slice();
+                    this.rawIntBuffer.limit(o * vertexSize + vertexSize);
+                    this.rawIntBuffer.position(o * vertexSize);
+                    this.rawIntBuffer.put(intBuffer);
+                    bitSet.set(o);
+                    o = p;
+                }
+
+                this.rawIntBuffer.limit(index * vertexSize + vertexSize);
+                this.rawIntBuffer.position(index * vertexSize);
+                this.rawIntBuffer.put(is);
+            }
+
+            bitSet.set(index);
+        }
+    }
+
+
+    private static float getQuadDistanceSq(int[] vertexData, float x, float y, float z, int vertexIntSize, int offset)
+    {
+        float x1 = Float.intBitsToFloat(vertexData[offset                        ]);
+        float y1 = Float.intBitsToFloat(vertexData[offset                     + 1]);
+        float z1 = Float.intBitsToFloat(vertexData[offset                     + 2]);
+        float x2 = Float.intBitsToFloat(vertexData[offset + vertexIntSize        ]);
+        float y2 = Float.intBitsToFloat(vertexData[offset + vertexIntSize     + 1]);
+        float z2 = Float.intBitsToFloat(vertexData[offset + vertexIntSize     + 2]);
+        float x3 = Float.intBitsToFloat(vertexData[offset + vertexIntSize * 2    ]);
+        float y3 = Float.intBitsToFloat(vertexData[offset + vertexIntSize * 2 + 1]);
+        float z3 = Float.intBitsToFloat(vertexData[offset + vertexIntSize * 2 + 2]);
+        float x4 = Float.intBitsToFloat(vertexData[offset + vertexIntSize * 3    ]);
+        float y4 = Float.intBitsToFloat(vertexData[offset + vertexIntSize * 3 + 1]);
+        float z4 = Float.intBitsToFloat(vertexData[offset + vertexIntSize * 3 + 2]);
+
+        float distX = (x1 + x2 + x3 + x4) * 0.25F - x;
+        float distY = (y1 + y2 + y3 + y4) * 0.25F - y;
+        float distZ = (z1 + z2 + z3 + z4) * 0.25F - z;
+
+        return distX * distX + distY * distY + distZ * distZ;
+    }
+
+    public static int[] sortVertices(float cameraX, float cameraY, float cameraZ, int[] vertexData, int vertexSize)
+    {
+        final int vertexIntSize = vertexSize >> 2;
+        final int quadCount = vertexData.length / vertexIntSize / 4;
+        final float[] quadDistances = new float[quadCount];
+
+        for (int index = 0; index < quadCount; ++index)
+        {
+            // Note: The offset is basically quadIndex * vertexIntSize * 4, which is quadIndex * vertexSize, although it doesn't "read clearly"
+            quadDistances[index] = getQuadDistanceSq(vertexData, cameraX, cameraY, cameraZ, vertexIntSize, index * vertexSize);
+        }
+
+        IntArrayList list = new IntArrayList(quadCount);
+
+        for (int i = 0; i < quadCount; ++i)
+        {
+            list.add(i);
+        }
+
+        list.sort((index1, index2) -> Floats.compare(quadDistances[index2], quadDistances[index1]));
+
+        int[] sortedVertexData = new int[vertexData.length];
+
+        for (int index = 0; index < quadCount; ++index)
+        {
+            int sortedIndex = list.getInt(index);
+            // Note: The offset is basically quadIndex * vertexIntSize * 4,
+            // which is quadIndex * vertexSize, although it doesn't "read clearly".
+            // And the length of one quad in ints is the same as the vertexSize (in bytes).
+            System.arraycopy(vertexData, index * vertexSize, sortedVertexData, sortedIndex * vertexSize, vertexSize);
+        }
+
+        return sortedVertexData;
     }
 
     public static VertexBuilder coloredLines()

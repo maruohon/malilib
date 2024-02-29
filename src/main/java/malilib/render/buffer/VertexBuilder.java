@@ -60,7 +60,6 @@ public interface VertexBuilder
 
     void putBrightness(int vertex0, int vertex1, int vertex2, int vertex3);
 
-    void sortVertexData(float cameraX, float cameraY, float cameraZ);
     */
 
     VertexBuilder start();
@@ -82,6 +81,8 @@ public interface VertexBuilder
     int getVertexCount();
 
     int getGlDrawMode();
+
+    void sortVertices(float cameraX, float cameraY, float cameraZ);
 
     VertexFormat getVertexFormat();
 
