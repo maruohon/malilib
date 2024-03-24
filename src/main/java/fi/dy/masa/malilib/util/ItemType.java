@@ -51,7 +51,7 @@ public class ItemType
 
         if (this.checkNBT())
         {
-            result = prime * result + (this.stack.getNbt() != null ? this.stack.getNbt().hashCode() : 0);
+            result = prime * result + (this.stack.getComponents() != null ? this.stack.getComponents().hashCode() : 0);
         }
 
         return result;
@@ -80,7 +80,7 @@ public class ItemType
                 return false;
             }
 
-            return this.checkNBT() == false || Objects.equals(this.stack.getNbt(), other.stack.getNbt());
+            return this.checkNBT() == false || Objects.equals(this.stack.getComponents(), other.stack.getComponents());
         }
     }
 
@@ -90,7 +90,7 @@ public class ItemType
         if (this.checkNBT())
         {
             Identifier rl = Registries.ITEM.getId(this.stack.getItem());
-            return rl + " " + this.stack.getNbt();
+            return rl + " " + this.stack.getComponents();
         }
         else
         {

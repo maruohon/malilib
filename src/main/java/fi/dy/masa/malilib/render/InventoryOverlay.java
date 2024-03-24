@@ -509,7 +509,7 @@ public class InventoryOverlay
         {
             if (i == 0)
             {
-                lines.add(stack.getRarity().formatting + list.get(i).getString());
+                lines.add(stack.getRarity().getFormatting() + list.get(i).getString());
             }
             else
             {

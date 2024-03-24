@@ -10,6 +10,9 @@ import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class WidgetSearchBar extends WidgetBase
 {
     protected final WidgetIcon iconSearch;
@@ -107,7 +110,7 @@ public class WidgetSearchBar extends WidgetBase
                 return true;
             }
         }
-        else if (SharedConstants.isValidChar(charIn))
+        else if (isValidChar(charIn))
         {
             this.searchOpen = true;
             this.searchBox.setFocused(true);
@@ -118,6 +121,13 @@ public class WidgetSearchBar extends WidgetBase
         }
 
         return false;
+    }
+
+    private boolean isValidChar(char charIn) {
+        for (char invalidChar : SharedConstants.INVALID_CHARS_LEVEL_NAME) {
+            if (charIn == invalidChar) return false;
+        }
+        return true;
     }
 
     @Override
