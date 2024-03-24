@@ -6,7 +6,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.item.map.MapId;
+import net.minecraft.block.Block;
+import net.minecraft.component.type.MapIdComponent;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.joml.Quaternionf;
@@ -1041,8 +1042,8 @@ public class RenderUtils
             int x2 = x1 + dimensions;
             int z = 300;
 
-            MapId mapId = FilledMapItem.getMapId(stack);
-            MapState mapState = FilledMapItem.getMapState(mapId, mc().world);
+            MapIdComponent mapId = new MapIdComponent(FilledMapItem.getRawId(stack.getItem()));
+            MapState mapState = FilledMapItem.getMapState(stack, mc().world);
 
             Identifier bgTexture = mapState == null ? TEXTURE_MAP_BACKGROUND : TEXTURE_MAP_BACKGROUND_CHECKERBOARD;
             bindTexture(bgTexture);
@@ -1080,7 +1081,7 @@ public class RenderUtils
 
     public static void renderShulkerBoxPreview(ItemStack stack, int baseX, int baseY, boolean useBgColors, DrawContext drawContext)
     {
-        if (stack.hasNbt())
+        if (stack.getItem() instanceof BlockItem bi && bi.getBlock() instanceof ShulkerBoxBlock block)
         {
             DefaultedList<ItemStack> items = InventoryUtils.getStoredItems(stack, -1);
 
