@@ -90,9 +90,17 @@ public class VertexFormat
         if (this.uvOffset >= 0)
         {
             byteBuffer.position(this.uvOffset);
-            int texIndex = 0;
-            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT + texIndex);
+            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
             RenderWrap.texCoordPointer(2, GL11.GL_FLOAT, stride, byteBuffer);
+            RenderWrap.enableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
+        }
+
+        if (this.lightMapOffset >= 0)
+        {
+            byteBuffer.position(this.lightMapOffset);
+            RenderWrap.setClientActiveTexture(RenderWrap.LIGHTMAP_TEX_UNIT);
+            RenderWrap.texCoordPointer(2, GL11.GL_SHORT, stride, byteBuffer);
             RenderWrap.enableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
             RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
         }
@@ -121,8 +129,13 @@ public class VertexFormat
 
         if (this.uvOffset >= 0)
         {
-            int texIndex = 0;
-            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT + texIndex);
+            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
+            RenderWrap.disableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+        }
+
+        if (this.lightMapOffset >= 0)
+        {
+            RenderWrap.setClientActiveTexture(RenderWrap.LIGHTMAP_TEX_UNIT);
             RenderWrap.disableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
             RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
         }
