@@ -318,6 +318,11 @@ public class RenderWrap
         GlStateManager.glColorPointer(size, type, stride, buffer);
     }
 
+    public static void normalPointer(int type, int stride, long bufferOffset)
+    {
+        GL11.glNormalPointer(type, stride, bufferOffset);
+    }
+
     public static void normalPointer(int type, int stride, ByteBuffer buffer)
     {
         GlStateManager.glNormalPointer(type, stride, buffer);

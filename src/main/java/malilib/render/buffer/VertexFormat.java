@@ -93,7 +93,6 @@ public class VertexFormat
             RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
             RenderWrap.texCoordPointer(2, GL11.GL_FLOAT, stride, byteBuffer);
             RenderWrap.enableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
         }
 
         if (this.lightMapOffset >= 0)
@@ -116,6 +115,44 @@ public class VertexFormat
         {
             byteBuffer.position(this.normalOffset);
             RenderWrap.normalPointer(GL11.GL_BYTE, stride, byteBuffer);
+            RenderWrap.enableClientState(GL11.GL_NORMAL_ARRAY);
+        }
+    }
+
+    public void setupDraw()
+    {
+        int stride = this.getSize();
+
+        if (this.positionOffset >= 0)
+        {
+            RenderWrap.vertexPointer(3, GL11.GL_FLOAT, stride, this.positionOffset);
+            RenderWrap.enableClientState(GL11.GL_VERTEX_ARRAY);
+        }
+
+        if (this.uvOffset >= 0)
+        {
+            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
+            RenderWrap.texCoordPointer(2, GL11.GL_FLOAT, stride, this.uvOffset);
+            RenderWrap.enableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+        }
+
+        if (this.lightMapOffset >= 0)
+        {
+            RenderWrap.setClientActiveTexture(RenderWrap.LIGHTMAP_TEX_UNIT);
+            RenderWrap.texCoordPointer(2, GL11.GL_SHORT, stride, this.lightMapOffset);
+            RenderWrap.enableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+            RenderWrap.setClientActiveTexture(RenderWrap.DEFAULT_TEX_UNIT);
+        }
+
+        if (this.colorOffset >= 0)
+        {
+            RenderWrap.colorPointer(4, GL11.GL_UNSIGNED_BYTE, stride, this.colorOffset);
+            RenderWrap.enableClientState(GL11.GL_COLOR_ARRAY);
+        }
+
+        if (this.normalOffset >= 0)
+        {
+            RenderWrap.normalPointer(GL11.GL_BYTE, stride, this.normalOffset);
             RenderWrap.enableClientState(GL11.GL_NORMAL_ARRAY);
         }
     }

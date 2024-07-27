@@ -2,7 +2,6 @@ package malilib.render.overlay;
 
 import org.lwjgl.opengl.GL11;
 
-import malilib.listener.EventListener;
 import malilib.render.buffer.VertexBuffer;
 import malilib.render.buffer.VertexBuilder;
 import malilib.render.buffer.VertexFormat;
@@ -11,9 +10,9 @@ import malilib.util.game.wrap.RenderWrap;
 public class VboRenderObject extends BaseRenderObject
 {
     protected final VertexBuffer vertexBuffer;
-    protected final EventListener arrayPointerSetter;
+    protected final Runnable arrayPointerSetter;
 
-    public VboRenderObject(int glMode, VertexFormat vertexFormat, EventListener arrayPointerSetter)
+    public VboRenderObject(int glMode, VertexFormat vertexFormat, Runnable arrayPointerSetter)
     {
         super(glMode, vertexFormat);
 
@@ -45,7 +44,7 @@ public class VboRenderObject extends BaseRenderObject
         }
 
         this.vertexBuffer.bindBuffer();
-        this.arrayPointerSetter.onEvent();
+        this.arrayPointerSetter.run();
         this.vertexBuffer.drawArrays(this.getGlMode());
 
         if (this.hasTexture)

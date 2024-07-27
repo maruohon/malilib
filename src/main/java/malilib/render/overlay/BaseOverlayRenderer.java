@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.entity.Entity;
 
-import malilib.listener.EventListener;
 import malilib.render.buffer.VertexFormat;
 import malilib.render.buffer.VertexFormats;
 import malilib.util.data.ModInfo;
@@ -148,7 +147,7 @@ public abstract class BaseOverlayRenderer
      * Allocates a new VBO or display list and returns it
      * @param func the function to set up the array pointers according to the used vertex format
      */
-    protected BaseRenderObject allocateBuffer(int glMode, VertexFormat vertexFormat, EventListener func)
+    protected BaseRenderObject allocateBuffer(int glMode, VertexFormat vertexFormat, Runnable func)
     {
         return new VboRenderObject(glMode, vertexFormat, func);
     }

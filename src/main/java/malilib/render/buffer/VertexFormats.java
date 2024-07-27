@@ -15,8 +15,8 @@ public class VertexFormats
     public static final VertexFormat POSITION_TEX_COLOR_NORMAL = new VertexFormat();
     */
 
-    public static final VertexFormat BLOCK = new VertexFormat(0, 16, 12, -1, 24, 0);
-    public static final VertexFormat ITEM = new VertexFormat(0, 16, 12, 24, 1);
+    public static final VertexFormat BLOCK = new VertexFormat(0, 16, 12, -1, 24, 0); // pos, color, uv, lightmap
+    public static final VertexFormat ITEM = new VertexFormat(0, 16, 12, 24, 1); // pos, color, uv, normal
     /*
     public static final VertexFormat OLDMODEL_POSITION_TEX_NORMAL = new VertexFormat();
     public static final VertexFormat PARTICLE_POSITION_TEX_COLOR_LMAP = new VertexFormat();
