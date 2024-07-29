@@ -8,13 +8,25 @@ import malilib.util.game.wrap.RenderWrap;
 public class VertexBuffer
 {
     protected final VertexFormat vertexFormat;
-    protected int glBufferId;
+    protected int glBufferId = -1;
     protected int vertexCount;
 
     public VertexBuffer(VertexFormat vertexFormat)
     {
         this.vertexFormat = vertexFormat;
-        this.glBufferId = RenderWrap.glGenBuffers();
+    }
+
+    public boolean hasData()
+    {
+        return this.vertexCount > 0 && this.glBufferId > 0;
+    }
+
+    protected void allocateBufferIfNeeded()
+    {
+        if (this.glBufferId <= 0)
+        {
+            this.glBufferId = RenderWrap.glGenBuffers();
+        }
     }
 
     public void bindBuffer()
@@ -39,6 +51,8 @@ public class VertexBuffer
 
     public void bufferData(ByteBuffer data)
     {
+        this.allocateBufferIfNeeded();
+
         if (this.glBufferId <= 0)
         {
             return;
@@ -53,7 +67,7 @@ public class VertexBuffer
 
     public void drawArrays(int mode)
     {
-        if (this.glBufferId <= 0)
+        if (this.glBufferId <= 0 || this.vertexCount == 0)
         {
             return;
         }
@@ -61,12 +75,24 @@ public class VertexBuffer
         RenderWrap.glDrawArrays(mode, 0, this.vertexCount);
     }
 
+    public void bindSetupDrawUnbind(int glMode)
+    {
+        this.bindBuffer();
+        this.vertexFormat.setupDraw();
+
+        this.drawArrays(glMode);
+
+        this.vertexFormat.disableAfterDraw();
+        this.unbindBuffer();
+    }
+
     public void deleteGlBuffers()
     {
-        if (this.glBufferId >= 0)
+        if (this.glBufferId > 0)
         {
             RenderWrap.glDeleteBuffers(this.glBufferId);
             this.glBufferId = -1;
+            this.vertexCount = 0;
         }
     }
 }
