@@ -1,24 +1,21 @@
 package malilib.util.game;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.block.state.IBlockState;
+import malilib.util.position.BlockPos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-import malilib.util.position.BlockPos;
-
-public interface BlockAndDataView<T extends IBlockState, BE extends TileEntity, TAG extends NBTTagCompound> extends BlockView<T>
+public interface BlockAndDataView extends BlockView
 {
     @Nullable
-    BE getBlockEntity(int x, int y, int z);
+    TileEntity getBlockEntity(int x, int y, int z);
 
     @Nullable
-    BE getBlockEntity(BlockPos pos);
+    TileEntity getBlockEntity(BlockPos pos);
 
     @Nullable
-    TAG getBlockDataTag(int x, int y, int z);
+    NBTTagCompound getBlockDataTag(int x, int y, int z);
 
     @Nullable
-    TAG getBlockDataTag(BlockPos pos);
+    NBTTagCompound getBlockDataTag(BlockPos pos);
 }
