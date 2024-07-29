@@ -1,12 +1,11 @@
 package malilib.util.game;
 
+import malilib.util.position.BlockPos;
 import net.minecraft.block.state.IBlockState;
 
-import malilib.util.position.BlockPos;
-
-public interface BlockView<T extends IBlockState>
+public interface BlockView
 {
-    T getBlockState(int x, int y, int z);
+    IBlockState getBlockState(int x, int y, int z);
 
-    T getBlockState(BlockPos pos);
+    IBlockState getBlockState(BlockPos pos);
 }
