@@ -30,6 +30,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
     protected int vertexCount;
     protected int vertexSize;
     protected int[] quadDataWorkBuffer;
+    protected final float[] offset = new float[3];
 
     public VanillaWrappingVertexBuilder(ByteBuffer buffer, int glDrawMode, malilib.render.buffer.VertexFormat vertexFormat)
     {
@@ -43,6 +44,14 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
         this.vertexFormat = vertexFormat;
         this.vertexSize = vertexFormat.getSize();
         this.quadDataWorkBuffer = new int[this.vertexSize]; // vertexSize / 4 for bytes to ints, but 4 vertices per quad => just vertexSize
+    }
+
+    @Override
+    public void setOffset(float x, float y, float z)
+    {
+        this.offset[0] = x;
+        this.offset[1] = y;
+        this.offset[2] = z;
     }
 
     @Override
@@ -154,9 +163,9 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
         for (int vertexIndex = 0; vertexIndex < 4; ++vertexIndex)
         {
             int baseOffset = index + vertexIndex * offset;
-            this.quadDataWorkBuffer[baseOffset    ] = Float.floatToRawIntBits((float) x + Float.intBitsToFloat(this.quadDataWorkBuffer[baseOffset    ]));
-            this.quadDataWorkBuffer[baseOffset + 1] = Float.floatToRawIntBits((float) y + Float.intBitsToFloat(this.quadDataWorkBuffer[baseOffset + 1]));
-            this.quadDataWorkBuffer[baseOffset + 2] = Float.floatToRawIntBits((float) z + Float.intBitsToFloat(this.quadDataWorkBuffer[baseOffset + 2]));
+            this.quadDataWorkBuffer[baseOffset    ] = Float.floatToRawIntBits((float) x + this.offset[0] + Float.intBitsToFloat(this.quadDataWorkBuffer[baseOffset    ]));
+            this.quadDataWorkBuffer[baseOffset + 1] = Float.floatToRawIntBits((float) y + this.offset[1] + Float.intBitsToFloat(this.quadDataWorkBuffer[baseOffset + 1]));
+            this.quadDataWorkBuffer[baseOffset + 2] = Float.floatToRawIntBits((float) z + this.offset[2] + Float.intBitsToFloat(this.quadDataWorkBuffer[baseOffset + 2]));
         }
 
         this.addQuadVertexData(this.quadDataWorkBuffer);
@@ -534,9 +543,9 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
         for (int vertexIndex = 0; vertexIndex < 4; ++vertexIndex)
         {
             int baseOffset = startIndex + vertexIndex * offset;
-            this.rawIntBuffer.put(baseOffset    , Float.floatToRawIntBits((float) x + Float.intBitsToFloat(this.rawIntBuffer.get(baseOffset    ))));
-            this.rawIntBuffer.put(baseOffset + 1, Float.floatToRawIntBits((float) y + Float.intBitsToFloat(this.rawIntBuffer.get(baseOffset + 1))));
-            this.rawIntBuffer.put(baseOffset + 2, Float.floatToRawIntBits((float) z + Float.intBitsToFloat(this.rawIntBuffer.get(baseOffset + 2))));
+            this.rawIntBuffer.put(baseOffset    , Float.floatToRawIntBits((float) x + this.offset[0] + Float.intBitsToFloat(this.rawIntBuffer.get(baseOffset    ))));
+            this.rawIntBuffer.put(baseOffset + 1, Float.floatToRawIntBits((float) y + this.offset[1] + Float.intBitsToFloat(this.rawIntBuffer.get(baseOffset + 1))));
+            this.rawIntBuffer.put(baseOffset + 2, Float.floatToRawIntBits((float) z + this.offset[2] + Float.intBitsToFloat(this.rawIntBuffer.get(baseOffset + 2))));
         }
     }
 
