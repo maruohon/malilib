@@ -62,6 +62,8 @@ public interface VertexBuilder
 
     */
 
+    void setOffset(float x, float y, float z);
+
     VertexBuilder start();
 
     VertexBuilder start(int glMode, VertexFormat format);
