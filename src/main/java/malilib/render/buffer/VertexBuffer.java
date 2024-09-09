@@ -29,14 +29,16 @@ public class VertexBuffer
         }
     }
 
-    public void bindBuffer()
+    public boolean bindBuffer()
     {
         if (this.glBufferId <= 0)
         {
-            return;
+            return false;
         }
 
         RenderWrap.bindBuffer(RenderWrap.GL_ARRAY_BUFFER, this.glBufferId);
+
+        return true;
     }
 
     public VertexFormat getVertexFormat()
@@ -62,7 +64,7 @@ public class VertexBuffer
         RenderWrap.bufferData(RenderWrap.GL_ARRAY_BUFFER, data, GL15.GL_STATIC_DRAW);
         this.unbindBuffer();
         this.vertexCount = data.limit() / this.vertexFormat.getSize();
-        System.out.printf("bufferData lim: %d, size: %d, buf id: %d\n", data.limit(), this.vertexFormat.getSize(), this.glBufferId);
+        //System.out.printf("bufferData lim: %d, size: %d, buf id: %d\n", data.limit(), this.vertexFormat.getSize(), this.glBufferId);
     }
 
     public void drawArrays(int mode)
@@ -77,13 +79,15 @@ public class VertexBuffer
 
     public void bindSetupDrawUnbind(int glMode)
     {
-        this.bindBuffer();
-        this.vertexFormat.setupDraw();
+        if (this.bindBuffer())
+        {
+            this.vertexFormat.setupDraw();
 
-        this.drawArrays(glMode);
+            this.drawArrays(glMode);
 
-        this.vertexFormat.disableAfterDraw();
-        this.unbindBuffer();
+            this.vertexFormat.disableAfterDraw();
+            this.unbindBuffer();
+        }
     }
 
     public void deleteGlBuffers()
