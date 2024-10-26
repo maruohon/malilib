@@ -2,6 +2,8 @@ package fi.dy.masa.malilib.event;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.util.profiler.Profilers;
 import org.joml.Matrix4f;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
@@ -54,25 +56,25 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost(DrawContext drawContext, MinecraftClient mc, float partialTicks)
+    public void onRenderGameOverlayPost(DrawContext drawContext)
     {
-        mc.getProfiler().push("malilib_rendergameoverlaypost");
+        Profilers.get().push("malilib_rendergameoverlaypost");
 
         if (this.overlayRenderers.isEmpty() == false)
         {
             for (IRenderer renderer : this.overlayRenderers)
             {
-                mc.getProfiler().push(renderer.getProfilerSectionSupplier());
+                Profilers.get().push(renderer.getProfilerSectionSupplier());
                 renderer.onRenderGameOverlayPost(drawContext);
-                mc.getProfiler().pop();
+                Profilers.get().pop();
             }
         }
 
-        mc.getProfiler().push("malilib_ingamemessages");
+        Profilers.get().push("malilib_ingamemessages");
         InfoUtils.renderInGameMessages(drawContext);
-        mc.getProfiler().pop();
+        Profilers.get().pop();
 
-        mc.getProfiler().pop();
+        Profilers.get().pop();
     }
 
     /**
@@ -97,7 +99,7 @@ public class RenderEventHandler implements IRenderDispatcher
     {
         if (this.worldLastRenderers.isEmpty() == false)
         {
-            mc.getProfiler().swap("malilib_renderworldlast");
+            Profilers.get().swap("malilib_renderworldlast");
 
             Framebuffer fb = MinecraftClient.isFabulousGraphicsOrBetter() ? mc.worldRenderer.getTranslucentFramebuffer() : null;
 
@@ -108,9 +110,9 @@ public class RenderEventHandler implements IRenderDispatcher
 
             for (IRenderer renderer : this.worldLastRenderers)
             {
-                mc.getProfiler().push(renderer.getProfilerSectionSupplier());
+                Profilers.get().push(renderer.getProfilerSectionSupplier());
                 renderer.onRenderWorldLast(matrix4f, projMatrix);
-                mc.getProfiler().pop();
+                Profilers.get().pop();
             }
 
             if (fb != null)

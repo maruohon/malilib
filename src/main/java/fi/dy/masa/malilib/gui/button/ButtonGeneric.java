@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
+
+import net.minecraft.client.render.RenderLayer;
 import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.client.gui.DrawContext;
@@ -100,7 +102,7 @@ public class ButtonGeneric extends ButtonBase
 
             if (this.renderDefaultBackground)
             {
-                drawContext.drawGuiTexture(this.getTexture(this.hovered), this.x, this.y, this.width, this. height);
+                drawContext.drawGuiTexture(RenderLayer::getGuiTextured, this.getTexture(this.hovered), this.x, this.y, this.width, this.height);
             }
 
             if (this.icon != null)

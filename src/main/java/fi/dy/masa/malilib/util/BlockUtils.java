@@ -1,33 +1,38 @@
 package fi.dy.masa.malilib.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Property;
+import net.minecraft.state.property.*;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
 import fi.dy.masa.malilib.gui.GuiBase;
 
 public class BlockUtils
 {
+
+    static final Property<?>[] directionPropertiesList =
+            {
+                    Properties.FACING,
+                    Properties.HOPPER_FACING,
+                    Properties.HORIZONTAL_FACING,
+                    Properties.VERTICAL_DIRECTION
+            };
+
     /**
      * Returns the first PropertyDirection property from the provided state, if any.
      * @param state
      * @return the first PropertyDirection, or null if there are no such properties
      */
     @Nullable
-    public static DirectionProperty getFirstDirectionProperty(BlockState state)
+    public static EnumProperty<Direction> getFirstDirectionProperty(BlockState state)
     {
-        for (Property<?> prop : state.getProperties())
-        {
-            if (prop instanceof DirectionProperty)
+
+
+        for (Property<?> prop : directionPropertiesList) {
+            if (state.contains(prop))
             {
-                return (DirectionProperty) prop;
+                return (EnumProperty<Direction>) prop;
             }
         }
 
@@ -44,7 +49,7 @@ public class BlockUtils
     @Nullable
     public static Direction getFirstPropertyFacingValue(BlockState state)
     {
-        DirectionProperty prop = getFirstDirectionProperty(state);
+        EnumProperty<Direction> prop = getFirstDirectionProperty(state);
         return prop != null ? state.get(prop) : null;
     }
 
@@ -70,11 +75,16 @@ public class BlockUtils
                     String pre = val.equals(Boolean.TRUE) ? GuiBase.TXT_GREEN : GuiBase.TXT_RED;
                     lines.add(prop.getName() + separator + pre + val.toString());
                 }
-                else if (prop instanceof DirectionProperty)
+                else
                 {
-                    lines.add(prop.getName() + separator + GuiBase.TXT_GOLD + val.toString());
+                    for (Property<?> directionProp : directionPropertiesList) {
+                        if (directionProp.getType() == prop.getType()) {
+                            lines.add(prop.getName() + separator + GuiBase.TXT_GOLD + val.toString());
+                            break;
+                        }
+                    }
                 }
-                else if (prop instanceof IntProperty)
+                if (prop instanceof IntProperty)
                 {
                     lines.add(prop.getName() + separator + GuiBase.TXT_AQUA + val.toString());
                 }

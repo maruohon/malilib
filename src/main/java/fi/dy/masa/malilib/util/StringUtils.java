@@ -73,7 +73,7 @@ public class StringUtils
         return str;
     }
 
-    public static void sendOpenFileChatMessage(net.minecraft.entity.Entity sender, String messageKey, File file)
+    public static void sendOpenFileChatMessage(net.minecraft.server.network.ServerPlayerEntity sender, String messageKey, File file)
     {
         net.minecraft.text.Text name = Text.literal(file.getName())
             .formatted(net.minecraft.util.Formatting.UNDERLINE)

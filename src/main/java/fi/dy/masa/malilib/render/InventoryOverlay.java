@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.util.IEntityOwnedInventory;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.*;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -14,7 +15,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
@@ -57,8 +57,8 @@ public class InventoryOverlay
         BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         BuiltBuffer builtBuffer;
 
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.applyModelViewMatrix();
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
+//        RenderSystem.applyModelViewMatrix();
 
         if (type == InventoryRenderType.FURNACE)
         {
@@ -193,8 +193,8 @@ public class InventoryOverlay
         BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         BuiltBuffer builtBuffer;
 
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.applyModelViewMatrix();
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
+//        RenderSystem.applyModelViewMatrix();
 
         RenderUtils.bindTexture(TEXTURE_DISPENSER);
 
@@ -561,7 +561,7 @@ public class InventoryOverlay
         drawContext.drawItem(stack, 0, 0);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
-        drawContext.drawItemInSlot( mc.textRenderer, stack, 0, 0);
+        drawContext.drawStackOverlay(mc.textRenderer, stack, 0, 0);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         matrixStack.pop();

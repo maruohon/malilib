@@ -657,7 +657,7 @@ public class LayerRange
         int worldMinH = -30000000;
         int worldMaxH =  30000000;
         int worldMinY = world != null ? world.getBottomY() : -64;
-        int worldMaxY = world != null ? world.getTopY() - 1 : 319;
+        int worldMaxY = world != null ? world.getTopYInclusive() - 1 : 319;
         int minX = worldMinH;
         int minY = worldMinY;
         int minZ = worldMinH;

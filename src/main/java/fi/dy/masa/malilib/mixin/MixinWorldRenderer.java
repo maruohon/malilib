@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.mixin;
 
+import net.minecraft.client.util.ObjectAllocator;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,22 +19,22 @@ public abstract class MixinWorldRenderer
     @Shadow @Final private MinecraftClient client;
 
     @Inject(method = "render",
-            at = @At(value = "INVOKE", ordinal = 1,
-                     target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/LightmapTextureManager;FDDD)V"))
-    private void onRenderWorldLastNormal(RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, Matrix4f matrix4f2, CallbackInfo ci)
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Vec3d;FLnet/minecraft/client/render/Fog;)V"))
+    private void onRenderWorldLastNormal(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrix4f, matrix4f2, this.client);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(positionMatrix, projectionMatrix, this.client);
     }
 
     @Inject(method = "render",
-            slice = @Slice(from = @At(value = "FIELD", ordinal = 1, // start from the endDrawing() call
-                                      target = "Lnet/minecraft/client/render/RenderPhase;WEATHER_TARGET:Lnet/minecraft/client/render/RenderPhase$Target;"),
-                            to = @At(value = "INVOKE", ordinal = 1, // end at the second renderWeather call
-                                     target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/LightmapTextureManager;FDDD)V")),
+            slice = @Slice(from = @At(value = "INVOKE", // start from the endDrawing() call
+                                      target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Vec3d;FLnet/minecraft/client/render/Fog;)V"),
+                            to = @At(value = "INVOKE", // end at the second renderWeather call
+                                     target = "Lnet/minecraft/client/render/WorldRenderer;renderLateDebug(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/client/render/Fog;)V")),
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(F)V"))
-    private void onRenderWorldLastFabulous(RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, Matrix4f matrix4f2, CallbackInfo ci)
+                    target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(Lnet/minecraft/client/render/FrameGraphBuilder;IILnet/minecraft/client/gl/PostEffectProcessor$FramebufferSet;)V"))
+    private void onRenderWorldLastFabulous(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrix4f, matrix4f2, this.client);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(positionMatrix, projectionMatrix, this.client);
     }
 }
