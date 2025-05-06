@@ -7,7 +7,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
 
 public class PacketUtils
@@ -35,18 +35,18 @@ public class PacketUtils
     public static PacketBuffer retainedSlice(ByteBuf buf)
     {
         Objects.requireNonNull(buf, "PacketUtils#retainedSlice(): ByteBuf cannot be null");
-        return new PacketBuffer(buf.retainedSlice());
+        return new PacketBuffer(buf.slice());   // TODO 1.8.9 this should be retainedSlice(), which doesn't exist in Netty 4.0.23
     }
 
     public static void send(ResourceLocation channel, PacketBuffer packet, NetHandlerPlayClient networkHandler)
     {
-        networkHandler.sendPacket(new CPacketCustomPayload(channel.toString(), packet));
+        networkHandler.addToSendQueue(new C17PacketCustomPayload(channel.toString(), packet));
     }
 
     public static void sendTag(ResourceLocation channel, NBTTagCompound tag, NetHandlerPlayClient networkHandler)
     {
         PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        buf.writeCompoundTag(tag);
+        buf.writeNBTTagCompoundToBuffer(tag);
         send(channel, buf, networkHandler);
     }
 }

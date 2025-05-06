@@ -1,13 +1,7 @@
 package malilib.config.option.list;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
-import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.inventory.EntityEquipmentSlot;
-
+public class EquipmentSlotListConfig {}
+/* TODO 1.8.9
 public class EquipmentSlotListConfig extends ValueListConfig<EntityEquipmentSlot>
 {
     public EquipmentSlotListConfig(String name, ImmutableList<EntityEquipmentSlot> defaultValues)
@@ -86,3 +80,4 @@ public class EquipmentSlotListConfig extends ValueListConfig<EntityEquipmentSlot
         return null;
     }
 }
+*/

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.play.server.SPacketCustomPayload;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
 
 import malilib.network.ClientPacketChannelHandlerImpl;
 import malilib.registry.Registry;
@@ -15,7 +15,7 @@ import malilib.registry.Registry;
 public abstract class MixinNetHandlerPlayClient
 {
     @Inject(method = "handleCustomPayload", at = @At("RETURN"))
-    private void onCustomPayload(SPacketCustomPayload packet, CallbackInfo ci)
+    private void onCustomPayload(S3FPacketCustomPayload packet, CallbackInfo ci)
     {
         NetHandlerPlayClient handler = (NetHandlerPlayClient) (Object) this;
         ((ClientPacketChannelHandlerImpl) Registry.CLIENT_PACKET_CHANNEL_HANDLER).processPacketFromServer(packet, handler);

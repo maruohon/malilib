@@ -199,7 +199,7 @@ public class NbtWrap
 
     public static String getCommandFeedbackName(NBTBase tag)
     {
-        return NBTBase.getTypeName(getTypeId(tag));
+        return NBTBase.NBT_TYPES[getTypeId(tag)];
     }
 
     public static int getTypeId(NBTBase tag)
@@ -334,7 +334,15 @@ public class NbtWrap
 
     public static int getIntAt(NBTTagList listTag, int index)
     {
-        return listTag.getIntAt(index);
+        if (index >= 0 && index < getListSize(listTag))
+        {
+            NBTBase nBTBase = listTag.get(index);
+            return nBTBase.getId() == Constants.NBT.TAG_INT ? ((NBTTagInt) nBTBase).getInt() : 0;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     public static NBTTagCompound getCompoundAt(NBTTagList listTag, int index)
@@ -344,11 +352,11 @@ public class NbtWrap
 
     public static NBTTagCompound copy(NBTTagCompound tag)
     {
-        return tag.m_1696745();//copy();
+        return (NBTTagCompound) tag.copy();
     }
 
     public static NBTTagList copy(NBTTagList tag)
     {
-        return tag.m_4371252();//copy();
+        return (NBTTagList) tag.copy();
     }
 }

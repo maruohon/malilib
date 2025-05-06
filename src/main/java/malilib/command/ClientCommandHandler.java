@@ -4,14 +4,11 @@ import java.util.List;
 
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 
-import malilib.MaLiLib;
 import malilib.gui.util.GuiUtils;
 import malilib.util.game.wrap.GameWrap;
 
@@ -29,6 +26,7 @@ public class ClientCommandHandler extends CommandHandler
     @Override
     public int executeCommand(ICommandSender sender, String message)
     {
+        /* TODO 1.8.9
         message = message.trim();
 
         boolean usedSlash = message.startsWith("/");
@@ -66,14 +64,15 @@ public class ClientCommandHandler extends CommandHandler
             sender.sendMessage(this.format("commands.generic.exception"));
             MaLiLib.LOGGER.error("Command '{}' threw an exception:", message, t);
         }
+        */
 
         return -1;
     }
 
-    private TextComponentTranslation format(String str, Object... args)
+    private ChatComponentTranslation format(String str, Object... args)
     {
-        TextComponentTranslation ret = new TextComponentTranslation(str, args);
-        ret.getStyle().setColor(TextFormatting.RED);
+        ChatComponentTranslation ret = new ChatComponentTranslation(str, args);
+        ret.getChatStyle().setColor(EnumChatFormatting.RED);
         return ret;
     }
 
@@ -88,12 +87,12 @@ public class ClientCommandHandler extends CommandHandler
             if (GuiUtils.getCurrentScreen() instanceof GuiChat)
             {
                 EntityPlayer player = GameWrap.getClientPlayer();
-                List<String> commands = this.getTabCompletions(player, leftOfCursor, player.getPosition());
+                List<String> commands = this.getTabCompletionOptions(player, leftOfCursor, player.getPosition());
 
                 if (commands.isEmpty() == false)
                 {
-                    TextFormatting gray = TextFormatting.GRAY;
-                    TextFormatting reset = TextFormatting.RESET;
+                    EnumChatFormatting gray = EnumChatFormatting.GRAY;
+                    EnumChatFormatting reset = EnumChatFormatting.RESET;
 
                     if (leftOfCursor.indexOf(' ') == -1)
                     {
@@ -116,9 +115,11 @@ public class ClientCommandHandler extends CommandHandler
         }
     }
 
+    /*
     @Override
     protected MinecraftServer getServer()
     {
         return GameWrap.getClient().getIntegratedServer();
     }
+    */
 }

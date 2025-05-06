@@ -1,10 +1,14 @@
 package malilib.util.position;
 
-public class ChunkPos extends net.minecraft.util.math.ChunkPos
+public class ChunkPos
 {
+    public final int x;
+    public final int z;
+
     public ChunkPos(int x, int z)
     {
-        super(x, z);
+        this.x = x;
+        this.z = z;
     }
 
     public int getX()
@@ -26,10 +30,5 @@ public class ChunkPos extends net.minecraft.util.math.ChunkPos
     public static long asLong(int chunkX, int chunkZ)
     {
         return ((long) chunkZ << 32) | (long) chunkX;
-    }
-
-    public static ChunkPos of(net.minecraft.util.math.ChunkPos pos)
-    {
-        return new ChunkPos(pos.x, pos.z);
     }
 }

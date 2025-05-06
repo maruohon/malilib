@@ -3,8 +3,8 @@ package malilib.render.buffer;
 import java.nio.ByteBuffer;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -16,18 +16,18 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
 {
     protected static final WorldVertexBufferUploader VBO_UPLOADER = new WorldVertexBufferUploader();
 
-    protected final BufferBuilder buffer;
+    protected final WorldRenderer buffer;
     protected final boolean hasTexture;
     protected VertexFormat vertexFormat;
     protected boolean started;
     protected int glMode;
 
-    public VanillaWrappingVertexBuilder(BufferBuilder buffer)
+    public VanillaWrappingVertexBuilder(WorldRenderer buffer)
     {
         this(buffer, buffer.getDrawMode(), buffer.getVertexFormat());
     }
 
-    public VanillaWrappingVertexBuilder(BufferBuilder buffer, int glMode, VertexFormat vertexFormat)
+    public VanillaWrappingVertexBuilder(WorldRenderer buffer, int glMode, VertexFormat vertexFormat)
     {
         this.buffer = buffer;
         this.glMode = glMode;
@@ -122,13 +122,13 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
     }
 
     @Override
-    public BufferBuilder.State getVertexData()
+    public WorldRenderer.State getVertexData()
     {
         return this.buffer.getVertexState();
     }
 
     @Override
-    public void setVertexData(BufferBuilder.State date)
+    public void setVertexData(WorldRenderer.State date)
     {
         this.buffer.setVertexState(date);
     }
@@ -223,7 +223,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
 
     public static VertexBuilder create(int glMode, VertexFormat vertexFormat)
     {
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+        WorldRenderer buffer = Tessellator.getInstance().getWorldRenderer();
         return create(buffer, glMode, vertexFormat);
     }
 
@@ -231,7 +231,7 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
      * Creates and returns a VertexBuilder using the given BufferBuilder.
      * Note: The buffer is also started using the given modes.
      */
-    public static VertexBuilder create(BufferBuilder buffer, int glMode, VertexFormat vertexFormat)
+    public static VertexBuilder create(WorldRenderer buffer, int glMode, VertexFormat vertexFormat)
     {
         VanillaWrappingVertexBuilder builder = new VanillaWrappingVertexBuilder(buffer, glMode, vertexFormat);
         builder.start();
@@ -245,6 +245,6 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
      */
     public static VertexBuilder create(int bufferCapacity, int glMode, VertexFormat vertexFormat)
     {
-        return create(new BufferBuilder(bufferCapacity), glMode, vertexFormat);
+        return create(new WorldRenderer(bufferCapacity), glMode, vertexFormat);
     }
 }

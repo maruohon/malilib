@@ -3,12 +3,11 @@ package malilib.util.game;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import malilib.util.MathUtils;
@@ -48,13 +47,13 @@ public class RayTraceUtils
 
             double closest = result != null && result.type == HitResult.Type.BLOCK ?
                                      eyesPos.squareDistanceTo(result.pos) : Double.MAX_VALUE;
-            RayTraceResult entityTrace = null;
+            MovingObjectPosition entityTrace = null;
             Entity targetEntity = null;
 
             for (Entity entityTmp : list)
             {
                 bb = entityTmp.getEntityBoundingBox();
-                RayTraceResult traceTmp = bb.calculateIntercept(eyesPos.toVanilla(), lookEndPos.toVanilla());
+                MovingObjectPosition traceTmp = bb.calculateIntercept(eyesPos.toVanilla(), lookEndPos.toVanilla());
 
                 if (traceTmp != null)
                 {
@@ -162,15 +161,16 @@ public class RayTraceUtils
     {
         if (data.isPositionWithinRange())
         {
+            /* TODO 1.8.9
             IBlockState state = world.getBlockState(data.mutablePos);
 
             if (data.isValidBlock(state) &&
-                ((ignoreNonCollidable == false && state.getMaterial() != Material.AIR)
+                ((ignoreNonCollidable == false && state.getBlock().getMaterial() != Material.air)
                     || state.getCollisionBoundingBox(world, data.mutablePos) != Block.NULL_AABB))
             {
                 if (state.getBlock().canCollideCheck(state, false) || data.fluidMode.handled(state))
                 {
-                    RayTraceResult traceTmp = state.collisionRayTrace(world, data.mutablePos.toImmutable(),
+                    MovingObjectPosition traceTmp = state.collisionRayTrace(world, data.mutablePos.toImmutable(),
                                                                       data.start.toVanilla(), data.end.toVanilla());
 
                     if (traceTmp != null)
@@ -180,6 +180,7 @@ public class RayTraceUtils
                     }
                 }
             }
+            */
         }
 
         return false;
@@ -373,7 +374,7 @@ public class RayTraceUtils
         public double currentY;
         public double currentZ;
         public Direction facing;
-        @Nullable public RayTraceResult trace;
+        @Nullable public MovingObjectPosition trace;
 
         public RayTraceCalculationData(Vec3d start, Vec3d end, RayTraceFluidHandling fluidMode,
                                        BlockStatePredicate blockFilter, @Nullable LayerRange range)
@@ -417,9 +418,10 @@ public class RayTraceUtils
                 return false;
             }
 
+            /* TODO 1.8.9
             IBlockState state = world.getBlockState(this.mutablePos);
 
-            if (state.getMaterial() == Material.AIR ||
+            if (state.getBlock().getMaterial() == Material.air ||
                 this.isValidBlock(state) == false ||
                 (ignoreNonCollidable == false && state.getCollisionBoundingBox(world, this.mutablePos) == Block.NULL_AABB))
             {
@@ -428,7 +430,7 @@ public class RayTraceUtils
 
             if (state.getBlock().canCollideCheck(state, false) || this.fluidMode.handled(state))
             {
-                RayTraceResult traceTmp = state.collisionRayTrace(world, this.mutablePos,
+                MovingObjectPosition traceTmp = state.collisionRayTrace(world, this.mutablePos,
                                                                   this.start.toVanilla(), this.end.toVanilla());
 
                 if (traceTmp != null)
@@ -437,13 +439,14 @@ public class RayTraceUtils
                     return true;
                 }
             }
+            */
 
             return false;
         }
     }
 
     public static final BlockStatePredicate BLOCK_FILTER_ANY = (state) -> true;
-    public static final BlockStatePredicate BLOCK_FILTER_NON_AIR = (state) -> state.getMaterial() != Material.AIR;
+    public static final BlockStatePredicate BLOCK_FILTER_NON_AIR = (state) -> state.getBlock().getMaterial() != Material.air;
 
     public enum RayTraceFluidHandling
     {

@@ -1,6 +1,6 @@
 plugins {
-	id 'fabric-loom' version '1.4-SNAPSHOT'
-	id 'ploceus' version '1.4.2'
+	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'ploceus' version '1.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -31,7 +31,7 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
 	mappings loom.layered {
-		addLayer ploceus.mcpMappings('stable', '1.12', '39')
+		addLayer ploceus.mcpMappings('stable', '1.8.9', '22')
 		//mappings "net.ornithemc:feather:${project.minecraft_version}+build.${project.feather_build}:v2"
 		//addLayer ploceus.nestedMappings() // remove this line if not using nests
 	}
@@ -41,7 +41,7 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
 
-	//ploceus.addCommonLibraries()
+	ploceus.addCommonLibraries()
 	ploceus.dependOsl(project.osl_version)
 }
 

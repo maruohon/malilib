@@ -30,7 +30,7 @@ public class FileUtils
 
     public static Path getMinecraftDirectory()
     {
-        return GameWrap.getClient().gameDir.toPath();
+        return GameWrap.getClient().mcDataDir.toPath();
     }
 
     public static Path getRootDirectory()

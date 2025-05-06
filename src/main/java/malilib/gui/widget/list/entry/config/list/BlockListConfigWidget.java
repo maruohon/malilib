@@ -29,7 +29,7 @@ public class BlockListConfigWidget extends BaseValueListConfigWidget<Block, Bloc
         return new BaseValueListEditButton<>(width, height,
                                              config,
                                              this::updateWidgetState,
-                                             () -> Blocks.STONE,
+                                             () -> Blocks.stone,
                                              RegistryUtils::getSortedBlockList,
                                              RegistryUtils::getBlockIdStr,
                                              BlockModelWidget::new,

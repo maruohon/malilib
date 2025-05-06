@@ -1,7 +1,6 @@
 package malilib.mixin.input;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,6 +15,7 @@ import malilib.registry.Registry;
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin implements MinecraftClientAccessor
 {
+    /* TODO 1.8.9
     @Shadow private boolean actionKeyF3;
 
     @Override
@@ -23,8 +23,10 @@ public abstract class MinecraftMixin implements MinecraftClientAccessor
     {
         this.actionKeyF3 = value;
     }
+    */
 
-    @Inject(method = "runTickKeyboard", cancellable = true,
+    // TODO 1.8.9 this is totally fucked now
+    @Inject(method = "runTick", cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V"))
     private void onKeyboardInput(CallbackInfo ci)
     {
@@ -34,7 +36,8 @@ public abstract class MinecraftMixin implements MinecraftClientAccessor
         }
     }
 
-    @Inject(method = "runTickMouse", cancellable = true,
+    // TODO 1.8.9 this is totally fucked now
+    @Inject(method = "runTick", cancellable = true,
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I", remap = false))
     private void onMouseInput(CallbackInfo ci)
     {

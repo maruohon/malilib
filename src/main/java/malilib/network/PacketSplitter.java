@@ -10,8 +10,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.network.play.server.SPacketCustomPayload;
+import net.minecraft.network.play.client.C17PacketCustomPayload;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -34,7 +34,7 @@ public class PacketSplitter
                             NetHandlerPlayClient networkHandler)
     {
         send(packet, MAX_PAYLOAD_PER_PACKET_C2S,
-             buf -> networkHandler.sendPacket(new CPacketCustomPayload(channel.toString(), buf)));
+             buf -> networkHandler.addToSendQueue(new C17PacketCustomPayload(channel.toString(), buf)));
     }
 
     private static void send(PacketBuffer packet,
@@ -54,7 +54,7 @@ public class PacketSplitter
 
             if (offset == 0)
             {
-                buf.writeVarInt(totalSize);
+                buf.writeVarIntToBuffer(totalSize);
             }
 
             buf.writeBytes(packet, packetSize);
@@ -67,14 +67,14 @@ public class PacketSplitter
 
     @Nullable
     public static PacketBuffer receive(NetHandlerPlayClient networkHandler,
-                                       SPacketCustomPayload message)
+                                       S3FPacketCustomPayload message)
     {
         return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_S2C);
     }
 
     @Nullable
     private static PacketBuffer receive(NetHandlerPlayClient networkHandler,
-                                        SPacketCustomPayload message,
+                                        S3FPacketCustomPayload message,
                                         int maxLength)
     {
         Pair<INetHandler, ResourceLocation> key = Pair.of(networkHandler,
@@ -100,7 +100,7 @@ public class PacketSplitter
         {
             if (this.expectedSize < 0)
             {
-                this.expectedSize = data.readVarInt();
+                this.expectedSize = data.readVarIntFromBuffer();
 
                 if (this.expectedSize > maxLength)
                 {

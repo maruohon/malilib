@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.init.SoundEvents;
 
 import malilib.gui.icon.DefaultIcons;
 import malilib.gui.icon.Icon;
@@ -23,11 +22,14 @@ import malilib.render.text.StyledTextLine;
 import malilib.render.text.StyledTextUtils;
 import malilib.util.StringUtils;
 import malilib.util.data.EdgeInt;
+import malilib.util.data.Identifier;
 import malilib.util.data.Int2BooleanFunction;
 import malilib.util.data.LeftRight;
 
 public class GenericButton extends InteractableWidget
 {
+    public static final Identifier BUTTON_CLICK_SOUND = new Identifier("gui.button.press");
+
     @Nullable protected ButtonActionListener actionListener;
     @Nullable protected Supplier<Icon> buttonIconSupplier;
     @Nullable protected Supplier<String> displayStringSupplier;
@@ -270,7 +272,7 @@ public class GenericButton extends InteractableWidget
     {
         if (this.playClickSound)
         {
-            ISound sound = PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F);
+            ISound sound = PositionedSoundRecord.create(BUTTON_CLICK_SOUND, 1.0F);
             this.mc.getSoundHandler().playSound(sound);
         }
     }

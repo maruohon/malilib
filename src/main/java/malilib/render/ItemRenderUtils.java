@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 
 import malilib.render.text.StyledTextLine;
@@ -44,8 +43,8 @@ public class ItemRenderUtils
         // -145 seems to work pretty well for things like boats where the issue occurs first,
         // but carpets actually need around -143 to not clip the back corner.
         itemRenderer.zLevel = z - 142f;
-        itemRenderer.renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
-        itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
+        itemRenderer.renderItemAndEffectIntoGUI(stack, 0, 0);
+        itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, stack, 0, 0, null);
         itemRenderer.zLevel = oldZ;
 
         //RenderWrap.disableBlend();
@@ -60,14 +59,14 @@ public class ItemRenderUtils
             return;
         }
 
-        List<String> list = stack.getTooltip(GameWrap.getClientPlayer(), GameWrap.getOptions().advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        List<String> list = stack.getTooltip(GameWrap.getClientPlayer(), GameWrap.getOptions().advancedItemTooltips);
         List<StyledTextLine> textLines = new ArrayList<>();
 
         for (int i = 0; i < list.size(); ++i)
         {
             if (i == 0)
             {
-                StyledTextLine.parseLines(textLines, stack.getRarity().color + list.get(i));
+                StyledTextLine.parseLines(textLines, stack.getRarity().rarityColor + list.get(i));
             }
             else
             {

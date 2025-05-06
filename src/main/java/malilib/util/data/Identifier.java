@@ -11,7 +11,7 @@ public class Identifier extends ResourceLocation
 {
     public Identifier(ResourceLocation resourceLocation)
     {
-        this(resourceLocation.getNamespace(), resourceLocation.getPath());
+        this(resourceLocation.getResourceDomain(), resourceLocation.getResourcePath());
     }
 
     public Identifier(String resourceName)

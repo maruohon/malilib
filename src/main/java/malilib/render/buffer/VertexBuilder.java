@@ -2,7 +2,7 @@ package malilib.render.buffer;
 
 import java.nio.ByteBuffer;
 
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.WorldRenderer;
 
 import malilib.util.data.Color4f;
 
@@ -62,7 +62,7 @@ public interface VertexBuilder
 
     ByteBuffer getByteBuffer();
 
-    BufferBuilder.State getVertexData();
+    WorldRenderer.State getVertexData();
 
-    void setVertexData(BufferBuilder.State state);
+    void setVertexData(WorldRenderer.State state);
 }

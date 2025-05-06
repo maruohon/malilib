@@ -2,31 +2,29 @@ package malilib.util.position;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.Mirror;
-
 import malilib.util.StringUtils;
 import malilib.util.position.Direction.Axis;
 
 public enum BlockMirror
 {
-    NONE (0, "none", null, Mirror.NONE),
-    X    (1, "x", Axis.X, Mirror.FRONT_BACK),
-    Y    (2, "y", Axis.Y, Mirror.NONE),
-    Z    (3, "z", Axis.Z, Mirror.LEFT_RIGHT);
+    NONE (0, "none", null),//, Mirror.NONE),
+    X    (1, "x", Axis.X),//, Mirror.FRONT_BACK),
+    Y    (2, "y", Axis.Y),//, Mirror.NONE),
+    Z    (3, "z", Axis.Z);//, Mirror.LEFT_RIGHT);
 
     public static final BlockMirror[] VALUES = values();
 
     private final int index;
     private final String name;
     private final String translationKey;
-    private final Mirror vanillaMirror;
+    //private final Mirror vanillaMirror;
     @Nullable private final Direction.Axis axis;
 
-    BlockMirror(int index, String name, Direction.Axis axis, Mirror vanillaMirror)
+    BlockMirror(int index, String name, @Nullable Direction.Axis axis)//, Mirror vanillaMirror)
     {
         this.index = index;
         this.name = name;
-        this.vanillaMirror = vanillaMirror;
+        //this.vanillaMirror = vanillaMirror;
         this.translationKey = "malilib.label.block_mirror." + name;
         this.axis = axis;
     }
@@ -78,10 +76,12 @@ public enum BlockMirror
         return VALUES[index];
     }
 
+    /*
     public Mirror getVanillaMirror()
     {
         return this.vanillaMirror;
     }
+    */
 
     public static BlockMirror byName(String name)
     {

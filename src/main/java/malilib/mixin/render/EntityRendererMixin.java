@@ -1,6 +1,5 @@
 package malilib.mixin.render;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +16,7 @@ import malilib.registry.Registry;
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin
 {
-    @Shadow @Final private Minecraft mc;
+    @Shadow private Minecraft mc;
 
     @Inject(method = "renderWorldPass(IFJ)V", at = @At(
             value = "FIELD",
@@ -25,7 +24,7 @@ public abstract class EntityRendererMixin
         ))
     private void onRenderWorldLast(int pass, float tickDelta, long finishTimeNano, CallbackInfo ci)
     {
-        if (this.mc.world != null && this.mc.player != null)
+        if (this.mc.theWorld != null && this.mc.thePlayer != null)
         {
             ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderWorldLast(tickDelta);
         }
@@ -37,7 +36,7 @@ public abstract class EntityRendererMixin
             shift = Shift.AFTER))
     private void onRenderGameOverlayPost(float tickDelta, long nanoTime, CallbackInfo ci)
     {
-        if (this.mc.world != null && this.mc.player != null)
+        if (this.mc.theWorld != null && this.mc.thePlayer != null)
         {
             ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderGameOverlayPost();
         }
@@ -49,7 +48,7 @@ public abstract class EntityRendererMixin
             shift = Shift.AFTER))
     private void onRenderScreenPost(float tickDelta, long nanoTime, CallbackInfo ci)
     {
-        if (this.mc.world != null && this.mc.player != null)
+        if (this.mc.theWorld != null && this.mc.thePlayer != null)
         {
             ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderScreenPost(tickDelta);
         }

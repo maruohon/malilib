@@ -2,6 +2,7 @@ package malilib.util.game.wrap;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
@@ -11,12 +12,12 @@ public class WorldWrap
 {
     public static int getDimensionId(World world)
     {
-        return world.provider.getDimensionType().getId();
+        return world.provider.getDimensionId();
     }
 
     public static String getDimensionIdAsString(World world)
     {
-        return String.valueOf(world.provider.getDimensionType().getId());
+        return String.valueOf(world.provider.getDimensionId());
     }
 
     public static long getTotalTick(World world)
@@ -41,7 +42,7 @@ public class WorldWrap
         if (GameWrap.isSinglePlayer() && world != null)
         {
             MinecraftServer server = GameWrap.getIntegratedServer();
-            return server.getWorld(getDimensionId(world));
+            return server.worldServerForDimension(getDimensionId(world));
         }
         else
         {
@@ -60,21 +61,21 @@ public class WorldWrap
     public static WorldServer getServerWorldForClientWorld(World world)
     {
         MinecraftServer server = GameWrap.getIntegratedServer();
-        return server != null ? server.getWorld(getDimensionId(world)) : null;
+        return server != null ? server.worldServerForDimension(getDimensionId(world)) : null;
     }
 
     public static boolean isClientChunkLoaded(int chunkX, int chunkZ, WorldClient world)
     {
-        return world.getChunkProvider().isChunkGeneratedAt(chunkX, chunkZ);
+        return world.getChunkProvider().chunkExists(chunkX, chunkZ);
     }
 
     public static void loadClientChunk(int chunkX, int chunkZ, WorldClient world)
     {
-        world.m_5061960()/*getChunkProvider()*/.loadChunk(chunkX, chunkZ);
+        ((ChunkProviderClient) world.getChunkProvider()).loadChunk(chunkX, chunkZ);
     }
 
     public static void unloadClientChunk(int chunkX, int chunkZ, WorldClient world)
     {
-        world.m_5061960()/*getChunkProvider()*/.unloadChunk(chunkX, chunkZ);
+        ((ChunkProviderClient) world.getChunkProvider()).unloadChunk(chunkX, chunkZ);
     }
 }

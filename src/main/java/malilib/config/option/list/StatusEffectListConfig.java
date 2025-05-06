@@ -1,13 +1,10 @@
 package malilib.config.option.list;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
 
 public class StatusEffectListConfig extends ValueListConfig<Potion>
 {
@@ -34,6 +31,7 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
         return config;
     }
 
+    /* TODO 1.8.9
     @Nullable
     public static Potion getEffectByRegistryName(String name)
     {
@@ -46,9 +44,11 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
             return null;
         }
     }
+    */
 
     public static String getRegistryName(Potion effect)
     {
+        /*
         try
         {
             return Potion.REGISTRY.getNameForObject(effect).toString();
@@ -57,8 +57,11 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
         {
             return "?";
         }
+        */
+        return String.valueOf(effect.getId());
     }
 
+    /* TODO 1.8.9
     public static StatusEffectListConfig create(String cfgName, String... effectNames)
     {
         return create(cfgName, Arrays.asList(effectNames));
@@ -80,4 +83,5 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
 
         return new StatusEffectListConfig(cfgName, builder.build(), StatusEffectListConfig::getRegistryName, StatusEffectListConfig::getEffectByRegistryName);
     }
+    */
 }

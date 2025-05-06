@@ -57,25 +57,25 @@ public class MessagePacketHandler extends BasePacketHandler
 
         @Nullable ScreenLocation location = null;
         @Nullable String marker = null;
-        MessageOutput type = MessageOutput.findValueByName(buf.readString(16), MessageOutput.getValues());
-        int displayTimeMs = buf.readVarInt();
+        MessageOutput type = MessageOutput.findValueByName(buf.readStringFromBuffer(16), MessageOutput.getValues());
+        int displayTimeMs = buf.readVarIntFromBuffer();
         int defaultColor = buf.readInt();
 
         boolean hasLocation = buf.readBoolean();
 
         if (hasLocation)
         {
-            location = ScreenLocation.findValueByName(buf.readString(16), ScreenLocation.VALUES);
+            location = ScreenLocation.findValueByName(buf.readStringFromBuffer(16), ScreenLocation.VALUES);
         }
 
         boolean hasMarker = buf.readBoolean();
 
         if (hasMarker)
         {
-            marker = buf.readString(64);
+            marker = buf.readStringFromBuffer(64);
         }
 
-        String message = buf.readString(8192);
+        String message = buf.readStringFromBuffer(8192);
 
         MessageDispatcher.generic(displayTimeMs)
                 .type(type)

@@ -12,8 +12,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.network.play.server.SPacketCustomPayload;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
 
 import malilib.MaLiLib;
@@ -76,7 +75,7 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean processPacketFromServer(SPacketCustomPayload packet, NetHandlerPlayClient netHandler)
+    public boolean processPacketFromServer(S3FPacketCustomPayload packet, NetHandlerPlayClient netHandler)
     {
         ResourceLocation channel = new ResourceLocation(packet.getChannelName());
         List<PluginChannelHandler> handlers = this.handlers.get(channel);
@@ -114,13 +113,13 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     {
         String joinedChannels = channels.stream().map(ResourceLocation::toString).collect(Collectors.joining("\0"));
         ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
-        NetHandlerPlayClient handler = GameWrap.getClient().getConnection();
-        CPacketCustomPayload packet = new CPacketCustomPayload(type.toString(), new PacketBuffer(payload));
+        NetHandlerPlayClient handler = GameWrap.getNetworkConnection();
+        S3FPacketCustomPayload packet = new S3FPacketCustomPayload(type.toString(), new PacketBuffer(payload));
 
         if (handler != null)
         {
             MaLiLib.debugLog("(Un-)Registering packet handlers: type: '{}', '{}'", type, channels);
-            handler.sendPacket(packet);
+            handler.addToSendQueue(packet);
         }
         else
         {

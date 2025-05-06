@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
@@ -187,10 +187,10 @@ public class MessageDispatcher
     {
         if (MaLiLibConfigs.Debug.MESSAGE_KEY_TO_CHAT.getBooleanValue())
         {
-            TextComponentString message = new TextComponentString(translationKey);
-            TextComponentTranslation hoverMessage = new TextComponentTranslation("malilib.label.message_debug.add_key_to_chat");
-            message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
-            message.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
+            ChatComponentText message = new ChatComponentText(translationKey);
+            ChatComponentTranslation hoverMessage = new ChatComponentTranslation("malilib.label.message_debug.add_key_to_chat");
+            message.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
+            message.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
             GameWrap.getClient().ingameGUI.getChatGUI().printChatMessage(message);
         }
 

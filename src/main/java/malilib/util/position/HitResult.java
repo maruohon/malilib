@@ -3,7 +3,7 @@ package malilib.util.position;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.MovingObjectPosition;
 
 public class HitResult
 {
@@ -28,13 +28,13 @@ public class HitResult
         return this.blockPos;
     }
 
-    public net.minecraft.util.math.RayTraceResult toVanilla()
+    public net.minecraft.util.MovingObjectPosition toVanilla()
     {
         switch (this.type)
         {
-            case BLOCK:     return new RayTraceResult(this.pos.toVanilla(), this.side.getVanillaDirection(), this.blockPos.toVanillaPos());
-            case ENTITY:    return new RayTraceResult(this.entity, this.pos.toVanilla());
-            default:        return new RayTraceResult(RayTraceResult.Type.MISS, net.minecraft.util.math.Vec3d.ZERO, Direction.DOWN.getVanillaDirection(), net.minecraft.util.math.BlockPos.ORIGIN);
+            case BLOCK:     return new MovingObjectPosition(this.pos.toVanilla(), this.side.getVanillaDirection(), this.blockPos.toVanillaPos());
+            case ENTITY:    return new MovingObjectPosition(this.entity, this.pos.toVanilla());
+            default:        return new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, Vec3d.VANILLA_ZERO, Direction.DOWN.getVanillaDirection(), net.minecraft.util.BlockPos.ORIGIN);
         }
     }
 
@@ -67,7 +67,7 @@ public class HitResult
         return new HitResult(Type.ENTITY, null, null, exactPos, entity);
     }
 
-    public static HitResult of(@Nullable RayTraceResult trace)
+    public static HitResult of(@Nullable MovingObjectPosition trace)
     {
         if (trace == null)
         {

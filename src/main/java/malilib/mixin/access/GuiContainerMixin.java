@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(net.minecraft.client.gui.inventory.GuiContainer.class)
 public interface GuiContainerMixin
 {
-    @Accessor("hoveredSlot")
+    @Accessor("theSlot")
     net.minecraft.inventory.Slot getHoveredSlot();
 
     @Accessor("guiLeft")

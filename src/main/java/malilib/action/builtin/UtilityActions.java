@@ -1,6 +1,5 @@
 package malilib.action.builtin;
 
-import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -10,13 +9,13 @@ import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ScreenShotHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.GameType;
+import net.minecraft.world.WorldSettings.GameType;
 
 import malilib.MaLiLib;
 import malilib.action.ActionContext;
@@ -181,17 +180,20 @@ public class UtilityActions
 
     public static ActionResult toggleChunkBorders(ActionContext ctx)
     {
+        /* TODO 1.8.9
         if (ctx.getWorld() != null)
         {
             boolean enabled = ctx.getClient().debugRenderer.toggleChunkBorders();
             translateDebugToggleMessage(enabled ? "debug.chunk_boundaries.on" : "debug.chunk_boundaries.off");
             return ActionResult.SUCCESS;
         }
+        */
         return ActionResult.FAIL;
     }
 
     public static ActionResult copyScreenshotToClipboard(ActionContext ctx)
     {
+        /* TODO 1.8.9
         Minecraft mc = ctx.getClient();
 
         try
@@ -204,6 +206,7 @@ public class UtilityActions
         {
             MessageDispatcher.error().console(e).translate("malilib.message.error.utility_actions.failed_to_copy_screenshot_to_clipboard");
         }
+        */
 
         return ActionResult.SUCCESS;
     }
@@ -211,32 +214,35 @@ public class UtilityActions
     public static ActionResult takeScreenshot(ActionContext ctx)
     {
         Minecraft mc = ctx.getClient();
-        mc.ingameGUI.getChatGUI().printChatMessage(ScreenShotHelper.saveScreenshot(mc.gameDir,
-                                    mc.displayWidth, mc.displayHeight, mc.getFramebuffer()));
+        mc.ingameGUI.getChatGUI().printChatMessage(ScreenShotHelper.saveScreenshot(mc.mcDataDir, mc.displayWidth, mc.displayHeight, mc.getFramebuffer()));
         return ActionResult.SUCCESS;
     }
 
     public static ActionResult dropOneItem(ActionContext ctx)
     {
+        /* TODO 1.8.9
         if (ctx.getPlayer() != null && ctx.getPlayer().isSpectator() == false)
         {
             ctx.getPlayer().dropItem(false);
         }
+        */
         return ActionResult.SUCCESS;
     }
 
     public static ActionResult dropHeldStack(ActionContext ctx)
     {
+        /* TODO 1.8.9
         if (ctx.getPlayer() != null && ctx.getPlayer().isSpectator() == false)
         {
             ctx.getPlayer().dropItem(true);
         }
+        */
         return ActionResult.SUCCESS;
     }
 
     public static ActionResult cycleGameMode(ActionContext ctx, String arg)
     {
-        if (ctx.getPlayer() != null && ctx.getClient().getConnection() != null)
+        if (ctx.getPlayer() != null && GameWrap.getNetworkConnection() != null)
         {
             String[] parts = arg.split(",");
 
@@ -269,7 +275,7 @@ public class UtilityActions
                     return ActionResult.FAIL;
                 }
 
-                NetworkPlayerInfo info = ctx.getClient().getConnection().getPlayerInfo(ctx.getPlayer().getGameProfile().getId());
+                NetworkPlayerInfo info = GameWrap.getNetworkConnection().getPlayerInfo(ctx.getPlayer().getGameProfile().getId());
                 int index = info != null ? modes.indexOf(info.getGameType()) : -1;
 
                 if (++index >= modes.size())
@@ -355,10 +361,10 @@ public class UtilityActions
 
     private static void translateDebugToggleMessage(String key, Object... args)
     {
-        ITextComponent text = new TextComponentString("");
-        text.appendSibling((new TextComponentTranslation("debug.prefix"))
-                                .setStyle((new Style()).setColor(TextFormatting.YELLOW).setBold(Boolean.TRUE)))
-                .appendText(" ").appendSibling(new TextComponentTranslation(key, args));
+        IChatComponent text = new ChatComponentText("");
+        text.appendSibling((new ChatComponentTranslation("debug.prefix"))
+                                .setChatStyle((new ChatStyle()).setColor(EnumChatFormatting.YELLOW).setBold(Boolean.TRUE)))
+                .appendText(" ").appendSibling(new ChatComponentTranslation(key, args));
         GameWrap.getClient().ingameGUI.getChatGUI().printChatMessage(text);
     }
 

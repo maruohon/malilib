@@ -23,7 +23,7 @@ public abstract class GuiScreenMixin extends Gui
             cancellable = true)
     private void onSendMessage(String msg, boolean addToChat, CallbackInfo ci)
     {
-        if (Registry.CLIENT_COMMAND_HANDLER.executeCommand(this.mc.player, msg) != 0)
+        if (Registry.CLIENT_COMMAND_HANDLER.executeCommand(this.mc.thePlayer, msg) != 0)
         {
             ci.cancel();
         }

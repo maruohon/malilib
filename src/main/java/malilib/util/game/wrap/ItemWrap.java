@@ -2,11 +2,14 @@ package malilib.util.game.wrap;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ItemWrap
 {
+    public static final ItemStack EMPTY_STACK = new ItemStack(Blocks.air);
+
     @Nullable
     public static NBTTagCompound getTag(ItemStack stack)
     {
@@ -20,17 +23,24 @@ public class ItemWrap
 
     public static ItemStack fromTag(NBTTagCompound tag)
     {
-        return new ItemStack(tag);
+        ItemStack stack = EMPTY_STACK.copy();
+        stack.readFromNBT(tag);
+        return stack;
     }
 
     public static boolean isEmpty(ItemStack stack)
     {
-        return stack.isEmpty();
+        return stack == null || stack == EMPTY_STACK;
     }
 
     public static boolean notEmpty(ItemStack stack)
     {
-        return stack.isEmpty() == false;
+        return isEmpty(stack) == false;
+    }
+
+    public static int getStackSize(ItemStack stack)
+    {
+        return stack != null ? stack.stackSize : 0;
     }
 
     public static String getStackString(ItemStack stack)

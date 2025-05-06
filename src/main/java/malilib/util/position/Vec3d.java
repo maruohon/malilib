@@ -1,8 +1,11 @@
 package malilib.util.position;
 
+import net.minecraft.util.Vec3;
+
 public class Vec3d
 {
     public static final Vec3d ZERO = new Vec3d(0.0, 0.0, 0.0);
+    public static final Vec3 VANILLA_ZERO = new Vec3(0.0, 0.0, 0.0);
 
     public final double x;
     public final double y;
@@ -60,9 +63,9 @@ public class Vec3d
         return this.squareDistanceTo(other.x, other.y, other.z);
     }
 
-    public double squareDistanceTo(net.minecraft.util.math.Vec3d other)
+    public double squareDistanceTo(net.minecraft.util.Vec3 other)
     {
-        return this.squareDistanceTo(other.x, other.y, other.z);
+        return this.squareDistanceTo(other.xCoord, other.yCoord, other.zCoord);
     }
 
     public double squareDistanceTo(double x, double y, double z)
@@ -85,9 +88,9 @@ public class Vec3d
         return normalized(this.x, this.y, this.z);
     }
 
-    public net.minecraft.util.math.Vec3d toVanilla()
+    public net.minecraft.util.Vec3 toVanilla()
     {
-        return new net.minecraft.util.math.Vec3d(this.x, this.y, this.z);
+        return new net.minecraft.util.Vec3(this.x, this.y, this.z);
     }
 
     public static Vec3d of(double x, double y, double z)
@@ -95,12 +98,12 @@ public class Vec3d
         return new Vec3d(x, y, z);
     }
 
-    public static Vec3d of(net.minecraft.util.math.Vec3d pos)
+    public static Vec3d of(net.minecraft.util.Vec3 pos)
     {
-        return new Vec3d(pos.x, pos.y, pos.z);
+        return new Vec3d(pos.xCoord, pos.yCoord, pos.zCoord);
     }
 
-    public static Vec3d of(net.minecraft.util.math.Vec3i pos)
+    public static Vec3d of(net.minecraft.util.Vec3i pos)
     {
         return new Vec3d(pos.getX(), pos.getY(), pos.getZ());
     }

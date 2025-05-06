@@ -32,7 +32,7 @@ public class ConfigLockPacketHandler extends BasePacketHandler
         try
         {
             boolean resetFirst = buf.readBoolean();
-            String str = buf.readString(256 * 1024);
+            String str = buf.readStringFromBuffer(256 * 1024);
             JsonElement el = JsonUtils.parseJsonFromString(str);
 
             MaLiLib.debugLog("Received a config lock packet from the server (reset first: {})", resetFirst);

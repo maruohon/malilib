@@ -7,26 +7,21 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import com.google.common.base.Splitter;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 
 import malilib.render.text.StyledTextLine;
 import malilib.util.StringUtils;
-import malilib.util.data.Identifier;
 import malilib.util.game.wrap.NbtWrap;
-import malilib.util.game.wrap.RegistryUtils;
 import malilib.util.position.Direction;
 
 public class BlockUtils
@@ -41,18 +36,19 @@ public class BlockUtils
      */
     public static Optional<IBlockState> getBlockStateFromString(String str)
     {
+        /* TODO 1.8.9
         int index = str.indexOf("["); // [prop=value]
         String blockName = index != -1 ? str.substring(0, index) : str;
         Identifier id = new Identifier(blockName);
 
-        if (Block.REGISTRY.containsKey(id))
+        if (Block.blockRegistry.containsKey(id))
         {
             Block block = RegistryUtils.getBlockById(id);
             IBlockState state = block.getDefaultState();
 
             if (index != -1 && str.length() > (index + 4) && str.charAt(str.length() - 1) == ']')
             {
-                BlockStateContainer blockState = block.getBlockState();
+                BlockState blockState = block.getBlockState();
                 String propStr = str.substring(index + 1, str.length() - 1);
 
                 for (String propAndVal : COMMA_SPLITTER.split(propStr))
@@ -82,6 +78,7 @@ public class BlockUtils
 
             return Optional.of(state);
         }
+        */
 
         return Optional.empty();
     }
@@ -190,11 +187,13 @@ public class BlockUtils
         return state.withProperty(prop, (T) value);
     }
 
+    /* TODO 1.8.9
     @Nullable
     public static <T extends Comparable<T>> T getPropertyValueByName(IProperty<T> prop, String valStr)
     {
         return prop.parseValue(valStr).orNull();
     }
+    */
 
     /**
      * Returns the first PropertyDirection property from the provided state, if any.
@@ -231,7 +230,7 @@ public class BlockUtils
 
     public static List<String> getFormattedBlockStateProperties(IBlockState state, String separator)
     {
-        Collection<IProperty<?>> properties = state.getPropertyKeys();
+        Collection<IProperty> properties = state.getPropertyNames();
 
         if (properties.size() > 0)
         {
@@ -280,7 +279,7 @@ public class BlockUtils
 
     public static List<StyledTextLine> getBlockStatePropertyStyledTextLines(IBlockState state, String separator)
     {
-        Collection<IProperty<?>> properties = state.getPropertyKeys();
+        Collection<IProperty> properties = state.getPropertyNames();
 
         if (properties.size() > 0)
         {
@@ -328,7 +327,7 @@ public class BlockUtils
 
     public static boolean isFluidBlock(IBlockState state)
     {
-        return state.getMaterial().isLiquid();
+        return state.getBlock().getMaterial().isLiquid();
     }
 
     public static boolean isFluidSourceBlock(IBlockState state)

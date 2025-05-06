@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 
 import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import malilib.MaLiLib;

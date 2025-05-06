@@ -44,24 +44,24 @@ public class BlockPos extends Vec3i
     }
 
     @Override
-    public BlockPos add(net.minecraft.util.math.Vec3i other)
+    public BlockPos add(net.minecraft.util.Vec3i other)
     {
         return this.add(other.getX(), other.getY(), other.getZ());
     }
 
     @Override
-    public BlockPos subtract(net.minecraft.util.math.Vec3i other)
+    public BlockPos subtract(net.minecraft.util.Vec3i other)
     {
         return this.subtract(other.getX(), other.getY(), other.getZ());
     }
 
-    @Override
+    //@Override
     public BlockPos toImmutable()
     {
         return this;
     }
 
-    public net.minecraft.util.math.BlockPos toVanillaPos()
+    public net.minecraft.util.BlockPos toVanillaPos()
     {
         return this;
     }
@@ -137,7 +137,7 @@ public class BlockPos extends Vec3i
     }
 
     @Nullable
-    public static BlockPos of(@Nullable net.minecraft.util.math.BlockPos pos)
+    public static BlockPos of(@Nullable net.minecraft.util.BlockPos pos)
     {
         if (pos == null)
         {
@@ -163,7 +163,7 @@ public class BlockPos extends Vec3i
             super(x, y, z);
         }
 
-        public MutBlockPos(net.minecraft.util.math.Vec3i pos)
+        public MutBlockPos(net.minecraft.util.Vec3i pos)
         {
             super(pos.getX(), pos.getY(), pos.getZ());
         }
@@ -208,7 +208,7 @@ public class BlockPos extends Vec3i
             this.z = z;
         }
 
-        public BlockPos set(net.minecraft.util.math.Vec3i pos)
+        public BlockPos set(net.minecraft.util.Vec3i pos)
         {
             this.x = pos.getX();
             this.y = pos.getY();
@@ -216,20 +216,20 @@ public class BlockPos extends Vec3i
             return this;
         }
 
-        public BlockPos setOffset(net.minecraft.util.math.Vec3i pos, EnumFacing direction)
+        public BlockPos setOffset(net.minecraft.util.Vec3i pos, EnumFacing direction)
         {
-            this.x = pos.getX() + direction.getXOffset();
-            this.y = pos.getY() + direction.getYOffset();
-            this.z = pos.getZ() + direction.getZOffset();
+            this.x = pos.getX() + direction.getFrontOffsetX();
+            this.y = pos.getY() + direction.getFrontOffsetY();
+            this.z = pos.getZ() + direction.getFrontOffsetZ();
             return this;
         }
 
-        public BlockPos setOffset(net.minecraft.util.math.Vec3i pos, Direction direction)
+        public BlockPos setOffset(net.minecraft.util.Vec3i pos, Direction direction)
         {
             return this.setOffset(pos, direction, 1);
         }
 
-        public BlockPos setOffset(net.minecraft.util.math.Vec3i pos, Direction direction, int amount)
+        public BlockPos setOffset(net.minecraft.util.Vec3i pos, Direction direction, int amount)
         {
             this.x = pos.getX() + direction.getXOffset() * amount;
             this.y = pos.getY() + direction.getYOffset() * amount;

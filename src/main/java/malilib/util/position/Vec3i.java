@@ -1,6 +1,6 @@
 package malilib.util.position;
 
-public class Vec3i extends net.minecraft.util.math.BlockPos
+public class Vec3i extends net.minecraft.util.BlockPos
 {
     public static final Vec3i ZERO = new Vec3i(0, 0, 0);
 

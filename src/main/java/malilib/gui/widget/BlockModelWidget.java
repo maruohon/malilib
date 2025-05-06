@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.resources.model.IBakedModel;
 
 import malilib.gui.util.ScreenContext;
 import malilib.render.ModelRenderUtils;
@@ -42,7 +42,7 @@ public class BlockModelWidget extends BaseModelWidget
 
         if (state != null)
         {
-            this.model = this.mc.getBlockRendererDispatcher().getModelForState(state);
+            this.model = this.mc.getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
         }
         else
         {

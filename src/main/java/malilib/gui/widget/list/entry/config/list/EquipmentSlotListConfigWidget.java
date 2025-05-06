@@ -1,20 +1,7 @@
 package malilib.gui.widget.list.entry.config.list;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
-
-import net.minecraft.inventory.EntityEquipmentSlot;
-
-import malilib.config.option.list.EquipmentSlotListConfig;
-import malilib.gui.config.ConfigWidgetContext;
-import malilib.gui.widget.button.BaseValueListEditButton;
-import malilib.gui.widget.button.GenericButton;
-import malilib.gui.widget.list.entry.DataListEntryWidgetData;
-import malilib.util.StringUtils;
-
+public class EquipmentSlotListConfigWidget {}
+/*
 public class EquipmentSlotListConfigWidget extends BaseValueListConfigWidget<EntityEquipmentSlot, EquipmentSlotListConfig>
 {
     public EquipmentSlotListConfigWidget(EquipmentSlotListConfig config,
@@ -63,3 +50,4 @@ public class EquipmentSlotListConfigWidget extends BaseValueListConfigWidget<Ent
         return slots.stream().filter(validValues::contains).collect(Collectors.toList());
     }
 }
+*/

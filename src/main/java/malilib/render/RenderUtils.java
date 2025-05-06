@@ -197,7 +197,7 @@ public class RenderUtils
 
             builder.draw();
 
-            MapData mapdata = Items.FILLED_MAP.getMapData(stack, GameWrap.getClientWorld());
+            MapData mapdata = Items.filled_map.getMapData(stack, GameWrap.getClientWorld());
 
             if (mapdata != null)
             {

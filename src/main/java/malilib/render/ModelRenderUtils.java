@@ -6,16 +6,14 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.init.Blocks;
 
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
-import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Direction;
 import malilib.util.position.PositionUtils;
@@ -23,12 +21,12 @@ import malilib.util.position.Vec3d;
 
 public class ModelRenderUtils
 {
-    private static final Identifier BLOCK_TEXTURE = new Identifier(TextureMap.LOCATION_BLOCKS_TEXTURE);
+    private static final Identifier BLOCK_TEXTURE = new Identifier(TextureMap.locationBlocksTexture);
 
     public static void renderModelInGui(int x, int y, float zLevel,
                                         IBakedModel model, IBlockState state, RenderContext ctx)
     {
-        if (state.getBlock() == Blocks.AIR)
+        if (state.getBlock() == Blocks.air)
         {
             return;
         }
@@ -86,10 +84,10 @@ public class ModelRenderUtils
 
             for (Direction side : PositionUtils.ALL_DIRECTIONS)
             {
-                renderQuads(model.getQuads(state, side.getVanillaDirection(), 0L), state, color, builder);
+                renderQuads(model.getFaceQuads(side.getVanillaDirection()), state, color, builder);
             }
 
-            renderQuads(model.getQuads(state, null, 0L), state, color, builder);
+            renderQuads(model.getGeneralQuads(), state, color, builder);
 
             builder.draw();
         }
@@ -110,6 +108,7 @@ public class ModelRenderUtils
         builder.addVertexData(quad.getVertexData());
         builder.putQuadColor(color);
 
+        /* TODO 1.8.9
         if (quad.hasTintIndex())
         {
             BlockColors blockColors = GameWrap.getClient().getBlockColors();
@@ -123,13 +122,14 @@ public class ModelRenderUtils
             builder.putColorMultiplier(r, g, b, 2);
             builder.putColorMultiplier(r, g, b, 1);
         }
+        */
 
         putQuadNormal(quad, builder);
     }
 
     public static void putQuadNormal(BakedQuad quad, VertexBuilder builder)
     {
-        net.minecraft.util.math.Vec3i direction = quad.getFace().getDirectionVec();
+        net.minecraft.util.Vec3i direction = quad.getFace().getDirectionVec();
         builder.putNormal(direction.getX(), direction.getY(), direction.getZ());
     }
 
@@ -151,10 +151,10 @@ public class ModelRenderUtils
     {
         for (Direction side : PositionUtils.ALL_DIRECTIONS)
         {
-            renderQuads(model.getQuads(state, side.getVanillaDirection(), 0L), pos, brightness, r, g, b, builder);
+            renderQuads(model.getFaceQuads(side.getVanillaDirection()), pos, brightness, r, g, b, builder);
         }
 
-        renderQuads(model.getQuads(state, null, 0L), pos, brightness, r, g, b, builder);
+        renderQuads(model.getGeneralQuads(), pos, brightness, r, g, b, builder);
     }
 
     /**

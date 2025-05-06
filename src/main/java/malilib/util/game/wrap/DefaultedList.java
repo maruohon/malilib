@@ -6,10 +6,10 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.Validate;
 
-import net.minecraft.util.NonNullList;
-
-public class DefaultedList<E> extends NonNullList<E>
+public class DefaultedList<E> extends ArrayList<E>
 {
+    protected final E defaultValue;
+
     protected DefaultedList()
     {
         this(new ArrayList<>(), null);
@@ -17,7 +17,10 @@ public class DefaultedList<E> extends NonNullList<E>
 
     protected DefaultedList(List<E> delegate, @Nullable E defaultValue)
     {
-        super(delegate, defaultValue);
+        super(delegate);
+
+        // TODO 1.8.9
+        this.defaultValue = defaultValue;
     }
 
     public static <E> DefaultedList<E> empty()

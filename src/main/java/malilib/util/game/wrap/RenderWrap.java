@@ -175,12 +175,18 @@ public class RenderWrap
 
     public static void enableClientState(int capability)
     {
+        /*
         GlStateManager.glEnableClientState(capability);
+        */
+        GL11.glEnableClientState(capability);
     }
 
     public static void disableClientState(int capability)
     {
+        /*
         GlStateManager.glDisableClientState(capability);
+        */
+        GL11.glDisableClientState(capability);
     }
 
     public static void enableLight(int light)
@@ -220,17 +226,26 @@ public class RenderWrap
 
     public static void light(int light, int pname, FloatBuffer params)
     {
+        /*
         GlStateManager.glLight(light, pname, params);
+        */
+        GL11.glLight(light, pname, params);
     }
 
     public static void lightModel(int pname, FloatBuffer params)
     {
+        /*
         GlStateManager.glLightModel(pname, params);
+        */
+        GL11.glLightModel(pname, params);
     }
 
     public static void lineWidth(float lineWidth)
     {
+        /*
         GlStateManager.glLineWidth(lineWidth);
+        */
+        GL11.glLineWidth(lineWidth);
     }
 
     public static void matrixMode(int mode)
@@ -240,12 +255,18 @@ public class RenderWrap
 
     public static void normal(float nx, float ny, float nz)
     {
+        /*
         GlStateManager.glNormal3f(nx, ny, nz);
+        */
+        GL11.glNormal3f(nx, ny, nz);
     }
 
     public static void polygonMode(int face, int mode)
     {
+        /*
         GlStateManager.glPolygonMode(face, mode);
+        */
+        GL11.glPolygonMode(face, mode);
     }
 
     public static void polygonOffset(float factor, float units)
@@ -310,37 +331,58 @@ public class RenderWrap
 
     public static void colorPointer(int size, int type, int stride, int bufferOffset)
     {
+        /*
         GlStateManager.glColorPointer(size, type, stride, bufferOffset);
+        */
+        GL11.glColorPointer(size, type, stride, bufferOffset);
     }
 
     public static void colorPointer(int size, int type, int stride, ByteBuffer buffer)
     {
+        /*
         GlStateManager.glColorPointer(size, type, stride, buffer);
+        */
+        GL11.glColorPointer(size, type, stride, buffer);
     }
 
     public static void normalPointer(int type, int stride, ByteBuffer buffer)
     {
+        /*
         GlStateManager.glNormalPointer(type, stride, buffer);
+        */
+        GL11.glNormalPointer(type, stride, buffer);
     }
 
     public static void texCoordPointer(int size, int type, int stride, int bufferOffset)
     {
+        /*
         GlStateManager.glTexCoordPointer(size, type, stride, bufferOffset);
+        */
+        GL11.glTexCoordPointer(size, type, stride, bufferOffset);
     }
 
     public static void texCoordPointer(int size, int type, int stride, ByteBuffer buffer)
     {
+        /*
         GlStateManager.glTexCoordPointer(size, type, stride, buffer);
+        */
+        GL11.glTexCoordPointer(size, type, stride, buffer);
     }
 
     public static void vertexPointer(int size, int type, int stride, int bufferOffset)
     {
+        /*
         GlStateManager.glVertexPointer(size, type, stride, bufferOffset);
+        */
+        GL11.glVertexPointer(size, type, stride, bufferOffset);
     }
 
     public static void vertexPointer(int size, int type, int stride, ByteBuffer buffer)
     {
+        /*
         GlStateManager.glVertexPointer(size, type, stride, buffer);
+        */
+        GL11.glVertexPointer(size, type, stride, buffer);
     }
 
     public static void blendFunc(BlendSourceFactor srcFactor, BlendDestFactor dstFactor)
@@ -437,7 +479,10 @@ public class RenderWrap
 
     public static void glDrawArrays(int mode, int first, int count)
     {
+        /*
         GlStateManager.glDrawArrays(mode, first, count);
+        */
+        GL11.glDrawArrays(mode, first, count);
     }
 
     public static int glGenBuffers()

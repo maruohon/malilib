@@ -53,8 +53,16 @@ public class TextRendererUtils
 
     public static void readGlyphSizes(byte[] glyphWidth)
     {
-        try (IResource resource = GameWrap.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin")))
+        try
         {
+            IResource resource = GameWrap.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin"));
+
+            if (resource == null)
+            {
+                MaLiLib.LOGGER.warn("Failed to read open the glyph resource 'font/glyph_sizes.bin'");
+                return;
+            }
+
             if (resource.getInputStream().read(glyphWidth) <= 0)
             {
                 MaLiLib.LOGGER.warn("Failed to read glyph sizes from 'font/glyph_sizes.bin'");
@@ -71,8 +79,9 @@ public class TextRendererUtils
     {
         BufferedImage bufferedImage;
 
-        try (IResource resource = GameWrap.getClient().getResourceManager().getResource(texture))
+        try
         {
+            IResource resource = GameWrap.getClient().getResourceManager().getResource(texture);
             bufferedImage = TextureUtil.readBufferedImage(resource.getInputStream());
         }
         catch (IOException e)

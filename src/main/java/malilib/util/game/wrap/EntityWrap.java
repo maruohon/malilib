@@ -1,14 +1,10 @@
 package malilib.util.game.wrap;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 
 import malilib.util.MathUtils;
-import malilib.util.inventory.InventoryUtils;
 import malilib.util.position.BlockPos;
 import malilib.util.position.Direction;
 import malilib.util.position.Vec3d;
@@ -173,9 +169,10 @@ public class EntityWrap
 
     public static ItemStack getMainHandItem(EntityLivingBase entity)
     {
-        return getHeldItem(entity, EnumHand.MAIN_HAND);
+        return entity.getHeldItem();
     }
 
+    /* TODO 1.8.9
     public static ItemStack getOffHandItem(EntityLivingBase entity)
     {
         return getHeldItem(entity, EnumHand.OFF_HAND);
@@ -185,12 +182,14 @@ public class EntityWrap
     {
         return entity.getHeldItem(hand);
     }
+    */
 
     /**
      * Checks if the requested item is currently in the entity's hand such that it would be used for using/placing.
      * This means, that it must either be in the main hand, or the main hand must be empty and the item is in the offhand.
      * @param lenient if true, then NBT tags and also damage of damageable items are ignored
      */
+    /* TODO 1.8.9
     @Nullable
     public static EnumHand getUsedHandForItem(EntityLivingBase entity, ItemStack stack, boolean lenient)
     {
@@ -206,4 +205,5 @@ public class EntityWrap
 
         return hand;
     }
+    */
 }

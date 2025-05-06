@@ -149,11 +149,13 @@ public class GuiUtils
 
                 for (PotionEffect effect : effects)
                 {
-                    Potion potion = effect.getPotion();
+                    Potion potion = Potion.potionTypes[effect.getPotionID()];
 
-                    if (effect.doesShowParticles() && potion.hasStatusIcon())
+                    if (effect.getIsShowParticles() && potion.hasStatusIcon())
                     {
-                        if (potion.isBeneficial())
+                        // TODO 1.8.9
+                        //if (potion.isBeneficial())
+                        if (potion.isBadEffect() == false)
                         {
                             y1 = 26;
                         }

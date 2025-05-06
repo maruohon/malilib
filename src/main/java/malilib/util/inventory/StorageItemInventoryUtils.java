@@ -4,9 +4,7 @@ import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -65,6 +63,7 @@ public class StorageItemInventoryUtils
 
     public static boolean doesSlotContainShulkerBoxWithItem(Slot slot, ItemStack referenceStack, boolean ignoreNbt)
     {
+        /*
         ItemStack stack = slot.getStack();
 
         if (ItemWrap.isEmpty(stack) == false &&
@@ -73,6 +72,7 @@ public class StorageItemInventoryUtils
         {
             return StorageItemInventoryUtils.doesShulkerBoxContainItem(stack, referenceStack, ignoreNbt);
         }
+        */
 
         return false;
     }

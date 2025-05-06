@@ -21,7 +21,7 @@ public class PlacementUtils
         IBlockState state = world.getBlockState(pos);
 
         return state.getBlock().isReplaceable(world, pos) ||
-               (checkMaterial && state.getMaterial().isReplaceable());
+               (checkMaterial && state.getBlock().getMaterial().isReplaceable());
     }
 
     /**

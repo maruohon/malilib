@@ -30,7 +30,7 @@ public class ItemType
 
     public ItemType(ItemStack stack, boolean copy, boolean ignoreDamage, boolean checkNbt)
     {
-        this.stack = ItemWrap.isEmpty(stack) ? ItemStack.EMPTY : (copy ? stack.copy() : stack);
+        this.stack = ItemWrap.isEmpty(stack) ? ItemWrap.EMPTY_STACK : (copy ? stack.copy() : stack);
         this.ignoreDamage = ignoreDamage;
         this.checkNbt = checkNbt;
         this.hashCode = this.calculateHashCode();

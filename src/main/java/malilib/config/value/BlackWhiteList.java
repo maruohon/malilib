@@ -8,12 +8,10 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 
 import malilib.config.option.list.BlockListConfig;
 import malilib.config.option.list.ItemListConfig;
-import malilib.config.option.list.StatusEffectListConfig;
 import malilib.config.option.list.ValueListConfig;
 import malilib.util.data.Identifier;
 import malilib.util.restriction.UsageRestriction.ListType;
@@ -150,6 +148,7 @@ public class BlackWhiteList<TYPE>
                                  BlockListConfig.create("malilib.label.list_type.whitelist", whiteList));
     }
 
+    /* TODO 1.8.9
     public static BlackWhiteList<Potion> effects(ListType type, List<String> blackList, List<String> whiteList)
     {
         return BlackWhiteList.of(type,
@@ -158,6 +157,7 @@ public class BlackWhiteList<TYPE>
                                  Potion.REGISTRY::getObject,
                                  Potion.REGISTRY::getNameForObject);
     }
+    */
 
     @Override
     public boolean equals(Object o)

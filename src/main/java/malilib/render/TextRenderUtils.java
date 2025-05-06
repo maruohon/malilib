@@ -181,7 +181,7 @@ public class TextRenderUtils
     public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
                                        float scale, int textColor, int bgColor, boolean disableDepth, RenderContext ctx)
     {
-        FontRenderer textRenderer = GameWrap.getClient().fontRenderer;
+        FontRenderer textRenderer = GameWrap.getClient().fontRendererObj;
 
         RenderWrap.alphaFunc(GL11.GL_GREATER, 0.1F);
         RenderWrap.pushMatrix(ctx);

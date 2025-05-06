@@ -16,11 +16,11 @@ import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 
 import malilib.MaLiLib;
@@ -148,10 +148,10 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(String messageKey, Path file)
     {
-        TextComponentString name = new TextComponentString(file.getFileName().toString());
-        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString()));
-        name.getStyle().setUnderlined(Boolean.TRUE);
-        GameWrap.getClientPlayer().sendMessage(new TextComponentTranslation(messageKey, name));
+        ChatComponentText name = new ChatComponentText(file.getFileName().toString());
+        name.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.toAbsolutePath().toString()));
+        name.getChatStyle().setUnderlined(Boolean.TRUE);
+        GameWrap.getClient().ingameGUI.getChatGUI().printChatMessage(new ChatComponentTranslation(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -507,7 +507,7 @@ public class StringUtils
                 }
                 else
                 {
-                    NetHandlerPlayClient handler = mc.getConnection();
+                    NetHandlerPlayClient handler = GameWrap.getNetworkConnection();
                     NetworkManager connection = handler != null ? handler.getNetworkManager() : null;
 
                     if (connection != null)
@@ -649,7 +649,7 @@ public class StringUtils
 
     public static boolean hasTranslation(String translationKey)
     {
-        return net.minecraft.client.resources.I18n.hasKey(translationKey);
+        return net.minecraft.client.resources.I18n.format(translationKey).equals(translationKey) == false;
     }
 
     /**
@@ -657,7 +657,7 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return GameWrap.getClient().fontRenderer.FONT_HEIGHT;
+        return GameWrap.getClient().fontRendererObj.FONT_HEIGHT;
     }
 
     /**
@@ -665,6 +665,6 @@ public class StringUtils
      */
     public static int getStringWidth(String text)
     {
-        return GameWrap.getClient().fontRenderer.getStringWidth(text);
+        return GameWrap.getClient().fontRendererObj.getStringWidth(text);
     }
 }

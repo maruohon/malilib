@@ -7,13 +7,11 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 
 import malilib.util.data.IntRange;
 import malilib.util.data.ItemType;
@@ -27,7 +25,22 @@ public class InventoryUtils
      */
     public static boolean areItemsEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2);
+        if (stack1 == null || stack2 == null)
+        {
+            return stack1 == stack2;
+        }
+
+        if (stack1.getItem() != stack2.getItem())
+        {
+            return false;
+        }
+
+        if (stack1.isItemStackDamageable())
+        {
+            return true;
+        }
+
+        return stack1.getItemDamage() == stack2.getItemDamage();
     }
 
     /**
@@ -71,12 +84,13 @@ public class InventoryUtils
     public static ItemStack getCursorStack()
     {
         InventoryPlayer inv = GameWrap.getPlayerInventory();
-        return inv != null ? inv.getItemStack() : ItemStack.EMPTY;
+        return inv != null ? inv.getItemStack() : ItemWrap.EMPTY_STACK;
     }
 
     public static boolean isHotbarSlot(int slot)
     {
-        return InventoryPlayer.isHotbar(slot);
+        //return InventoryPlayer.isHotbar(slot);
+        return slot >= 0 && slot < 9;
     }
 
     public static boolean isHotbarSlotIndex(int slot)
@@ -106,7 +120,8 @@ public class InventoryUtils
      */
     public static void swapSlots(Container container, int slotNum, int hotbarSlot)
     {
-        clickSlot(container, slotNum, hotbarSlot, ClickType.SWAP);
+        // TODO 1.8.9
+        //clickSlot(container, slotNum, hotbarSlot, ClickType.SWAP);
     }
 
     /**
@@ -330,7 +345,7 @@ public class InventoryUtils
         InventoryPlayer inventory = GameWrap.getPlayerInventory();
 
         // Already holding the requested item
-        if (areStacksEqual(stackReference, player.getHeldItemMainhand(), ignoreNbt))
+        if (areStacksEqual(stackReference, player.getHeldItem(), ignoreNbt))
         {
             return false;
         }
@@ -339,9 +354,11 @@ public class InventoryUtils
 
         if (GameWrap.isCreativeMode())
         {
+            /* TODO 1.8.9
             inventory.setPickedItemStack(stackReference.copy());
             GameWrap.getInteractionManager().sendSlotPacket(stackReference.copy(), 36 + currentHotbarSlot);
             return true;
+            */
         }
         else
         {
@@ -349,7 +366,8 @@ public class InventoryUtils
 
             if (slot != -1)
             {
-                clickSlot(GameWrap.getPlayerInventoryContainer(), slot, currentHotbarSlot, ClickType.SWAP);
+                // TODO 1.8.9
+                //clickSlot(GameWrap.getPlayerInventoryContainer(), slot, currentHotbarSlot, ClickType.SWAP);
                 return true;
             }
         }
@@ -363,13 +381,16 @@ public class InventoryUtils
      * @param allowHotbar whether to allow taking items from other hotbar slots
      */
     public static void preRestockHand(EntityPlayer player,
-                                      EnumHand hand,
+                                      //EnumHand hand,
                                       int threshold,
                                       boolean allowHotbar)
     {
         Container container = GameWrap.getPlayerInventoryContainer();
+        /*
         final ItemStack handStack = player.getHeldItem(hand);
-        final int count = handStack.getCount();
+        */
+        final ItemStack handStack = player.getHeldItem();
+        final int count = ItemWrap.getStackSize(handStack);
         final int max = handStack.getMaxStackSize();
 
         if (ItemWrap.notEmpty(handStack) &&
@@ -377,6 +398,7 @@ public class InventoryUtils
             ItemWrap.isEmpty(getCursorStack()) &&
             (count <= threshold && count < max))
         {
+            /* TODO 1.8.9
             int endSlot = allowHotbar ? 44 : 35;
             int currentMainHandSlot = getSelectedHotbarSlot() + 36;
             int currentSlot = hand == EnumHand.MAIN_HAND ? currentMainHandSlot : 45;
@@ -395,7 +417,7 @@ public class InventoryUtils
                 {
                     // If all the items from the found slot can fit into the current
                     // stack in hand, then left click, otherwise right click to split the stack
-                    int button = stackSlot.getCount() + count <= max ? 0 : 1;
+                    int button = ItemWrap.getStackSize(stackSlot) + count <= max ? 0 : 1;
 
                     clickSlot(container, slot, button, ClickType.PICKUP);
                     clickSlot(container, currentSlot, 0, ClickType.PICKUP);
@@ -403,6 +425,7 @@ public class InventoryUtils
                     break;
                 }
             }
+            */
         }
 
     }
@@ -448,7 +471,7 @@ public class InventoryUtils
 
             if (ItemWrap.notEmpty(stack))
             {
-                map.addTo(new ItemType(stack, false, true), stack.getCount());
+                map.addTo(new ItemType(stack, false, true), ItemWrap.getStackSize(stack));
 
                 if (StorageItemInventoryUtils.shulkerBoxHasItems(stack))
                 {
@@ -465,12 +488,12 @@ public class InventoryUtils
         return map;
     }
 
-    public static void clickSlot(Container container, Slot slot, int mouseButton, ClickType clickType)
+    public static void clickSlot(Container container, Slot slot, int mouseButton, int clickType)
     {
         clickSlot(container, getSlotId(slot), mouseButton, clickType);
     }
 
-    public static void clickSlot(Container container, int slotNum, int mouseButton, ClickType clickType)
+    public static void clickSlot(Container container, int slotNum, int mouseButton, int clickType)
     {
         if (slotNum >= 0 && slotNum < getSlotCount(container))
         {

@@ -19,12 +19,12 @@ import malilib.registry.Registry;
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin
 {
-    @Shadow public WorldClient world;
-    @Shadow public EntityPlayerSP player;
+    @Shadow public WorldClient theWorld;
+    @Shadow public EntityPlayerSP thePlayer;
 
     private WorldClient worldBefore;
 
-    @Inject(method = "init", at = @At("RETURN"))
+    @Inject(method = "startGame", at = @At("RETURN"))
     private void onInitComplete(CallbackInfo ci)
     {
         // Register all mod handlers
@@ -34,7 +34,7 @@ public abstract class MinecraftMixin
     @Inject(method = "runTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getSystemTime()J"))
     private void onRunTickEnd(CallbackInfo ci)
     {
-        if (this.world != null && this.player != null)
+        if (this.theWorld != null && this.thePlayer != null)
         {
             ((TickEventDispatcherImpl) Registry.TICK_EVENT_DISPATCHER).onClientTick();
         }
@@ -43,8 +43,8 @@ public abstract class MinecraftMixin
     @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
     private void onLoadWorldPre(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
     {
-        this.worldBefore = this.world;
-        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.world, worldClientIn);
+        this.worldBefore = this.theWorld;
+        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.theWorld, worldClientIn);
     }
 
     @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("RETURN"))

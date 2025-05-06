@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
@@ -23,20 +22,20 @@ public class RegistryUtils
         }
         catch (Exception e)
         {
-            return Blocks.AIR;
+            return Blocks.air;
         }
     }
 
     public static Block getBlockById(ResourceLocation id)
     {
-        Block block = Block.REGISTRY.getObject(id);
-        return block != null ? block : Blocks.AIR;
+        Block block = Block.blockRegistry.getObject(id);
+        return block != null ? block : Blocks.air;
     }
 
     @Nullable
     public static ResourceLocation getBlockId(Block block)
     {
-        return Block.REGISTRY.getNameForObject(block);
+        return Block.blockRegistry.getNameForObject(block);
     }
 
     @Nullable
@@ -58,14 +57,14 @@ public class RegistryUtils
 
     public static Collection<ResourceLocation> getRegisteredBlockIds()
     {
-        return Block.REGISTRY.getKeys();
+        return Block.blockRegistry.getKeys();
     }
 
     public static List<Block> getSortedBlockList()
     {
         List<Block> blocks = new ArrayList<>();
 
-        for (Block block : Block.REGISTRY)
+        for (Block block : Block.blockRegistry)
         {
             blocks.add(block);
         }
@@ -75,6 +74,7 @@ public class RegistryUtils
         return blocks;
     }
 
+    @Nullable
     public static Item getItemByIdStr(String name)
     {
         try
@@ -83,20 +83,21 @@ public class RegistryUtils
         }
         catch (Exception e)
         {
-            return Items.AIR;
+            return null;
         }
     }
 
+    @Nullable
     public static Item getItemById(ResourceLocation id)
     {
-        Item item = Item.REGISTRY.getObject(id);
-        return item != null ? item : Items.AIR;
+        Item item = Item.itemRegistry.getObject(id);
+        return item != null ? item : null;
     }
 
     @Nullable
     public static ResourceLocation getItemId(Item item)
     {
-        return Item.REGISTRY.getNameForObject(item);
+        return Item.itemRegistry.getNameForObject(item);
     }
 
     public static String getItemIdStr(Item item)
@@ -107,14 +108,14 @@ public class RegistryUtils
 
     public static Collection<ResourceLocation> getRegisteredItemIds()
     {
-        return Item.REGISTRY.getKeys();
+        return Item.itemRegistry.getKeys();
     }
 
     public static List<Item> getSortedItemList()
     {
         List<Item> items = new ArrayList<>();
 
-        for (Item item : Item.REGISTRY)
+        for (Item item : Item.itemRegistry)
         {
             items.add(item);
         }
