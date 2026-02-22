@@ -3,7 +3,7 @@
 ## malilib (or MaLiLib)
 
 malilib is a library and code utility mod primarily for client-side Minecraft mods.
-It was started in mid 2018 for ise in the LiteLoader versions of masa's client-side MC mods (Item Scroller, Litematica, MiniHUD, and Tweakeroo), to remove code duplication and to improve the interoperability of the mods.
+It was started in mid 2018 for use in the LiteLoader versions of masa's client-side MC mods (Item Scroller, Litematica, MiniHUD, and Tweakeroo), to remove code duplication and to improve the interoperability of the mods.
 
 
 ### What does it do/have?
