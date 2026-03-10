@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.block.Block;
