@@ -104,10 +104,17 @@ public class CompoundData extends BaseData implements DataView
     }
 
     @Override
+    public Optional<BaseData> getData(String key, int requestedType)
+    {
+        BaseData data = this.values.get(key);
+        return data != null && data.getType() == requestedType ? Optional.of(data) : Optional.empty();
+    }
+
+    @Override
     public boolean getBoolean(String key)
     {
         BaseData data = this.values.get(key);
-        return data != null && data.getType() == Constants.NBT.TAG_BYTE && ((ByteData) data).value != 0;
+        return data != null && data.getType() == Constants.NBT.TAG_BYTE && ((ByteData) data).value != (byte) 0;
     }
 
     protected long getAsAnyInt(BaseData data)
@@ -132,7 +139,7 @@ public class CompoundData extends BaseData implements DataView
             return ((LongData) data).value;
         }
 
-        return 0;
+        return 0L;
     }
 
     @Override
@@ -142,7 +149,7 @@ public class CompoundData extends BaseData implements DataView
 
         if (data == null)
         {
-            return 0;
+            return (byte) 0;
         }
 
         if (data.getType() == Constants.NBT.TAG_BYTE)
@@ -160,7 +167,7 @@ public class CompoundData extends BaseData implements DataView
 
         if (data == null)
         {
-            return 0;
+            return (short) 0;
         }
 
         if (data.getType() == Constants.NBT.TAG_SHORT)
@@ -196,7 +203,7 @@ public class CompoundData extends BaseData implements DataView
 
         if (data == null)
         {
-            return 0;
+            return 0L;
         }
 
         if (data.getType() == Constants.NBT.TAG_LONG)
@@ -266,7 +273,7 @@ public class CompoundData extends BaseData implements DataView
 
     public CompoundData putBoolean(String key, boolean value)
     {
-        this.values.put(key, new ByteData(value ? (byte) 1 : 0));
+        this.values.put(key, new ByteData(value ? (byte) 1 : (byte) 0));
         return this;
     }
 
