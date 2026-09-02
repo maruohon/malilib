@@ -503,8 +503,14 @@ public class InventoryRenderUtils
     public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory()
     {
         World world = WorldWrap.getBestWorld();
+        World clientWorld = GameWrap.getClientWorld();
         Entity cameraEntity = GameWrap.getCameraEntity();
         EntityPlayer clientPlayer = GameWrap.getClientPlayer();
+
+        if (clientPlayer == null || world == null || clientWorld == null)
+        {
+            return null;
+        }
 
         if (cameraEntity == clientPlayer && world instanceof WorldServer)
         {
@@ -512,10 +518,15 @@ public class InventoryRenderUtils
             // so that the player itself won't be included in the ray trace
             EntityPlayer player = world.getPlayerEntityByUUID(EntityWrap.getUuid(clientPlayer));
 
-            if (player == null)
+            if (player != null)
             {
                 cameraEntity = player;
             }
+        }
+
+        if (cameraEntity == null)
+        {
+            return null;
         }
 
         RayTraceUtils.RayTraceFluidHandling fluidHandling = RayTraceUtils.RayTraceFluidHandling.NONE;
