@@ -13,6 +13,7 @@ import malilib.config.value.ScreenLocation;
 import malilib.event.ClientTickHandler;
 import malilib.event.PostGameOverlayRenderer;
 import malilib.event.PostScreenRenderer;
+import malilib.gui.util.GeometryResizeNotifier;
 import malilib.gui.util.GuiUtils;
 import malilib.gui.util.ScreenContext;
 import malilib.gui.widget.BaseWidget;
@@ -30,7 +31,14 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     protected final List<InfoRendererWidget> enabledGuiWidgets = new ArrayList<>();
     protected final List<InfoRendererWidget> allEnabledWidgets = new ArrayList<>();
     protected final List<InfoArea> activeInfoAreas = new ArrayList<>();
+    protected final GeometryResizeNotifier geometryResizeNotifier =
+        new GeometryResizeNotifier(GuiUtils::getScaledWindowWidth, GuiUtils::getScaledWindowHeight);
     protected boolean needsReFetch;
+
+    public InfoOverlay() {
+        super();
+        this.geometryResizeNotifier.setGeometryChangeListener(() -> this.infoAreas.values().forEach(InfoArea::requestReLayout));
+    }
 
     public InfoArea getOrCreateInfoArea(ScreenLocation location)
     {
@@ -110,6 +118,8 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      */
     public void tick()
     {
+        this.geometryResizeNotifier.checkAndNotifyContainerOfChanges(false);
+
         if (this.needsReFetch)
         {
             this.fetchEnabledWidgets();

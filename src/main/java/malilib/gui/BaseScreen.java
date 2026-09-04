@@ -1092,17 +1092,17 @@ public abstract class BaseScreen extends GuiScreen
 
     public static boolean isShiftDown()
     {
-        return isShiftKeyDown();
+        return GuiScreen.isShiftKeyDown();
     }
 
     public static boolean isCtrlDown()
     {
-        return isCtrlKeyDown();
+        return GuiScreen.isCtrlKeyDown();
     }
 
     public static boolean isAltDown()
     {
-        return isAltKeyDown();
+        return GuiScreen.isAltKeyDown();
     }
 
     public static void setStringToClipboard(String str)
