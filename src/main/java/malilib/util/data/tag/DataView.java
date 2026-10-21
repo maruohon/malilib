@@ -89,7 +89,6 @@ public interface DataView
      */
     ListData getList(String key, int containedType);
 
-
     default boolean getBooleanOrDefault(String key, boolean defaultValue)
     {
         if (this.contains(key, Constants.NBT.TAG_BYTE) == false)
