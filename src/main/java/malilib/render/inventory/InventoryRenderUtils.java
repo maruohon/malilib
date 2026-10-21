@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.block.Block;
@@ -503,19 +505,42 @@ public class InventoryRenderUtils
     public static Pair<InventoryView, InventoryRenderDefinition> getPointedInventory()
     {
         World world = WorldWrap.getBestWorld();
+        World clientWorld = GameWrap.getClientWorld();
+        Entity cameraEntity = GameWrap.getCameraEntity();
         EntityPlayer clientPlayer = GameWrap.getClientPlayer();
 
-        // We need to get the player from the server world,
-        // so that the player itself won't be included in the ray trace
-        EntityPlayer player = world.getPlayerEntityByUUID(EntityWrap.getUuid(clientPlayer));
-
-        if (player == null)
+        if (clientPlayer == null || world == null || clientWorld == null)
         {
-            player = clientPlayer;
+            return null;
+        }
+
+        if (cameraEntity == clientPlayer && world instanceof WorldServer)
+        {
+            // We need to get the player from the server world,
+            // so that the player itself won't be included in the ray trace
+            EntityPlayer player = world.getPlayerEntityByUUID(EntityWrap.getUuid(clientPlayer));
+
+            if (player != null)
+            {
+                cameraEntity = player;
+            }
+        }
+
+        if (cameraEntity == null)
+        {
+            return null;
         }
 
         RayTraceUtils.RayTraceFluidHandling fluidHandling = RayTraceUtils.RayTraceFluidHandling.NONE;
-        HitResult trace = RayTraceUtils.getRayTraceFromEntity(world, player, fluidHandling, true, 6.0);
+        HitResult trace;
+        if (cameraEntity != clientPlayer)
+        {
+            trace = RayTraceUtils.getRayTraceFromEntity(world, cameraEntity, fluidHandling, true, 6.0);
+        }
+        else
+        {
+            trace = GameWrap.getHitResult();
+        }
 
         if (trace == null)
         {
